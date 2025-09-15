@@ -9,12 +9,26 @@
     "lint": "eslint"
   },
   "dependencies": {
+<<<<<<< HEAD
+    "@radix-ui/react-slot": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cobe": "^0.6.4",
+    "lucide-react": "^0.544.0",
+    "motion": "^12.23.12",
+    "next": "15.5.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-icon": "^1.0.0",
+    "react-icons": "^5.5.0",
+=======
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+>>>>>>> dea6a997828252eca0dfad6f9e3afeebb1c533cf
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
