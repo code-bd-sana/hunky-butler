@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -41,8 +42,10 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
   --animate-marquee: marquee var(--duration) infinite linear;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+
   @keyframes marquee {
     from {
       transform: translateX(0);
@@ -99,6 +102,7 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -169,11 +173,22 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
   --color-1: oklch(66.2% 0.225 25.9);
   --color-2: oklch(60.4% 0.26 302);
   --color-3: oklch(69.6% 0.165 251);
   --color-4: oklch(80.2% 0.134 225);
   --color-5: oklch(90.7% 0.231 133);
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-style: normal;
+}
+
+.font-abhaya-libre {
+  font-family: "Abhaya Libre", serif;
+  font-style: normal;
 }
 
 @layer base {
@@ -184,9 +199,11 @@
     @apply bg-background text-foreground;
   }
   .btn-primary {
-    @apply bg-[#FF006A] rounded-full px-4 py-2 text-[#FFFFFF] text-[16px] cursor-pointer;
-  }
-  .btn-secondary {
-    @apply bg-transparent rounded-full border border-[#FF006A] py-2 px-4 text-[#FF006A] text-lg cursor-pointer;
+    .btn-primary {
+      @apply bg-[#FF006A] rounded-full px-4 py-2 text-[#FFFFFF] text-[16px] cursor-pointer;
+    }
+    .btn-secondary {
+      @apply bg-transparent rounded-full border border-[#FF006A] py-2 px-4 text-[#FF006A] text-lg cursor-pointer;
+    }
   }
 }

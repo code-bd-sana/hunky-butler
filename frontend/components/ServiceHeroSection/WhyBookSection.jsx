@@ -8,13 +8,14 @@ import icon3 from '@/public/icons/services/whybook3.png'
 import icon4 from '@/public/icons/services/whybook4.png'
 import bg from '@/public/images/services/bg3.png'
 import Link from 'next/link'
+import SecondaryTitle from '../shared/typography/SecondaryTitle'
 
 export default function WhyBookSection() {
   return (
     <div className='bg-[#F6F4F5] relative'>
         
 
-<div className='flex flex-col-reverse md:flex-row pb-16  gap-14 max-w-7xl mx-auto px-4 md:px-6 lg:px-0 pt-24 '>
+<div className='flex flex-col-reverse md:flex-row pb-16  gap-14 max-w-7xl mx-auto px-4 md:px-6 lg:px-0 pt-12 '>
 
     <section className='flex-1'>
 <Image alt='img' src={image}/>
@@ -26,10 +27,7 @@ export default function WhyBookSection() {
     <section className='flex-1'>
 
 
-    <h4 className='text-[#141414] text-5xl leading-snug max-w-4xl mx-auto font-medium '>
-
-         Why Book With Hunky Butler Service?
-        </h4>
+    <SecondaryTitle  text1={'Why we are '}  text2={'The Best'}/>
 
 
 <SubTitle text={'From Buff Butlers to Cocktail Masterclasses—transparent pricing, verified staff, anywhere in your postcode.At hunky butler SERV, we believe unforgettable events should be effortless to plan.'}/>
