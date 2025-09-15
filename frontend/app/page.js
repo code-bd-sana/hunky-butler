@@ -10,34 +10,33 @@ import Planning from "@/components/homepage/Planning";
 import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
+import ServiceBanner from "@/components/shared/ServiceBanner";
 
 
 export default function page() {
   return (
     <div className="min-h-screen bg-white">
-<<<<<<< HEAD
-      <Navbar></Navbar>
-      <ServiceBanner></ServiceBanner>
-      <MostPopulerParty/>
-      <HomeMarque/>
-      <AboutSection/>
-      <HowItWorkSection/>
-      <WhyBookSection/>
-      <ReviewSection/>
-      <Frequently/>
-      <Planning/>
-      <Footer/>
-=======
-      <Navbar/>
-      <HomeBanner/>
-      <TrustStrip/>
+      <Navbar />
+      <HomeBanner />
+      <TrustStrip />
       <MostPopulerParty />
       <HomeMarque />
       <AboutSection />
       <HowItWorkSection />
       <WhyBookSection />
       <ReviewSection />
->>>>>>> e3d53e043785ba1f3d478e18fd0fc8b81ae9bda4
+      <Frequently />
+      <Planning />
+      <Footer />
+
+
+
+      {/* <MostPopulerParty />
+      <HomeMarque />
+      <AboutSection />
+      <HowItWorkSection />
+      <WhyBookSection />
+      <ReviewSection /> */}
     </div>
   );
 }
