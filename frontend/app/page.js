@@ -10,6 +10,7 @@ import Planning from "@/components/homepage/Planning";
 import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
+import ServiceBanner from "@/components/shared/ServiceBanner";
 
 
 export default function page() {
