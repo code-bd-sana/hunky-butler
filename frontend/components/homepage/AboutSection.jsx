@@ -17,7 +17,7 @@ import bg4 from '@/public/images/home/aboutbg2.png'
 
 export default function AboutSection() {
   return (
-    <div className='bg-[#FFF0F6] py-8 md:py-24  relative'>
+    <div className='bg-[#FFF0F6] py-8 md:py-24   relative'>
 
         <div className='max-w-7xl mx-auto md:flex px-4 md:px-0 items-center gap-4 mt-16'>
 
@@ -97,7 +97,7 @@ export default function AboutSection() {
         </div>
 
 {/* icn section */}
-        <section className='md:flex  justify-between max-w-7xl mx-auto mt-16'>
+        <section className='md:flex z-50  justify-between max-w-7xl mx-auto mt-16'>
 
           <div className='flex flex-col  justify-center text-center'>
               <Image alt='icon' src={image1} className='mx-auto'/>
@@ -114,7 +114,7 @@ export default function AboutSection() {
           </div>
 
                <div className='border-r border-[#FF99C3]'></div>
-          <div className='flex flex-col mt-16 md:mt-0 justify-center text-center'>
+          <div className='flex flex-col z-50 mt-16 md:mt-0 justify-center text-center'>
               <Image alt='icon' src={image3} className='mx-auto'/>
           <p className='font-medium text-lg'>Secure Bookings & pay</p>
           </div>
@@ -137,11 +137,11 @@ export default function AboutSection() {
         {" "}
         <Image alt="img" src={bg2} />{" "}
       </div>
-      <div className="absolute bottom-0 leading-0">
+      <div className="absolute w-36 md:w-auto bottom-0 leading-0">
         {" "}
         <Image alt="img" src={bg3} />{" "}
       </div>
-      <div className="absolute bottom-0 right-0 leading-0">
+      <div className="absolute bottom-0 z-10  w-36 md:w-auto right-0 leading-0">
         {" "}
         <Image alt="img" src={bg4} />{" "}
       </div>
