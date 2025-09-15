@@ -15,7 +15,7 @@ export default function WhyBookSection() {
     <div className='bg-[#F6F4F5] relative'>
         
 
-<div className='flex flex-col-reverse md:flex-row pb-16  gap-14 max-w-7xl mx-auto px-4 md:px-6 lg:px-0 pt-24 '>
+<div className='flex flex-col-reverse md:flex-row pb-16  gap-14 max-w-7xl mx-auto px-4 md:px-6 lg:px-0 pt-12 '>
 
     <section className='flex-1'>
 <Image alt='img' src={image}/>
