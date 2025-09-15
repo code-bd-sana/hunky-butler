@@ -1,18 +1,12 @@
-import BookNowSection from '@/components/ServiceHeroSection/BookNowSection'
-import HowItWorkSection from '@/components/ServiceHeroSection/HowItWorkSection'
-import ReviewSection from '@/components/ServiceHeroSection/ReviewSection'
-import WhyBookSection from '@/components/ServiceHeroSection/WhyBookSection'
-import React from 'react'
+import Navbar from "@/components/shared/Navbar";
+import ServiceBanner from "@/components/shared/ServiceBanner";
 
 export default function page() {
   return (
-    <div>
-      
-
-      <BookNowSection/>
-      <HowItWorkSection/>
-      <WhyBookSection/>
-      <ReviewSection/>
+    <div className="min-h-screen bg-white">
+      <Navbar></Navbar>
+      <ServiceBanner></ServiceBanner>
     </div>
-  )
+  );
 }
+
