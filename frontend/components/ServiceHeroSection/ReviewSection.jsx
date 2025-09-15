@@ -52,7 +52,7 @@ export default function ReviewSection() {
   const secondRow = reviews.slice(reviews.length / 2);
 
   return (
-    <div className="bg-[#ECDFE4] relative">
+    <div className="bg-[#ECDFE4] relative px-6 lg:px-0">
       <div className="py-16  max-w-7xl mx-auto container md:px-8 lg:px-0 py-16">
         <SecondaryTitle
           text1={"Trusted by thousands of"}
@@ -66,7 +66,7 @@ export default function ReviewSection() {
           />
         </div>
 
-        <div className="relative z-50 flex w-full flex-col items-center justify-center overflow-hidden">
+        <div className="relative z-30 flex w-full flex-col items-center justify-center overflow-hidden">
           <Marquee pauseOnHover className="[--duration:20s]">
             {firstRow.map((review) => (
               <ReviewCard key={review.username} {...review} />
