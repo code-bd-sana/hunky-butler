@@ -15,7 +15,6 @@ import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
 export default function page() {
   return (
     <div className="min-h-screen bg-white">
-<<<<<<< HEAD
       <Navbar></Navbar>
       <ServiceBanner></ServiceBanner>
       <MostPopulerParty/>
@@ -27,7 +26,6 @@ export default function page() {
       <Frequently/>
       <Planning/>
       <Footer/>
-=======
       <Navbar/>
       <HomeBanner/>
       <TrustStrip/>
@@ -37,7 +35,6 @@ export default function page() {
       <HowItWorkSection />
       <WhyBookSection />
       <ReviewSection />
->>>>>>> e3d53e043785ba1f3d478e18fd0fc8b81ae9bda4
     </div>
   );
 }
