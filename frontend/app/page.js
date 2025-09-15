@@ -1,6 +1,9 @@
 import AboutSection from "@/components/homepage/AboutSection";
+import Footer from "@/components/homepage/Footer";
+import Frequently from "@/components/homepage/Frequently";
 import HomeMarque from "@/components/homepage/HomeMarque";
 import MostPopulerParty from "@/components/homepage/MostPopulerParty";
+import Planning from "@/components/homepage/Planning";
 import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
@@ -18,6 +21,9 @@ export default function page() {
       <HowItWorkSection/>
       <WhyBookSection/>
       <ReviewSection/>
+      <Frequently/>
+      <Planning/>
+      <Footer/>
     </div>
   );
 }
