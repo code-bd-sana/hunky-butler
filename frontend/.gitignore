@@ -9,11 +9,8 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-<<<<<<< HEAD
-UsersmynameAppDataRoamingnpm-cache
+npm-cache/
 
-=======
->>>>>>> dea6a997828252eca0dfad6f9e3afeebb1c533cf
 
 # testing
 /coverage
