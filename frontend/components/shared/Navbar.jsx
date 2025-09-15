@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { HiChevronDown, HiOutlineMenu, HiX } from "react-icons/hi";
-import { IoIosArrowForward } from "react-icons/io";
+
 import {
   FaTumblr,
   FaInstagram,
@@ -39,7 +39,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed mt-[32px] top-0 left-0 w-full z-50">
+    <nav className="fixed mt-[32px] top-0 left-0 w-full z-100">
       <div className="max-w-[1866px] mx-auto">
         <div
           className="flex items-center justify-between px-[32px] py-[20px] rounded-[100px] h-[68px] bg-transparent backdrop-blur-lg text-white shadow-xl"
