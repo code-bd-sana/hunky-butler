@@ -5,6 +5,7 @@ import Image from "next/image";
 import MainTitle from "../shared/typography/MainTitle";
 import bg from "@/public/images/services/bg3.png";
 
+
 export default function BookNowSection({ text, image, bulletPoints }) {
   return (
     <div className="relative">
@@ -24,7 +25,7 @@ export default function BookNowSection({ text, image, bulletPoints }) {
             <div className="mt-8 space-y-3">
               <div className="mt-8 space-y-3  items-center gap-4 ">
                 {bulletPoints.map((item, idx) => (
-                  <div key={idx} className="flex gap-4">
+                  <div key={idx} className="flex items-center gap-4">
                     <Image alt="icon" src={icon} />{" "}
                     <p
                       className="text-[#333333);
