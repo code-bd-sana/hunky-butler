@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+import React from "react";
+
+export default function page() {
+  return (
+    <div className="min-h-screen bg-white">
+      <h1>Hello World</h1>
+    </div>
+  );
+}
+=======
 import Image from "next/image";
 
 export default function Home() {
@@ -101,3 +112,4 @@ export default function Home() {
     </div>
   );
 }
+>>>>>>> dea6a997828252eca0dfad6f9e3afeebb1c533cf
