@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { HiOutlineMenu, HiX } from "react-icons/hi";
+import { HiChevronDown, HiOutlineMenu, HiX } from "react-icons/hi";
 import { IoIosArrowForward } from "react-icons/io";
 import {
   FaTumblr,
@@ -42,7 +42,7 @@ const Navbar = () => {
     <nav className="fixed mt-[32px] top-0 left-0 w-full z-50">
       <div className="max-w-[1866px] mx-auto">
         <div
-          className="flex items-center justify-between px-[32px] py-[20px] rounded-[100px] h-[88px] bg-transparent backdrop-blur-lg text-white shadow-xl"
+          className="flex items-center justify-between px-[32px] py-[20px] rounded-[100px] h-[68px] bg-transparent backdrop-blur-lg text-white shadow-xl"
           style={{ background: "rgba(74, 74, 74, 0.4)" }}
         >
           {/* Logo */}
@@ -69,13 +69,18 @@ const Navbar = () => {
                   <div key={link.href} className="relative">
                     <button
                       onClick={() => setIsServiceOpen(!isServiceOpen)}
-                      className={`px-4 py-2 rounded-full transition-colors ${
+                      className={`px-4 py-2 rounded-full transition-colors flex items-center gap-2 ${
                         isActive
                           ? "bg-[rgba(255,0,106,1)]"
                           : "hover:bg-[rgba(255,0,106,1)] text-white"
                       }`}
                     >
                       {link.name}
+                      <HiChevronDown
+                        className={`transition-transform duration-200 -mb-1 ${
+                          isServiceOpen ? "rotate-180" : "rotate-0"
+                        }`}
+                      />
                     </button>
 
                     {/* Submenu */}
@@ -124,8 +129,8 @@ const Navbar = () => {
                 <Image
                   src="/socialIcon/fb.png"
                   alt="Facebook"
-                  width={32}
-                  height={32}
+                  width={24}
+                  height={24}
                 />
               </a>
               <a
@@ -136,16 +141,16 @@ const Navbar = () => {
                 <Image
                   src="/socialIcon/wp.png"
                   alt="WhatsApp"
-                  width={32}
-                  height={32}
+                  width={24}
+                  height={24}
                 />
               </a>
               <a href="https://t.com" target="_blank" rel="noopener noreferrer">
                 <Image
                   src="/socialIcon/t.png"
                   alt="Tumblr"
-                  width={18}
-                  height={32}
+                  width={14}
+                  height={24}
                 />
               </a>
               <a
@@ -156,8 +161,8 @@ const Navbar = () => {
                 <Image
                   src="/socialIcon/telegram.png"
                   alt="Telegram"
-                  width={32}
-                  height={32}
+                  width={24}
+                  height={24}
                 />
               </a>
               <a
@@ -168,15 +173,15 @@ const Navbar = () => {
                 <Image
                   src="/socialIcon/insta.png"
                   alt="Instagram"
-                  width={32}
-                  height={32}
+                  width={24}
+                  height={24}
                 />
               </a>
             </div>
 
             <button
               style={{ color: "rgba(255,0,106,1)" }}
-              className="px-[18px] py-[12px] w-[176px] h-[48px] bg-white rounded-full font-semibold shadow-md transition-transform duration-200 hover:scale-105 whitespace-nowrap"
+              className="px-[16px] py-[8px] w-[164px] h-[44px] bg-white rounded-full font-semibold shadow-md transition-transform duration-200 hover:scale-105 whitespace-nowrap"
             >
               Get Instant Quote
             </button>
@@ -206,13 +211,16 @@ const Navbar = () => {
                         onClick={() =>
                           setIsMobileServiceOpen(!isMobileServiceOpen)
                         }
-                        className={`w-full text-left px-4 py-2 font-medium rounded-full transition-colors`}
+                        className="w-full px-4 py-2 font-medium rounded-full transition-colors flex items-center gap-2"
                       >
-                        <div className="flex items-center">
-                          <IoIosArrowForward />
-                          <h1>{link.name}</h1>
-                        </div>
+                        <span>{link.name}</span>
+                        <HiChevronDown
+                          className={`transition-transform duration-200 -mb-1 ${
+                            isMobileServiceOpen ? "rotate-180" : "rotate-0"
+                          }`}
+                        />
                       </button>
+
                       {isMobileServiceOpen && (
                         <div className="ml-4 mt-2 flex flex-col gap-2">
                           {link.submenu.map((sublink) => (
@@ -239,7 +247,7 @@ const Navbar = () => {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <div className="flex items-center">
-                      <IoIosArrowForward /> <h1>{link.name}</h1>
+                      <h1>{link.name}</h1>
                     </div>
                   </Link>
                 );
