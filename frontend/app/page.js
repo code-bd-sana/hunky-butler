@@ -16,26 +16,27 @@ import ServiceBanner from "@/components/shared/ServiceBanner";
 export default function page() {
   return (
     <div className="min-h-screen bg-white">
-      <Navbar></Navbar>
-      <ServiceBanner></ServiceBanner>
-      <MostPopulerParty/>
-      <HomeMarque/>
-      <AboutSection/>
-      <HowItWorkSection/>
-      <WhyBookSection/>
-      <ReviewSection/>
-      <Frequently/>
-      <Planning/>
-      <Footer/>
-      <Navbar/>
-      <HomeBanner/>
-      <TrustStrip/>
+      <Navbar />
+      <HomeBanner />
+      <TrustStrip />
       <MostPopulerParty />
       <HomeMarque />
       <AboutSection />
       <HowItWorkSection />
       <WhyBookSection />
       <ReviewSection />
+      <Frequently />
+      <Planning />
+      <Footer />
+
+
+
+      {/* <MostPopulerParty />
+      <HomeMarque />
+      <AboutSection />
+      <HowItWorkSection />
+      <WhyBookSection />
+      <ReviewSection /> */}
     </div>
   );
 }
