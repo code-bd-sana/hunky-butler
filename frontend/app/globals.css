@@ -173,6 +173,16 @@
 
 }
 
+body{
+  font-family: "Poppins", sans-serif; 
+  font-style: normal;
+}
+
+.font-abhaya-libre {
+  font-family: "Abhaya Libre", serif;
+  font-style: normal;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
