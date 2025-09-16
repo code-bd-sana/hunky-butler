@@ -13,19 +13,15 @@ import SecondaryTitle from '../shared/typography/SecondaryTitle'
 export default function WhyBookSection() {
   return (
     <div className='bg-[#F6F4F5] relative'>
-
-
       <div className='flex flex-col-reverse md:flex-row pb-16  gap-14 max-w-7xl mx-auto px-4 md:px-6 lg:px-0 pt-12 '>
 
         <section className='flex-1'>
           <Image alt='img' src={image} />
         </section>
 
-
         <section className='flex-1'>
           <SecondaryTitle text1={'Why we are '} text2={'The Best'} />
           <SubTitle text={'From Buff Butlers to Cocktail Masterclasses—transparent pricing, verified staff, anywhere in your postcode.At hunky butler SERV, we believe unforgettable events should be effortless to plan.'} />
-
 
 
           {/* line */}

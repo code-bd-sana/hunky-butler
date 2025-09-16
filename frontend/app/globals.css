@@ -217,5 +217,4 @@ body {
   .btn-secondary {
     @apply bg-transparent rounded-full border border-[#FF006A] py-2 px-4 text-[#FF006A] text-lg cursor-pointer;
   }
-
 }

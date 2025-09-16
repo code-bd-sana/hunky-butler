@@ -35,22 +35,18 @@ export default function HowItWorkSection() {
 
   return (
     <div className='bg-[#F6F4F5] px-6 lg:px-0'>
-
-
       <div className=' py-16 max-w-7xl mx-auto '>
         <div>
           <MainTitle text={"How It Works – Booking a Buff Butler is Simple"} />
           <p className='text-center mt-4 text-[#292929]'>Plan in 3 simple steps</p>
-
         </div>
 
         {/* card section */}
         <section className='md:flex space-y-3 mx-auto justify-center gap-6  mt-16'>
-
           {data.map((item, idx) => (
             <div
               key={idx}
-              className="bg-[#FFFFFF] rounded-2xl h-96 flex-1 flex flex-col p-4 "
+              className="bg-[#FFFFFF] rounded-2xl h-96 flex-1 flex flex-col p-4"
             >
               {/* icons */}
               <div className="flex items-center gap-4 justify-between ">
@@ -62,9 +58,7 @@ export default function HowItWorkSection() {
                 {item.title}
               </p>
             </div>
-
           ))}
-
 
         </section>
         <Link href={'/'}>
