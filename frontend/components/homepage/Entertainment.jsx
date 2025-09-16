@@ -22,7 +22,7 @@ const Entertainment = () => {
         <div className="w-full md:w-1/2 space-y-6">
           <h1 className="text-2xl md:text-5xl leading-tight text-center md:text-start font-semibold">
             Entertainment Services Available
-            <span className="italic text-[#FF66A6]"> Across the UK</span>
+            <span className="italic text-[#FF006A]"> Across the UK</span>
           </h1>
           <p className="text-[#3D3D3D] text-base md:text-lg">
             We provide Buff Butlers, Cocktail Classes, Strippers, and Life
