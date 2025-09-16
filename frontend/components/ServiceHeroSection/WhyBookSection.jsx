@@ -47,7 +47,7 @@ export default function WhyBookSection() {
           <Link href={'/'}>
             <button className='btn-secondary mt-24'>Try a 30-second quote now</button>
           </Link>
-
+          
         </section>
       </div>
 

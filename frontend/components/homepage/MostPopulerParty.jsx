@@ -10,7 +10,6 @@ import SecondaryTitle from '../shared/typography/SecondaryTitle'
 
 export default function MostPopulerParty() {
 
-
     const partyData = [
 
         {
@@ -37,7 +36,6 @@ export default function MostPopulerParty() {
 
     return (
         <div className='max-w-7xl mx-auto'>
-
             <div className='text-center mt-16 '>
                 <SecondaryTitle
                     text1={"Our Valuable"}
@@ -48,9 +46,7 @@ export default function MostPopulerParty() {
                 </div>
             </div>
 
-
             <section className='grid md:grid-cols-2 gap-8 mt-16 px-4 md:px-0'>
-
                 {
                     partyData.map((data, idx) => (
 
@@ -61,10 +57,7 @@ export default function MostPopulerParty() {
                             </div>
 
                             {/* content */}
-
                             <div className='px-6 absolute left-0 bottom-6 text-[#FFFFFF]'>
-
-
                                 <h4 className=' text-3xl leading-snug  font-medium '>{data.heading}</h4>
                                 <p className='text-lg  leading-[1.4] tracking-[-0.01em]'>{data.title}</p>
                             </div>
@@ -72,8 +65,6 @@ export default function MostPopulerParty() {
                         </div>
                     ))
                 }
-
-
             </section>
         </div>
     )
