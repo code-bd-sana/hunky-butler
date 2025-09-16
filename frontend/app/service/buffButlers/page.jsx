@@ -22,22 +22,22 @@ export default function page() {
   return (
     <div>
 
-<ServiceBanner 
-heading={"Hire Buff Butlers for an unforgettable party experience"}
-subTitle={"Fun, cheeky, and professional hosts to keep your guests entertained."}
-image={bannerImg}
+      <ServiceBanner
+        heading={"Hire Buff Butlers for an unforgettable party experience"}
+        subTitle={"Fun, cheeky, and professional hosts to keep your guests entertained."}
+        image={bannerImg}
 
-/>
-<BookNowSection 
+      />
+      <BookNowSection
 
-text={"“Buff Butlers are the ultimate party hosts adding charm, laughter, and cheeky fun to your event. Whether it’s a hen do, birthday, or girls’ night, our butlers will greet guests, serve drinks, and host games all with a playful twist.”"}
+        text={"“Buff Butlers are the ultimate party hosts adding charm, laughter, and cheeky fun to your event. Whether it’s a hen do, birthday, or girls’ night, our butlers will greet guests, serve drinks, and host games all with a playful twist.”"}
 
-image={image}
-bulletPoints={bulletPoints}
-/>
-<HowItWorkSection/>
-<WhyBookSection/>
-<ReviewSection/>
+        image={image}
+        bulletPoints={bulletPoints}
+      />
+      <HowItWorkSection />
+      <WhyBookSection />
+      <ReviewSection />
 
     </div>
   )

@@ -11,6 +11,7 @@ import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
 import ServiceBanner from "@/components/shared/ServiceBanner";
+import Entertainment from "@/components/homepage/Entertainment";
 
 
 export default function page() {
@@ -25,18 +26,10 @@ export default function page() {
       <HowItWorkSection />
       <WhyBookSection />
       <ReviewSection />
+      <Entertainment/>
       <Frequently />
       <Planning />
       <Footer />
-
-
-
-      {/* <MostPopulerParty />
-      <HomeMarque />
-      <AboutSection />
-      <HowItWorkSection />
-      <WhyBookSection />
-      <ReviewSection /> */}
     </div>
   );
 }

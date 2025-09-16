@@ -1,7 +1,6 @@
 
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
-
 export const metadata = {
   title: "Hunky Butlers",
   description:

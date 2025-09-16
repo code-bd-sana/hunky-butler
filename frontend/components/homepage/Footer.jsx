@@ -12,7 +12,7 @@ import {
 
 const Footer = () => {
   return (
-    <div className="bg-[#F2EDEF] w-full relative">
+    <div className="bg-[#F2EDEF] w-full relative md:mt-[550px]">
       <div
         className="bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-center p-12 h-[350px] md:h-[480px] absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden"
         style={{
@@ -38,7 +38,7 @@ const Footer = () => {
         <p className="my-6 text-lg md:text-2xl md:text-[32px] capitalize">
           Get a price in seconds and secure your perfect host today.
         </p>
-        <button className="bg-white text-[#FF006A] font-medium px-5 py-3 rounded-full hover:bg-gray-100 transition md:mt-4">
+        <button className="bg-white text-[#FF006A] px-5 py-3 rounded-full hover:bg-gray-100 transition md:mt-4 font-semibold">
           Get An Instant Quote
         </button>
       </div>
@@ -49,7 +49,7 @@ const Footer = () => {
             <h3 className="font-bold text-[22px] flex items-center gap-2 mb-3">
               <span role="img" aria-label="logo">
                 <Image
-                  src="/ImageGalary/logo.png"
+                  src="/Footer/logo.png"
                   alt="Logo"
                   width={35}
                   height={40}
@@ -108,7 +108,7 @@ const Footer = () => {
                 placeholder="Enter Your Email"
                 className="w-11/12 px-4 py-2 rounded-full focus:outline-none text-sm bg-white"
               />
-              <button className="bg-none border-[#FF006A] text-[#FF006A] px-10 py-2 rounded-full font-medium text-sm hover:bg-pink-600 transition border-2 border-[#FF006A">
+              <button className="bg-none border-[#FF006A] text-[#FF006A] px-10 py-2 rounded-full  font-medium text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A">
                 Subscribe
               </button>
             </div>
