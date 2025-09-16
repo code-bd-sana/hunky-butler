@@ -27,7 +27,7 @@ const Footer = () => {
           className="w-[545px] absolute top-24 -left-72 -rotate-[13deg] "
         />
         <img
-          src="/Footer/loon.png"
+          src="/Footer/loon.png"  
           alt="Logo"
           className="w-[792px] absolute -top-[300px] -right-[645px] "
         />

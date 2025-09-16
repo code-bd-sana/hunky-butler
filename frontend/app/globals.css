@@ -50,44 +50,54 @@
     from {
       transform: translateX(0);
     }
+
     to {
       transform: translateX(calc(-100% - var(--gap)));
     }
   }
+
   @keyframes marquee-vertical {
     from {
       transform: translateY(0);
     }
+
     to {
       transform: translateY(calc(-100% - var(--gap)));
     }
   }
+
   @keyframes marquee {
     from {
       transform: translateX(0);
     }
+
     to {
       transform: translateX(calc(-100% - var(--gap)));
     }
   }
+
   @keyframes marquee-vertical {
     from {
       transform: translateY(0);
     }
+
     to {
       transform: translateY(calc(-100% - var(--gap)));
     }
   }
+
   --animate-rainbow: rainbow var(--speed, 2s) infinite linear;
   --color-color-5: var(--color-5);
   --color-color-4: var(--color-4);
   --color-color-3: var(--color-3);
   --color-color-2: var(--color-2);
   --color-color-1: var(--color-1);
+
   @keyframes rainbow {
     0% {
       background-position: 0%;
     }
+
     100% {
       background-position: 200%;
     }
@@ -182,12 +192,12 @@
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: "Poppins";
   font-style: normal;
 }
 
 .font-abhaya-libre {
-  font-family: "Abhaya Libre", serif;
+  font-family: "Abhaya Libre";
   font-style: normal;
 }
 
@@ -195,15 +205,16 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   .btn-primary {
-    .btn-primary {
-      @apply bg-[#FF006A] rounded-full px-4 py-2 text-[#FFFFFF] text-[16px] cursor-pointer;
-    }
-    .btn-secondary {
-      @apply bg-transparent rounded-full border border-[#FF006A] py-2 px-4 text-[#FF006A] text-lg cursor-pointer;
-    }
+    @apply bg-[#FF006A] rounded-full px-4 py-2 text-[#FFFFFF] text-[16px] cursor-pointer;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent rounded-full border border-[#FF006A] py-2 px-4 text-[#FF006A] text-lg cursor-pointer;
   }
 }

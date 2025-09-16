@@ -30,15 +30,6 @@ export default function page() {
       <Frequently />
       <Planning />
       <Footer />
-
-
-
-      {/* <MostPopulerParty />
-      <HomeMarque />
-      <AboutSection />
-      <HowItWorkSection />
-      <WhyBookSection />
-      <ReviewSection /> */}
     </div>
   );
 }
