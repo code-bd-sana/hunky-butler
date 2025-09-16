@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { HiChevronDown, HiOutlineMenu, HiX } from "react-icons/hi";
+import { HiOutlineMenu, HiX } from "react-icons/hi";
 
 import {
   FaTumblr,
@@ -16,22 +16,11 @@ import logo from "@/public/logo/logo.png";
 
 const Navbar = () => {
   const pathname = usePathname();
-  const [isServiceOpen, setIsServiceOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isMobileServiceOpen, setIsMobileServiceOpen] = useState(false);
 
   const navLinks = [
     { name: "Home", href: "/" },
-    {
-      name: "Service",
-      href: "/service",
-      submenu: [
-        { name: "Buff Butlers", href: "/service/buffButlers" },
-        { name: "Life Drawing", href: "/service/lifeDrawing" },
-        { name: "Cocktail Masterclasses", href: "/service/cocktail" },
-        { name: "Strippers", href: "/service/strippers" },
-      ],
-    },
+    { name: "Service", href: "/service" },
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
@@ -63,44 +52,6 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-[8px] font-medium relative">
             {navLinks.map((link) => {
               const isActive = pathname === link.href && link.name !== "Home";
-
-              if (link.submenu) {
-                return (
-                  <div key={link.href} className="relative">
-                    <button
-                      onClick={() => setIsServiceOpen(!isServiceOpen)}
-                      className={`px-4 py-2 rounded-full transition-colors flex items-center gap-2 ${
-                        isActive
-                          ? "bg-[rgba(255,0,106,1)]"
-                          : "hover:bg-[rgba(255,0,106,1)] text-white"
-                      }`}
-                    >
-                      {link.name}
-                      <HiChevronDown
-                        className={`transition-transform duration-200 -mb-1 ${
-                          isServiceOpen ? "rotate-180" : "rotate-0"
-                        }`}
-                      />
-                    </button>
-
-                    {/* Submenu */}
-                    {isServiceOpen && (
-                      <div className="absolute top-full left-0 mt-2 bg-white text-gray-800 rounded-[16px] shadow-lg w-[220px] z-50">
-                        {link.submenu.map((sublink) => (
-                          <Link
-                            key={sublink.href}
-                            href={sublink.href}
-                            className="block px-4 py-2 hover:bg-[rgba(255,0,106,0.1)] transition-colors"
-                            onClick={() => setIsServiceOpen(false)}
-                          >
-                            {sublink.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
 
               return (
                 <Link
@@ -181,7 +132,7 @@ const Navbar = () => {
 
             <button
               style={{ color: "rgba(255,0,106,1)" }}
-              className="px-[16px] py-[8px] w-[164px] h-[44px] bg-white rounded-full font-semibold shadow-md transition-transform duration-200 hover:scale-105 whitespace-nowrap"
+              className="px-[16px] py-[8px] w-[164px] h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
             >
               Get Instant Quote
             </button>
@@ -203,55 +154,16 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="lg:hidden mt-2 px-[32px] py-4 bg-white text-black rounded-[24px] shadow-lg">
             <div className="flex flex-col gap-4">
-              {navLinks.map((link) => {
-                if (link.submenu) {
-                  return (
-                    <div key={link.href}>
-                      <button
-                        onClick={() =>
-                          setIsMobileServiceOpen(!isMobileServiceOpen)
-                        }
-                        className="w-full px-4 py-2 font-medium rounded-full transition-colors flex items-center gap-2"
-                      >
-                        <span>{link.name}</span>
-                        <HiChevronDown
-                          className={`transition-transform duration-200 -mb-1 ${
-                            isMobileServiceOpen ? "rotate-180" : "rotate-0"
-                          }`}
-                        />
-                      </button>
-
-                      {isMobileServiceOpen && (
-                        <div className="ml-4 mt-2 flex flex-col gap-2">
-                          {link.submenu.map((sublink) => (
-                            <Link
-                              key={sublink.href}
-                              href={sublink.href}
-                              className="px-4 py-2 rounded-lg text-gray-700 font-medium hover:bg-[rgba(255,0,106,0.1)] transition-colors"
-                              onClick={() => setIsMenuOpen(false)}
-                            >
-                              {sublink.name}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-4 py-2 font-medium rounded-full transition-colors`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <div className="flex items-center">
-                      <h1>{link.name}</h1>
-                    </div>
-                  </Link>
-                );
-              })}
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="px-4 py-2 font-medium rounded-full transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
 
               {/* Social Icons */}
               <div className="flex justify-center gap-4 mt-4">
