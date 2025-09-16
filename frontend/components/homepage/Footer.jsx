@@ -12,7 +12,7 @@ import {
 
 const Footer = () => {
   return (
-    <div className="bg-[#F2EDEF] w-full relative">
+    <div className="bg-[#F2EDEF] w-full relative md:mt-[550px]">
       <div
         className="bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-center p-12 h-[350px] md:h-[480px] absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden"
         style={{
