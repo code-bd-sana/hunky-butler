@@ -55,15 +55,17 @@ const Frequently = () => {
   ];
 
   return (
-    <div className="w-full max-w-7xl mx-auto mt-20 mb-20 ">
-      <div className="text-center mb-20 space-y-6">
-        <h1 className="text-6xl font-medium">
-          Frequently asked{" "}
+    <div className="w-full max-w-[1240px] mx-auto mt-20 mb-20">
+      <div className="text-center mb-8 md:mb-20 space-y-2 md:space-y-6">
+        <h1 className="text-2xl md:text-5xl font-semibold">
+          Frequently Asked
           <span className="text-[#FF006A] italic">Questions</span>
         </h1>
-        <p>here We have cleared all your confusions</p>
+        <p className="text-lg text-[#333333]">
+          here We have cleared all your confusions
+        </p>
       </div>
-      <div className="flex flex-col md:flex-row items-start gap-10">
+      <div className="flex flex-col md:flex-row items-start gap-4 md:gap-10">
         <div>
           {faqs.map((faq, index) => (
             <div
@@ -74,8 +76,8 @@ const Frequently = () => {
                 onClick={() => toggle(index)}
                 className="w-full flex justify-between items-center px-5 py-6 text-left font-semibold hover:bg-gray-50 transition-colors"
               >
-                <span className="text-3xl">{faq.question}</span>
-                <span className="text-3xl">
+                <span className="text-xl md:text-3xl">{faq.question}</span>
+                <span className="text-xl md:text-3xl">
                   {openIndex === index ? (
                     <GiHeartPlus className="text-[#FF006A]" />
                   ) : (
@@ -96,7 +98,7 @@ const Frequently = () => {
             </div>
           ))}
         </div>
-        <div className="w-1 h-[490] bg-gray-200"></div>
+        <div className="w-1 md:h-[490] bg-gray-200"></div>
         <div>
           {faqs2.map((faq, index) => (
             <div
@@ -105,10 +107,10 @@ const Frequently = () => {
             >
               <button
                 onClick={() => toggle(index)}
-                className="w-full flex justify-between items-center px-5 py-6 text-left font-semibold hover:bg-gray-50 transition-colors"
+                className="w-full flex justify-between items-start px-5 py-6 text-left font-semibold hover:bg-gray-50 transition-colors"
               >
-                <span className="text-3xl">{faq.question}</span>
-                <span className="text-3xl">
+                <span className="text-xl md:text-3xl">{faq.question}</span>
+                <span className="text-xl md:text-3xl">
                   {openIndex === index ? (
                     <GiHeartPlus className="text-[#FF006A]" />
                   ) : (
@@ -130,8 +132,8 @@ const Frequently = () => {
           ))}
         </div>
       </div>
-      <div className="flex justify-center my-10">
-        <button className="bg-none text-[#FF006A] px-6 py-4 rounded-full font-medium text-xl hover:bg-pink-600 transition border-2 border-[#FF006A]">
+      <div className="flex justify-center my-4 md:my-10">
+        <button className="bg-none text-[#FF006A] px-4 md:px-6 py-2 md:py-4 rounded-full font-medium text-base md:text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A]">
           Try a 30-second quote now
         </button>
       </div>
