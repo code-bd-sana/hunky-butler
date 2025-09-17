@@ -9,6 +9,10 @@ import image from '@/public/images/booknow2.png'
 // import bannerImg from '@/public/images/services/banner2.png'
 // import bannerImg from '@/public/images/services/banner3.png'
 import React from 'react'
+import Frequently from '@/components/homepage/Frequently'
+import ImageGallery from '@/components/about/ImageGallery'
+import Footer from '@/components/homepage/Footer'
+
 
 export default function page() {
 
@@ -43,6 +47,8 @@ export default function page() {
       />
       <WhyBookSection />
       <ReviewSection />
+      <ImageGallery/>
+      <Footer/>
 
     </div>
   )
