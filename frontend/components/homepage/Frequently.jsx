@@ -59,7 +59,7 @@ const Frequently = () => {
       <div className="text-center mb-8 md:mb-20 space-y-2 md:space-y-6">
         <h1 className="text-2xl md:text-5xl font-semibold">
           Frequently Asked
-          <span className="text-[#FF006A] italic">Questions</span>
+          <span className="text-[#FF006A] italic"> Questions</span>
         </h1>
         <p className="text-lg text-[#333333]">
           here We have cleared all your confusions
@@ -74,7 +74,7 @@ const Frequently = () => {
             >
               <button
                 onClick={() => toggle(index)}
-                className="w-full flex justify-between items-center px-5 py-6 text-left font-semibold hover:bg-gray-50 transition-colors"
+                className="w-full flex justify-between items-center px-5 h-[100px] text-left font-semibold hover:bg-gray-50 transition-colors"
               >
                 <span className="text-xl md:text-3xl">{faq.question}</span>
                 <span className="text-xl md:text-3xl">
@@ -107,7 +107,7 @@ const Frequently = () => {
             >
               <button
                 onClick={() => toggle(index)}
-                className="w-full flex justify-between items-start px-5 py-6 text-left font-semibold hover:bg-gray-50 transition-colors"
+                className="w-full flex justify-between items-start px-5 h-[100px] text-left font-semibold hover:bg-gray-50 transition-colors"
               >
                 <span className="text-xl md:text-3xl">{faq.question}</span>
                 <span className="text-xl md:text-3xl">

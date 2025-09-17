@@ -13,7 +13,7 @@ import {
 const Footer = () => {
   return (
     <div className="bg-[#F2EDEF] w-full relative md:mt-[550px]">
-      <div
+      {/* <div
         className="bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-center p-12 h-[350px] md:h-[480px] absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden"
         style={{
           backgroundImage: "url('/Footer/bg.png')",
@@ -41,7 +41,45 @@ const Footer = () => {
         <button className="bg-white text-[#FF006A] px-5 py-3 rounded-full hover:bg-gray-100 transition md:mt-4 font-semibold">
           Get An Instant Quote
         </button>
+      </div> */}
+      <div
+        className="bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-start h-[350px] md:h-[497px] pt-8 md:pt-24 pl-6 md:pl-20 absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden"
+        style={{
+          backgroundImage: "url('/Footer/bg2.png')",
+          backgroundSize: "cover", // not backgroundImage: "cover"
+          backgroundRepeat: "no-repeat", // optional
+        }}
+      >
+        <img
+          src="/Footer/loon.png"
+          alt="Logo"
+          className="w-[620px] absolute top-36 -left-78 -rotate-[25deg]"
+        />
+        <img
+          src="/Footer/loon.png"
+          alt="Logo"
+          className="w-[680px] absolute -top-[40px] -right-[440px]  blur"
+        />
+
+        <h2 className="text-xl md:text-5xl font-semibold leading-tight">
+          Ready to Book Your Buff <br /> Butlers or Entertainers?
+        </h2>
+        <p className="my-6 text-sm md:text-base capitalize w-1/2">
+          Get a price in seconds and secure your perfect party host today.
+          Whether you’re planning a hen party, birthday, or corporate
+          celebration, our team has the entertainment covered.
+        </p>
+        <button className="bg-white text-sm text-[#FF006A] px-2 py-1 md:px-5 md:py-3 rounded-full hover:bg-gray-100 transition md:mt-4 font-semibold">
+          Get An Instant Quote
+        </button>
+
+        <img
+          src="/Footer/twoBoy.png"
+          alt="Logo"
+          className="w-[280px] md:w-[640px] absolute -top-[25px] md:-top-[185px] -right-[59px] md:-right-[100px] brightness-125"
+        />
       </div>
+
       <footer className="p-6  max-w-[1240px] mx-auto py-12 bg-[#F2EDEF] md:h-[511px] pt-32 min-h-screen md:min-h-0">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 md:gap-15">
           {/* Brand */}
@@ -126,7 +164,7 @@ const Footer = () => {
             <h1 className="font-medium text-black text-base">
               Stay In The Know
             </h1>
-            <div className="flex items-center">
+            <div className="flex items-center gap-4">
               <FaFacebookF className="cursor-pointer hover:text-pink-500" />
               <FaTwitter className="cursor-pointer hover:text-pink-500" />
               <FaInstagram className="cursor-pointer hover:text-pink-500" />
