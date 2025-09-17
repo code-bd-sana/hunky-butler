@@ -1,13 +1,11 @@
 import React from "react";
 import Image from "next/image";
-
 import icon from "@/public/icons/arowright.png";
 import butlerImg from "@/public/images/services/buttlers.jpeg";
 import butlerImg2 from "@/public/ImageGalary/pic1.jpeg";
 import butlerImg3 from "@/public/ImageGalary/pic5.jpeg";
 import butlerImg4 from "@/public/ImageGalary/pic3.jpeg";
 import background from "@/public/images/services/bg4.png";
-
 import MainTitle from "./shared/typography/MainTitle";
 import Link from "next/link";
 
@@ -27,8 +25,14 @@ export default function ALLServices() {
   const bulletPoints3 = [
     "Professional bartender/mixologist instructor",
     "All ingredients and equipment provided",
-    "Hands-on cocktail making (2–3 drinks per guest)",
+    "Hands-on cocktail making (3 drinks per guest)",
     "Fun games and competitions with prizes",
+  ];
+  const bulletPoints4 = [
+    "Professional, reliable entertainer",
+    "Customisable performance style and Outfit (fun, cheeky, or classic)",
+    "Music and props for added flair",
+    "Photo opportunities with guests (where appropriate)",
   ];
 
   return (
@@ -38,16 +42,30 @@ export default function ALLServices() {
           backgroundImage: `url(${background.src})`,
         }}
       >
+        <div className="max-w-7xl mx-auto pt-10">
+          <h1 className="text-center font-medium pt-6 text-[32px]">
+            Our Entertainment Services Planning the perfect party can be
+            stressful — that’s where we come in. At Hunky Butler Service, we’ve
+            curated a range of entertainment options to keep your guests
+            laughing, sipping, and celebrating in style. Whether you’re
+            organising a hen do in Liverpool, a birthday party in Manchester, or
+            a corporate night in London, our team of professional hosts bring
+            energy, fun, and reliability to every occasion.
+          </h1>
+        </div>
         <div className="max-w-7xl mx-auto pt-30 px-4 md:px-6">
           <div className="flex flex-col-reverse md:flex-row-reverse md:items-center gap-10 md:gap-16">
             {/* === Text Content === */}
             <div className="flex-1">
               <MainTitle text="Buff Butlers" />
               <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-                Charming, professional hosts who bring energy, fun, and elegance
-                to your party. Ideal for hen nights, birthdays, and private
-                gatherings, Buff Butlers keep the vibe lively while making
-                guests feel special.
+                Our buff butlers are cheeky, charming, and professional hosts
+                who know how to get the party started. Perfect for hen nights,
+                birthdays, and private events, they serve drinks, host games,
+                mingle with guests, and make sure everyone is having a great
+                time. More than just eye-candy, our butlers bring energy and fun
+                to every occasion, leaving your guests with memories that last
+                long after the night ends.
               </p>
 
               <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
@@ -101,9 +119,12 @@ export default function ALLServices() {
           <div className="flex-1">
             <MainTitle text="Life Drawing" />
             <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-              A tasteful, creative experience led by a professional model and
-              instructor. Perfect for hen parties or group socials, Life Drawing
-              blends fun and art in a relaxed environment.
+              Add a creative twist to your celebration with our life drawing
+              classes. Led by a professional model, this activity combines art,
+              laughter, and cheeky fun — making it one of the most popular
+              choices for hen parties and group socials. Guests of all abilities
+              can join in, with guidance and games provided to keep the mood
+              light and enjoyable. It’s the perfect mix of classy and cheeky.
             </p>
 
             <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
@@ -156,9 +177,13 @@ export default function ALLServices() {
           <div className="flex-1">
             <MainTitle text="Cocktail Masterclasses" />
             <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-              Shake, stir, and sip with an interactive cocktail experience
-              hosted by an expert mixologist. Guests learn to craft signature
-              drinks while enjoying plenty of laughter and fun.
+              Shake, stir, and sip with our interactive cocktail masterclasses.
+              Hosted by an expert mixologist (and often paired with our buff
+              butlers), this experience is perfect for parties that want
+              hands-on fun. Guests will learn how to craft signature cocktails
+              while enjoying games, laughter, and of course, plenty of drinks.
+              It’s an experience that blends entertainment with delicious
+              cocktails, tailored to your group.
             </p>
 
             <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
@@ -210,9 +235,13 @@ export default function ALLServices() {
           <div className="flex-1">
             <MainTitle text="Cocktail Masterclasses" />
             <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-              Shake, stir, and sip with an interactive cocktail experience
-              hosted by an expert mixologist. Guests learn to craft signature
-              drinks while enjoying plenty of laughter and fun.
+              Turn up the excitement with our professional male strippers, who
+              deliver tasteful, cheeky, and high-energy performances. Whether
+              you’re planning a hen night, birthday party, or milestone
+              celebration, our strippers bring the wow factor. Choose from fun,
+              cheeky, or more classic styles — whatever matches your vibe. With
+              music, costumes, and plenty of audience interaction, it’s the
+              ultimate party highlight.
             </p>
 
             <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
@@ -220,7 +249,7 @@ export default function ALLServices() {
             </p>
 
             <ul className="mt-6 space-y-4">
-              {bulletPoints3.map((item, idx) => (
+              {bulletPoints4.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-4">
                   <Image
                     src={icon}

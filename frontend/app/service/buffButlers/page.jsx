@@ -14,23 +14,23 @@ export default function page() {
 
 
   const bulletPoints = [
-    'Professional, friendly butler in signature attire',
-    'Greeting and serving drinks to guests',
-    'Hosting party games and activities',
+    'Professional, friendly butler in signature apron & cuffs',
+    'Drinks service & guest hosting',
+    'Cheeky party games and fun activities',
     'Perfect photo opportunities to capture the night'
   ]
   return (
     <div>
 
       <ServiceBanner
-        heading={"Hire Buff Butlers for an unforgettable party experience"}
-        subTitle={"Fun, cheeky, and professional hosts to keep your guests entertained."}
+        heading={"Buff Butlers for Hire – UK’s Top Hen Party & Event Hosts"}
+        subTitle={"Fun, cheeky and professional butlers to keep your guests entertained, wherever you’re celebrating."}
         image={bannerImg}
 
       />
       <BookNowSection
 
-        text={"“Buff Butlers are the ultimate party hosts adding charm, laughter, and cheeky fun to your event. Whether it’s a hen do, birthday, or girls’ night, our butlers will greet guests, serve drinks, and host games all with a playful twist.”"}
+        text={"Our buff butlers are more than just eye-candy – they’re charming, cheeky, and the perfect hosts for hen parties, birthdays, or girls’ nights. They’ll serve drinks, host party games, and keep your guests laughing all night."}
 
         image={image}
         bulletPoints={bulletPoints}

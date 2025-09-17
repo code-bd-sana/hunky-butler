@@ -19,7 +19,7 @@ export default function BookNowSection({ text, image, bulletPoints }) {
         <div className="md:flex items-center  px-4 md:px-0 gap-[56px] mt-24">
           <section className="flex-1">
             <h4 className="text-[#141414] text-5xl leading-snug  max-w-4xl mx-auto font-medium ">
-              What’s Included?
+              What’s Included When You Book a Buff Butler
             </h4>
 
             <div className="mt-8 space-y-3">
