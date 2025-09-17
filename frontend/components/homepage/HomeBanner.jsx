@@ -26,12 +26,12 @@ export default function HomeBanner() {
           {/* Left Side: Heading + Buttons */}
           <div className="max-w-3xl text-center md:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Buff Butlers & Hen Party Entertainment Nationwide
+              Buff Butlers & Hen Party
+              Entertainment Across the UK
             </h1>
 
             <p className="mt-4 text-lg md:text-xl text-[#F6F4F5]">
-              Buff Butlers, Life Drawing, Cocktail Masterclasses & More, We
-              Bring the Fun to You.
+              Looking for the ultimate hen party entertainment? Hunky Butler Service provides cheeky Buff Butlers, Topless Waiters, Cocktail Masterclasses, Life Drawing Classes, and Male Strippers across the UK. With thousands of verified bookings, transparent pricing, and trusted reviews, we make planning your perfect party effortless and unforgettable.
             </p>
 
             <div className="mt-6 md:mt-12 flex flex-wrap justify-center md:justify-start gap-4">
