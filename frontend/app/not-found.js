@@ -40,7 +40,7 @@ const NotFound = () => {
 
 
             <div className='text-center'>
-                <h2 className='text-3xl font-bold text-[#0F0F0F] mb-2'>There's Something Wrong </h2>
+                <h2 className='text-3xl font-bold text-[#0F0F0F] mb-2'>There`&apos;`s Something Wrong </h2>
                 <p className='text-[#6B6B6B] text-lg'>The page you are looking for doesn`&apos;`t exist or has been removed</p>
             </div>
 
