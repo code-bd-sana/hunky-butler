@@ -35,7 +35,12 @@ text={"Life Drawing is the perfect mix of cheeky entertainment and artistic fun.
 image={image}
 bulletPoints={bulletPoints}
 />
-<HowItWorkSection/>
+<HowItWorkSection
+
+text1={"Enter postcode, date, and duration, Get instant pricing."}
+text2={"Choose your preferred butler & confirm."}
+text3={"Enjoy a guided life drawing session at your venue."}
+/>
 <WhyBookSection/>
 <ReviewSection/>
 

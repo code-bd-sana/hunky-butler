@@ -35,7 +35,12 @@ text={"Bring the bar to your party with a Cocktail Masterclass led by an expert 
 image={image}
 bulletPoints={bulletPoints}
 />
-<HowItWorkSection/>
+<HowItWorkSection
+
+text1={"Enter postcode, date, and duration, Get instant pricing."}
+text2={"Choose your preferred butler & confirm."}
+text3={"Learn, laugh, and drink with your mixologist."}
+/>
 <WhyBookSection/>
 <ReviewSection/>
 

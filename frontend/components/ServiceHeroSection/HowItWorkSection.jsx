@@ -12,24 +12,24 @@ import MainTitle from '../shared/typography/MainTitle'
 
 
 
-export default function HowItWorkSection() {
+export default function HowItWorkSection({text1, text2, text3}) {
 
 
   const data = [
     {
       icon1: icon1,
       icon2: icon4,
-      title: 'Enter postcode, date, and duration, Get instant pricing.'
+      title: text1 || "Enter postcode, date, and duration, Get instant pricing."
     },
     {
       icon1: icon2,
       icon2: icon5,
-      title: 'Choose your preferred butler & confirm.'
+      title: text2 || "Choose your preferred butler & confirm."
     },
     {
       icon1: icon3,
       icon2: icon6,
-      title: 'Enjoy a fun, stress-free night with your Buff Butler.'
+      title: text3 || "Enjoy a fun, stress-free night with your Buff Butler."
     }
   ]
 
