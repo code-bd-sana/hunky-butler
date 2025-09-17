@@ -52,12 +52,14 @@ export default function ReviewSection() {
   const secondRow = reviews.slice(reviews.length / 2);
 
   return (
-    <div className="bg-[#ECDFE4] relative px-6 lg:px-0">
+    <div className="bg-[#ECDFE4] relative px-6 overflow-hidden lg:px-0">
       <div className="py-16  max-w-7xl mx-auto container md:px-8 lg:px-0 py-16">
-        <SecondaryTitle
+       <div className="text-center">
+         <SecondaryTitle
           text1={"Trusted by thousands of"}
           text2={"party planners"}
         />
+       </div>
         <div className="text-center">
           <SubTitle
             text={
@@ -82,9 +84,9 @@ export default function ReviewSection() {
         </div>
       </div>
 
-      <div className="absolute top-0 left-0">
+      <div className="absolute top-0 left-0 overflow-hidden">
         {" "}
-        <Image alt="img" src={bg1} />{" "}
+        <Image alt="img" src={bg1}  className="min-w-screen"/>{" "}
       </div>
       <div className="absolute bottom-0 leading-0">
         {" "}
