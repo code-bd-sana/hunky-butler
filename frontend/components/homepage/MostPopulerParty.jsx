@@ -53,7 +53,7 @@ export default function MostPopulerParty() {
                         <div key={idx} className='relative'>
 
                             <div>
-                                <Image src={data.image} />
+                                <Image src={data.image} alt='img' />
                             </div>
 
                             {/* content */}
