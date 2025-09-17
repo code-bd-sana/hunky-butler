@@ -24,12 +24,12 @@ export default function HowItWorkSection() {
     {
       icon1: icon2,
       icon2: icon5,
-      title: 'Choose your preferred butler & confirm.'
+      title: 'Choose your pro and confirm booking online.'
     },
     {
       icon1: icon3,
       icon2: icon6,
-      title: 'Enjoy a fun, stress-free night with your Buff Butler.'
+      title: 'Relax while our staff makes your event unforgettable.'
     }
   ]
 
@@ -37,8 +37,8 @@ export default function HowItWorkSection() {
     <div className='bg-[#F6F4F5] px-6 lg:px-0'>
       <div className=' py-16 max-w-7xl mx-auto '>
         <div className='text-center'>
-          <MainTitle text={"How It Works – Booking a Buff Butler is Simple"} />
-          <p className='text-center mt-4 text-[#292929]'>Plan in 3 simple steps</p>
+          <MainTitle text={"How It Works – Easy Party Entertainment Booking"} />
+          <p className='text-center mt-4 text-[#292929]'>Book your Party entertainment in three simple steps:</p>
         </div>
 
         {/* card section */}

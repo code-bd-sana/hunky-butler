@@ -53,17 +53,16 @@ export default function ReviewSection() {
 
   return (
     <div className="bg-[#ECDFE4] relative px-6 overflow-hidden lg:px-0">
-      <div className="py-16  max-w-7xl mx-auto container md:px-8 lg:px-0 py-16">
-       <div className="text-center">
-         <SecondaryTitle
-          text1={"Trusted by thousands of"}
-          text2={"party planners"}
-        />
-       </div>
+      <div className="py-16  max-w-7xl mx-auto container md:px-8 lg:px-0">
+        <div className="text-center">
+          <SecondaryTitle
+            text1={"Trusted by Thousands of Party Planners Across the UK"}
+          />
+        </div>
         <div className="text-center">
           <SubTitle
             text={
-              "See why hen parties and birthdays across the UK rate us 5 stars for buff butler hire."
+              "From hen parties in Liverpool to birthdays in Leeds, our customers love the energy, professionalism, and laughter our team brings. With Hundreds of glowing reviews, here’s what real clients say:"
             }
           />
         </div>
@@ -86,7 +85,7 @@ export default function ReviewSection() {
 
       <div className="absolute top-0 left-0 overflow-hidden">
         {" "}
-        <Image alt="img" src={bg1}  className="min-w-screen"/>{" "}
+        <Image alt="img" src={bg1} className="min-w-screen" />{" "}
       </div>
       <div className="absolute bottom-0 leading-0">
         {" "}

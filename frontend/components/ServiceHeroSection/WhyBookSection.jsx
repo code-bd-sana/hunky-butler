@@ -20,27 +20,27 @@ export default function WhyBookSection() {
         </section>
 
         <section className='flex-1'>
-          <SecondaryTitle text1={'Why we are '} text2={'The Best'} />
-          <SubTitle text={'From Buff Butlers to Cocktail Masterclasses—transparent pricing, verified staff, anywhere in your postcode.At hunky butler SERV, we believe unforgettable events should be effortless to plan.'} />
+          <SecondaryTitle text1={'Why Choose Hunky Butler Service'}/>
+          <SubTitle text={'From buff butlers to cocktail masterclasses, we’ve built our reputation on delivering fun, reliable, and professional entertainment. With thousands of bookings and hundreds of reviews, we’re trusted by party planners across the UK. Our entertainers bring a balance of cheeky charm and professionalism, making every event unforgettable.'} />
 
 
           {/* line */}
           <div className='mt-12 space-y-6'>
             <div className='flex items-center gap-4'>
               <Image alt='icon' src={icon1} />
-              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Instant, transparent pricing. (no hidden fees)</p>
+              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Instant, Transparent Pricing. (No Hidden Fees)</p>
             </div>
             <div className='flex items-center gap-4'>
               <Image alt='icon' src={icon2} />
-              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Verified & insured staff.</p>
+              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Verified & Insured Staff.</p>
             </div>
             <div className='flex items-center gap-4'>
               <Image alt='icon' src={icon3} />
-              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Flexible cancellation policy.</p>
+              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Flexible Cancellation Policy.</p>
             </div>
             <div className='flex items-center gap-4'>
               <Image alt='icon' src={icon4} />
-              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>24/7 support for your event day5465</p>
+              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>24/7 Support For Your Event Day</p>
             </div>
           </div>
 

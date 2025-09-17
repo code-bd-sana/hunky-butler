@@ -88,7 +88,7 @@ export default function ALLServices() {
               </ul>
 
               <div className="mt-8">
-                <Link href="/service/buffButlers">
+                <Link href="#">
                   <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                     Book Now
                   </button>
@@ -147,7 +147,7 @@ export default function ALLServices() {
             </ul>
 
             <div className="mt-8">
-              <Link href="/service/lifeDrawing">
+              <Link href="#">
                 <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                   Book Now
                 </button>
@@ -206,7 +206,7 @@ export default function ALLServices() {
             </ul>
 
             <div className="mt-8">
-              <Link href="/service/cocktail">
+              <Link href="#">
                 <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                   Book Now
                 </button>
@@ -264,7 +264,7 @@ export default function ALLServices() {
             </ul>
 
             <div className="mt-8">
-              <Link href="/service/strippers">
+              <Link href="#">
                 <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                   Book Now
                 </button>
