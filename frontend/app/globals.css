@@ -211,10 +211,10 @@ body {
   }
 
   .btn-primary {
-    @apply bg-[#FF006A] rounded-full px-4 py-2 text-[#FFFFFF] text-[16px] cursor-pointer;
+    @apply bg-[#FF006A] rounded-full cursor-pointer px-4 py-2 text-[#FFFFFF] text-[16px] cursor-pointer;
   }
 
   .btn-secondary {
-    @apply bg-transparent rounded-full border border-[#FF006A] py-2 px-4 text-[#FF006A] text-lg cursor-pointer;
+    @apply bg-none text-[#FF006A] px-4 md:px-6 py-2 md:py-4 cursor-pointer rounded-full font-medium text-base md:text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A];
   }
 }
