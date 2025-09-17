@@ -35,7 +35,12 @@ export default function page() {
         image={image}
         bulletPoints={bulletPoints}
       />
-      <HowItWorkSection />
+      <HowItWorkSection 
+      text={"Enter postcode, date, and duration, Get instant pricing."} 
+      text1={"Choose your preferred butler & confirm."}
+      text3={"Enjoy a fun, stress-free night with your Buff Butler."}
+      
+      />
       <WhyBookSection />
       <ReviewSection />
 

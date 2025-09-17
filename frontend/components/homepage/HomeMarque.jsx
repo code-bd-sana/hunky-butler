@@ -16,41 +16,43 @@ export default function HomeMarque() {
        <Marquee reverse>
 
              <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
-        <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4'>Play  Party games</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Take Photos</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Professional</p>
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Service with a Smile</p>
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Nationwide Coverage</p>
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Easy Booking</p>
              <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
-        <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4'>Play  Party games</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Take Photos</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Professional</p>
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Service with a Smile</p>
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Nationwide Coverage</p>
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Easy Booking</p>
              <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
-        <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4'>Play  Party games</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Take Photos</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
-             <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
-        <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Professional</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Service with a Smile</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
-             <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
-        <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Nationwide Coverage</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
-        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
-             <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
-        <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
-        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
-        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Easy Booking</p>
+   
+       
        </Marquee>
     </div>
 </section>
@@ -63,33 +65,46 @@ export default function HomeMarque() {
           <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
         <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Best in the UK</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>fun & classy</p>
+       
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Life Drawing</p>
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>buff butlers</p>
+       
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>male Strippers</p>
           <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
         <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Best in the UK</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>fun & classy</p>
+       
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Life Drawing</p>
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>buff butlers</p>
+       
+        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>male Strippers</p>
           <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
         <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Best in the UK</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
-          <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
-        <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>fun & classy</p>
+       
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>Life Drawing</p>
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
-          <Image alt='icon' src={image1} className='h-[25px] w-[25px] mt-4' />
-        <p className='text-[#F6F4F5]  py-4 pr-4'>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>buff butlers</p>
+       
         <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
-        <Image alt='icon' src={image2} className='h-[25px] w-[25px] mt-4'/>
-        <p className='text-[#F6F4F5]  py-4 pr-4 '>Ultimate Party Hosts</p>
+        <p className='text-[#F6F4F5]  py-4 pr-4 '>male Strippers</p>
+       
       </Marquee>
     </div>
 </section>
