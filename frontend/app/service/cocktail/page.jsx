@@ -5,7 +5,7 @@ import WhyBookSection from '@/components/ServiceHeroSection/WhyBookSection'
 import Navbar from '@/components/shared/Navbar'
 import ServiceBanner from '@/components/shared/ServiceBanner'
 import bannerImg from '@/public/images/services/banner2.png'
-import image from '@/public/images/services/whybook5.png'
+import image from '@/public/images/services/coctail.png'
 // import bannerImg from '@/public/images/services/banner2.png'
 // import bannerImg from '@/public/images/services/banner3.png'
 import React from 'react'
@@ -35,7 +35,12 @@ text={"Bring the bar to your party with a Cocktail Masterclass led by an expert 
 image={image}
 bulletPoints={bulletPoints}
 />
-<HowItWorkSection/>
+<HowItWorkSection
+
+text1={"Enter postcode, date, and duration, Get instant pricing."}
+text2={"Choose your preferred butler & confirm."}
+text3={"Learn, laugh, and drink with your mixologist."}
+/>
 <WhyBookSection/>
 <ReviewSection/>
 

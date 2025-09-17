@@ -5,7 +5,7 @@ import WhyBookSection from '@/components/ServiceHeroSection/WhyBookSection'
 import Navbar from '@/components/shared/Navbar'
 import ServiceBanner from '@/components/shared/ServiceBanner'
 import bannerImg from '@/public/images/services/banner.png'
-import image from '@/public/images/services/whybook6.png'
+import image from '@/public/images/services/stripes.png'
 // import bannerImg from '@/public/images/services/banner2.png'
 // import bannerImg from '@/public/images/services/banner3.png'
 import React from 'react'
@@ -35,7 +35,12 @@ text={"Turn up the heat at your party with a professional stripper performance t
 image={image}
 bulletPoints={bulletPoints}
 />
-<HowItWorkSection/>
+<HowItWorkSection
+
+text1={"Enter postcode, date, and duration, Get instant pricing."}
+text2={"Choose your preferred performer."}
+text3={"Enjoy a cheeky, unforgettable show."}
+/>
 <WhyBookSection/>
 <ReviewSection/>
 

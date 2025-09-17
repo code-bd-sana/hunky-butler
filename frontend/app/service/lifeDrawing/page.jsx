@@ -5,7 +5,7 @@ import WhyBookSection from '@/components/ServiceHeroSection/WhyBookSection'
 import Navbar from '@/components/shared/Navbar'
 import ServiceBanner from '@/components/shared/ServiceBanner'
 import bannerImg from '@/public/images/services/banner3.png'
-import image from '@/public/images/services/whybook4.png'
+import image from '@/public/images/services/lifeDrawing.png'
 // import bannerImg from '@/public/images/services/banner2.png'
 // import bannerImg from '@/public/images/services/banner3.png'
 import React from 'react'
@@ -35,7 +35,12 @@ text={"Life Drawing is the perfect mix of cheeky entertainment and artistic fun.
 image={image}
 bulletPoints={bulletPoints}
 />
-<HowItWorkSection/>
+<HowItWorkSection
+
+text1={"Enter postcode, date, and duration, Get instant pricing."}
+text2={"Choose your preferred butler & confirm."}
+text3={"Enjoy a guided life drawing session at your venue."}
+/>
 <WhyBookSection/>
 <ReviewSection/>
 

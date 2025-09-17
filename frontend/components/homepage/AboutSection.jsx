@@ -34,51 +34,47 @@ export default function AboutSection() {
           <div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <p
-                className="text-[#333333) 
-]"
+              <div
+                className="text-[#333333]"
               >
                 <SubTitle
                   text={
                     " Discover exciting services like Buff Butlers, Cocktail Masterclasses, and Life Drawing."
                   }
                 />
-              </p>
+              </div>
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <p
-                className="text-[#333333) 
-]"
+              <div
+                className="text-[#333333]"
               >
                 <SubTitle
                   text={
                     " Discover exciting services like Buff Butlers, Cocktail Masterclasses, and Life Drawing."
                   }
                 />
-              </p>
+              </div>
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <p
-                className="text-[#333333) 
-]"
+              <div
+                className="text-[#333333]"
               >
                 <SubTitle text={" Book and pay securely within minutes."} />
-              </p>
+              </div>
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <p
-                className="text-[#333333) 
-]"
+              <div
+                className="text-[#333333]"
               >
                 <SubTitle
                   text={
                     " Connect with verified professionals who are reviewed, rated, and ready to bring the fun."
                   }
                 />
-              </p>
+              </div>
             </div>
           </div>
         </section>

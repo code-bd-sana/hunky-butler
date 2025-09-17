@@ -5,7 +5,7 @@ import WhyBookSection from '@/components/ServiceHeroSection/WhyBookSection'
 import Navbar from '@/components/shared/Navbar'
 import ServiceBanner from '@/components/shared/ServiceBanner'
 import bannerImg from '@/public/images/services/banner.png'
-import image from '@/public/images/booknow.png'
+import image from '@/public/images/booknow2.png'
 // import bannerImg from '@/public/images/services/banner2.png'
 // import bannerImg from '@/public/images/services/banner3.png'
 import React from 'react'
@@ -39,7 +39,12 @@ export default function page() {
         image={image}
         bulletPoints={bulletPoints}
       />
-      <HowItWorkSection />
+      <HowItWorkSection 
+      text={"Enter postcode, date, and duration, Get instant pricing."} 
+      text1={"Choose your preferred butler & confirm."}
+      text3={"Enjoy a fun, stress-free night with your Buff Butler."}
+      
+      />
       <WhyBookSection />
       <ReviewSection />
       <ImageGallery/>
