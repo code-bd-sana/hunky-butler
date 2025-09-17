@@ -1,4 +1,3 @@
-import Banner from "@/components/shared/Banner";
 import React from "react";
 import bannerImg from "@/public/images/services/ourservice.jpeg";
 import ALLServices from "@/components/AllServices";
@@ -6,18 +5,19 @@ import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import HomeMarque from "@/components/homepage/HomeMarque";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import Footer from "@/components/homepage/Footer";
+import ServAndAboutBanner from "@/components/shared/typography/ServAndAboutBanner";
 
 export default function page() {
   return (
     <>
-      <Banner
+      <ServAndAboutBanner
         image={bannerImg}
         service={"Service"}
-        title={"Our Services"}
+        title={"Party Entertainment Services Across the UK"}
         description={
-          "Discover unforgettable party experiences with Buff Butlers, Life Drawing, Cocktail Masterclasses, and more. Each service is designed to entertain, engage, and leave your guests talking long after the event ends."
+          "Looking to make your celebration unforgettable? Hunky Butler Service provides professional and cheeky party entertainment services across the UK. From Buff Butlers and Cocktail Masterclasses to Life Drawing Classes and Male Strippers, we help turn birthdays, hen parties, and special events into unforgettable experiences. With transparent pricing, verified staff, and thousands of 5-star reviews, booking your entertainment has never been easier."
         }
-      ></Banner>
+      ></ServAndAboutBanner>
       <ALLServices></ALLServices>
       <HowItWorkSection></HowItWorkSection>
       <HomeMarque />
