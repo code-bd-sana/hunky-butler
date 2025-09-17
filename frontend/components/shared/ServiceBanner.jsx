@@ -29,9 +29,9 @@ const ServiceBanner = ({ heading, subTitle, image }) => {
           {heading}
         </h1>
 
-        <p className="mb-8 mt-4 max-w-7xl tracking-[-1px] text-lg text-white md:text-xl">
+        <div className="mb-8 mt-4 max-w-7xl tracking-[-1px] text-lg text-white md:text-xl">
           {subTitle}
-        </p>
+        </div>
 
         <button className="rounded-full border-2 border-white px-[24px] py-[16px] text-lg font-semibold bg-white text-[#292929]">
           Get Instant Quote

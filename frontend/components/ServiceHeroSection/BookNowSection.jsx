@@ -11,8 +11,7 @@ export default function BookNowSection({ text, image, bulletPoints }) {
     <div className="relative">
       <div className="max-w-7xl z-50 mx-auto container md:px-8 lg:px-0 py-16">
         <p
-          className="text-3xl z-50 italic  leading-normal text-center capitalize text-[#292929);
-]"
+          className="text-3xl z-50 italic  leading-normal text-center capitalize text-[#292929]"
         >
           {text}
         </p>
@@ -28,8 +27,7 @@ export default function BookNowSection({ text, image, bulletPoints }) {
                   <div key={idx} className="flex items-center gap-4">
                     <Image alt="icon" src={icon} />{" "}
                     <p
-                      className="text-[#333333);
-]"
+                      className="text-[#333333]"
                     >
                       {item}
                     </p>
