@@ -1,8 +1,6 @@
-"use client";
-import Image from "next/image";
-import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
+import React from "react";
 
-const ContactForm = () => {
+const JoinForm = () => {
   return (
     <div
       className="relative overflow-hidden"
@@ -139,46 +137,9 @@ const ContactForm = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="grid md:grid-cols-3 gap-8 text-center mt-40">
-          {/* Email */}
-          <div className="space-y-2">
-            <div className="flex justify-center">
-              <span className="w-19 h-19 flex items-center justify-center rounded-full bg-white text-pink-600">
-                <MdEmail size={30} />
-              </span>
-            </div>
-            <h3 className="font-medium text-[#6B6B6B] text-lg">Email Us</h3>
-            <p className="text-2xl font-medium">Info@Hunkybutlerservice.Com</p>
-            <p className="text-2xl font-medium">Help@Hunkybutlerservice.Com</p>
-          </div>
-
-          {/* Call Us */}
-          <div className="space-y-2">
-            <div className="flex justify-center">
-              <span className="w-19 h-19 flex items-center justify-center rounded-full bg-white text-pink-600">
-                <MdPhone size={30} />
-              </span>
-            </div>
-            <h3 className="font-medium text-[#6B6B6B] text-lg">Call Us</h3>
-            <p className="text-2xl font-medium">+(807) 555-0101</p>
-            <p className="text-2xl font-medium">+(252) 555-0126</p>
-          </div>
-
-          {/* Location */}
-          <div className="space-y-2">
-            <div className="flex justify-center">
-              <span className="w-19 h-19 flex items-center justify-center rounded-full bg-white text-pink-600">
-                <MdLocationOn size={30} />
-              </span>
-            </div>
-            <h3 className="font-medium text-[#6B6B6B] text-lg">Drop in Us</h3>
-            <p className="text-2xl font-medium">2464 Royal Ln. Mesa,</p>
-            <p className="text-2xl font-medium">New Jersey 45463</p>
-          </div>
-        </div>
       </div>
     </div>
   );
 };
 
-export default ContactForm;
+export default JoinForm;
