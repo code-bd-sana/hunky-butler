@@ -35,8 +35,7 @@ export default function OurMission() {
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />
               <p
-                className="text-[#333333) 
-]"
+                className="text-[#333333]"
               >
                 <SubTitle
                   text={
@@ -48,8 +47,7 @@ export default function OurMission() {
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
               <p
-                className="text-[#333333) 
-]"
+                className="text-[#333333]"
               >
                 <SubTitle
                   text={
@@ -61,8 +59,7 @@ export default function OurMission() {
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
               <p
-                className="text-[#333333) 
-]"
+                className="text-[#333333]"
               >
                 <SubTitle text={"Book and pay securely within minutes."} />
               </p>
@@ -70,8 +67,7 @@ export default function OurMission() {
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
               <p
-                className="text-[#333333) 
-]"
+                className="text-[#333333]"
               >
                 <SubTitle
                   text={

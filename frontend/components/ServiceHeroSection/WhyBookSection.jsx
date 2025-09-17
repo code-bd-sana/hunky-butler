@@ -12,7 +12,7 @@ import SecondaryTitle from '../shared/typography/SecondaryTitle'
 
 export default function WhyBookSection() {
   return (
-    <div className='bg-[#F6F4F5] relative'>
+    <div className='bg-[#F6F4F5] relative overflow-hidden'>
       <div className='flex flex-col-reverse md:flex-row pb-16  gap-14 max-w-7xl mx-auto px-4 md:px-6 lg:px-0 pt-12 '>
 
         <section className='flex-1'>
@@ -51,7 +51,7 @@ export default function WhyBookSection() {
         </section>
       </div>
 
-      <div className='absolute top-0 left-0'>   <Image alt='img' src={bg} /> </div>
+      <div className='absolute top-0 left-0 overflow-hidden'>   <Image alt='img' src={bg}  className='min-w-screen'/> </div>
     </div>
   )
 }
