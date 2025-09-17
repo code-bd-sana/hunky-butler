@@ -25,7 +25,7 @@ const NotFound = () => {
                 service={"Error Page"}
                 title={"404"}
             />
-            
+
             <div className="flex justify-center py-10 sm:py-14 lg:py-22 relative">
                 <Image
                     alt="404 img"
@@ -41,7 +41,7 @@ const NotFound = () => {
 
             <div className='text-center'>
                 <h2 className='text-3xl font-bold text-[#0F0F0F] mb-2'>There's Something Wrong </h2>
-                <p className='text-[#6B6B6B] text-lg'>The page you are looking for doesn’t exist or has been removed</p>
+                <p className='text-[#6B6B6B] text-lg'>The page you are looking for doesn`&apos;`t exist or has been removed</p>
             </div>
 
             <Link href={'/'}>
