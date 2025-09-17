@@ -6,6 +6,8 @@ import HomeMarque from "@/components/homepage/HomeMarque";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import Footer from "@/components/homepage/Footer";
 import ServAndAboutBanner from "@/components/shared/typography/ServAndAboutBanner";
+import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
+import ImageGallery from "@/components/about/ImageGallery";
 
 export default function page() {
   return (
@@ -19,9 +21,11 @@ export default function page() {
         }
       ></ServAndAboutBanner>
       <ALLServices></ALLServices>
+      <WhyBookSection />
       <HowItWorkSection></HowItWorkSection>
       <HomeMarque />
       <ReviewSection />
+      <ImageGallery></ImageGallery>
       <Footer></Footer>
     </>
   );

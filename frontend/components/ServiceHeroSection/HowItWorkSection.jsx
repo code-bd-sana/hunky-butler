@@ -37,8 +37,8 @@ export default function HowItWorkSection({text1, text2, text3}) {
     <div className='bg-[#F6F4F5] px-6 lg:px-0'>
       <div className=' py-16 max-w-7xl mx-auto '>
         <div className='text-center'>
-          <MainTitle text={"How It Works – Booking a Buff Butler is Simple"} />
-          <p className='text-center mt-4 text-[#292929]'>Plan in 3 simple steps</p>
+          <MainTitle text={"How It Works – Easy Party Entertainment Booking"} />
+          <p className='text-center mt-4 text-[#292929]'>Book your Party entertainment in three simple steps:</p>
         </div>
 
         {/* card section */}
