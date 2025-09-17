@@ -1,5 +1,5 @@
 import React from 'react'
-import image from '@/public/images/services/whybook.png'
+import image from '@/public/images/services/whybook2.png'
 import Image from 'next/image'
 import SubTitle from '../shared/typography/SubTitle'
 import icon1 from '@/public/icons/services/whybook.png'

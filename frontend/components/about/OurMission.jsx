@@ -34,7 +34,7 @@ export default function OurMission() {
           <div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />
-              <p
+              <div
                 className="text-[#333333]"
               >
                 <SubTitle
@@ -42,11 +42,11 @@ export default function OurMission() {
                     "Discover exciting services like Buff Butlers, Cocktail Masterclasses, and Life Drawing."
                   }
                 />
-              </p>
+              </div>
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <p
+              <div
                 className="text-[#333333]"
               >
                 <SubTitle
@@ -54,19 +54,19 @@ export default function OurMission() {
                     "Get instant quotes with no hidden fees—factoring in time, staff, location, and travel."
                   }
                 />
-              </p>
+              </div>
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <p
+              <div
                 className="text-[#333333]"
               >
                 <SubTitle text={"Book and pay securely within minutes."} />
-              </p>
+              </div>
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <p
+              <div
                 className="text-[#333333]"
               >
                 <SubTitle
@@ -74,7 +74,7 @@ export default function OurMission() {
                     "Connect with verified professionals who are reviewed, rated, and ready to bring the fun."
                   }
                 />
-              </p>
+              </div>
             </div>
           </div>
         </section>
