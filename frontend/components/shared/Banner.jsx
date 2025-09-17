@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import arrow from "@/public/icons/greaterthan.png";
 
-export default function OurServiceBanner({
+export default function Banner({
   service,
   title,
   description,
