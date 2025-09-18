@@ -13,7 +13,7 @@ export default function Page() {
       src: "/images/services/ourservice.jpeg",
       alt: "Customer preview",
     },
-    butler: { src: "/imageGalary/pic5.jpeg", alt: "Butler preview" },
+    butler: { src: "/ImageGalary/pic5.jpeg", alt: "Butler preview" },
   };
   const img = roleImage[role] ?? {
     src: "/login-shot.jpg",
