@@ -26,27 +26,27 @@ export default function Page() {
           {/* Back button */}
           <Link href="/">
             <button
-            className="absolute left-3 top-3 sm:left-4 sm:top-4 z-10 inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 sm:px-3.5 sm:py-2 text-[12px] sm:text-[13px] font-medium text-gray-700 shadow-sm backdrop-blur hover:bg-white"
-            type="button"
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              className="-ml-0.5"
+              className="absolute left-3 top-3 sm:left-4 sm:top-4 z-10 inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 sm:px-3.5 sm:py-2 text-[12px] sm:text-[13px] font-medium text-gray-700 shadow-sm backdrop-blur hover:bg-white"
+              type="button"
             >
-              <path
-                d="M15 18l-6-6 6-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Back To Landing Page
-          </button>
-        </Link>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="-ml-0.5"
+              >
+                <path
+                  d="M15 18l-6-6 6-6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Back To Landing Page
+            </button>
+          </Link>
 
           {/* Role-based image — desktop perfect; mobile gets a safe min-height */}
           <Image
