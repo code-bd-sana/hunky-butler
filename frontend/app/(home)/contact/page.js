@@ -1,6 +1,6 @@
 "use client";
 import Banner from "@/components/shared/Banner";
-import img from "../../public/Blog/BlogSection/BlogSection9.jpeg";
+import img from "@/public/Blog/BlogSection/BlogSection9.jpeg";
 import ContactForm from "@/components/contact/ContactForm";
 import Card from "@/components/Dashboard/Card";
 import Planning from "@/components/homepage/Planning";
