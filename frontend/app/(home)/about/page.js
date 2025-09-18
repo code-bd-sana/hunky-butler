@@ -5,7 +5,7 @@ import HomeMarque from "@/components/homepage/HomeMarque";
 import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
 import Banner from "@/components/shared/Banner";
-import img from "../../public/About/aboutBannerImg.jpeg";
+import img from "@/public/About/aboutBannerImg.jpeg";
 
 export default function About() {
   return (
