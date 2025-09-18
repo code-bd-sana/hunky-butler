@@ -2,7 +2,7 @@ import ImageGallery from "@/components/about/ImageGallery";
 import BlogSection from "@/components/blog/BlogSection";
 import Footer from "@/components/homepage/Footer";
 import Banner from "@/components/shared/Banner";
-import img from "../../public/Blog/BlogBg.jpeg";
+import img from "@/public/Blog/BlogBg.jpeg";
 import JoinForm from "@/components/JoinTheTeam/JoinForm";
 
 export default function joinTheTeam() {
