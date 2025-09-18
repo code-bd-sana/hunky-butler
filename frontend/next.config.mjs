@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const NextConfig = {
+    experimental: {
+        globalNotFound: true,
+    }
+};
 
-export default nextConfig;
+export default NextConfig;
