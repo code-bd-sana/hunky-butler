@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 
 
+
 const NotFound = () => {
     return (
         <div className="min-h-screen bg-white">
