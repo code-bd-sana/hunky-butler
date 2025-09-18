@@ -9,7 +9,7 @@ export default function Page() {
   const [role, setRole] = useState("customer");
 
   const roleImage = {
-    customer: { src: "/imageGalary/pic8.jpeg", alt: "Customer preview" },
+    customer: { src: "/ImageGalary/pic8.jpeg", alt: "Customer preview" },
     butler: { src: "/images/services/buttlers.jpeg", alt: "Butler preview" },
   };
   const img = roleImage[role] ?? {
