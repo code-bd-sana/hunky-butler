@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { MdDashboard } from "react-icons/md";
 import { RiMenuUnfold3Fill } from "react-icons/ri";
@@ -11,7 +12,7 @@ import {
 } from "react-icons/fa";
 import Image from "next/image";
 
-const Sidebar = () => {
+const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const sidebarItems = [
     { name: "Bookings", icon: <BsBook /> },
     { name: "Users", icon: <FaUsers /> },
@@ -20,10 +21,11 @@ const Sidebar = () => {
     { name: "Admin Tools", icon: <FaCog /> },
     { name: "Messages", icon: <FaEnvelope /> },
   ];
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
-    <div className="bg-white">
-      <div className="md:hidden px-4 py-2 mt-2  shadow-md">
+    //toggle
+    <div>
+      <div className="md:hidden px-4 py-2 mt-2">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="text-2xl text-[#FF006A]"
@@ -31,6 +33,7 @@ const Sidebar = () => {
           <RiMenuUnfold3Fill />
         </button>
       </div>
+
       <div
         className={`fixed md:relative top-0 left-0 z-50 bg-white min-h-screen w-64 border rounded-2xl pt-10  p-6 flex flex-col space-y-4 shadow-md transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
