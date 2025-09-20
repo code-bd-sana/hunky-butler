@@ -205,7 +205,7 @@ const Navbar = () => {
               </div>
 
               {/* Quote Button */}
-              <button className="mt-4 px-[18px] py-[12px] w-full bg-[rgba(255,0,106,1)] text-white rounded-full font-semibold shadow-md transition-transform duration-200 hover:scale-105 whitespace-nowrap">
+              <button className="mt-4 px-[18px] py-[12px] w-full bg-[rgba(255,0,106,1)] text-[13px] text-white rounded-full font-semibold shadow-md transition-transform duration-200 hover:scale-105 whitespace-nowrap">
                 Get Instant Quote
               </button>
             </div>
