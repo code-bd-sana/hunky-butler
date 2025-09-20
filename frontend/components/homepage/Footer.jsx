@@ -65,9 +65,7 @@ const Footer = () => {
           Ready to Book Your Buff <br /> Butlers or Entertainers?
         </h2>
         <p className="my-6 text-sm md:text-base capitalize w-1/2">
-          Get a price in seconds and secure your perfect party host today.
-          Whether you’re planning a hen party, birthday, or corporate
-          celebration, our team has the entertainment covered.
+          From Buff Butlers and Cocktail Classes to Life Drawing and Strippers, Hunky Butler Service has everything you need for an unforgettable night. Get your instant quote now and secure your entertainers today.
         </p>
         <button className="bg-white text-sm text-[#FF006A] px-2 py-1 md:px-5 md:py-3 rounded-full hover:bg-gray-100 transition md:mt-4 font-semibold">
           Get An Instant Quote
@@ -95,10 +93,8 @@ const Footer = () => {
               </span>
               Hunky Butler Service
             </h3>
-            <p className="text-lg text-[#808080] mb-4">
-              Our Platform Simplifies Event Staffing By Connecting Hosts With
-              Verified Professionals and Seamless Tools For Unforgettable
-              Experiences.
+            <p className="text-sm text-[#808080] mb-4">
+              Hunky Butler Service is the UK’s trusted provider of hen party entertainment, delivering cheeky buff butlers, fun cocktail masterclasses, unforgettable life drawing classes, and professional male strippers. With Hundreds of five-star reviews and nationwide coverage, we make party planning easy, secure, and stress-free.
             </p>
             <p className="text-base text-gray-800 flex items-center gap-2 mb-4">
               <IoMdMail className=" text-[#FF006A]" />

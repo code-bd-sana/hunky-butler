@@ -17,16 +17,16 @@ export default function page() {
         service={"Service"}
         title={"Party Entertainment Services Across the UK"}
         description={
-          "Looking to make your celebration unforgettable? Hunky Butler Service provides professional and cheeky party entertainment services across the UK. From Buff Butlers and Cocktail Masterclasses to Life Drawing Classes and Male Strippers, we help turn birthdays, hen parties, and special events into unforgettable experiences. With transparent pricing, verified staff, and thousands of 5-star reviews, booking your entertainment has never been easier."
+          "Discover our full range of cheeky, classy, and professional entertainment. Instant pricing, trusted entertainers, and unforgettable party experiences in Liverpool, Manchester, London, Birmingham & beyond."
         }
       ></ServAndAboutBanner>
-      <ALLServices></ALLServices>
+      <ALLServices />
       <WhyBookSection />
-      <HowItWorkSection></HowItWorkSection>
+      <HowItWorkSection />
       <HomeMarque />
       <ReviewSection />
-      <ImageGallery></ImageGallery>
-      <Footer></Footer>
+      <ImageGallery />
+      <Footer />
     </>
   );
 }

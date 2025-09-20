@@ -20,8 +20,8 @@ export default function WhyBookSection() {
         </section>
 
         <section className='flex-1'>
-          <SecondaryTitle text1={'Why Choose Hunky Butler Service'}/>
-          <SubTitle text={'From buff butlers to cocktail masterclasses, we’ve built our reputation on delivering fun, reliable, and professional entertainment. With thousands of bookings and hundreds of reviews, we’re trusted by party planners across the UK. Our entertainers bring a balance of cheeky charm and professionalism, making every event unforgettable.'} />
+          <SecondaryTitle text1={'Why Choose Hunky Butler Service for Hen Party Entertainment'} />
+          <SubTitle text={'With thousands of happy customers and verified entertainers, Hunky Butler Service is trusted nationwide. Our team combines cheeky fun with professionalism, making us the go-to choice for buff butlers, topless waiters, male strippers, cocktail masterclasses, and life drawing parties.'} />
 
           {/* Benefits section with icons and text */}
           <div className='mt-8 md:mt-12 space-y-4 md:space-y-6'>
@@ -31,11 +31,9 @@ export default function WhyBookSection() {
               </div>
               <p className='text-base md:text-2xl tracking-[-0.01em] text-[#292929]'>Instant, Transparent Pricing. (No Hidden Fees)</p>
             </div>
-            <div className='flex items-start gap-3 md:gap-4'>
-              <div className='min-w-[24px] md:min-w-[32px] mt-1'>
-                <Image alt='icon' src={icon2} className='w-6 h-6 md:w-8 md:h-8' />
-              </div>
-              <p className='text-base md:text-2xl tracking-[-0.01em] text-[#292929]'>Verified & Insured Staff.</p>
+            <div className='flex items-center gap-4'>
+              <Image alt='icon' src={icon4} className='w-6 h-6 md:w-8 md:h-8' />
+              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Verified & Insured Staff.</p>
             </div>
             <div className='flex items-start gap-3 md:gap-4'>
               <div className='min-w-[24px] md:min-w-[32px] mt-1'>
@@ -43,11 +41,9 @@ export default function WhyBookSection() {
               </div>
               <p className='text-base md:text-2xl tracking-[-0.01em] text-[#292929]'>Flexible Cancellation Policy.</p>
             </div>
-            <div className='flex items-start gap-3 md:gap-4'>
-              <div className='min-w-[24px] md:min-w-[32px] mt-1'>
-                <Image alt='icon' src={icon4} className='w-6 h-6 md:w-8 md:h-8' />
-              </div>
-              <p className='text-base md:text-2xl tracking-[-0.01em] text-[#292929]'>24/7 Support For Your Event Day</p>
+            <div className='flex items-center gap-4'>
+              <Image alt='icon' src={icon2} className='w-6 h-6 md:w-8 md:h-8' />
+              <p className='text-2xl tracking-[-0.01em] text-[#292929]'>24/7 Support For Your Event Day</p>
             </div>
           </div>
 
@@ -56,12 +52,11 @@ export default function WhyBookSection() {
               Try a 30-second quote now
             </button>
           </Link>
+
         </section>
       </div>
 
-      <div className='absolute top-0 left-0 overflow-hidden'>
-        <Image alt='background' src={bg} className='min-w-screen opacity-30' />
-      </div>
+      <div className='absolute top-0 left-0 overflow-hidden'>   <Image alt='img' src={bg} className='min-w-screen' /> </div>
     </div>
   )
 }

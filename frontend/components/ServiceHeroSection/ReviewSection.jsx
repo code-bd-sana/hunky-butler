@@ -59,7 +59,7 @@ export default function ReviewSection() {
             text1={"Trusted by Thousands of Party Planners Across the UK"}
           />
         </div>
-        <div className="text-center">
+        <div className="text-center px-36">
           <SubTitle
             text={
               "From hen parties in Liverpool to birthdays in Leeds, our customers love the energy, professionalism, and laughter our team brings. With Hundreds of glowing reviews, here’s what real clients say:"
