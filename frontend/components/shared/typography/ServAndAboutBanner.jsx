@@ -33,7 +33,7 @@ export default function ServAndAboutBanner({
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl md:text-5xl lg:text-[56px] font-semibold text-white">
+          <h1 className="text-4xl md:text-5xl lg:text-[56px] font-semibold text-white font-abhaya-libre">
             {title}
           </h1>
         </div>

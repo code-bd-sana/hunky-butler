@@ -62,7 +62,7 @@ const Frequently = () => {
           <span className="text-[#FF006A] italic"> Questions</span>
         </h1>
         <p className="text-lg text-[#333333]">
-          here We have cleared all your confusions
+          Got a question before booking? Here are answers to some of the most common queries about our Buff Butlers, Cocktail Classes, Life Drawing Parties and more.
         </p>
       </div>
       <div className="flex flex-col md:flex-row items-start gap-4 md:gap-10">
@@ -87,11 +87,10 @@ const Frequently = () => {
               </button>
 
               <div
-                className={`px-4 pb-3 text-base text-gray-600 overflow-hidden transition-all duration-300 ${
-                  openIndex === index
+                className={`px-4 pb-3 text-base text-gray-600 overflow-hidden transition-all duration-300 ${openIndex === index
                     ? "max-h-40 opacity-100"
                     : "max-h-0 opacity-0"
-                }`}
+                  }`}
               >
                 {faq.answer}
               </div>
@@ -120,11 +119,10 @@ const Frequently = () => {
               </button>
 
               <div
-                className={`px-4 pb-3 text-base text-gray-600 overflow-hidden transition-all duration-300 ${
-                  openIndex === index
+                className={`px-4 pb-3 text-base text-gray-600 overflow-hidden transition-all duration-300 ${openIndex === index
                     ? "max-h-40 opacity-100"
                     : "max-h-0 opacity-0"
-                }`}
+                  }`}
               >
                 {faq.answer}
               </div>
