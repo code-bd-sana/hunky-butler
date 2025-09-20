@@ -20,8 +20,8 @@ export default function WhyBookSection() {
         </section>
 
         <section className='flex-1'>
-          <SecondaryTitle text1={'Why Choose Hunky Butler Service'}/>
-          <SubTitle text={'From buff butlers to cocktail masterclasses, we’ve built our reputation on delivering fun, reliable, and professional entertainment. With thousands of bookings and hundreds of reviews, we’re trusted by party planners across the UK. Our entertainers bring a balance of cheeky charm and professionalism, making every event unforgettable.'} />
+          <SecondaryTitle text1={'Why Choose Hunky Butler Service for Hen Party Entertainment'} />
+          <SubTitle text={'With thousands of happy customers and verified entertainers, Hunky Butler Service is trusted nationwide. Our team combines cheeky fun with professionalism, making us the go-to choice for buff butlers, topless waiters, male strippers, cocktail masterclasses, and life drawing parties.'} />
 
 
           {/* line */}
@@ -31,7 +31,7 @@ export default function WhyBookSection() {
               <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Instant, Transparent Pricing. (No Hidden Fees)</p>
             </div>
             <div className='flex items-center gap-4'>
-              <Image alt='icon' src={icon2} />
+              <Image alt='icon' src={icon4} />
               <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Verified & Insured Staff.</p>
             </div>
             <div className='flex items-center gap-4'>
@@ -39,7 +39,7 @@ export default function WhyBookSection() {
               <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Flexible Cancellation Policy.</p>
             </div>
             <div className='flex items-center gap-4'>
-              <Image alt='icon' src={icon4} />
+              <Image alt='icon' src={icon2} />
               <p className='text-2xl tracking-[-0.01em] text-[#292929]'>24/7 Support For Your Event Day</p>
             </div>
           </div>
@@ -47,11 +47,11 @@ export default function WhyBookSection() {
           <Link href={'/'}>
             <button className='btn-secondary mt-24'>Try a 30-second quote now</button>
           </Link>
-          
+
         </section>
       </div>
 
-      <div className='absolute top-0 left-0 overflow-hidden'>   <Image alt='img' src={bg}  className='min-w-screen'/> </div>
+      <div className='absolute top-0 left-0 overflow-hidden'>   <Image alt='img' src={bg} className='min-w-screen' /> </div>
     </div>
   )
 }
