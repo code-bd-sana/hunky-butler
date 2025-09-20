@@ -33,7 +33,7 @@ export default function AboutSection() {
 
           <div>
             <div className="flex gap-4 items-center">
-              <Image alt="icon" src={icon} />{" "}
+              <Image alt="icon" src={icon} />
               <div
                 className="text-[#333333]"
               >
@@ -45,7 +45,7 @@ export default function AboutSection() {
               </div>
             </div>
             <div className="flex gap-4 items-center">
-              <Image alt="icon" src={icon} />{" "}
+              <Image alt="icon" src={icon} />
               <div
                 className="text-[#333333]"
               >
@@ -57,7 +57,7 @@ export default function AboutSection() {
               </div>
             </div>
             <div className="flex gap-4 items-center">
-              <Image alt="icon" src={icon} />{" "}
+              <Image alt="icon" src={icon} />
               <div
                 className="text-[#333333]"
               >
@@ -96,7 +96,7 @@ export default function AboutSection() {
 
       {/* icn section */}
       <div className="">
-        <section className="md:flex z-50   justify-between max-w-7xl mx-auto mt-16">
+        <section className="md:flex z-50 relative px-4 overflow-hidden  justify-between max-w-7xl mx-auto mt-16">
           <div className="flex flex-col  justify-center text-center">
             <Image alt="icon" src={image1} className="mx-auto" />
             <p className="font-medium text-lg"> Verified Professionals</p>
@@ -133,7 +133,7 @@ export default function AboutSection() {
       </div>
       <div className="absolute w-36 md:w-auto bottom-0 leading-0">
         {" "}
-        <Image alt="img" src={bg3} className="w-[400px] h-[800px]" />{" "}
+        <Image alt="img" src={bg3} className="md:w-[400px] md:h-[800px]" />{" "}
       </div>
       <div className="absolute bottom-0 z-10  w-36 md:w-auto right-0 leading-0">
         {" "}

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { PiPaperclipDuotone } from "react-icons/pi";
 
 const JoinForm = () => {
   return (
@@ -21,13 +22,13 @@ const JoinForm = () => {
         alt="Logo"
         className="w-[680px] absolute top-155 -right-144"
       />
-      <div className="max-w-[1252px] mx-auto py-28 bg-[#f6f4f5]">
+      <div className="max-w-[1252px] mx-auto py-28">
         {/* Main Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           {/* Left Image */}
           <div className="w-full h-[600px] md:w-[582px] md:h-[732px] relative">
             <Image
-              src="/Contact/contact.png"
+              src="/Join/join.png"
               alt="Contact"
               fill
               className="rounded-lg shadow-lg object-cover"
@@ -37,17 +38,17 @@ const JoinForm = () => {
 
           {/* Right Form */}
           <div>
-            <h2 className="text-pink-600 font-semibold text-[32px] mb-8 capitalize">
-              Have any questions? fill out the form below to get in touch with
-              our team
+            <h2 className="text-pink-600 font-semibold text-[32px] mb-4 capitalize">
+              Fill out the form below to start you journey with hunky butler
+              service
             </h2>
-            <form className="space-y-6">
+            <form className="space-y-4">
               {/* Name Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <label
                     htmlFor="firstName"
-                    className="mb-2 text-lg font-medium text-[#808080]"
+                    className="mb-2 text-base font-medium text-[#808080]"
                   >
                     First Name *
                   </label>
@@ -55,14 +56,14 @@ const JoinForm = () => {
                     id="firstName"
                     type="text"
                     placeholder="Name"
-                    className="w-full p-3 border rounded-4xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
+                    className="w-full p-3 border rounded-xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
                   />
                 </div>
 
                 <div className="flex flex-col">
                   <label
                     htmlFor="lastName"
-                    className="mb-2 text-lg font-medium text-[#808080]"
+                    className="mb-2 text-base font-medium text-[#808080]"
                   >
                     Last Name *
                   </label>
@@ -70,50 +71,81 @@ const JoinForm = () => {
                     id="lastName"
                     type="text"
                     placeholder="Name"
-                    className="w-full p-3 border rounded-4xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
+                    className="w-full p-3 border rounded-xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
                   />
                 </div>
               </div>
 
               {/* Email & Phone */}
 
-              <div className="flex flex-col">
-                <label
-                  htmlFor="email"
-                  className="mb-2 text-lg font-medium text-[#808080]"
-                >
-                  E-Mail*
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="Email"
-                  className="w-full p-3 border rounded-4xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <label
+                    htmlFor="email"
+                    className="mb-2 text-base font-medium text-[#808080]"
+                  >
+                    E-Mail*
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="Email"
+                    className="w-full p-3 border rounded-xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <label className="mb-2 text-base font-medium text-[#808080]">
+                    Phone *
+                  </label>
+                  <input
+                    id="lastName"
+                    type="text"
+                    placeholder="+55 0"
+                    className="w-full p-3 border rounded-xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
+                  />
+                </div>
               </div>
 
               <div className="flex flex-col">
                 <label
                   htmlFor="phone"
-                  className="mb-2 text-lg font-medium text-[#808080]"
+                  className="mb-2 text-base font-medium text-[#808080]"
                 >
-                  Phone*
+                  Desired position*
                 </label>
                 <input
                   id="phone"
                   type="tel"
-                  placeholder="+55 0"
-                  className="w-full p-3 border rounded-4xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
+                  className="w-full p-3 border rounded-xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
                 />
+              </div>
+
+              <div className="flex flex-col">
+                <label
+                  htmlFor="attachment"
+                  className="mb-2 text-base font-medium text-[#808080]"
+                >
+                  Attachments (Optional)
+                </label>
+
+                <label
+                  htmlFor="attachment"
+                  className="flex items-center gap-2 px-4 py-2 w-fit cursor-pointer border rounded-xl bg-white shadow-sm hover:bg-gray-50 text-gray-700"
+                >
+                  <PiPaperclipDuotone size={18} />
+                  Click To Add File
+                </label>
+
+                <input id="attachment" type="file" className="hidden" />
               </div>
 
               {/* Message */}
               <div className="flex flex-col">
                 <label
                   htmlFor="message"
-                  className="mb-2 text-lg font-medium text-[#808080]"
+                  className="mb-2 text-base font-medium text-[#808080]"
                 >
-                  Message*
+                  Describe why you are the best choice for this position
                 </label>
                 <textarea
                   id="message"
@@ -128,9 +160,9 @@ const JoinForm = () => {
               <div className="px-2">
                 <button
                   type="submit"
-                  className="w-full bg-[#FF006A] text-white py-4 text-lg rounded-full hover:bg-white hover:text-[#FF006A] hover:border-3  transition mt-6"
+                  className="w-1/3 bg-[#FF006A] text-white py-4 text-lg rounded-full hover:bg-white hover:text-[#FF006A] hover:border-3  transition"
                 >
-                  Send
+                  Apply Now
                 </button>
               </div>
             </form>

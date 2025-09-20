@@ -28,7 +28,10 @@ export default function page() {
       <ReviewSection />
       <Entertainment/>
       <Frequently />
-      <Planning />
+      <Planning
+        title="Hen Party Planning Inspiration & Tips"
+        description="Not sure where to start? Our blog is full of ideas to make your hen party unique. From cocktail recipes to creative hen party games, we share expert tips to make your event stand out."
+      />
       <Footer />
     </div>
   );
