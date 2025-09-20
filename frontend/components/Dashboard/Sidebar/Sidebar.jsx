@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { MdDashboard } from "react-icons/md";
 import { RiMenuUnfold3Fill } from "react-icons/ri";
 import { BsBook } from "react-icons/bs";
+import { usePathname } from "next/navigation";
+
 import {
   FaUser,
   FaMoneyBillAlt,
@@ -11,15 +13,21 @@ import {
   FaUsers,
 } from "react-icons/fa";
 import Image from "next/image";
+import Link from "next/link";
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+  const pathname = usePathname();
   const sidebarItems = [
-    { name: "Bookings", icon: <BsBook /> },
-    { name: "Users", icon: <FaUsers /> },
-    { name: "Financials", icon: <FaMoneyBillAlt /> },
-    { name: "Services", icon: <FaCog /> },
-    { name: "Admin Tools", icon: <FaCog /> },
-    { name: "Messages", icon: <FaEnvelope /> },
+    { name: "Bookings", icon: <BsBook />, href: "/dashboard" },
+    { name: "Users", icon: <FaUsers />, href: "/dashboard/users" },
+    {
+      name: "Financials",
+      icon: <FaMoneyBillAlt />,
+      href: "/dashboard/financials",
+    },
+    { name: "Services", icon: <FaCog />, href: "/dashboard/services" },
+    { name: "Admin Tools", icon: <FaCog />, href: "/admin" },
+    { name: "Messages", icon: <FaEnvelope />, href: "/messages" },
   ];
 
   return (
@@ -56,16 +64,24 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
           <h2 className="font-semibold">Hunky Butler Service</h2>
         </div>
         <div>
-          <nav className="space-y-4">
-            {sidebarItems.map((item) => (
-              <div
-                key={item.name}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50 cursor-pointer"
-              >
-                {item.icon}
-                <span>{item.name}</span>
-              </div>
-            ))}
+          <nav className="space-y-2">
+            {sidebarItems.map((item) => {
+              const isActive = pathname === item.href; // active check
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+                    isActive
+                      ? "bg-pink-100 text-pink-600 font-medium"
+                      : "hover:bg-pink-50 text-gray-700"
+                  }`}
+                >
+                  {item.icon}
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
           </nav>
         </div>
         <div className="text-gray-400 text-sm">Version 0.1</div>

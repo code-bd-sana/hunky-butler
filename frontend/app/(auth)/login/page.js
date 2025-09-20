@@ -3,6 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLoginMutation } from "@/features/auth";
+import toast, { Toaster } from "react-hot-toast";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,8 +20,57 @@ export default function Page() {
     alt: "Event preview",
   };
 
+  const [login, {isLoading, isSuccess, error}] = useLoginMutation();
+
+
+  const loginHandler = async(e)=>{
+    try {
+       e.preventDefault();
+       const email = e.target.email.value;
+       const password = e.target.password.value;
+
+       console.log(email, password);
+
+       const result =await login({email, password, role}).unwrap();
+       console.log(result.data);
+            const user = result.data
+
+            toast.success("Login Success")
+
+   
+
+          const res = await signIn("credentials", 
+                
+              {
+  redirect: false,
+  email: user.email,
+  role: user.role,
+  _id: user._id,
+}
+
+              );
+
+              if(res.status === 200){
+                  window.location.href = "/";
+              }
+
+              
+              console.log(res, "This is your res")
+
+
+
+  
+
+    } catch (error) {
+
+      console.log(error)
+      toast.error(error.data?.message)
+    }
+  }
+
   return (
     <main className="min-h-screen w-full bg-[#f6f7fb] flex items-center justify-center p-6 sm:p-8 md:p-10">
+      <Toaster/>
       {/* Container: desktop width preserved; responsive padding/gaps */}
       <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* LEFT: Photo panel */}
@@ -109,11 +161,12 @@ export default function Page() {
               </div>
 
               {/* Form (unchanged visually on lg, scaled spacing on small) */}
-              <form className="mt-5 sm:mt-6 space-y-4">
+              <form onSubmit={loginHandler} className="mt-5 sm:mt-6 space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-[12px] text-[#292929]">Email</label>
                   <input
                     type="email"
+                    name="email"
                     placeholder="Enter Your Email"
                     className="w-full h-11 sm:h-[48px] rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[13px] text-[#333333] outline-none placeholder:text-[#333333] focus:border-[#FF006A] focus:ring-2 focus:ring-[#FF006A]/20"
                   />
@@ -125,6 +178,7 @@ export default function Page() {
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter Your Password"
+                      name="password"
                       className="w-full h-11 sm:h-[48px] rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 pr-10 text-[13px] text-[#333333] outline-none placeholder:text-[#333333] focus:border-[#FF006A] focus:ring-2 focus:ring-[#FF006A]/20"
                     />
                     <button
@@ -179,7 +233,9 @@ export default function Page() {
                   type="submit"
                   className="mt-1 w-full rounded-[100px] bg-[#FF006A] py-2.5 text-[16px] sm:text-[18px] tracking-[1px] font-semibold text-white hover:brightness-105 active:brightness-95"
                 >
-                  Log In
+                {
+                  isLoading ? "loading..." : "  Log In"
+                }
                 </button>
 
                 <div className="relative my-2">
