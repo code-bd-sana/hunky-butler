@@ -1,5 +1,6 @@
-import AdminCard from "@/components/AdminCard";
-import Booking from "@/components/Booking";
+import AdminCard from "@/components/Dashboard/AdminCard/AdminCard";
+import Booking from "@/components/Dashboard/Booking/Booking";
+
 
 export default function AdminDashboard() {
   return (
