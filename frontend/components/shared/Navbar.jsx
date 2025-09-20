@@ -130,10 +130,7 @@ const Navbar = () => {
               </a>
             </div>
 
-            <button
-              style={{ color: "rgba(255,0,106,1)" }}
-              className="px-[16px] py-[8px] w-[164px] h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
-            >
+            <button className="inline-flex items-center justify-center px-6 h-11 min-w-[164px] bg-white text-[#FF006A] rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap text-center">
               Get Instant Quote
             </button>
           </div>
