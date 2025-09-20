@@ -36,24 +36,13 @@ export default function MostPopulerParty() {
     <div className='max-w-7xl overflow-hidden mx-auto px-4 md:px-6 py-12'>
       <div className='text-center mb-12'>
         <SecondaryTitle
-          text1={"Our Valuable"}
-          text2={"Best Service"}
+          text1={"Our Most Popular Party Services"}
+        
         />
         <div className='max-w-2xl mx-auto mt-4'>
-          <SubTitle text={"From Buff Butlers in London to Life Drawing Classes in Manchester, our entertainment packages are designed to bring fun, energy, and laughter to every event."} />
+          <SubTitle text={"From unforgettable buff butlers in Liverpool to fun and creative life drawing classes in Manchester, our entertainment packages are designed to bring energy, laughter, and a touch of cheekiness to every event. With nationwide coverage, it’s easy to book the perfect experience no matter where you’re celebrating.."} />
         </div>
       </div>
-    return (
-        <div className='max-w-7xl mx-auto'>
-            <div className='text-center mt-16 '>
-                <SecondaryTitle
-                    text1={"Our Most Popular Party Services"}
-                    text2={""}
-                />
-                <div className='max-w-2xl px-4 md:px-0 mx-auto'>
-                    <SubTitle text={"From unforgettable buff butlers in Liverpool to fun and creative life drawing classes in Manchester, our entertainment packages are designed to bring energy, laughter, and a touch of cheekiness to every event. With nationwide coverage, it’s easy to book the perfect experience no matter where you’re celebrating."} />
-                </div>
-            </div>
 
       <div className='grid md:grid-cols-2 gap-6'>
         {partyData.map((data, idx) => (
