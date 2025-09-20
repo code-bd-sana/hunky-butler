@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-const Planning = () => {
+const Planning = ({ title, highlight, description }) => {
   const posts = [
     {
       id: 1,
@@ -26,43 +26,13 @@ const Planning = () => {
     },
   ];
   return (
-    // <div>
-    //   <div className="text-center mb-20 space-y-6">
-    //     <h1 className="text-6xl font-medium">
-    //       Planning{" "}
-    //       <span className="text-[#FF006A] italic">inspiration & tips</span>
-    //     </h1>
-    //     <p>
-    //       From Buff Butlers to Cocktail Masterclasses—transparent pricing,
-    //       verified staff, anywhere in your postcode.
-    //     </p>
-    //   </div>
-    //   {cardsData.map((card, index) => (
-    //     <div
-    //       key={index}
-    //       className="max-w-sm rounded-lg overflow-hidden shadow-lg m-4 bg-white"
-    //     >
-    //       <img className="w-full" src={image} alt={title} />
-    //       <div className="p-4">
-    //         <p className="text-pink-600 text-sm flex items-center">
-    //           <FaCalendarAlt className="mr-2" /> {date}
-    //         </p>
-    //         <h3 className="text-xl font-bold mb-2">{title}</h3>
-    //         <p className="text-gray-700 text-base">{description}</p>
-    //       </div>
-    //     </div>
-    //   ))}
-    // </div>
     <section className="max-w-[1240px] mx-auto px-4 py-4 md:py-12 pb-[500px]">
       <div className="text-center mb-6 md:mb-20 space-y-6">
         <h1 className="text-2xl md:text-5xl font-semibold">
-          Planning{" "}
-          <span className="text-[#FF006A] italic">inspiration & tips</span>
+          {title}
+          <span className="text-[#FF006A] italic">{highlight}</span>
         </h1>
-        <p className="text-base md:text-lg md:w-3/5 mx-auto">
-          From Buff Butlers to Cocktail Masterclasses—transparent pricing,
-          verified staff, anywhere in your postcode.
-        </p>
+        <p className="text-base md:text-lg md:w-3/5 mx-auto">{description}</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
         {posts.map((post) => (
@@ -76,7 +46,7 @@ const Planning = () => {
             />
             <div className="mt-4">
               <p className="text-pink-600 text-sm font-medium">{post.date}</p>
-              <h3 className="text-xl font-semibold mt-2">{post.title}</h3>
+              <h3 className="text-2xl font-semibold mt-2">{post.title}</h3>
               <p className="text-[#808080] text-base mt-2">{post.desc}</p>
             </div>
           </div>
