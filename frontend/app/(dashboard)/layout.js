@@ -3,6 +3,14 @@ import React, { useState } from "react";
 import "../globals.css";
 import Sidebar from "@/components/Dashboard/Sidebar/Sidebar";
 import DashNav from "@/components/Dashboard/DashNav/DashNav";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+});
 // export const metadata = {
 //   title: "Hunky Butlers",
 //   description:
