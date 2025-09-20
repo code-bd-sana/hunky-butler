@@ -31,17 +31,9 @@ export default function WhyBookSection() {
               </div>
               <p className='text-base md:text-2xl tracking-[-0.01em] text-[#292929]'>Instant, Transparent Pricing. (No Hidden Fees)</p>
             </div>
-<<<<<<< HEAD
             <div className='flex items-center gap-4'>
-              <Image alt='icon' src={icon4} />
+              <Image alt='icon' src={icon4} className='w-6 h-6 md:w-8 md:h-8' />
               <p className='text-2xl tracking-[-0.01em] text-[#292929]'>Verified & Insured Staff.</p>
-=======
-            <div className='flex items-start gap-3 md:gap-4'>
-              <div className='min-w-[24px] md:min-w-[32px] mt-1'>
-                <Image alt='icon' src={icon2} className='w-6 h-6 md:w-8 md:h-8' />
-              </div>
-              <p className='text-base md:text-2xl tracking-[-0.01em] text-[#292929]'>Verified & Insured Staff.</p>
->>>>>>> 3b54a526c154efd7c608a74fe957af7e2b5dd2cd
             </div>
             <div className='flex items-start gap-3 md:gap-4'>
               <div className='min-w-[24px] md:min-w-[32px] mt-1'>
@@ -49,17 +41,9 @@ export default function WhyBookSection() {
               </div>
               <p className='text-base md:text-2xl tracking-[-0.01em] text-[#292929]'>Flexible Cancellation Policy.</p>
             </div>
-<<<<<<< HEAD
             <div className='flex items-center gap-4'>
-              <Image alt='icon' src={icon2} />
+              <Image alt='icon' src={icon2} className='w-6 h-6 md:w-8 md:h-8' />
               <p className='text-2xl tracking-[-0.01em] text-[#292929]'>24/7 Support For Your Event Day</p>
-=======
-            <div className='flex items-start gap-3 md:gap-4'>
-              <div className='min-w-[24px] md:min-w-[32px] mt-1'>
-                <Image alt='icon' src={icon4} className='w-6 h-6 md:w-8 md:h-8' />
-              </div>
-              <p className='text-base md:text-2xl tracking-[-0.01em] text-[#292929]'>24/7 Support For Your Event Day</p>
->>>>>>> 3b54a526c154efd7c608a74fe957af7e2b5dd2cd
             </div>
           </div>
 
@@ -68,20 +52,11 @@ export default function WhyBookSection() {
               Try a 30-second quote now
             </button>
           </Link>
-<<<<<<< HEAD
 
         </section>
       </div>
 
       <div className='absolute top-0 left-0 overflow-hidden'>   <Image alt='img' src={bg} className='min-w-screen' /> </div>
-=======
-        </section>
-      </div>
-
-      <div className='absolute top-0 left-0 overflow-hidden'>
-        <Image alt='background' src={bg} className='min-w-screen opacity-30' />
-      </div>
->>>>>>> 3b54a526c154efd7c608a74fe957af7e2b5dd2cd
     </div>
   )
 }
