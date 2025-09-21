@@ -38,7 +38,7 @@ export default function QuillEditor() {
  
       <div
         ref={quillRef}
-        className="bg-white rounded-2xl border-none-special min-h-[400px] p-2"
+        className="bg-white rounded-3xl border-none-special min-h-[400px] p-2"
       />
     </div>
  </div>
