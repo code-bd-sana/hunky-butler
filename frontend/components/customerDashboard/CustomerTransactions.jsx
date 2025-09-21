@@ -78,16 +78,29 @@ export default function CustomerTransactions() {
           Recent Transactions
         </h2>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col md:flex-row  items-center gap-2">
           {/* Tabs */}
-          {/* <div className="flex items-center gap-1 h-[48px] rounded-full bg-[#F6F4F5] p-1">
+
+          <div
+            className="
+    flex items-center gap-1 rounded-full bg-[#F6F4F5] p-1
+    h-[40px] sm:h-[44px] lg:h-[48px]
+    overflow-x-auto whitespace-nowrap
+    lg:overflow-visible lg:whitespace-normal
+    [&::-webkit-scrollbar]:hidden [scrollbar-width:none]
+  "
+          >
             {tabs.map((t) => (
               <button
                 key={t}
                 onClick={() => setActive(t)}
-                className={`px-5 py-2 rounded-full text-[13px] leading-5 font-medium transition ${
-                  active === t ? "text-white" : "text-[#6B7280] bg-white"
-                }`}
+                className={`
+        rounded-full font-medium transition shrink-0
+        px-3 py-1.5 text-[12px]       /* compact on xs */
+        sm:px-4 sm:py-2 sm:text-[12px]/* slight bump on sm */
+        lg:px-5 lg:py-2 lg:text-[13px]/* original on lg */
+        ${active === t ? "text-white" : "text-[#6B7280] bg-white"}
+      `}
                 style={
                   active === t
                     ? {
@@ -100,63 +113,29 @@ export default function CustomerTransactions() {
                 {t}
               </button>
             ))}
-          </div> */}
-          <div
-            role="tablist"
-            className="
-    flex items-center gap-1 rounded-full bg-[#F6F4F5] p-1
-    h-[38px] sm:h-[42px] lg:h-[48px]
-    overflow-x-auto whitespace-nowrap
-    lg:overflow-visible lg:whitespace-normal
-    [-ms-overflow-style:none] [scrollbar-width:none]
-    [&::-webkit-scrollbar]:hidden
-  "
-          >
-            {tabs.map((t) => {
-              const isActive = active === t;
-              return (
-                <button
-                  key={t}
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setActive(t)}
-                  className={`
-          shrink-0 rounded-full font-medium transition
-          px-3 py-1.5 text-[12px]
-          sm:px-4 sm:py-2 sm:text-[12px]
-          md:text-[13px]
-          lg:px-5 lg:py-2 lg:text-[13px]
-          ${isActive ? "text-white" : "text-[#6B7280] bg-white"}
-        `}
-                  style={
-                    isActive
-                      ? {
-                          backgroundColor: PRIMARY,
-                          boxShadow: "0 1px 2px rgba(0,0,0,.06)",
-                        }
-                      : { border: "1px solid #E5E7EB" }
-                  }
-                >
-                  {t}
-                </button>
-              );
-            })}
           </div>
 
-          {/* 30 Days */}
-          <div className="relative">
+          <div className="flex gap-1.5">
+            {/* 30 Days */}
             <button
               onClick={() => setOpen((s) => !s)}
-              className="flex items-center gap-1 px-5 py-2 h-[48px] rounded-full text-[13px] leading-5 font-medium bg-[#F6F4F5] text-[#292929]"
+              className="
+      flex items-center gap-1 rounded-full font-medium bg-[#F6F4F5] text-[#292929]
+      /* sm-and-below (base) */
+      px-4 py-1.5 h-[40px] text-[12px]
+      /* md & lg (unchanged from your design) */
+      sm:px-5 sm:py-2 sm:h-[48px] sm:text-[13px]
+    "
               style={{ borderColor: "#E5E7EB" }}
             >
               30 Days
               <MdKeyboardArrowDown
-                className={`text-xl transition-transform ${
-                  open ? "rotate-180" : ""
-                }`}
+                className={`transition-transform ${open ? "rotate-180" : ""} 
+        text-base sm:text-xl
+      `}
               />
             </button>
+
             {open && (
               <div
                 className="absolute right-0 mt-2 w-40 rounded-lg border bg-white shadow-lg z-10"
@@ -176,16 +155,22 @@ export default function CustomerTransactions() {
                 </ul>
               </div>
             )}
-          </div>
 
-          {/* See All */}
-          <button
-            className="flex items-center gap-1 px-5 py-2 h-[48px] rounded-full text-[13px] leading-5 font-medium bg-[#F6F4F5]"
-            style={{ color: PRIMARY }}
-          >
-            See All
-            <LuArrowUpRight className="text-lg" />
-          </button>
+            {/* See All */}
+            <button
+              className="
+      flex items-center gap-1 rounded-full font-medium bg-[#F6F4F5]
+      /* sm-and-below (base) */
+      px-4 py-1.5 h-[40px] text-[12px]
+      /* md & lg (unchanged from your design) */
+      sm:px-5 sm:py-2 sm:h-[48px] sm:text-[13px]
+    "
+              style={{ color: PRIMARY }}
+            >
+              See All
+              <LuArrowUpRight className="text-base sm:text-lg" />
+            </button>
+          </div>
         </div>
       </div>
 
