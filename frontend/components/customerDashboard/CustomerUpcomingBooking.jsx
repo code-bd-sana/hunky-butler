@@ -6,7 +6,6 @@ import { LuArrowUpRight, LuEye } from "react-icons/lu";
 
 const PRIMARY = "#FF006A";
 
-
 const tabs = ["All", "Completed", "Ongoing", "Cancelled"];
 
 const rows = [
@@ -54,11 +53,13 @@ export default function CustomerUpcomingBooking() {
     <div className="rounded-2xl bg-white ">
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between px-5 md:px-6 py-4">
-        <h2 className="text-[18px] leading-6 font-medium text-[#141414]">Upcoming Bookings</h2>
+        <h2 className="text-[18px] leading-6 font-medium text-[#141414]">
+          Upcoming Bookings
+        </h2>
 
         <div className="flex items-center gap-2">
           {/* Tabs */}
-          <div className="flex items-center gap-1 h-[48px] rounded-full bg-[#F6F4F5] p-1">
+          {/* <div className="flex items-center gap-1 h-[48px] rounded-full bg-[#F6F4F5] p-1">
             {tabs.map((t) => (
               <button
                 key={t}
@@ -75,6 +76,47 @@ export default function CustomerUpcomingBooking() {
                 {t}
               </button>
             ))}
+          </div> */}
+          <div
+            role="tablist"
+            className="
+    flex items-center gap-1 rounded-full bg-[#F6F4F5] p-1
+    h-[38px] sm:h-[42px] lg:h-[48px]
+    overflow-x-auto whitespace-nowrap
+    lg:overflow-visible lg:whitespace-normal
+    [-ms-overflow-style:none] [scrollbar-width:none]
+    [&::-webkit-scrollbar]:hidden
+  "
+          >
+            {tabs.map((t) => {
+              const isActive = active === t;
+              return (
+                <button
+                  key={t}
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActive(t)}
+                  className={`
+          shrink-0 rounded-full font-medium transition
+          px-3 py-1.5 text-[12px]
+          sm:px-4 sm:py-2 sm:text-[12px]
+          md:text-[13px]
+          lg:px-5 lg:py-2 lg:text-[13px]
+          ${isActive ? "text-white" : "text-[#6B7280] bg-white"}
+        `}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: PRIMARY,
+                          boxShadow: "0 1px 2px rgba(0,0,0,.06)",
+                        }
+                      : { border: "1px solid #E5E7EB" }
+                  }
+                >
+                  {t}
+                </button>
+              );
+            })}
           </div>
 
           {/* 30 Days */}
@@ -85,7 +127,11 @@ export default function CustomerUpcomingBooking() {
               style={{ borderColor: "#E5E7EB" }}
             >
               30 Days
-              <MdKeyboardArrowDown className={`text-xl transition-transform ${open ? "rotate-180" : ""}`} />
+              <MdKeyboardArrowDown
+                className={`text-xl transition-transform ${
+                  open ? "rotate-180" : ""
+                }`}
+              />
             </button>
             {open && (
               <div
@@ -95,7 +141,10 @@ export default function CustomerUpcomingBooking() {
                 <ul className="py-2 text-sm text-[#374151]">
                   {["7 Days", "15 Days", "30 Days", "90 Days"].map((v) => (
                     <li key={v}>
-                      <button className="w-full text-left px-4 py-2 hover:bg-pink-50" onClick={() => setOpen(false)}>
+                      <button
+                        className="w-full text-left px-4 py-2 hover:bg-pink-50"
+                        onClick={() => setOpen(false)}
+                      >
                         {v}
                       </button>
                     </li>
@@ -108,7 +157,7 @@ export default function CustomerUpcomingBooking() {
           {/* See All */}
           <button
             className="flex items-center gap-1 px-5 py-2 h-[48px] rounded-full text-[13px] leading-5 font-medium bg-[#F6F4F5]"
-            style={{ color: PRIMARY}}
+            style={{ color: PRIMARY }}
           >
             See All
             <LuArrowUpRight className="text-lg" />
@@ -122,24 +171,40 @@ export default function CustomerUpcomingBooking() {
           <thead className="border-b border-gray-200">
             <tr className="text-[16px] leading-5 text-[#292929]">
               <th className="px-5 md:px-6 py-3 font-medium text-left">Ref</th>
-              <th className="px-5 md:px-6 py-3 font-medium text-left">Date/Time</th>
-              <th className="px-5 md:px-6 py-3 font-medium text-left">Service</th>
+              <th className="px-5 md:px-6 py-3 font-medium text-left">
+                Date/Time
+              </th>
+              <th className="px-5 md:px-6 py-3 font-medium text-left">
+                Service
+              </th>
               <th className="px-5 md:px-6 py-3 font-medium text-left">Staff</th>
-              <th className="px-5 md:px-6 py-3 font-medium text-left">Location</th>
-              <th className="px-5 md:px-6 py-3 font-medium text-left">Status</th>
+              <th className="px-5 md:px-6 py-3 font-medium text-left">
+                Location
+              </th>
+              <th className="px-5 md:px-6 py-3 font-medium text-left">
+                Status
+              </th>
               <th className="px-5 md:px-6 py-3 font-medium text-left">Total</th>
-              <th className="px-5 md:px-6 py-3 font-medium text-left">Actions</th>
+              <th className="px-5 md:px-6 py-3 font-medium text-left">
+                Actions
+              </th>
             </tr>
           </thead>
 
           <tbody>
             {rows.map((r, i) => (
               <tr key={i} className="hover:bg-[#FAFAFB]">
-                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">{r.ref}</td>
+                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">
+                  {r.ref}
+                </td>
 
-                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">{r.date}</td>
+                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">
+                  {r.date}
+                </td>
 
-                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">{r.service}</td>
+                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">
+                  {r.service}
+                </td>
 
                 {/* Staff (avatar + name) */}
                 <td className="px-5 md:px-6 py-6">
@@ -151,43 +216,49 @@ export default function CustomerUpcomingBooking() {
                       height={28}
                       className="rounded-full object-cover"
                     />
-                    <span className="text-[16px] text-[#292929]">{r.performer}</span>
+                    <span className="text-[16px] text-[#292929]">
+                      {r.performer}
+                    </span>
                   </div>
                 </td>
 
-                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">{r.location}</td>
+                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">
+                  {r.location}
+                </td>
 
                 <td className="px-5 md:px-6 py-6">
                   <span
-                    className={`inline-flex items-center px-3 py-1.5 rounded-full text-[12px] font-medium ${statusStyles[r.status]}`}
+                    className={`inline-flex items-center px-3 py-1.5 rounded-full text-[12px] font-medium ${
+                      statusStyles[r.status]
+                    }`}
                   >
                     {r.status}
                   </span>
                 </td>
 
-                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">{r.total}</td>
+                <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">
+                  {r.total}
+                </td>
 
                 <td className="px-5 md:px-6 py-6">
                   <div className="flex items-center gap-3">
                     <button
                       aria-label="View"
                       className="grid place-items-center w-9 h-9 rounded-full  hover:bg-gray-50"
-                      
                     >
                       <LuEye className="text-[24px]" />
                     </button>
                     <button
                       aria-label="Message"
                       className="grid place-items-center w-9 h-9 hover:bg-gray-50"
-                     
                     >
                       <Image
-                      src="/icons/textIcon.png"
-                      alt={"messege"}
-                      width={24}
-                      height={24}
-                      className="rounded-full object-cover"
-                    />
+                        src="/icons/textIcon.png"
+                        alt={"messege"}
+                        width={24}
+                        height={24}
+                        className="rounded-full object-cover"
+                      />
                     </button>
                   </div>
                 </td>
