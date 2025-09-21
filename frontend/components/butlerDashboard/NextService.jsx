@@ -1,6 +1,6 @@
 import React from "react";
 
-const NextBooking = () => {
+const NextService = () => {
   return (
     <div
       className="
@@ -19,7 +19,7 @@ const NextBooking = () => {
             mb-1 sm:mb-2
           "
         >
-          Next Booking
+          Next Service
         </p>
         <h2
           className="
@@ -27,9 +27,9 @@ const NextBooking = () => {
             text-[22px] sm:text-[26px] md:text-[28px] lg:text-[32px]
             leading-tight truncate
           "
-          title="Buff Butler"
+          title="Cocktail Masterclass"
         >
-          Buff Butler
+          Cocktail Masterclass
         </h2>
       </div>
 
@@ -43,12 +43,15 @@ const NextBooking = () => {
         "
       >
         <span>14 Sep 2025 • 7:30 PM</span>
-        {/* Divider visible only on lg when horizontal */}
+
+        {/* Divider only when horizontal on lg */}
         <span className="hidden lg:inline-block mx-2 h-4 w-px bg-[#EFE7EA]" />
+
+        {/* On small screens this sits next line if needed */}
         <span>Kyiv, Ukraine</span>
       </div>
     </div>
   );
 };
 
-export default NextBooking;
+export default NextService;
