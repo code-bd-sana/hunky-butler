@@ -1,14 +1,31 @@
 "use client";
+import { useAdminToolTab } from "@/hooks/useAdminToolTab";
+import { useActiveTab, useSetTab } from "@/hooks/useUsersTab";
 import Image from "next/image";
 import React, { useState } from "react";
 import { FiBell, FiSun } from "react-icons/fi";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { RiMenuUnfold3Fill } from "react-icons/ri";
 
-const DashNav = ({ isSidebarOpen, setIsSidebarOpen }) => {
+const DashNav = ({ isSidebarOpen, setIsSidebarOpen, tab }) => {
+  const activeTab = useActiveTab();
+  const activeAdminTool = useAdminToolTab();
+  console.log(activeAdminTool, "this is admin tools tab");
+  console.log(activeTab, "This is active tab");
   const [open, setOpen] = useState(false);
+
+  const setUserTab = useSetTab();
+
+  const tabHandaler = async (slug) => {
+    try {
+      setUserTab(slug);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <div className="flex justify-between items-center mb-6 border rounded-2xl py-4 px-3">
+    <div className="flex justify-between bg-white items-center mb-6  rounded-3xl py-4 px-3">
       <div className="md:hidden px-4 py-2 mt-2">
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -17,10 +34,41 @@ const DashNav = ({ isSidebarOpen, setIsSidebarOpen }) => {
           <RiMenuUnfold3Fill />
         </button>
       </div>
-      <div>
-        <p className="text-gray-500 text-sm">Good Morning</p>
-        <h2 className="text-2xl font-semibold">Tylor Greak</h2>
-      </div>
+
+      {tab ? (
+        <div>
+          <div
+            className={`flex items-center  ml-4 ${
+              activeTab === "notification" || "article" ? "" : ""
+            }`}
+          >
+            {tab.map((tab) => (
+              <div
+                key={tab.slug}
+                onClick={() => tabHandaler(tab.slug)}
+                className={`${
+                  activeTab === tab.slug ? "text-[#FF006A]" : ""
+                } text-center cursor-pointer`}
+              >
+                {tab.name}
+
+                <div
+                  className={` mt-1 h-[1px] ${
+                    tab.slug === "notification" ? "w-64" : "w-28"
+                  } ${tab.slug === "article" ? "w-64" : "w-28"}   ${
+                    activeTab === tab.slug ? "bg-[#FF006A]" : ""
+                  }`}
+                ></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div>
+          <p className="text-gray-500 text-sm">Good Morning</p>
+          <h2 className="text-2xl font-semibold">Tylor Greak</h2>
+        </div>
+      )}
       <div className="flex items-center gap-4">
         <FiBell className="text-xl text-gray-600 cursor-pointer" />
         {/* <FiSun className="text-xl text-gray-600 cursor-pointer" /> */}
@@ -47,10 +95,10 @@ const DashNav = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
           {/* Dropdown */}
           {open && (
-            <div className="absolute mt-2 w-40 bg-white border border-gray-200 rounded-lg z-10">
+            <div className="absolute right-6  mt-2 w-40 bg-white border border-gray-200 rounded-lg z-10">
               <ul className="py-2 text-sm text-gray-700">
                 <li>
-                  <button className="w-full text-left px-4 py-2 hover:bg-pink-100 hover:text-pink-500">
+                  <button className="w-full text-left  px-4 py-2 hover:bg-pink-100 hover:text-pink-500">
                     Profile
                   </button>
                 </li>
