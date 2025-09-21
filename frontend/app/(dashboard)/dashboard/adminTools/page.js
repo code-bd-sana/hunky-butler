@@ -3,7 +3,7 @@ import DashNav from '@/components/Dashboard/DashNav/DashNav'
 import { useSetTab } from '@/hooks/useUsersTab';
 import React, { useEffect, useState } from 'react'
 
-export default function page() {
+export default function AdminToolspage() {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     
