@@ -7,7 +7,7 @@ import CustomersList from "@/components/Dashboard/UsersTableForAdmin/CustomersLi
 import { useActiveTab, useSetTab } from "@/hooks/useUsersTab";
 import React, { useEffect, useState } from "react";
 
-export default function page() {
+export default function UserPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const setUserTab = useSetTab();
   const activeTab = useActiveTab();

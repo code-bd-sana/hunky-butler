@@ -5,7 +5,7 @@ import FinancialsCard from "@/components/Dashboard/FinancialsCard/FinancialsCard
 import Payouts from "@/components/Dashboard/Payouts/Payouts";
 import React, { useState } from "react";
 
-const page = () => {
+const FinancialsPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <>
@@ -19,4 +19,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default FinancialsPage ;

@@ -3,7 +3,7 @@ import DashNav from "@/components/Dashboard/DashNav/DashNav";
 import ServiceTable from "@/components/Dashboard/ServicesTable/ServiceTable";
 import React, { useState } from "react";
 
-export default function page() {
+export default function ServicePage() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
