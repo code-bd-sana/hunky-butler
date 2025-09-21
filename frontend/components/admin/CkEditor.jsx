@@ -1,20 +1,46 @@
 import React from 'react';
-
 import { useQuill } from 'react-quilljs';
-// or const { useQuill } = require('react-quilljs');
+import 'quill/dist/quill.snow.css';
 
-import 'quill/dist/quill.snow.css'; // Add css for snow theme
-// or import 'quill/dist/quill.bubble.css'; // Add css for bubble theme
+export default function QuillEditor() {
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],        
+      ['bold', 'italic', 'underline', 'strike'], 
+      [{ list: 'ordered' }, { list: 'bullet' }], 
+      ['blockquote', 'code-block'],           
+      [{ align: [] }],                         
+      [{ color: [] }, { background: [] }],      
+      ['link'],                                  
+      ['clean'],                                 
+    ],
+  };
 
-export default () => {
-  const { quill, quillRef } = useQuill();
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike',
+    'list', 'bullet',
+    'blockquote', 'code-block',
+    'align',
+    'color', 'background',
+    'link',  
+  ];
 
-  console.log(quill);    // undefined > Quill Object
-  console.log(quillRef); // { current: undefined } > { current: Quill Editor Reference }
+  const { quill, quillRef } = useQuill({ modules, formats });
 
   return (
-    <div style={{ height: 300 }} className=''>
-      <div ref={quillRef} />
+ <div>
+       <h4 className='font-medium text-lg text-[#333333] py-2'>body</h4>
+       <div className="border-none">
+
+
+
+ 
+      <div
+        ref={quillRef}
+        className="bg-white rounded-3xl border-none-special min-h-[400px] p-2"
+      />
     </div>
+ </div>
   );
-};
+}
