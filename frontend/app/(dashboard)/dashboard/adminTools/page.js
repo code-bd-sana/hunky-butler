@@ -1,6 +1,8 @@
 'use client'
+import ArticaleManagement from '@/components/admin/ArticaleManagement';
+import NotificationManagement from '@/components/admin/NotificationManagement';
 import DashNav from '@/components/Dashboard/DashNav/DashNav'
-import { useSetTab } from '@/hooks/useUsersTab';
+import { useActiveTab, useSetTab } from '@/hooks/useUsersTab';
 import React, { useEffect, useState } from 'react'
 
 export default function AdminToolspage() {
@@ -8,6 +10,7 @@ export default function AdminToolspage() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     
       const setUserTab = useSetTab();
+      const activeTab = useActiveTab();
 
 
     const tab = [
@@ -39,6 +42,13 @@ export default function AdminToolspage() {
               setIsSidebarOpen={setIsSidebarOpen}
               tab={tab}
             />
+
+            {
+              activeTab === "notification" ?   <NotificationManagement/> : <ArticaleManagement/>
+            }
+
+          
+           
 
 
     </div>
