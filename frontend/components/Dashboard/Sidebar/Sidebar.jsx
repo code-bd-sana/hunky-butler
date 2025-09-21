@@ -26,7 +26,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
       href: "/dashboard/financials",
     },
     { name: "Services", icon: <FaCog />, href: "/dashboard/services" },
-    { name: "Admin Tools", icon: <FaCog />, href: "/admin" },
+    { name: "Admin Tools", icon: <FaCog />, href: "/dashboard/adminTools" },
     { name: "Messages", icon: <FaEnvelope />, href: "/messages" },
   ];
 
