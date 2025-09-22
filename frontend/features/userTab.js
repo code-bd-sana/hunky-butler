@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  activeTab: "customer", 
+  activeTab: "notification", 
 };
 
 const usersTabSlice = createSlice({
