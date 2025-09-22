@@ -185,7 +185,22 @@ export default function Page() {
 
       {/* Calendar */}
       <div
-        className="rounded-2xl overflow-hidden"
+         className="
+          rounded-2xl overflow-hidden
+
+          /* LEFT LABEL COLUMN (no border lines at all) */
+          [&_.fc-timegrid-slot-label]:border-0
+          [&_.fc-timegrid-slot-label-frame]:border-0
+
+          /* GRID (event area only) */
+          [&_.fc-timegrid-col_.fc-timegrid-slot]:border-t
+          [&_.fc-timegrid-col_.fc-timegrid-slot]:border-dashed
+          [&_.fc-timegrid-col_.fc-timegrid-slot]:border-[#E5E7EB]
+
+          [&_.fc-timegrid-col_.fc-timegrid-slot-lane]:border-t-2
+          [&_.fc-timegrid-col_.fc-timegrid-slot-lane]:border-solid
+          [&_.fc-timegrid-col_.fc-timegrid-slot-lane]:border-[#111827]
+        "
         style={{
           ["--fc-page-bg-color"]: "#FFFFFF",
           ["--fc-neutral-bg-color"]: "transparent",
