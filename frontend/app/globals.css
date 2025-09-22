@@ -236,3 +236,14 @@ body {
 .border-none-special{
   border: none !important;
 }
+.fc-event {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.fc-event:focus,
+.fc-event:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
