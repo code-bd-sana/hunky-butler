@@ -22,21 +22,19 @@ const DashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
     <html lang="en">
-      <body className="antialiased">
-       <Provider store={store}>
-
-         <div className="w-full flex flex-col md:flex-row md:gap-10 min-h-screen pt-2 md:pt-10 px-2 md:px-6 lg:px-10 bg-[#f6f4f5]">
-          <Sidebar
-            isSidebarOpen={isSidebarOpen}
-            setIsSidebarOpen={setIsSidebarOpen}
-          />
-          {/* Main Content */}
-          <div className="flex-1">
-           
-            {children} {/* admin/user/customer pages go here */}
+      <body className="antialiased bg-[#f6f4f5]">
+        <Provider store={store}>
+          <div className="w-full flex flex-col md:flex-row md:gap-8 min-h-screen pt-2 md:py-10 px-2 md:px-6 lg:px-10 ">
+            <Sidebar
+              isSidebarOpen={isSidebarOpen}
+              setIsSidebarOpen={setIsSidebarOpen}
+            />
+            {/* Main Content */}
+            <div className="flex-1">
+              {children} {/* admin/user/customer pages go here */}
+            </div>
           </div>
-        </div>
-       </Provider>
+        </Provider>
       </body>
     </html>
   );
