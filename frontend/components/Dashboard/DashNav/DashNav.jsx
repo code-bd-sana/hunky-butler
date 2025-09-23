@@ -1,4 +1,5 @@
 "use client";
+import { toggleSidebar } from "@/features/sidebarSlice";
 import { useAdminToolTab } from "@/hooks/useAdminToolTab";
 import { useActiveTab, useSetTab } from "@/hooks/useUsersTab";
 import Image from "next/image";
@@ -6,14 +7,15 @@ import React, { useState } from "react";
 import { FiBell, FiSun } from "react-icons/fi";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { RiMenuUnfold3Fill } from "react-icons/ri";
+import { useDispatch } from "react-redux";
 
-
-const DashNav = ({ isSidebarOpen, setIsSidebarOpen, tab }) => {
+const DashNav = ({ tab }) => {
   const activeTab = useActiveTab();
   const activeAdminTool = useAdminToolTab();
   console.log(activeAdminTool, "this is admin tools tab");
   console.log(activeTab, "This is active tab");
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const setUserTab = useSetTab();
 
@@ -26,14 +28,7 @@ const DashNav = ({ isSidebarOpen, setIsSidebarOpen, tab }) => {
   };
 
   return (
-    <div className="md:flex justify-between bg-white items-center mb-6  rounded-3xl py-4 px-3">
-      <div className="md:hidden px-4 py-2 mt-2">
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="text-2xl text-[#FF006A]"
-        ></button>
-      </div>
-
+    <div className="flex justify-between bg-white items-center mb-6  rounded-3xl py-4 px-3">
       {tab ? (
         <div>
           <div
@@ -63,9 +58,19 @@ const DashNav = ({ isSidebarOpen, setIsSidebarOpen, tab }) => {
           </div>
         </div>
       ) : (
-        <div>
-          <p className="text-gray-500 text-sm">Good Morning</p>
-          <h2 className="text-2xl font-semibold">Tylor Greak</h2>
+        <div className="flex items-start">
+          <div className="md:hidden px-4 py-2 mt-2">
+            <button
+              onClick={() => dispatch(toggleSidebar())}
+              className="text-2xl text-[#FF006A]"
+            >
+              <RiMenuUnfold3Fill />
+            </button>
+          </div>
+          <div>
+            <p className="text-gray-500 text-sm">Good Morning</p>
+            <h2 className="text-xl md:text-2xl font-semibold">Tylor Greak</h2>
+          </div>
         </div>
       )}
       <div className="flex justify-center items-center gap-4">

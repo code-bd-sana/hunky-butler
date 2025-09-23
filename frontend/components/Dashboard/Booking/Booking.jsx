@@ -2,13 +2,14 @@
 import React, { useState } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { LuArrowUpRight } from "react-icons/lu";
-// import user from "../../../public/Dashboard/customer.png"
 import Image from "next/image";
 
 const Booking = () => {
   const [activeButton, setActiveButton] = useState("All");
   const [open, setOpen] = useState(false);
+
   const buttons = ["All", "Completed", "Ongoing", "Cancelled"];
+
   const bookings = [
     {
       ref: "#BK202509",
@@ -43,6 +44,39 @@ const Booking = () => {
       total: "£290.00",
       fee: "£290.00",
     },
+    {
+      ref: "#BK202509",
+      date: "14 Sep 2025 - 7:30 PM",
+      service: "Stripper",
+      customer: "Bessie Coop.",
+      performer: "Bessie Coop.",
+      location: "Los Angeles, CA",
+      status: "Completed",
+      total: "£290.00",
+      fee: "£290.00",
+    },
+    {
+      ref: "#BK202509",
+      date: "14 Sep 2025 - 7:30 PM",
+      service: "Stripper",
+      customer: "Bessie Coop.",
+      performer: "Bessie Coop.",
+      location: "Los Angeles, CA",
+      status: "Completed",
+      total: "£290.00",
+      fee: "£290.00",
+    },
+    {
+      ref: "#BK202509",
+      date: "14 Sep 2025 - 7:30 PM",
+      service: "Stripper",
+      customer: "Bessie Coop.",
+      performer: "Bessie Coop.",
+      location: "Los Angeles, CA",
+      status: "Completed",
+      total: "£290.00",
+      fee: "£290.00",
+    },
   ];
 
   const statusColors = {
@@ -51,106 +85,115 @@ const Booking = () => {
     Ongoing: "bg-blue-100 text-blue-600",
     Cancelled: "bg-gray-100 text-gray-600",
   };
+
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
-      <div className="flex flex-col md:flex-row items-center justify-between bg-white p-4 md:p-6 rounded-xl shadow-sm">
-        {/* Title */}
+      {/* Header — no inner white layer */}
+      <div className="flex flex-col md:flex-row items-center justify-between pb-4 md:pb-6">
         <h2 className="text-lg md:text-xl font-medium text-gray-800 mb-4 md:mb-0">
           Bookings
         </h2>
 
-        {/* Filter Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex flex-wrap items-center gap-1 bg-[#F6F4F5] p-1 rounded-full">
-            {buttons.map((btn) => (
-              <button
-                key={btn}
-                onClick={() => setActiveButton(btn)}
-                className={`flex items-center px-6 py-2 rounded-full text-sm font-medium transition
-            ${
-              activeButton === btn
-                ? "bg-pink-500 text-white border-pink-500"
-                : "bg-white text-gray-600 border-gray-300 hover:bg-pink-100 hover:text-pink-500"
-            }`}
-              >
-                {btn}
-              </button>
-            ))}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          {/* Tabs */}
+          <div className="flex items-center gap-1 rounded-full bg-[#F6F4F5] p-1 h-[40px] sm:h-[44px] lg:h-[48px] overflow-x-auto whitespace-nowrap lg:overflow-visible lg:whitespace-normal [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+            {buttons.map((btn) => {
+              const isActive = activeButton === btn;
+              return (
+                <button
+                  key={btn}
+                  onClick={() => setActiveButton(btn)}
+                  className={`shrink-0 rounded-full font-medium transition px-2 py-1.5 text-[12px] sm:px-4 sm:py-2 sm:text-[12px] lg:px-5 lg:py-2 lg:text-[13px] ${
+                    isActive ? "text-white" : "text-gray-600 bg-white"
+                  }`}
+                  style={
+                    isActive
+                      ? {
+                          backgroundColor: "#FF006A",
+                          boxShadow: "0 1px 2px rgba(0,0,0,.06)",
+                        }
+                      : { border: "1px solid #E5E7EB" }
+                  }
+                >
+                  {btn}
+                </button>
+              );
+            })}
           </div>
-          <button className="flex items-center px-6 py-2 rounded-full border bg-white text-[#FF006A] border-gray-300 text-sm font-medium hover:bg-pink-100 hover:text-pink-500 transition">
-            See All
-            <LuArrowUpRight className="text-xl" />
-          </button>
 
-          <div className="relative inline-block text-left">
-            {/* Button */}
+          {/* Right controls */}
+          <div className="flex justify-center items-center gap-1.5 sm:ml-auto relative">
             <button
-              onClick={() => setOpen(!open)}
-              className="flex items-center px-6 py-2 rounded-full border bg-white text-gray-600 border-gray-300 text-sm font-medium hover:bg-pink-100 hover:text-pink-500 transition"
+              onClick={() => setOpen((s) => !s)}
+              className="flex items-center gap-1 rounded-full font-medium bg-[#F6F4F5] text-[#292929] px-4 py-1.5 h-[40px] text-[12px] sm:px-5 sm:py-2 sm:h-[48px] sm:text-[13px]"
             >
               30 Days
               <MdKeyboardArrowDown
-                className={`text-2xl ml-1 transition-transform ${
+                className={`transition-transform ${
                   open ? "rotate-180" : ""
-                }`}
+                } text-base sm:text-xl`}
               />
             </button>
 
-            {/* Dropdown */}
             {open && (
-              <div className="absolute mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                <ul className="py-2 text-sm text-gray-700">
-                  <li>
-                    <button className="w-full text-left px-4 py-2 hover:bg-pink-100 hover:text-pink-500">
-                      7 Days
-                    </button>
-                  </li>
-                  <li>
-                    <button className="w-full text-left px-4 py-2 hover:bg-pink-100 hover:text-pink-500">
-                      15 Days
-                    </button>
-                  </li>
-                  <li>
-                    <button className="w-full text-left px-4 py-2 hover:bg-pink-100 hover:text-pink-500">
-                      30 Days
-                    </button>
-                  </li>
-                  <li>
-                    <button className="w-full text-left px-4 py-2 hover:bg-pink-100 hover:text-pink-500">
-                      90 Days
-                    </button>
-                  </li>
+              <div className="absolute right-0 top-[calc(100%+8px)] w-40 rounded-lg bg-white shadow-lg z-10">
+                <ul className="py-2 text-sm text-[#374151]">
+                  {["7 Days", "15 Days", "30 Days", "90 Days"].map((v) => (
+                    <li key={v}>
+                      <button
+                        className="w-full text-left px-4 py-2 hover:bg-pink-50"
+                        onClick={() => setOpen(false)}
+                      >
+                        {v}
+                      </button>
+                    </li>
+                  ))}
                 </ul>
               </div>
             )}
+
+            <button
+              className="flex items-center gap-1 rounded-full font-medium bg-[#F6F4F5] px-4 py-1.5 h-[40px] text-[12px] sm:px-5 sm:py-2 sm:h-[48px] sm:text-[13px]"
+              style={{ color: "#FF006A" }}
+            >
+              See All
+              <LuArrowUpRight className="text-base sm:text-lg" />
+            </button>
           </div>
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+
+      {/* Table */}
+      <div className="overflow-x-auto max-h-[370px] scrollbar-hide overflow-y-auto">
+        <table
+          className="
+            w-full text-left border-collapse             
+          "
+        >
           <thead>
-            <tr className=" text-[#333333] text-base">
-              <th className="p-3">Ref</th>
-              <th className="p-3">Date/Time</th>
-              <th className="p-3">Service</th>
-              <th className="p-3">Customer</th>
-              <th className="p-3">Performer</th>
-              <th className="p-3">Location</th>
-              <th className="p-3">Status</th>
-              <th className="p-3">Total</th>
-              <th className="p-3">Fee (Platform)</th>
+            <tr className="text-[#333333] border-b text-base">
+              <th className="p-3 font-medium">Ref</th>
+              <th className="p-3 font-medium">Date/Time</th>
+              <th className="p-3 font-medium">Service</th>
+              <th className="p-3 font-medium">Customer</th>
+              <th className="p-3 font-medium">Performer</th>
+              <th className="p-3 font-medium">Location</th>
+              <th className="p-3 font-medium">Status</th>
+              <th className="p-3 font-medium">Total</th>
+              <th className="p-3 font-medium">Fee (Platform)</th>
             </tr>
           </thead>
-          <tbody className="">
+
+          <tbody>
             {bookings.map((b, i) => (
-              <tr key={i} className="border-b hover:bg-gray-50 ">
+              <tr key={i} className="text-[#292929]  hover:bg-gray-50">
                 <td className="p-3 py-10">{b.ref}</td>
                 <td className="p-3">{b.date}</td>
                 <td className="p-3">{b.service}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
                     <Image
-                      src="/Dashboard/customer.png" // public folder er image
+                      src="/Dashboard/customer.png"
                       alt={b.customer}
                       width={32}
                       height={32}
@@ -159,12 +202,10 @@ const Booking = () => {
                     <span>{b.customer}</span>
                   </div>
                 </td>
-
-                {/* Performer with image */}
                 <td className="p-3">
                   <div className="flex items-center gap-2">
                     <Image
-                      src="/Dashboard/customer.png" // public folder er image
+                      src="/Dashboard/customer.png"
                       alt={b.customer}
                       width={32}
                       height={32}
