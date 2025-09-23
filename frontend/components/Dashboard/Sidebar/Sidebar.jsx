@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "@/features/sidebarSlice";
+import { GiHandcuffs } from "react-icons/gi";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -17,7 +18,11 @@ const Sidebar = () => {
   const sidebarItems = [
     { name: "Bookings", icon: <BsBook />, href: "/dashboard" },
     { name: "Users", icon: <FaUsers />, href: "/dashboard/users" },
-    { name: "Financials", icon: <FaMoneyBillAlt />, href: "/dashboard/financials" },
+    {
+      name: "Financials",
+      icon: <FaMoneyBillAlt />,
+      href: "/dashboard/financials",
+    },
     { name: "Services", icon: <FaCog />, href: "/dashboard/services" },
     { name: "Admin Tools", icon: <FaCog />, href: "/dashboard/adminTools" },
     { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
@@ -31,20 +36,27 @@ const Sidebar = () => {
         h-screen w-72 border rounded-2xl pt-10 p-6
         md:sticky md:top-10 md:h-[calc(100vh-5rem)]
         flex flex-col overflow-hidden transition-transform duration-300
-        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
+        ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
       >
         {/* Header (no scroll) */}
         <div className="space-y-6 shrink-0">
-          <button
-            onClick={() => dispatch(toggleSidebar())}
-            className="text-2xl text-[#FF006A] md:hidden"
-          >
-            <RiMenuUnfold3Fill />
-          </button>
-
           <div className="flex items-center gap-2">
-            <Image src="/Footer/logo.png" alt="logo" width={46} height={52} className="object-cover" />
+            <Image
+              src="/Footer/logo.png"
+              alt="logo"
+              width={46}
+              height={52}
+              className="object-cover"
+            />
             <h2 className="font-semibold">Hunky Butler Service</h2>
+            <button
+              onClick={() => dispatch(toggleSidebar())}
+              className="text-2xl text-[#FF006A] md:hidden"
+            >
+              <GiHandcuffs />
+            </button>
           </div>
         </div>
 
@@ -79,7 +91,10 @@ const Sidebar = () => {
 
       {/* Mobile overlay */}
       {isSidebarOpen && (
-        <div className="fixed inset-0 md:hidden" onClick={() => dispatch(toggleSidebar())} />
+        <div
+          className="fixed inset-0 md:hidden"
+          onClick={() => dispatch(toggleSidebar())}
+        />
       )}
     </div>
   );
