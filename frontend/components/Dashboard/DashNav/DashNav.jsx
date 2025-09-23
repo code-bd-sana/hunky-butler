@@ -5,6 +5,7 @@ import { useActiveTab, useSetTab } from "@/hooks/useUsersTab";
 import Image from "next/image";
 import React, { useState } from "react";
 import { FiBell, FiSun } from "react-icons/fi";
+import { HiMenuAlt1 } from "react-icons/hi";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { RiMenuUnfold3Fill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
@@ -28,7 +29,7 @@ const DashNav = ({ tab }) => {
   };
 
   return (
-    <div className="flex justify-between bg-white items-center mb-6  rounded-3xl py-4 px-3">
+    <div className="flex justify-between bg-white items-center mb-6  rounded-3xl py-4 px-2 md:px-8">
       {tab ? (
         <div>
           <div
@@ -58,13 +59,13 @@ const DashNav = ({ tab }) => {
           </div>
         </div>
       ) : (
-        <div className="flex items-start">
-          <div className="md:hidden px-4 py-2 mt-2">
+        <div className="flex items-center gap-2">
+          <div className="md:hidden">
             <button
               onClick={() => dispatch(toggleSidebar())}
-              className="text-2xl text-[#FF006A]"
+              className="text-2xl text-[#FF006A]  border-2 border-gray-300 p-2 rounded-md"
             >
-              <RiMenuUnfold3Fill />
+              <HiMenuAlt1 />
             </button>
           </div>
           <div>
@@ -73,15 +74,17 @@ const DashNav = ({ tab }) => {
           </div>
         </div>
       )}
-      <div className="flex justify-center items-center gap-4">
-        <FiBell className="text-xl text-gray-600 cursor-pointer" />
+      <div className="flex justify-center items-center gap-2">
+        <div className="border-2 border-gray-300 p-2 md:p-4 rounded-full">
+          <FiBell className="text-xl cursor-pointer" />
+        </div>
         {/* <FiSun className="text-xl text-gray-600 cursor-pointer" /> */}
 
         <div className="">
           {/* Button */}
           <button
             onClick={() => setOpen(!open)}
-            className="flex  items-center px-2 py-2 rounded-full border bg-white text-gray-600 border-gray-300 text-sm font-medium hover:bg-pink-100 hover:text-pink-500 transition"
+            className="flex  items-center px-2 py-1 md:px-3 md:py-2 rounded-full border bg-white text-gray-600 border-gray-300 text-sm font-medium hover:bg-pink-100 hover:text-pink-500 transition"
           >
             <Image
               src="/Dashboard/customer.png" // public folder er image
