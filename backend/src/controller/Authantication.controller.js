@@ -61,6 +61,12 @@ export const login = async(req, res)=>{
             })
         };
 
+        if(!isExist.isVerified){
+            res.status(405).json({
+                message:"Please Verify your account then try to login..."
+            })
+        }
+
         const matchedPassword = await bcrypt.compare(password, isExist.password);
 
         if(!matchedPassword){
