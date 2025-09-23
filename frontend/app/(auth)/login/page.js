@@ -63,8 +63,23 @@ export default function Page() {
 
     } catch (error) {
 
-      console.log(error)
-      toast.error(error.data?.message)
+      console.log(error.status)
+      
+
+      if(error.status === 405){
+          toast.error(error.data?.message)
+          setTimeout(()=>{
+
+
+            window.location.href = "/verification";
+          }, [2000])
+
+          return
+         
+      }
+
+       toast.error(error.data?.message)
+    
     }
   }
 
@@ -101,7 +116,9 @@ export default function Page() {
           </Link>
 
           {/* Role-based image — desktop perfect; mobile gets a safe min-height */}
-          <Image
+
+          
+          {/* <Image
             key={role}
             src={img.src}
             alt={img.alt}
@@ -109,7 +126,7 @@ export default function Page() {
             height={720}
             priority
             className="h-full w-full object-cover object-center"
-          />
+          /> */}
         </section>
 
         {/* RIGHT: Auth card */}

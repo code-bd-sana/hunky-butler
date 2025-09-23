@@ -15,6 +15,10 @@ const userSchema = mongoose.Schema({
         type:String,
         required:[true, "Role Is required"],
         enum:["customer", "butler"]
+    },
+    isVerified:{
+    type: Boolean,
+    default:false
     }
 });
 
