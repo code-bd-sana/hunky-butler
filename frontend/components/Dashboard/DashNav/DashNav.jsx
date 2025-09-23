@@ -31,9 +31,17 @@ const DashNav = ({ tab }) => {
   return (
     <div className="flex justify-between bg-white items-center mb-6  rounded-3xl py-4 px-2 md:px-8">
       {tab ? (
-        <div>
+        <div className="flex items-center">
+          <div className="md:hidden">
+            <button
+              onClick={() => dispatch(toggleSidebar())}
+              className="text-xl md:text-2xl text-[#FF006A]  border-2 border-gray-300 p-2 rounded-md"
+            >
+              <HiMenuAlt1 />
+            </button>
+          </div>
           <div
-            className={`lg:flex items-center  ml-4 ${
+            className={`flex flex-col md:flex-row items-center ${
               activeTab === "notification" || "article" ? "" : ""
             }`}
           >
@@ -41,18 +49,19 @@ const DashNav = ({ tab }) => {
               <div
                 key={tab.slug}
                 onClick={() => tabHandaler(tab.slug)}
-                className={`${
-                  activeTab === tab.slug ? "text-[#FF006A]" : ""
-                } text-center cursor-pointer`}
+                className={`
+      ${activeTab === tab.slug ? "text-[#FF006A]" : ""} 
+      ${tab.slug === "notification" ? "text-sm" : ""} 
+      text-center cursor-pointer
+    `}
               >
                 {tab.name}
 
                 <div
-                  className={` mt-1 mx-auto md:mx-0 h-[1px] ${
-                    tab.slug === "notification" ? "w-64" : "w-28"
-                  } ${tab.slug === "article" ? "w-64" : "w-28"}   ${
-                    activeTab === tab.slug ? "bg-[#FF006A]" : ""
-                  }`}
+                  className={`mt-1 mx-auto md:mx-0 h-[1px] 
+        ${tab.slug === "notification" ? "w-44" : "w-28"} 
+        ${tab.slug === "article" ? "w-64" : "w-28"}   
+        ${activeTab === tab.slug ? "bg-[#FF006A]" : ""}`}
                 ></div>
               </div>
             ))}
