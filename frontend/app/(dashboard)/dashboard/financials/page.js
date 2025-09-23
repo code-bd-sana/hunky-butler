@@ -8,14 +8,16 @@ import React, { useState } from "react";
 const FinancialsPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
-    <>
+    <div className="max-h-screen">
      <DashNav
               isSidebarOpen={isSidebarOpen}
               setIsSidebarOpen={setIsSidebarOpen}
             />
       <FinancialsCard/>
-      <Payouts/>
-    </>
+     
+       <Payouts/>
+    
+    </div>
   );
 };
 
