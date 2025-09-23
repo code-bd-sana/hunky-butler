@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FaPlay, FaPause, FaPaperPlane } from "react-icons/fa";
 
 const Chat = () => {
@@ -11,6 +11,23 @@ const Chat = () => {
     { name: "Devon Lane", msg: "No Problem, I've Prescribed 25mg..." },
     { name: "Wade Warren", msg: "Hi Hanna, Thank You For Your Rea..." },
   ];
+
+  // Audio refs
+  const audio1Ref = useRef(null);
+  const audio2Ref = useRef(null);
+
+  // Handlers
+  const toggleAudio = (audioRef) => {
+    if (audioRef.current) {
+      if (audioRef.current.paused) {
+        audioRef.current.volume = 1.0; // full volume
+        audioRef.current.play();
+      } else {
+        audioRef.current.pause();
+      }
+    }
+  };
+
   return (
     <div className="flex gap-6 h-[800px]">
       {/* Sidebar */}
@@ -65,13 +82,11 @@ const Chat = () => {
         <div className="flex-1 p-4 space-y-4 overflow-y-auto bg-white rounded-xl md:px-24">
           {/* Voice Message */}
           <div className="flex items-center space-x-2">
-            {/* <div className="w-40 h-10 bg-gray-200 rounded-full flex items-center justify-between px-2">
-              <span className="text-xs">|||||||||</span>
-
-              <FaPlay className="text-pink-500" />
-            </div> */}
             <div className="space-y-2">
-              <div className="w-80 h-10 relative">
+              <div
+                className="w-80 h-10 relative"
+                onClick={() => toggleAudio(audio1Ref)}
+              >
                 <Image
                   src="/Dashboard/chat/voice.png"
                   alt="voice"
@@ -100,11 +115,15 @@ const Chat = () => {
             Went To Sunset Ridge. The View Was Amazing!
           </div>
           <p className="text-xs text-gray-400 text-right">2:08 • Seen</p>
-
+          <audio ref={audio1Ref} src="/audio/sei.mp3" />
+          <audio ref={audio2Ref} src="/audio/song2.mp3" />
           {/* Outgoing Audio */}
           <div className="flex items-center space-x-2">
             <div className="space-y-2">
-              <div className="w-80 h-10 relative">
+              <div
+                className="w-80 h-10 relative"
+                onClick={() => toggleAudio(audio1Ref)}
+              >
                 <Image
                   src="/Dashboard/chat/voice.png"
                   alt="voice"
@@ -118,7 +137,10 @@ const Chat = () => {
 
           {/*voice3*/}
           <div className="max-w-md ml-auto  text-white p-3 rounded-xl">
-            <div className="w-full h-10 relative">
+            <div
+              className="w-full h-10 relative"
+              onClick={() => toggleAudio(audio1Ref)}
+            >
               <Image
                 src="/Dashboard/chat/voice3.png"
                 alt="voice"
@@ -126,6 +148,7 @@ const Chat = () => {
                 fill
               />
             </div>
+            <audio ref={audio1Ref} src="/audio/sei.mp3" />
           </div>
           <p className="text-xs text-gray-400 text-right">2:08 • Seen</p>
         </div>
