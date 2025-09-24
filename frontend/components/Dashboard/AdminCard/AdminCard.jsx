@@ -13,28 +13,36 @@ const AdminCard = () => {
         <h2 className="text-xl font-medium">Total Bookings (This Month)</h2>
 
         <p className="text-5xl font-bold">142</p>
-        <span className="text-lg opacity-90">Updated 1 min ago</span>
+        <span className="text-sm md:text-base lg:text-lg opacity-90">
+          Updated 1 min ago
+        </span>
       </div>
 
       <div className="bg-[#2439A0] text-white p-6  pt-8  rounded-xl shadow-md space-y-4">
         <h2 className="text-xl font-medium">Active Performers</h2>
 
         <p className="text-5xl font-bold">60</p>
-        <span className="text-lg  opacity-90">Updated 1 min ago</span>
+        <span className="text-sm md:text-base lg:text-lg  opacity-90">
+          Updated 1 min ago
+        </span>
       </div>
 
       <div className="bg-[#A02426] text-white p-6  pt-8  rounded-xl shadow-md space-y-4">
         <h2 className="text-xl font-medium">Pending Payouts</h2>
 
         <p className="text-5xl font-bold">£290.00</p>
-        <span className="text-lg  opacity-90">Updated 1 min ago</span>
+        <span className="text-sm md:text-base lg:text-lg  opacity-90">
+          Updated 1 min ago
+        </span>
       </div>
 
       <div className="bg-[#24A079] text-white p-6  pt-8  rounded-xl shadow-md space-y-4">
         <h2 className="text-xl font-medium">Revenue (This Month)</h2>
 
         <p className="text-5xl font-bold">£290.00</p>
-        <span className="text-lg opacity-90">Updated 1 min ago</span>
+        <span className="text-sm md:text-base lg:text-lg opacity-90">
+          Updated 1 min ago
+        </span>
       </div>
     </div>
   );
