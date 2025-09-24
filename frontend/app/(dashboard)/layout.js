@@ -24,13 +24,13 @@ const DashboardLayout = ({ children }) => {
     <html lang="en">
       <body className="antialiased bg-[#f6f4f5]">
         <Provider store={store}>
-          <div className="w-full flex flex-col md:flex-row md:gap-8 min-h-screen pt-2 md:py-10 px-2 md:px-6 lg:px-10 ">
+          <div className="w-full flex flex-col md:flex-row gap-0 lg:gap-8 min-h-screen pt-2 md:py-10 px-2 md:px-6 lg:px-10 md:pl-0">
             <Sidebar
               isSidebarOpen={isSidebarOpen}
               setIsSidebarOpen={setIsSidebarOpen}
             />
             {/* Main Content */}
-            <div className="flex-1">
+            <div className="flex-1 px-4 mx-auto">
               {children} {/* admin/user/customer pages go here */}
             </div>
           </div>
