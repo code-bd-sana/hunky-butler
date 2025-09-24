@@ -6,9 +6,11 @@ import Link from "next/link";
 import { useSaveRegisterMutation } from "@/features/auth";
 import toast, { Toaster } from "react-hot-toast";
 
+
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("customer");
+  
 
   const roleImage = {
     customer: {
@@ -41,10 +43,16 @@ export default function Page() {
  const result = await saveRegister({email, password , role}).unwrap();
  console.log(result)
 if(result.message === "Success"){
-  toast.success("User Registar Success")
+ 
+
+   setTimeout(()=>{
+
+ toast.success("User Registar Success - Now please Verify your account")
+            window.location.href = "/verification";
+          }, [2000])
 }
 
-
+  
 
 
       
@@ -88,7 +96,7 @@ if(result.message === "Success"){
           </Link>
 
           {/* Role-based image — desktop perfect; mobile gets a safe min-height */}
-          <Image
+          {/* <Image
             key={role}
             src={img.src}
             alt={img.alt}
@@ -96,7 +104,7 @@ if(result.message === "Success"){
             height={720}
             priority
             className="h-full w-full object-cover object-center"
-          />
+          /> */}
         </section>
 
         {/* RIGHT: Auth card */}

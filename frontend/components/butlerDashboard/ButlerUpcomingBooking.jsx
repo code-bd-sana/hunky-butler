@@ -34,6 +34,33 @@ const rows = [
     status: "Completed",
     total: "£290.00",
   },
+  {
+    ref: "#BK202509",
+    date: "14 Sep 2025 • 7:30 PM",
+    service: "Stripper",
+    performer: "Bessie Cooper",
+    location: "Los Angeles, CA",
+    status: "Completed",
+    total: "£290.00",
+  },
+  {
+    ref: "#BK202509",
+    date: "14 Sep 2025 • 7:30 PM",
+    service: "Stripper",
+    performer: "Bessie Cooper",
+    location: "Los Angeles, CA",
+    status: "Completed",
+    total: "£290.00",
+  },
+  {
+    ref: "#BK202509",
+    date: "14 Sep 2025 • 7:30 PM",
+    service: "Stripper",
+    performer: "Bessie Cooper",
+    location: "Los Angeles, CA",
+    status: "Completed",
+    total: "£290.00",
+  },
 ];
 
 const statusStyles = {
@@ -88,7 +115,7 @@ export default function ButlerUpcomingBooking() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto max-h-[360px] scrollbar-hide overflow-y-auto">
         <table className="w-full">
           {/* thin divider like figma */}
           <thead className="border-b border-gray-200">

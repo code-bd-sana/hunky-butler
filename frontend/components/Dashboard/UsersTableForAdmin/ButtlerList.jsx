@@ -166,7 +166,7 @@ export default function ButtlerList() {
 
       {/* Always-table with controlled column widths */}
       <div className="px-2 pb-4">
-        <div className="overflow-x-auto rounded-xl">
+        <div className="overflow-x-auto max-h-[338px] scrollbar-hide overflow-y-auto rounded-xl">
           <table className="w-full border-collapse min-w-[820px]">
             {/* Make last column wide enough on all screens */}
             <colgroup>
