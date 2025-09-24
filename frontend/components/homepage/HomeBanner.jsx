@@ -25,8 +25,8 @@ export default function HomeBanner() {
         <div className="flex w-full flex-col items-center md:items-start lg:flex-row lg:justify-between lg:items-center gap-10 mx-auto">
           {/* Left Side: Heading + Buttons */}
           <div className="max-w-6xl text-center md:text-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              Buff Butlers & Hen Party
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-abhaya-libre">
+              Buff Butlers & Hen Party <br/>
               Entertainment Across the UK
             </h1>
 
