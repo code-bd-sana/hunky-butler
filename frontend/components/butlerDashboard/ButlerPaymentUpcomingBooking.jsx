@@ -9,6 +9,10 @@ const rows = [
   { ref: "#BK202509", amount: "£290.00", fee: "-£290.00", net: "£290.00", status: "Pending" },
   { ref: "#BK202509", amount: "£290.00", fee: "-£290.00", net: "£290.00", status: "Paid" },
   { ref: "#BK202509", amount: "£290.00", fee: "-£290.00", net: "£0.00",   status: "Paid" },
+  { ref: "#BK202509", amount: "£290.00", fee: "-£290.00", net: "£0.00",   status: "Paid" },
+  { ref: "#BK202509", amount: "£290.00", fee: "-£290.00", net: "£0.00",   status: "Paid" },
+  { ref: "#BK202509", amount: "£290.00", fee: "-£290.00", net: "£0.00",   status: "Paid" },
+  { ref: "#BK202509", amount: "£290.00", fee: "-£290.00", net: "£0.00",   status: "Paid" },
 ];
 
 const statusStyles = {
@@ -61,7 +65,7 @@ export default function ButlerPaymentUpcomingBooking() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto max-h-[358px] scrollbar-hide overflow-y-auto">
         <table className="w-full">
           <thead className="border-b" style={{ borderColor: BORDER }}>
             <tr className="text-[16px] md:text-[16px] leading-5 text-[#292929]">

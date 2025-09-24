@@ -19,7 +19,7 @@ const TrustStrip = () => {
             />
             <span className="ml-2 text-3xl font-bold sm:text-4xl">4.9</span>
           </div>
-          <p className="mt-1 text-sm sm:text-base">Our Trust strip</p>
+          <p className="mt-1 text-sm sm:text-base">Excellent Reviews</p>
         </div>
 
         {/* Verified Staff */}

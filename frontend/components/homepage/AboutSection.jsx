@@ -21,12 +21,18 @@ export default function AboutSection() {
       <div className="max-w-7xl mx-auto lg:flex px-4  xl:px-0 items-center gap-4 mt-16">
         <section className="flex-1 z-50">
           <MainTitle text={"About Us"} />
-          <SubTitle
+          {/* <SubTitle
             text={
               "At Hunky Butler Service, we believe parties should be fun, stress-free, and unforgettable. With thousands of verified bookings, we’ve become one of the UK’s leading providers of hen party entertainment. Whether you’re looking for buff butler hire in Liverpool, a life drawing class in Birmingham, or a cocktail masterclass in London, our trusted team delivers professional entertainment nationwide."
             }
-          />
-          <p className="font-medium text-xl mt-16">
+          /> */}
+          <p className="text-lg my-3 text-[#3D3D3D]">
+              At Hunky Butler Service, we believe parties should be stress-free, memorable, and filled with laughter. We’ve been proudly providing hen party entertainment across the UK since 2013, and over the years we’ve built a reputation as one of the most trusted names in the industry. 
+          </p>
+          <p className="text-lg my-3 text-[#3D3D3D]">
+              Our work has taken us everywhere — from collaborating with household brands like Ann Summers to being featured on ITV News. Beyond parties, we’re proud to give back: we’ve supported a number of charities, including recent events in aid of Cancer Research UK and the Harrogate Baby Care Unit.
+          </p>
+          <p className="font-medium text-xl mt-16 capitalize">
             Whether you’re planning a hen night, birthday, or a fun corporate
             gathering, we make it simple to:
           </p>

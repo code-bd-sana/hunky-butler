@@ -44,6 +44,39 @@ const Booking = () => {
       total: "£290.00",
       fee: "£290.00",
     },
+    {
+      ref: "#BK202509",
+      date: "14 Sep 2025 - 7:30 PM",
+      service: "Stripper",
+      customer: "Bessie Coop.",
+      performer: "Bessie Coop.",
+      location: "Los Angeles, CA",
+      status: "Completed",
+      total: "£290.00",
+      fee: "£290.00",
+    },
+    {
+      ref: "#BK202509",
+      date: "14 Sep 2025 - 7:30 PM",
+      service: "Stripper",
+      customer: "Bessie Coop.",
+      performer: "Bessie Coop.",
+      location: "Los Angeles, CA",
+      status: "Completed",
+      total: "£290.00",
+      fee: "£290.00",
+    },
+    {
+      ref: "#BK202509",
+      date: "14 Sep 2025 - 7:30 PM",
+      service: "Stripper",
+      customer: "Bessie Coop.",
+      performer: "Bessie Coop.",
+      location: "Los Angeles, CA",
+      status: "Completed",
+      total: "£290.00",
+      fee: "£290.00",
+    },
   ];
 
   const statusColors = {
@@ -131,7 +164,7 @@ const Booking = () => {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto max-h-[370px] scrollbar-hide overflow-y-auto">
         <table
           className="
             w-full text-left border-collapse             

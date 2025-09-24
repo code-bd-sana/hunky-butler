@@ -12,24 +12,23 @@ export default function MostPopulerParty() {
   const partyData = [
     {
       image: image1,
-
       heading: "Buff Butlers",
-      title: "Hire charming, professional Buff Butlers to host party games, serve drinks, and keep your hen party alive."
+      title: "Hire charming, professional buff butlers to host party games, serve drinks, and keep your guests entertained. Popular for hen parties, birthdays, and girls’ nights across the UK, from Liverpool to London, our butlers know how to strike the perfect balance between cheeky fun and classy entertainment."
     },
     {
       image: image2,
       heading: "Life Drawing",
-      title: "Add a cheeky twist to your celebration with a fun, tasteful life drawing class led by our handsome models."
+      title: "Add a creative twist to your hen do or birthday celebration with a life drawing class led by one of our handsome male models. Our classes combine tasteful fun with plenty of laughs — and yes, your butler can stick around afterwards to pour drinks, play party games, and pose for photos."
     },
     {
       image: image3,
       heading: "Cocktail Masterclasses",
-      title: "Shake, stir, and sip with an interactive cocktail-making session hosted by skilled mixologists and Buff Butlers."
+      title: "Shake, stir, and sip your way through an interactive cocktail masterclass hosted by skilled mixologists and buff butlers. Perfect for groups that want hands-on fun, our classes are available in Manchester, Liverpool, Birmingham, and London — and come with plenty of cheeky surprises along the way."
     },
     {
       image: image4,
       heading: "Male Strippers",
-      title: "Turn up the heat with our professional male strippers – from cheeky strip shows to themed entertainment, we tailor the performance to your group."
+      title: "Turn up the heat with our professional male strippers. From cheeky strip shows to themed performances, we tailor the entertainment to your group’s vibe. Whether you want playful fun or a full stage-style performance, our strippers know how to keep the atmosphere electric."
     }
   ];
 
