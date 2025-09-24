@@ -248,7 +248,17 @@ body {
   box-shadow: none !important;
 }
 
+<<<<<<< HEAD
 
 .fc .fc-timegrid-slot {
   border-bottom: none !important;
 }
+=======
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+>>>>>>> cbebf77ccc2a721253e824d2d4631c057beeb638
