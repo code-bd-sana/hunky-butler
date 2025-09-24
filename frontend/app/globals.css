@@ -247,3 +247,8 @@ body {
   outline: none !important;
   box-shadow: none !important;
 }
+
+
+.fc .fc-timegrid-slot {
+  border-bottom: none !important;
+}

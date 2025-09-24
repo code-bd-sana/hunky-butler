@@ -13,11 +13,7 @@ const poppins = Poppins({
   variable: "--font-poppins",
   display: "swap",
 });
-// export const metadata = {
-//   title: "Hunky Butlers",
-//   description:
-//     "Buff Butlers, Life Drawing, Cocktail Masterclasses & More, We Bring the Fun to You.",
-// };
+
 const DashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
