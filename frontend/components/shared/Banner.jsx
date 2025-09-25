@@ -30,7 +30,7 @@ export default function Banner({
           <p className="tracking-[-1px]">{service}</p>
         </div>
 
-        <h1 className="mb-2 max-w-7xl text-4xl tracking-[-1px] font-medium text-white md:text-5xl lg:text-[68px]">
+        <h1 className="mb-2 max-w-7xl text-4xl tracking-[-1px] font-medium text-white md:text-5xl lg:text-[60px]">
           {title}
         </h1>
 
