@@ -1,7 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import icon from "@/public/icons/arowright.png";
-import butlerImg from "@/public/images/services/buttlers.jpeg";
+import butlerImg from "@/public/service/buff.jpg";
+import strippersImg from "@/public/service/Strippers.jpg";
 import butlerImg2 from "@/public/ImageGalary/pic1.jpeg";
 import butlerImg3 from "@/public/ImageGalary/pic5.jpeg";
 import butlerImg4 from "@/public/ImageGalary/pic3.jpeg";
@@ -103,7 +104,7 @@ export default function ALLServices() {
                   src={butlerImg}
                   alt="Buff Butlers"
                   fill
-                  className="object-cover"
+                  className="object-cover rounded-2xl"
                   sizes="(min-width: 1024px) 50vw, (min-width: 640px) 100vw, 100vw"
                   priority
                 />
@@ -119,12 +120,10 @@ export default function ALLServices() {
           <div className="flex-1">
             <MainTitle text="Life Drawing" />
             <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-              Add a creative twist to your celebration with our life drawing
-              classes. Led by a professional model, this activity combines art,
-              laughter, and cheeky fun — making it one of the most popular
-              choices for hen parties and group socials. Guests of all abilities
-              can join in, with guidance and games provided to keep the mood
-              light and enjoyable. It’s the perfect mix of classy and cheeky.
+              Mix, shake, and sip cocktails with our expert bartenders — and
+              yes, they’ll bring plenty of charm too. A cocktail masterclass is
+              the perfect way to kick off a night out, whether you’re planning a
+              hen party in Liverpool or a birthday in London.
             </p>
 
             <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
@@ -162,7 +161,7 @@ export default function ALLServices() {
                 src={butlerImg2}
                 alt="Buff Butlers"
                 fill
-                className="object-cover"
+                className="object-cover rounded-2xl"
                 sizes="(min-width: 1024px) 50vw, (min-width: 640px) 100vw, 100vw"
                 priority
               />
@@ -177,13 +176,10 @@ export default function ALLServices() {
           <div className="flex-1">
             <MainTitle text="Cocktail Masterclasses" />
             <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-              Shake, stir, and sip with our interactive cocktail masterclasses.
-              Hosted by an expert mixologist (and often paired with our buff
-              butlers), this experience is perfect for parties that want
-              hands-on fun. Guests will learn how to craft signature cocktails
-              while enjoying games, laughter, and of course, plenty of drinks.
-              It’s an experience that blends entertainment with delicious
-              cocktails, tailored to your group.
+              For groups that want the party turned up a notch, our male
+              strippers deliver professional performances tailored to your vibe.
+              From cheeky routines to full shows, they’re always a crowd
+              favourite. Popular across Leeds, Liverpool, and London.
             </p>
 
             <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
@@ -221,7 +217,7 @@ export default function ALLServices() {
                 src={butlerImg3}
                 alt="Buff Butlers"
                 fill
-                className="object-cover"
+                className="object-cover rounded-2xl"
                 sizes="(min-width: 1024px) 50vw, (min-width: 640px) 100vw, 100vw"
                 priority
               />
@@ -233,7 +229,7 @@ export default function ALLServices() {
         <div className="flex flex-col-reverse md:flex-row md:items-center gap-10 md:gap-16">
           {/* === Text Content === */}
           <div className="flex-1">
-            <MainTitle text="Cocktail Masterclasses" />
+            <MainTitle text="Strippers" />
             <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
               Turn up the excitement with our professional male strippers, who
               deliver tasteful, cheeky, and high-energy performances. Whether
@@ -254,7 +250,7 @@ export default function ALLServices() {
                   <Image
                     src={icon}
                     alt="icon"
-                    className="w-5 h-5 mt-1 flex-shrink-0"
+                    className="w-5 h-5 mt-1 flex-shrink-0 "
                   />
                   <p className="text-base sm:text-lg text-[#333333] leading-relaxed">
                     {item}
@@ -264,7 +260,7 @@ export default function ALLServices() {
             </ul>
 
             <div className="mt-8">
-              <Link href="#">
+              <Link href="/service/strippers">
                 <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                   Book Now
                 </button>
@@ -276,10 +272,10 @@ export default function ALLServices() {
           <div className="flex-1">
             <div className="relative w-full aspect-[581/632] sm:aspect-[581/450] md:aspect-[581/632] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
               <Image
-                src={butlerImg4}
+                src={strippersImg}
                 alt="Buff Butlers"
                 fill
-                className="object-cover"
+                className="object-cover rounded-2xl"
                 sizes="(min-width: 1024px) 50vw, (min-width: 640px) 100vw, 100vw"
                 priority
               />

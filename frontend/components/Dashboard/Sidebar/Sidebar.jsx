@@ -32,13 +32,11 @@ const Sidebar = () => {
     <div>
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-50 bg-white
-        h-screen w-72 border rounded-2xl pt-10 p-6
-        md:sticky md:top-10 md:h-[calc(100vh-5rem)]
-        flex flex-col overflow-hidden transition-transform duration-300
-        ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`fixed lg:sticky top-0 left-0 z-50 bg-white
+  h-screen lg:h-[calc(100vh-5rem)] w-72 border rounded-2xl pt-10 p-6
+  flex flex-col overflow-hidden transition-transform duration-300
+  ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+  lg:translate-x-0`}
       >
         {/* Header (no scroll) */}
         <div className="space-y-6 shrink-0">
@@ -53,7 +51,7 @@ const Sidebar = () => {
             <h2 className="font-semibold">Hunky Butler Service</h2>
             <button
               onClick={() => dispatch(toggleSidebar())}
-              className="text-2xl text-[#FF006A] md:hidden"
+              className="text-2xl text-[#FF006A] lg:hidden"
             >
               <GiHandcuffs />
             </button>
