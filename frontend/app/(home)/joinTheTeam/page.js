@@ -8,13 +8,15 @@ export default function joinTheTeam() {
     <div className="min-h-screen bg-white">
       <Banner
         image={img}
-         service={"Blog Details"}
-        title={"Cocktail Making: Tools You Need at Home"}
-        description={"February 11, 2014 | Sara Ali"}
+        service={"Join The Team"}
+        title={
+          <>
+            Join the Team – Buff Butler <br /> Jobs UK
+          </>
+        }
       />
-      <JoinForm/>
+      <JoinForm />
       <Footer />
     </div>
   );
 }
- 
