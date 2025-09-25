@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import icon from "@/public/icons/arowright.png";
 import butlerImg from "@/public/service/buff.jpg";
+import strippersImg from "@/public/service/Strippers.jpg";
 import butlerImg2 from "@/public/ImageGalary/pic1.jpeg";
 import butlerImg3 from "@/public/ImageGalary/pic5.jpeg";
 import butlerImg4 from "@/public/ImageGalary/pic3.jpeg";
@@ -88,7 +89,7 @@ export default function ALLServices() {
               </ul>
 
               <div className="mt-8">
-                <Link href="/service/buffButlers">
+                <Link href="/buff-butlers">
                   <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                     Book Now
                   </button>
@@ -145,7 +146,7 @@ export default function ALLServices() {
             </ul>
 
             <div className="mt-8">
-              <Link href="/service/lifeDrawing">
+              <Link href="/life-drawing">
                 <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                   Book Now
                 </button>
@@ -173,7 +174,7 @@ export default function ALLServices() {
         <div className="flex flex-col-reverse md:flex-row-reverse md:items-center gap-10 md:gap-16">
           {/* === Text Content === */}
           <div className="flex-1">
-            <MainTitle text="Strippers" />
+            <MainTitle text="Cocktail Masterclasses" />
             <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
               For groups that want the party turned up a notch, our male
               strippers deliver professional performances tailored to your vibe.
@@ -201,7 +202,7 @@ export default function ALLServices() {
             </ul>
 
             <div className="mt-8">
-              <Link href="/service/cocktail">
+              <Link href="/cocktail">
                 <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                   Book Now
                 </button>
@@ -228,7 +229,7 @@ export default function ALLServices() {
         <div className="flex flex-col-reverse md:flex-row md:items-center gap-10 md:gap-16">
           {/* === Text Content === */}
           <div className="flex-1">
-            <MainTitle text="Cocktail Masterclasses" />
+            <MainTitle text="Strippers" />
             <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
               Turn up the excitement with our professional male strippers, who
               deliver tasteful, cheeky, and high-energy performances. Whether
@@ -271,7 +272,7 @@ export default function ALLServices() {
           <div className="flex-1">
             <div className="relative w-full aspect-[581/632] sm:aspect-[581/450] md:aspect-[581/632] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
               <Image
-                src={butlerImg4}
+                src={strippersImg}
                 alt="Buff Butlers"
                 fill
                 className="object-cover rounded-2xl"
