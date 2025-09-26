@@ -10,6 +10,7 @@ import { sendEmail } from "../utils/utils.js";
 
 
 export const sendOtp = async(req, res) => {
+  console.log("Hit")
 
 
     try {
@@ -19,14 +20,13 @@ export const sendOtp = async(req, res) => {
 
         const otp = await otpGenaretor() ;
 
-        console.log(otp, email, "Salar otp toi ay")
+
 
         // Delete previous OTPs
   
          const deleted =   await OTP.deleteMany({ email });
 
-         console.log(deleted, "salar bacca")
-   
+    
 
         // Save new OTP
         const newOtp =await new OTP({ email, otp });
@@ -50,7 +50,8 @@ export const sendOtp = async(req, res) => {
             `,
             otp
         );
-
+  
+         console.log(datasEamil, "fuck you its")
 
 
   
