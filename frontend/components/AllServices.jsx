@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import icon from "@/public/icons/arowright.png";
@@ -9,278 +10,112 @@ import butlerImg4 from "@/public/ImageGalary/pic3.jpeg";
 import background from "@/public/images/services/bg4.png";
 import MainTitle from "./shared/typography/MainTitle";
 import Link from "next/link";
+import { useGetServicesQuery } from "@/features/services/servicesApi";
 
 export default function ALLServices() {
-  const bulletPoints = [
-    "Hosting party games and activities",
-    "Serving drinks, canapés, or cocktails",
-    "Welcoming and mingling with guests",
-    "Photo opportunities to capture the memories",
-  ];
-  const bulletPoints2 = [
-    "Professional model for the session",
-    "All basic drawing materials provided (paper, pencils, etc.)",
-    "Guided class with creative prompts and games",
-    "Group photo opportunity at the end",
-  ];
-  const bulletPoints3 = [
-    "Professional bartender/mixologist instructor",
-    "All ingredients and equipment provided",
-    "Hands-on cocktail making (3 drinks per guest)",
-    "Fun games and competitions with prizes",
-  ];
-  const bulletPoints4 = [
-    "Professional, reliable entertainer",
-    "Customisable performance style and Outfit (fun, cheeky, or classic)",
-    "Music and props for added flair",
-    "Photo opportunities with guests (where appropriate)",
-  ];
+  // const bulletPoints = [
+  //   "Hosting party games and activities",
+  //   "Serving drinks, canapés, or cocktails",
+  //   "Welcoming and mingling with guests",
+  //   "Photo opportunities to capture the memories",
+  // ];
+  // const bulletPoints2 = [
+  //   "Professional model for the session",
+  //   "All basic drawing materials provided (paper, pencils, etc.)",
+  //   "Guided class with creative prompts and games",
+  //   "Group photo opportunity at the end",
+  // ];
+  // const bulletPoints3 = [
+  //   "Professional bartender/mixologist instructor",
+  //   "All ingredients and equipment provided",
+  //   "Hands-on cocktail making (3 drinks per guest)",
+  //   "Fun games and competitions with prizes",
+  // ];
+  // const bulletPoints4 = [
+  //   "Professional, reliable entertainer",
+  //   "Customisable performance style and Outfit (fun, cheeky, or classic)",
+  //   "Music and props for added flair",
+  //   "Photo opportunities with guests (where appropriate)",
+  // ];
+  const { data: services = [], isLoading, error } = useGetServicesQuery();
+
+  console.log(services);
 
   return (
     <section className="pb-12 md:pb-24">
-      <div
-        style={{
-          backgroundImage: `url(${background.src})`,
-        }}
-      >
+      <div style={{ backgroundImage: `url(${background.src})` }}>
         <div className="max-w-7xl mx-auto pt-10">
           <h1 className="text-center font-medium pt-6 text-[32px]">
             Our Entertainment Services Planning the perfect party can be
             stressful — that’s where we come in. At Hunky Butler Service, we’ve
             curated a range of entertainment options to keep your guests
-            laughing, sipping, and celebrating in style. Whether you’re
-            organising a hen do in Liverpool, a birthday party in Manchester, or
-            a corporate night in London, our team of professional hosts bring
-            energy, fun, and reliability to every occasion.
+            laughing, sipping, and celebrating in style.
           </h1>
         </div>
-        <div className="max-w-7xl mx-auto pt-30 px-4 md:px-6">
-          <div className="flex flex-col-reverse md:flex-row-reverse md:items-center gap-10 md:gap-16">
-            {/* === Text Content === */}
-            <div className="flex-1">
-              <MainTitle text="Buff Butlers" />
-              <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-                Our buff butlers are cheeky, charming, and professional hosts
-                who know how to get the party started. Perfect for hen nights,
-                birthdays, and private events, they serve drinks, host games,
-                mingle with guests, and make sure everyone is having a great
-                time. More than just eye-candy, our butlers bring energy and fun
-                to every occasion, leaving your guests with memories that last
-                long after the night ends.
-              </p>
 
-              <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
-                What included in this service
-              </p>
+        <div className="max-w-7xl mx-auto pt-30 px-4 md:px-6 space-y-20">
+          {services.map((service, idx) => (
+            <div
+              key={idx}
+              className={`flex flex-col ${
+                idx % 2 === 0 ? "md:flex-row-reverse" : "md:flex-row"
+              } md:items-center gap-10 md:gap-16`}
+            >
+              {/* Text */}
+              <div className="flex-1">
+                <MainTitle text={service.serviceName} />
+                <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
+                  {service.description}
+                </p>
 
-              <ul className="mt-6 space-y-4">
-                {bulletPoints.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-4">
-                    <Image
-                      src={icon}
-                      alt="icon"
-                      className="w-5 h-5 mt-1 flex-shrink-0"
-                    />
-                    <p className="text-base sm:text-lg text-[#333333] leading-relaxed">
-                      {item}
+                {service.included?.length > 0 && (
+                  <>
+                    <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
+                      What included in this service
                     </p>
-                  </li>
-                ))}
-              </ul>
+                    <ul className="mt-6 space-y-4">
+                      {service.included.map((item, i) => (
+                        <li key={i} className="flex items-start gap-4">
+                          <Image
+                            src={icon}
+                            alt="icon"
+                            className="w-5 h-5 mt-1 flex-shrink-0"
+                          />
+                          <p className="text-base sm:text-lg text-[#333333] leading-relaxed">
+                            {item}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
 
-              <div className="mt-8">
-                <Link href="/buff-butlers">
-                  <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
-                    Book Now
-                  </button>
-                </Link>
+                <div className="mt-8">
+                  <Link
+                    href={`/service/${service.serviceName
+                      .replace(/\s+/g, "-")
+                      .toLowerCase()}`}
+                  >
+                    <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
+                      Book Now
+                    </button>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Image */}
+              <div className="flex-1">
+                <div className="relative w-full aspect-[581/632] sm:aspect-[581/450] md:aspect-[581/632] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
+                  <Image
+                    src={service.image || "/default.jpg"}
+                    alt={service.serviceName}
+                    fill
+                    className="object-cover rounded-2xl"
+                  />
+                </div>
               </div>
             </div>
-
-            {/* === Image Section === */}
-            <div className="flex-1">
-              <div className="relative w-full aspect-[581/632] sm:aspect-[581/450] md:aspect-[581/632] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
-                <Image
-                  src={butlerImg}
-                  alt="Buff Butlers"
-                  fill
-                  className="object-cover rounded-2xl"
-                  sizes="(min-width: 1024px) 50vw, (min-width: 640px) 100vw, 100vw"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto my-30 px-4 md:px-6">
-        <div className="flex flex-col-reverse md:flex-row md:items-center gap-10 md:gap-16">
-          {/* === Text Content === */}
-          <div className="flex-1">
-            <MainTitle text="Life Drawing" />
-            <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-              Mix, shake, and sip cocktails with our expert bartenders — and
-              yes, they’ll bring plenty of charm too. A cocktail masterclass is
-              the perfect way to kick off a night out, whether you’re planning a
-              hen party in Liverpool or a birthday in London.
-            </p>
-
-            <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
-              What included in this service
-            </p>
-
-            <ul className="mt-6 space-y-4">
-              {bulletPoints2.map((item, idx) => (
-                <li key={idx} className="flex items-start gap-4">
-                  <Image
-                    src={icon}
-                    alt="icon"
-                    className="w-5 h-5 mt-1 flex-shrink-0"
-                  />
-                  <p className="text-base sm:text-lg text-[#333333] leading-relaxed">
-                    {item}
-                  </p>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8">
-              <Link href="/life-drawing">
-                <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
-                  Book Now
-                </button>
-              </Link>
-            </div>
-          </div>
-
-          {/* === Image Section === */}
-          <div className="flex-1">
-            <div className="relative w-full aspect-[581/632] sm:aspect-[581/450] md:aspect-[581/632] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
-              <Image
-                src={butlerImg2}
-                alt="Buff Butlers"
-                fill
-                className="object-cover rounded-2xl"
-                sizes="(min-width: 1024px) 50vw, (min-width: 640px) 100vw, 100vw"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto my-30 px-4 md:px-6">
-        <div className="flex flex-col-reverse md:flex-row-reverse md:items-center gap-10 md:gap-16">
-          {/* === Text Content === */}
-          <div className="flex-1">
-            <MainTitle text="Cocktail Masterclasses" />
-            <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-              For groups that want the party turned up a notch, our male
-              strippers deliver professional performances tailored to your vibe.
-              From cheeky routines to full shows, they’re always a crowd
-              favourite. Popular across Leeds, Liverpool, and London.
-            </p>
-
-            <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
-              What included in this service
-            </p>
-
-            <ul className="mt-6 space-y-4">
-              {bulletPoints3.map((item, idx) => (
-                <li key={idx} className="flex items-start gap-4">
-                  <Image
-                    src={icon}
-                    alt="icon"
-                    className="w-5 h-5 mt-1 flex-shrink-0"
-                  />
-                  <p className="text-base sm:text-lg text-[#333333] leading-relaxed">
-                    {item}
-                  </p>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8">
-              <Link href="/cocktail">
-                <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
-                  Book Now
-                </button>
-              </Link>
-            </div>
-          </div>
-
-          {/* === Image Section === */}
-          <div className="flex-1">
-            <div className="relative w-full aspect-[581/632] sm:aspect-[581/450] md:aspect-[581/632] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
-              <Image
-                src={butlerImg3}
-                alt="Buff Butlers"
-                fill
-                className="object-cover rounded-2xl"
-                sizes="(min-width: 1024px) 50vw, (min-width: 640px) 100vw, 100vw"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="max-w-7xl mx-auto my-30 px-4 md:px-6">
-        <div className="flex flex-col-reverse md:flex-row md:items-center gap-10 md:gap-16">
-          {/* === Text Content === */}
-          <div className="flex-1">
-            <MainTitle text="Strippers" />
-            <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-              Turn up the excitement with our professional male strippers, who
-              deliver tasteful, cheeky, and high-energy performances. Whether
-              you’re planning a hen night, birthday party, or milestone
-              celebration, our strippers bring the wow factor. Choose from fun,
-              cheeky, or more classic styles — whatever matches your vibe. With
-              music, costumes, and plenty of audience interaction, it’s the
-              ultimate party highlight.
-            </p>
-
-            <p className="font-semibold text-xl mt-8 md:mt-16 capitalize">
-              What included in this service
-            </p>
-
-            <ul className="mt-6 space-y-4">
-              {bulletPoints4.map((item, idx) => (
-                <li key={idx} className="flex items-start gap-4">
-                  <Image
-                    src={icon}
-                    alt="icon"
-                    className="w-5 h-5 mt-1 flex-shrink-0 "
-                  />
-                  <p className="text-base sm:text-lg text-[#333333] leading-relaxed">
-                    {item}
-                  </p>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8">
-              <Link href="/service/strippers">
-                <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
-                  Book Now
-                </button>
-              </Link>
-            </div>
-          </div>
-
-          {/* === Image Section === */}
-          <div className="flex-1">
-            <div className="relative w-full aspect-[581/632] sm:aspect-[581/450] md:aspect-[581/632] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
-              <Image
-                src={strippersImg}
-                alt="Buff Butlers"
-                fill
-                className="object-cover rounded-2xl"
-                sizes="(min-width: 1024px) 50vw, (min-width: 640px) 100vw, 100vw"
-                priority
-              />
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
