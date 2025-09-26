@@ -2,6 +2,7 @@
 import { toggleSidebar } from "@/features/sidebarSlice";
 import { useAdminToolTab } from "@/hooks/useAdminToolTab";
 import { useActiveTab, useSetTab } from "@/hooks/useUsersTab";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { FiBell, FiSun } from "react-icons/fi";
@@ -19,6 +20,17 @@ const DashNav = ({ tab }) => {
   const dispatch = useDispatch();
 
   const setUserTab = useSetTab();
+  const data = useSession();
+  console.log(data, "This is your data")
+  const role = data?.data?.user?.role;
+  const status = data.status;
+  console.log(status, "This is your status")
+
+  if(status === "loading"){
+    return <h4>Loading...</h4>
+  }
+
+  ``
 
   const tabHandaler = async (slug) => {
     try {

@@ -13,46 +13,48 @@ const handler = NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
- 
         email: { type: "text" },
         role: { type: "text" },
-        _id:{type: "text"}
+        _id: { type: "text" }
       },
       async authorize(credentials) {
-      
+        // এখানে actual authentication logic যোগ করুন
+        // যেমন database check, password verification etc.
+        
+        if (!credentials.email) {
+          return null;
+        }
 
-     
+        // Temporary - production-এ actual authentication implement করুন
         return {
- 
-   
+          id: credentials._id,
           email: credentials.email,
           role: credentials.role,
-          _id: credentials._id
         };
       }
     })
   ],
 
-callbacks: {
-  async jwt({ token, user }) {
-    if (user) {
-      token.user = {
-        email: user.email,
-        role: user.role,
-        _id: user._id,
-      };
-    }
-    return token;
-  },
+  callbacks: {
+    async jwt({ token, user }) {
+      // Step 1: User sign in করলে
+      if (user) {
+        token.role = user.role; // সরাসরি token-এ role রাখুন
+        token.id = user.id;
+      }
+      return token;
+    },
 
-  async session({ session, token }) {
-    if (token.user) {
-      session.user = token.user;
-    }
-    return session;
+    async session({ session, token }) {
+      // Step 2: Token থেকে session-এ data send করুন
+      if (token) {
+        session.user.id = token.id;
+        session.user.email = token.email;
+        session.user.role = token.role; // role সরাসরি session-এ
+      }
+      return session;
+    },
   },
-},
-
 
   pages: {
     signIn: '/login',
