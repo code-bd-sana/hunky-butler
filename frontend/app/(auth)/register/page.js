@@ -97,7 +97,7 @@ if(result.message === "Success"){
           </Link>
 
           {/* Role-based image — desktop perfect; mobile gets a safe min-height */}
-          {/* <Image
+          <Image
             key={role}
             src={img.src}
             alt={img.alt}
@@ -105,7 +105,7 @@ if(result.message === "Success"){
             height={720}
             priority
             className="h-full w-full object-cover object-center"
-          /> */}
+          />
         </section>
 
         {/* RIGHT: Auth card */}
