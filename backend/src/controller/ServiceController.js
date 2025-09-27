@@ -1,6 +1,7 @@
 // import Service from "../models/Service.js";  // ✅ works now
 
-import Service from "../models/service.js";
+// import Service from "../models/service.js";
+import Service from '../models/service.js'
 
 
 // Get all services
