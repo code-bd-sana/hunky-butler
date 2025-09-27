@@ -3,7 +3,7 @@ import { Router } from 'express';
 import auth from './authantication.route.js';
 import otp from './otp.route.js';
 import user from './user.route.js';
-import service from './services.js';
+import service from './Service.js';
 import blogRoutes from './blogRoutes.js';
 
 const router = Router();
