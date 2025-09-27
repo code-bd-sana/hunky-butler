@@ -7,7 +7,14 @@ export const servicesApi = createApi({
     getServices: builder.query({
       query: () => "/services",
     }),
+    addService: builder.mutation({
+      query: (serviceData) => ({
+        url: "/services",
+        method: "POST",
+        body: serviceData,
+      }),
+    }),
   }),
 });
 
-export const { useGetServicesQuery } = servicesApi; // ✅ named export
+export const { useGetServicesQuery, useAddServiceMutation } = servicesApi; // ✅ named export

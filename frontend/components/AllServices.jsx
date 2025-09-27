@@ -63,7 +63,7 @@ export default function ALLServices() {
             >
               {/* Text */}
               <div className="flex-1">
-                <MainTitle text={service.serviceName} />
+                <MainTitle text={service.name} />
                 <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
                   {service.description}
                 </p>
@@ -92,9 +92,7 @@ export default function ALLServices() {
 
                 <div className="mt-8">
                   <Link
-                    href={`/service/${service.serviceName
-                      .replace(/\s+/g, "-")
-                      .toLowerCase()}`}
+                    href={`/services/${service.slug}`}
                   >
                     <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                       Book Now
@@ -107,7 +105,7 @@ export default function ALLServices() {
               <div className="flex-1">
                 <div className="relative w-full aspect-[581/632] sm:aspect-[581/450] md:aspect-[581/632] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
                   <Image
-                    src={service.image || "/default.jpg"}
+                    src={service?.banner || "/default.jpg"}
                     alt={service.serviceName}
                     fill
                     className="object-cover rounded-2xl"
