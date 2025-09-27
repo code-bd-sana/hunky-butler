@@ -2,7 +2,6 @@
 
 import Service from "../models/service.js";
 
-
 // Get all services
 export const getAllServices = async (req, res) => {
   try {
@@ -25,15 +24,28 @@ export const getAllServices = async (req, res) => {
 // };
 
 // Create a new service
-// export const createService = async (req, res) => {
-//   try {
-//     const newService = new Service(req.body);
-//     const savedService = await newService.save();
-//     res.status(201).json(savedService);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// };
+export const createService = async (req, res) => {
+  try {
+    const { name, description, includes, faqs, bannerUrl } = req.body;
+
+    const newService = new Service({
+      name: name, // match your schema fields
+      description,
+      included: includes,
+      faqs: faqs.map((f) => ({ question: f.q, answer: f.a })), // map frontend FAQ to schema
+      banner: bannerUrl,
+      price: 0, // or add a price input in frontend
+      status: "active",
+    });
+
+    const savedService = await newService.save(); // <-- actually saves to DB
+
+    res.status(201).json({ message: "Service created", service: savedService });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 // // Update a service
 // export const updateService = async (req, res) => {
