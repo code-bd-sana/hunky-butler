@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import User from "./user.model.js";
 
 
 
@@ -66,7 +67,10 @@ status:{
     enum:['completed', 'ongoing', 'cancel'],
     default:'ongoing'
 },
-
+butler:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:User
+}
 
 
 })
