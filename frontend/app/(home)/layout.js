@@ -1,5 +1,7 @@
+
 import "../globals.css";
 import Navbar from "@/components/shared/Navbar";
+import { SessionProvider } from "next-auth/react";
 import { Poppins } from "next/font/google";
 
 const poppins = Poppins({
@@ -52,8 +54,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={poppins.variable}>
       <body className="font-sans">
-        <Navbar />
+    
+         <Navbar />
         {children}
+
       </body>
     </html>
   );

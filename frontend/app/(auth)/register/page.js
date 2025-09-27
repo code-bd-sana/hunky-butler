@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSaveRegisterMutation } from "@/features/auth";
 import toast, { Toaster } from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 
 export default function Page() {
@@ -96,7 +97,7 @@ if(result.message === "Success"){
           </Link>
 
           {/* Role-based image — desktop perfect; mobile gets a safe min-height */}
-          {/* <Image
+          <Image
             key={role}
             src={img.src}
             alt={img.alt}
@@ -104,7 +105,7 @@ if(result.message === "Success"){
             height={720}
             priority
             className="h-full w-full object-cover object-center"
-          /> */}
+          />
         </section>
 
         {/* RIGHT: Auth card */}
@@ -245,33 +246,41 @@ if(result.message === "Success"){
                 </div>
 
                 <div className="space-y-2">
-                  <button
-                    type="button"
-                    className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
-                  >
-                    <Image
-                      src="/images/google.png"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="h-[24px] w-[24px] shrink-0"
-                    />
-                    Continue With Google
-                  </button>
+               
 
-                  <button
-                    type="button"
-                    className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
-                  >
-                    <Image
-                      src="/images/apple.png"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="h-[24px] w-[24px] shrink-0"
-                    />
-                    Continue With Apple
-                  </button>
+<button
+  type="button"
+  onClick={() => signIn("google", { 
+    callbackUrl: "/",
+    role: role // Current selected role pass করুন
+  })}
+  className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
+>
+  <Image
+    src="/images/google.png"
+    alt="Google"
+    width={24}
+    height={24}
+    className="h-[24px] w-[24px] shrink-0"
+  />
+  Continue With Google 
+</button>
+
+{/* Apple button (যদি implement করেন) */}
+<button
+  type="button"
+  onClick={() => signIn("apple", { callbackUrl: "/" })}
+  className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
+>
+  <Image
+    src="/images/apple.png"
+    alt="Apple"
+    width={24}
+    height={24}
+    className="h-[24px] w-[24px] shrink-0"
+  />
+  Continue With Apple
+</button>
                 </div>
 
                 <div className="flex gap-1.5 sm:gap-2 justify-center items-center">
