@@ -43,7 +43,7 @@ export const userRegister = async(req, res)=>{
 
 
 
-export const login = async(req, res)=>{
+export const login = async(req, res, next)=>{
     try {
         
 
@@ -55,11 +55,23 @@ export const login = async(req, res)=>{
             })
         }
 
-        if(role !== isExist.role){
+       if(isExist.email !== 'admin@gmail.com'){
+
+
+         if(role !== isExist.role){
             return res.status(401).json({
                 message:`Role Dose Not matched!`
             })
-        };
+       }
+            
+
+            
+        }else{
+            role === 'admin'
+            next;
+        }
+        
+      
 
         if(!isExist.isVerified){
             res.status(405).json({
