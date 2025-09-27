@@ -130,9 +130,9 @@ const Navbar = () => {
               </a>
             </div>
 
-            <button className="inline-flex items-center justify-center px-6 h-11 min-w-[164px] bg-white text-[#FF006A] rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap text-center">
+            <Link href={'/quote'} className="inline-flex items-center justify-center px-6 h-11 min-w-[164px] bg-white text-[#FF006A] rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap text-center">
               Get Instant Quote
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
