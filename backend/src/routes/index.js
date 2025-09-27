@@ -3,7 +3,7 @@ import { Router } from 'express';
 import auth from './authantication.route.js';
 import otp from './otp.route.js';
 import user from './user.route.js';
-import service from './Service.js';
+// import service from './Service.js';
 import blogRoutes from './blogRoutes.js';
 
 const router = Router();
@@ -12,7 +12,7 @@ const router = Router();
 router.use('/auth', auth);
 router.use('/otp', otp);
 router.use('/user', user);
-router.use('/services', service);
+// router.use('/services', service);
 router.use('/blogs', blogRoutes);
 
 
