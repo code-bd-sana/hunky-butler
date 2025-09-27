@@ -2,77 +2,50 @@ import OTP from "../models/otp.model.js";
 import User from "../models/user.model.js";
 import { sendEmail } from "../utils/utils.js";
 
+export const sendOtp = async (req, res) => {
+  console.log("Hit");
 
+  try {
+    const email = req.params.email;
 
+    const otp = await otpGenaretor();
 
+    // Delete previous OTPs
 
+    const deleted = await OTP.deleteMany({ email });
 
+    // Save new OTP
+    const newOtp = await new OTP({ email, otp });
+    const saved = await newOtp.save();
 
+    // Encode email for URL
+    // const encodedEmail = encodeURIComponent(email);
 
-export const sendOtp = async(req, res) => {
-  console.log("Hit")
-
-
-    try {
-        const email = req.params.email;
-
-
-
-        const otp = await otpGenaretor() ;
-
-
-
-        // Delete previous OTPs
-  
-         const deleted =   await OTP.deleteMany({ email });
-
-    
-
-        // Save new OTP
-        const newOtp =await new OTP({ email, otp });
-      const saved =   await newOtp.save();
-
-
-
-                                                                                                         
-
-        // Encode email for URL
-        // const encodedEmail = encodeURIComponent(email);
-
-        // Send email
-       const datasEamil =  await sendEmail(
-            email,
-            'Your Verification Code - Secure Access', 
-            `
+    // Send email
+    const datasEamil = await sendEmail(
+      email,
+      "Your Verification Code - Secure Access",
+      `
             Dear Valued Customer,
             <br><br>
         
             `,
-            otp
-        );
-  
-         console.log(datasEamil, "fuck you its")
+      otp
+    );
 
+    console.log(datasEamil, "fuck you its");
 
-  
-        res.status(200).json({ message:"Otp Sent Successfully" });
-
-
-       
-
-    } catch (error) {
-    console.log(error, "salar abba")
-        res.status(500).json({ message:"Something went Wrong!", error });
-    }
-}
-
+    res.status(200).json({ message: "Otp Sent Successfully" });
+  } catch (error) {
+    console.log(error, "salar abba");
+    res.status(500).json({ message: "Something went Wrong!", error });
+  }
+};
 
 export const verifyUser = async (req, res) => {
-
-
   try {
     const { email, otp } = req.body;
-    console.log(email, 'This is your email')
+    console.log(email, "This is your email");
 
     const user = await User.findOne({ email });
 
@@ -83,7 +56,9 @@ export const verifyUser = async (req, res) => {
     const otpEntry = await OTP.findOne({ email });
 
     if (!otpEntry) {
-      return res.status(401).json({ message: "OTP expired, please try again!" });
+      return res
+        .status(401)
+        .json({ message: "OTP expired, please try again!" });
     }
 
     if (otpEntry.otp !== otp) {
@@ -96,15 +71,12 @@ export const verifyUser = async (req, res) => {
     await OTP.deleteMany({ email });
 
     res.status(200).json({ message: "Verification successful!" });
-
   } catch (error) {
     res.status(500).json({ message: "Something went wrong!", error });
   }
 };
 
-
-
-const otpGenaretor = async()=>{
-
-      const otp = Math.floor(100000 + Math.random() * 900000);
-  return otp.toString();}
+const otpGenaretor = async () => {
+  const otp = Math.floor(100000 + Math.random() * 900000);
+  return otp.toString();
+};
