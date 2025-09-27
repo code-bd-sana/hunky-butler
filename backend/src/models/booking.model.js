@@ -1,0 +1,76 @@
+import mongoose from "mongoose";
+
+
+
+
+const bookingSchema = mongoose.Schema({
+
+firstName:{
+    type:String,
+ 
+    required:[true, "First Name is Required"]
+},
+
+lastName:{
+    type:String,
+    required:[true, "Last Name is Required"]
+},
+
+
+email:{
+    type:String,
+    required:[true, "Email is Required"]
+},
+
+
+phone:{
+    type:Number,
+    required:[true, "Phone Number is Required"]
+},
+postCode:{
+    type:Number,
+    required:[true, "Post Code is required"]
+},
+dateOfEvent:{
+    type:Date,
+    required:[true, "Date Of Evenet is Required"]
+},
+numberOfStaff:{
+    type:Number,
+    required:[true, "Number Of Staff is Required"]
+},
+startTime:{
+    type: Date,
+    required:[true, "Start Time is Required"]
+},
+
+DurationHours:{
+    type:Number,
+    required:[true, "Duration Hours is Required"]
+},
+DurationMinutes:{
+    type:Number,
+    required:[true, "Duration Minutes Is Required"]
+
+},
+serviceName:{
+    type:String,
+    required:[true, "Service Name is Required"]
+},
+price:{
+    type:Number,
+    required:[true, "Price is Required"]
+},
+status:{
+    type:String,
+    enum:['completed', 'ongoing', 'cancel'],
+    default:'ongoing'
+},
+
+
+
+})
+
+const Booking = mongoose.model('Booking', bookingSchema);
+
+export default Booking;
