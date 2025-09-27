@@ -7,11 +7,9 @@ import { useSaveRegisterMutation } from "@/features/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { signIn } from "next-auth/react";
 
-
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("customer");
-  
 
   const roleImage = {
     customer: {
@@ -25,48 +23,37 @@ export default function Page() {
     alt: "Event preview",
   };
 
-  const [saveRegister, {data, isLoading, error, isSuccess}] = useSaveRegisterMutation()
+  const [saveRegister, { data, isLoading, error, isSuccess }] =
+    useSaveRegisterMutation();
 
-  const handleRegister = async(e)=>{
+  const handleRegister = async (e) => {
     try {
- e.preventDefault();
+      e.preventDefault();
 
- const email = e.target.email.value;
- const password = e.target.password.value;
+      const email = e.target.email.value;
+      const password = e.target.password.value;
 
+      const data = { email, password };
 
- const data = {email, password};
-
- 
-
-
-
- const result = await saveRegister({email, password , role}).unwrap();
- console.log(result)
-if(result.message === "Success"){
- 
-
-   setTimeout(()=>{
-
- toast.success("User Registar Success - Now please Verify your account")
-            window.location.href = "/verification";
-          }, [2000])
-}
-
-  
-
-
-      
+      const result = await saveRegister({ email, password, role }).unwrap();
+      console.log(result);
+      if (result.message === "Success") {
+        setTimeout(() => {
+          toast.success(
+            "User Registar Success - Now please Verify your account"
+          );
+          window.location.href = "/verification";
+        }, [2000]);
+      }
     } catch (error) {
       console.log(error.data.message);
-      toast.error(error?.data?.message)
-      
+      toast.error(error?.data?.message);
     }
-  }
+  };
 
   return (
     <main className="min-h-screen w-full bg-[#f6f7fb] flex items-center justify-center p-3 sm:p-4 md:p-6">
-      <Toaster/>
+      <Toaster />
       {/* Container: desktop width preserved; responsive padding/gaps */}
       <div className="w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-4">
         {/* LEFT: Photo panel */}
@@ -117,7 +104,7 @@ if(result.message === "Success"){
                 Hunky Butler Service
               </h1>
               <p className="mt-1 sm:mt-2 capitalize text-center text-[15px] sm:text-[16px] lg:text-[18px] text-[#141414]">
-                Light up your event with our butlers
+                Turn Your occasion into an unforgettable event
               </p>
 
               {/* Segmented toggle (state only; design unchanged) */}
@@ -157,7 +144,10 @@ if(result.message === "Success"){
               </div>
 
               {/* Form (unchanged visually on lg, scaled spacing on small) */}
-              <form onSubmit={handleRegister} className="mt-5 sm:mt-6 space-y-4">
+              <form
+                onSubmit={handleRegister}
+                className="mt-5 sm:mt-6 space-y-4"
+              >
                 <div className="space-y-1.5">
                   <label className="text-[12px] text-[#292929]">Email</label>
                   <input
@@ -215,23 +205,13 @@ if(result.message === "Success"){
                       )}
                     </button>
                   </div>
-                  <div className="text-right">
-                    <a
-                      href="#"
-                      className="text-[14px] sm:text-[16px] font-medium underline text-[#FF006A]"
-                    >
-                      Forgot Password?
-                    </a>
-                  </div>
                 </div>
 
                 <button
                   type="submit"
                   className="mt-1 w-full capitalize rounded-[100px] bg-[#FF006A] py-2.5 text-[16px] sm:text-[18px] tracking-[1px] font-semibold text-white hover:brightness-105 active:brightness-95"
                 >
-                  {
-                    isLoading ? 'loading...': 'Create account'
-                  }
+                  {isLoading ? "loading..." : "Create account"}
                 </button>
 
                 <div className="relative my-2">
@@ -246,28 +226,28 @@ if(result.message === "Success"){
                 </div>
 
                 <div className="space-y-2">
-               
+                  <button
+                    type="button"
+                    onClick={() =>
+                      signIn("google", {
+                        callbackUrl: "/",
+                        role: role, // Current selected role pass করুন
+                      })
+                    }
+                    className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
+                  >
+                    <Image
+                      src="/images/google.png"
+                      alt="Google"
+                      width={24}
+                      height={24}
+                      className="h-[24px] w-[24px] shrink-0"
+                    />
+                    Continue With Google
+                  </button>
 
-<button
-  type="button"
-  onClick={() => signIn("google", { 
-    callbackUrl: "/",
-    role: role // Current selected role pass করুন
-  })}
-  className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
->
-  <Image
-    src="/images/google.png"
-    alt="Google"
-    width={24}
-    height={24}
-    className="h-[24px] w-[24px] shrink-0"
-  />
-  Continue With Google 
-</button>
-
-{/* Apple button (যদি implement করেন) */}
-<button
+                  {/* Apple button (যদি implement করেন) */}
+                  {/* <button
   type="button"
   onClick={() => signIn("apple", { callbackUrl: "/" })}
   className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
@@ -280,7 +260,7 @@ if(result.message === "Success"){
     className="h-[24px] w-[24px] shrink-0"
   />
   Continue With Apple
-</button>
+</button> */}
                 </div>
 
                 <div className="flex gap-1.5 sm:gap-2 justify-center items-center">

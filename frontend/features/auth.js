@@ -37,10 +37,20 @@ export const authApi = createApi({
   }),
 }),
 
+   
+  
+forgotPassword: builder.mutation({
+  query: (data) => ({
+    url: '/auth/forgotPassword',
+    method: 'PUT',
+    body: data, 
+  }),
+}),
+
 
 
 
   }),
 });
 
-export const { useSaveRegisterMutation, useLoginMutation,   useVerifyOtpMutation, useSendOtpMutation } = authApi;
+export const { useSaveRegisterMutation, useLoginMutation,   useVerifyOtpMutation, useSendOtpMutation, useForgotPasswordMutation } = authApi;
