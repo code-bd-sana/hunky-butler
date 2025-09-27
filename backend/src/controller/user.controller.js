@@ -1,19 +1,20 @@
-import User from "../models/user.model.js"
+// import User from "../models/user.model.js"
 
-export const getAllUsers = async(req, res)=>{
-    try {
+import User from "../models/user.model.js";
 
-        const users = await User.find();
+// import User from "../models/user.model";
 
-        res.status(200).json({
-            message:"Success",
-            data:users
-        })
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
 
-        
-    } catch (error) {
-        res.status(500).json({
-            message:"Something went wrong!"
-        })
-    }
-}
+    res.status(200).json({
+      message: "Success",
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+    });
+  }
+};

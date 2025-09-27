@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { login, userRegister } from "../controller/Authantication.controller.js";
+import { fortgetPassword, login, userRegister } from "../controller/Authantication.controller.js";
 
 const router = Router();
 
 
 router.post('/register', userRegister);
-router.post('/login', login)
+router.post('/login', login);
+router.put('/forgotPassword', fortgetPassword)
 
 
 

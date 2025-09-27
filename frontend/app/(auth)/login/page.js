@@ -3,13 +3,24 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useLoginMutation } from "@/features/auth";
+import {
+  useForgotPasswordMutation,
+  useLoginMutation,
+  useSendOtpMutation,
+} from "@/features/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("customer");
+  const [showForgotPassword, setForgotPassword] = useState(false);
+  const [step, setStep] = useState(1); // 1: Email, 2: New Password
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const roleImage = {
     customer: { src: "/ImageGalary/pic8.jpeg", alt: "Customer preview" },
@@ -20,72 +31,150 @@ export default function Page() {
     alt: "Event preview",
   };
 
-  const [login, {isLoading, isSuccess, error}] = useLoginMutation();
+  const [login, { isLoading, isSuccess, error }] = useLoginMutation();
+  const [sendOtp, { isLoading: otploading }] = useSendOtpMutation();
+  const [forgotPassword, { isLoading: forgetLoading }] =
+    useForgotPasswordMutation();
 
-
-  const loginHandler = async(e)=>{
+  const loginHandler = async (e) => {
     try {
-       e.preventDefault();
-       const email = e.target.email.value;
-       const password = e.target.password.value;
+      e.preventDefault();
+      const email = e.target.email.value;
+      const password = e.target.password.value;
 
-       console.log(email, password);
+      console.log(email, password);
 
-       const result =await login({email, password, role}).unwrap();
-       console.log(result.data);
-            const user = result.data
+      const result = await login({ email, password, role }).unwrap();
+      console.log(result.data);
+      const user = result.data;
 
-            toast.success("Login Success")
+      toast.success("Login Success");
 
-   
+      const res = await signIn("credentials", {
+        redirect: false,
+        email: user.email,
+        role: user.role,
+        _id: user._id,
+      });
 
-          const res = await signIn("credentials", 
-                
-              {
-  redirect: false,
-  email: user.email,
-  role: user.role,
-  _id: user._id,
-}
-
-              );
-
-              if(res.status === 200){
-                  window.location.href = "/";
-              }
-
-              
-              console.log(res, "This is your res")
-
-
-
-  
-
-    } catch (error) {
-
-      console.log(error.status)
-      
-
-      if(error.status === 405){
-          toast.error(error.data?.message)
-          setTimeout(()=>{
-
-
-            window.location.href = "/verification";
-          }, [2000])
-
-          return
-         
+      if (res.status === 200) {
+        window.location.href = "/";
       }
 
-       toast.error(error.data?.message)
-    
+      console.log(res, "This is your res");
+    } catch (error) {
+      console.log(error.status);
+
+      if (error.status === 405) {
+        toast.error(error.data?.message);
+        setTimeout(() => {
+          window.location.href = "/verification";
+        }, [2000]);
+        return;
+      }
+
+      toast.error(error.data?.message);
     }
-  }
+  };
+
+  // Forgot Password Functions
+  const handleSendOtp = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const emailValue = formData.get("forgotEmail");
+
+    if (!emailValue || !emailValue.includes("@")) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    try {
+      // Send OTP to email
+      await sendOtp(emailValue).unwrap();
+
+      toast.success("OTP sent successfully to " + emailValue);
+      setEmail(emailValue);
+
+      // Generate a random 6-digit OTP (in real app, this would come from backend)
+      const generatedOtp = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
+      setOtp(generatedOtp);
+
+      // Move directly to password reset step
+      setStep(2);
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to send OTP");
+    }
+  };
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newPass = formData.get("newPassword");
+    const confirmPass = formData.get("confirmPassword");
+    const enteredOtp = formData.get("otp");
+
+    if (!newPass || !confirmPass || !enteredOtp) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    if (newPass !== confirmPass) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    if (newPass.length < 6) {
+      toast.error("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (enteredOtp.length !== 6) {
+      toast.error("Please enter a valid 6-digit OTP.");
+      return;
+    }
+
+    try {
+      // Call forgot password API with email, otp, and newPassword
+      const result = await forgotPassword({
+        email: email,
+        otp: enteredOtp,
+        newPassword: newPass,
+      }).unwrap();
+
+      // Log the details to console as requested
+      console.log("Password Reset Details:", {
+        email: email,
+        otp: enteredOtp,
+        newPassword: newPass,
+      });
+
+      toast.success(result.message || "Password reset successfully!");
+
+      // Close modal after 2 seconds
+      setTimeout(() => {
+        closeModal();
+      }, 2000);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.data?.message || "Failed to reset password");
+    }
+  };
+
+  const closeModal = () => {
+    setForgotPassword(false);
+    setStep(1);
+    setEmail("");
+    setOtp("");
+    setNewPassword("");
+    setConfirmPassword("");
+  };
 
   return (
     <main className="min-h-screen w-full bg-[#f6f7fb] flex items-center justify-center p-6 sm:p-8 md:p-10">
-      <Toaster/>
+      <Toaster />
+
       {/* Container: desktop width preserved; responsive padding/gaps */}
       <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* LEFT: Photo panel */}
@@ -115,9 +204,7 @@ export default function Page() {
             </button>
           </Link>
 
-          {/* Role-based image — desktop perfect; mobile gets a safe min-height */}
-
-          
+          {/* Role-based image */}
           <Image
             key={role}
             src={img.src}
@@ -133,16 +220,16 @@ export default function Page() {
         <div className="bg-white rounded-2xl p-4 sm:p-6 lg:p-[50px]">
           <section className="rounded-2xl bg-white max-w-[562px] mx-auto border border-[#EFE7EA] p-5 sm:p-6 md:p-8">
             <div className="mx-auto w-full max-w-[430px]">
-              {/* Headings: keep lg values exact; scale down on small only */}
+              {/* Headings */}
               <h1 className="text-center text-[22px] sm:text-[26px] lg:text-[28px] font-semibold text-[#FF006A]">
                 Hunky Butler Service
               </h1>
               <p className="mt-1 sm:mt-2 capitalize text-center text-[15px] sm:text-[16px] lg:text-[18px] text-[#141414]">
-                Light up your event with our butlers
+                Turn Your occasion into an unforgettable event
               </p>
 
               {/* Segmented toggle */}
-              <div className="mt-4 sm:mt-5  flex items-center justify-center">
+              <div className="mt-4 sm:mt-5 flex items-center justify-center">
                 <div
                   className="inline-flex justify-center w-full max-w-[316px] h-10 sm:h-[48px] rounded-full bg-[#F6F4F5] py-[6px] px-[8px]"
                   role="tablist"
@@ -177,7 +264,7 @@ export default function Page() {
                 </div>
               </div>
 
-              {/* Form (unchanged visually on lg, scaled spacing on small) */}
+              {/* Form */}
               <form onSubmit={loginHandler} className="mt-5 sm:mt-6 space-y-4">
                 <div className="space-y-1.5">
                   <label className="text-[12px] text-[#292929]">Email</label>
@@ -236,13 +323,13 @@ export default function Page() {
                       )}
                     </button>
                   </div>
-                  <div className="text-right">
-                    <a
-                      href="#"
-                      className="text-[14px] sm:text-[16px] font-medium underline text-[#FF006A]"
-                    >
+                  <div
+                    onClick={() => setForgotPassword(true)}
+                    className="text-right cursor-pointer"
+                  >
+                    <span className="text-[14px] sm:text-[16px] font-medium underline text-[#FF006A]">
                       Forgot Password?
-                    </a>
+                    </span>
                   </div>
                 </div>
 
@@ -250,9 +337,7 @@ export default function Page() {
                   type="submit"
                   className="mt-1 w-full rounded-[100px] bg-[#FF006A] py-2.5 text-[16px] sm:text-[18px] tracking-[1px] font-semibold text-white hover:brightness-105 active:brightness-95"
                 >
-                {
-                  isLoading ? "loading..." : "  Log In"
-                }
+                  {isLoading ? "loading..." : "Log In"}
                 </button>
 
                 <div className="relative my-2">
@@ -267,42 +352,40 @@ export default function Page() {
                 </div>
 
                 <div className="space-y-2">
-     
-<button
-  type="button"
-  onClick={() => signIn("google", { callbackUrl: "/" })}
-  className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
->
-  <Image
-    src="/images/google.png"
-    alt="Google"
-    width={24}
-    height={24}
-    className="h-[24px] w-[24px] shrink-0"
-  />
-  Continue With Google
-</button>
+                  <button
+                    type="button"
+                    onClick={() => signIn("google", { callbackUrl: "/" })}
+                    className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
+                  >
+                    <Image
+                      src="/images/google.png"
+                      alt="Google"
+                      width={24}
+                      height={24}
+                      className="h-[24px] w-[24px] shrink-0"
+                    />
+                    Continue With Google
+                  </button>
 
-{/* Apple button (যদি implement করেন) */}
-<button
-  type="button"
-  onClick={() => signIn("apple", { callbackUrl: "/" })}
-  className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
->
-  <Image
-    src="/images/apple.png"
-    alt="Apple"
-    width={24}
-    height={24}
-    className="h-[24px] w-[24px] shrink-0"
-  />
-  Continue With Apple
-</button>
+                  {/* <button
+                    type="button"
+                    onClick={() => signIn("apple", { callbackUrl: "/" })}
+                    className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
+                  >
+                    <Image
+                      src="/images/apple.png"
+                      alt="Apple"
+                      width={24}
+                      height={24}
+                      className="h-[24px] w-[24px] shrink-0"
+                    />
+                    Continue With Apple
+                  </button> */}
                 </div>
 
                 <div className="flex gap-1.5 sm:gap-2 justify-center items-center">
                   <p className="pt-1 text-center text-[14px] sm:text-[16px] text-[#292929]">
-                    Don’t Have An Account?
+                  { ` Don't Have An Account?`}
                   </p>
                   <Link
                     href="register"
@@ -312,13 +395,167 @@ export default function Page() {
                   </Link>
                 </div>
 
-                {/* role tracked for backend; no visual changes */}
                 <input type="hidden" name="role" value={role} />
               </form>
             </div>
           </section>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotPassword && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md">
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b">
+              <h2 className="text-xl font-semibold text-gray-900">
+                {step === 1 && "Forgot Password"}
+                {step === 2 && "Reset Password"}
+              </h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              {/* Step 1: Email Input */}
+              {step === 1 && (
+                <form onSubmit={handleSendOtp} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Enter your email address
+                    </label>
+                    <input
+                      type="email"
+                      name="forgotEmail"
+                      placeholder="your@email.com"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF006A]"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={closeModal}
+                      className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 px-4 py-2 bg-[#FF006A] text-white rounded-lg hover:bg-[#e5005c]"
+                    >
+                      {otploading ? "Loading..." : "Send OTP"}
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* Step 2: New Password with OTP */}
+              {step === 2 && (
+                <form onSubmit={handleResetPassword} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Enter OTP sent to {email}
+                    </label>
+                    <input
+                      type="text"
+                      name="otp"
+                      placeholder="Enter 6-digit OTP"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF006A] text-center text-lg tracking-widest"
+                      maxLength={6}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      New Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showNewPassword ? "text" : "password"}
+                        name="newPassword"
+                        placeholder="Enter new password"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF006A]"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      >
+                        {/* {showNewPassword ? '🙈' : '👁️'} */}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Confirm New Password
+                    </label>
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      placeholder="Confirm new password"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FF006A]"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setStep(1)}
+                      className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={forgetLoading}
+                      className="flex-1 px-4 py-2 bg-[#FF006A] text-white rounded-lg hover:bg-[#e5005c] disabled:opacity-50"
+                    >
+                      {forgetLoading ? "Resetting..." : "Reset Password"}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+
+            {/* Progress Steps */}
+            <div className="px-6 pb-6">
+              <div className="flex items-center justify-center space-x-2">
+                {[1, 2].map((stepNumber) => (
+                  <div key={stepNumber} className="flex items-center">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                        step >= stepNumber
+                          ? "bg-[#FF006A] text-white"
+                          : "bg-gray-200 text-gray-600"
+                      }`}
+                    >
+                      {stepNumber}
+                    </div>
+                    {stepNumber < 2 && (
+                      <div
+                        className={`w-12 h-1 mx-2 ${
+                          step > stepNumber ? "bg-[#FF006A]" : "bg-gray-200"
+                        }`}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
