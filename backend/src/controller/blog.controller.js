@@ -22,10 +22,10 @@ export const getBlogs = async (req, res) => {
   }
 };
 
-// Read one
-export const getBlogById = async (req, res) => {
+// Read one (by slug instead of id)
+export const getBlogBySlug = async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findOne({ slug: req.params.slug });
     if (!blog) return res.status(404).json({ message: "Not found" });
     res.json(blog);
   } catch (err) {

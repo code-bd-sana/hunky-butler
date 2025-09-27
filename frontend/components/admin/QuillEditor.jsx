@@ -43,8 +43,8 @@ export default function QuillEditor({ onChange, initialText = "" }) {
     }
 
     const handler = () => {
-      const text = quill.getText(); // plain text only
-      onChange?.(text);
+      const html = quill.root.innerHTML; 
+      onChange?.(html);
     };
 
     quill.on("text-change", handler);
