@@ -3,6 +3,7 @@ import { authApi } from "../features/auth";
 import usersTabReducer from "../features/userTab";
 import adminToolTabReducer from "../features/AdminToolTab";
 import sidebarReducer from "../features/sidebarSlice";
+import { blogApi } from "@/features/blogApi";
 
 export const store = configureStore({
   reducer: {
@@ -10,7 +11,10 @@ export const store = configureStore({
     usersTab: usersTabReducer,
     adminToolTab: adminToolTabReducer,
     sidebar: sidebarReducer,
+    [blogApi.reducerPath]: blogApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware),
+    getDefaultMiddleware()
+      .concat(authApi.middleware)
+      .concat(blogApi.middleware),
 });
