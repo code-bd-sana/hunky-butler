@@ -259,3 +259,35 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
+.blog-content h1,
+.blog-content h2,
+.blog-content h3,
+.blog-content p {
+  margin: 0; /* remove all top/bottom margins */
+  padding: 0;
+}
+
+.blog-content h1 {
+  font-size: 2rem; /* 32px */
+  font-weight: 700;
+  color: #0F0F0F;
+}
+
+.blog-content h2 {
+  font-size: 1.75rem; /* 28px */
+  font-weight: 600;
+  color: #0F0F0F;
+}
+
+.blog-content h3 {
+  font-size: 1.5rem; /* 24px */
+  font-weight: 600;
+  color: #0F0F0F;
+}
+
+.blog-content p {
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.75rem; 
+  color: #6B6B6B; /* gray-600 */
+}
