@@ -118,7 +118,7 @@ export default function Page() {
           {/* Role-based image — desktop perfect; mobile gets a safe min-height */}
 
           
-          {/* <Image
+          <Image
             key={role}
             src={img.src}
             alt={img.alt}
@@ -126,7 +126,7 @@ export default function Page() {
             height={720}
             priority
             className="h-full w-full object-cover object-center"
-          /> */}
+          />
         </section>
 
         {/* RIGHT: Auth card */}
@@ -267,33 +267,37 @@ export default function Page() {
                 </div>
 
                 <div className="space-y-2">
-                  <button
-                    type="button"
-                    className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
-                  >
-                    <Image
-                      src="/images/google.png"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="h-[24px] w-[24px] shrink-0"
-                    />
-                    Continue With Google
-                  </button>
+     
+<button
+  type="button"
+  onClick={() => signIn("google", { callbackUrl: "/" })}
+  className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
+>
+  <Image
+    src="/images/google.png"
+    alt="Google"
+    width={24}
+    height={24}
+    className="h-[24px] w-[24px] shrink-0"
+  />
+  Continue With Google
+</button>
 
-                  <button
-                    type="button"
-                    className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
-                  >
-                    <Image
-                      src="/images/apple.png"
-                      alt=""
-                      width={24}
-                      height={24}
-                      className="h-[24px] w-[24px] shrink-0"
-                    />
-                    Continue With Apple
-                  </button>
+{/* Apple button (যদি implement করেন) */}
+<button
+  type="button"
+  onClick={() => signIn("apple", { callbackUrl: "/" })}
+  className="w-full rounded-[8px] border border-[#EFE7EA] bg-white px-3.5 py-2.5 text-[15px] sm:text-[16px] font-medium text-gray-700 hover:bg-gray-50 inline-flex items-center justify-center gap-2"
+>
+  <Image
+    src="/images/apple.png"
+    alt="Apple"
+    width={24}
+    height={24}
+    className="h-[24px] w-[24px] shrink-0"
+  />
+  Continue With Apple
+</button>
                 </div>
 
                 <div className="flex gap-1.5 sm:gap-2 justify-center items-center">

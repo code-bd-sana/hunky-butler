@@ -1,5 +1,7 @@
+// pages/api/auth/[...nextauth].js
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 
 const handler = NextAuth({
   session: {
@@ -7,59 +9,105 @@ const handler = NextAuth({
     maxAge: 30 * 24 * 60 * 60,
   },
 
-  secret: process.env.NEXTAUTH_SECRET || 'aidfjnvociydfnovfadf',
+    secret: process.env.NEXTAUTH_SECRET || "aidfjnvociydfnovfadf",
 
-  providers: [
+ providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID ,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET 
+    }),
+
     CredentialsProvider({
       name: "Credentials",
       credentials: {
- 
         email: { type: "text" },
         role: { type: "text" },
-        _id:{type: "text"}
+        _id: { type: "text" }
       },
       async authorize(credentials) {
-      
-
-     
+        if (!credentials.email) return null;
         return {
- 
-   
+          id: credentials._id,
           email: credentials.email,
           role: credentials.role,
-          _id: credentials._id
         };
       }
     })
   ],
 
-callbacks: {
-  async jwt({ token, user }) {
-    if (user) {
-      token.user = {
-        email: user.email,
-        role: user.role,
-        _id: user._id,
-      };
-    }
-    return token;
-  },
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        try {
+          // Debugging: console.log what we're receiving
+          console.log("Google signIn callback:", { user, account });
+          
+          // Get role from account scope or use default
+          const role = account?.role || "customer";
+          user.role = role;
+          
+          // Save user to your database via API
+          const response = await fetch(`${process.env.NEXTAUTH_URL}/api/users/oauth`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: user.email,
+              name: user.name,
+              role: role,
+              provider: "google",
+              image: user.image
+            }),
+          });
 
-  async session({ session, token }) {
-    if (token.user) {
-      session.user = token.user;
-    }
-    return session;
-  },
-},
+          if (response.ok) {
+            const userData = await response.json();
+            user.id = userData._id;
+            console.log("OAuth user saved:", userData);
+          } else {
+            console.error("Failed to save OAuth user");
+          }
+        } catch (error) {
+          console.error("Error in signIn callback:", error);
+        }
+      }
+      return true;
+    },
 
+    async jwt({ token, user, account, profile }) {
+      // Initial sign in
+      if (user) {
+        token.role = user.role;
+        token.id = user.id;
+      }
+      
+      // Update token with Google data
+      if (account?.provider === "google") {
+        token.role = user?.role || "customer";
+        if (profile) {
+          token.name = profile.name;
+          token.email = profile.email;
+          token.picture = profile.picture;
+        }
+      }
+      
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user.id = token.id;
+      session.user.role = token.role;
+      return session;
+    },
+  },
 
   pages: {
     signIn: '/login',
     error: '/login?error='
   },
 
-  debug: process.env.NODE_ENV === 'development'
+  debug: true, // Enable debugging
 });
 
 export { handler as GET, handler as POST };

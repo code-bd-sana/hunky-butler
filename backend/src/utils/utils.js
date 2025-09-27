@@ -120,8 +120,8 @@ export const sendEmail = async (to, sub, text, otp = null, link = null) => {
   port: 587,
   secure: false, 
   auth: {
-    user: "rakib.fbinternational@gmail.com",
-    pass: "gbjv irau ksag logr",
+    user: "bannah76769@gmail.com",
+    pass: "noqq kzxv olzf clzz",
   },})
 
 
@@ -130,6 +130,19 @@ export const sendEmail = async (to, sub, text, otp = null, link = null) => {
 
 
 
+
+// const transporter = nodemailer.createTransport({
+//   host: "smtp.office365.com", // Outlook SMTP server
+//   port: 587,
+//   secure: false, // TLS starttls ব্যবহার করবে
+//   auth: {
+//     user: "rakib.fb3719@outlook.com",
+//     pass: "mzvivaftletwnkes", 
+//   },
+//   tls: {
+//     ciphers: 'SSLv3' // Optional, security enhancement
+//   }
+// });
 
 
 

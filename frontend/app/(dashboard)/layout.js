@@ -6,6 +6,7 @@ import DashNav from "@/components/Dashboard/DashNav/DashNav";
 import { Poppins } from "next/font/google";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
+import { SessionProvider } from "next-auth/react";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -19,7 +20,8 @@ const DashboardLayout = ({ children }) => {
   return (
     <html lang="en">
       <body className="antialiased bg-[#f6f4f5]">
-        <Provider store={store}>
+       <SessionProvider>
+         <Provider store={store}>
           <div className="w-full flex flex-col md:flex-row gap-0 lg:gap-8 min-h-screen pt-2 md:py-10 px-2 md:px-6 lg:px-10 md:pl-0">
             <Sidebar
               isSidebarOpen={isSidebarOpen}
@@ -31,6 +33,7 @@ const DashboardLayout = ({ children }) => {
             </div>
           </div>
         </Provider>
+       </SessionProvider>
       </body>
     </html>
   );
