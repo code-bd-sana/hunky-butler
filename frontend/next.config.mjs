@@ -1,8 +1,16 @@
 /** @type {import('next').NextConfig} */
-const NextConfig = {
-    experimental: {
-        globalNotFound: true,
-    }
+const nextConfig = {
+  experimental: {
+    globalNotFound: true,
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.ibb.co",
+      },
+    ],
+  },
 };
 
-export default NextConfig;
+export default nextConfig;

@@ -5,10 +5,19 @@ export const blogApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
   tagTypes: ["Blogs"],
   endpoints: (builder) => ({
+    // Fetch all blogs
     getBlogs: builder.query({
       query: () => "/blogs",
       providesTags: ["Blogs"],
     }),
+
+    // Fetch single blog by Slug
+    getBlogBySlug: builder.query({
+      query: (slug) => `/blogs/${slug}`,
+      providesTags: (result, error, slug) => [{ type: "Blogs", slug }],
+    }),
+
+    // Add new blog
     addBlog: builder.mutation({
       query: (newBlog) => ({
         url: "/blogs",
@@ -20,4 +29,5 @@ export const blogApi = createApi({
   }),
 });
 
-export const { useGetBlogsQuery, useAddBlogMutation } = blogApi;
+export const { useGetBlogsQuery, useGetBlogBySlugQuery, useAddBlogMutation } =
+  blogApi;
