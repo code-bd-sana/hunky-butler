@@ -385,7 +385,7 @@ export default function Page() {
 
                 <div className="flex gap-1.5 sm:gap-2 justify-center items-center">
                   <p className="pt-1 text-center text-[14px] sm:text-[16px] text-[#292929]">
-                    Don't Have An Account?
+                  { ` Don't Have An Account?`}
                   </p>
                   <Link
                     href="register"
