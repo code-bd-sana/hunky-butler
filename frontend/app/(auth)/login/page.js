@@ -118,7 +118,7 @@ export default function Page() {
           {/* Role-based image — desktop perfect; mobile gets a safe min-height */}
 
           
-          {/* <Image
+          <Image
             key={role}
             src={img.src}
             alt={img.alt}
@@ -126,7 +126,7 @@ export default function Page() {
             height={720}
             priority
             className="h-full w-full object-cover object-center"
-          /> */}
+          />
         </section>
 
         {/* RIGHT: Auth card */}
