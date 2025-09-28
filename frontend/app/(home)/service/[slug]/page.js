@@ -5,13 +5,14 @@ import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
 import ServiceBanner from "@/components/shared/ServiceBanner";
+import { base_url } from "@/utils/utils";
 import React from "react";
 
 export default async function ServiceDetails({ params }) {
   console.log("Server params:", params); // 👉 টার্মিনালে দেখাবে
   const { slug } = params;
 
-  const res = await fetch(`http://localhost:5000/api/service/${slug}`, {
+  const res = await fetch(`${base_url}/service/${slug}`, {
     cache: "no-store", // optional: disable caching for dynamic data
   });
 

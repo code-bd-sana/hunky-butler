@@ -73,7 +73,7 @@ butler:{
 }
 
 
-})
+} ,   { timestamps: true } )
 
 const Booking = mongoose.model('Booking', bookingSchema);
 

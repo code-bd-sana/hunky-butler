@@ -7,6 +7,7 @@ import Booking from "../models/booking.model.js";
 
 export const getAllBooking = async(req, res)=>{
 
+      console.log(req.cookies["next-auth.session-token"]);
 
 
     try {

@@ -14,17 +14,16 @@ import { useDispatch } from "react-redux";
 const DashNav = ({ tab }) => {
   const activeTab = useActiveTab();
   const activeAdminTool = useAdminToolTab();
-  console.log(activeAdminTool, "this is admin tools tab");
-  console.log(activeTab, "This is active tab");
+
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
   const setUserTab = useSetTab();
   const data = useSession();
-  console.log(data, "This is your data")
+
   const role = data?.data?.user?.role;
   const status = data.status;
-  console.log(status, "This is your status")
+
 
   if(status === "loading"){
     return <h4>Loading...</h4>
