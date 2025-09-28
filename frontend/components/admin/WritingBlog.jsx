@@ -104,6 +104,7 @@ export default function WritingBlog() {
         content: editorData.trim(),
         tags,
         thumbnailUrl: imageUrl,
+        status: "published",
       };
 
       await addBlog(payload).unwrap();

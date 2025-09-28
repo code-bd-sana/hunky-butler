@@ -2,7 +2,8 @@ import express from "express";
 import {
   getAllServices,
 //   getServiceBySlug,
-//   createService,
+  createService,
+  getServiceBySlug,
 //   updateService,
 //   deleteService
 } from "../controller/ServiceController.js";
@@ -10,8 +11,8 @@ import {
 const router = express.Router();
 
 router.get("/", getAllServices);
-// router.get("/:slug", getServiceBySlug);
-// router.post("/", createService);
+router.get("/:slug", getServiceBySlug);
+router.post("/", createService);
 // router.put("/:slug", updateService);
 // router.delete("/:slug", deleteService);
 
