@@ -1,54 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
 import { FiEdit } from "react-icons/fi";
-
-const rows = [
-  {
-    id: "#BK202509",
-    name: "Buff Butler",
-    price: "£290.00",
-    date: "14 Sep 2025",
-    status: "Active",
-    img: "/ImageGalary/pic2.jpeg",
-  },
-  {
-    id: "#BK202509",
-    name: "Life Drawing",
-    price: "£290.00",
-    date: "14 Sep 2025",
-    status: "Paused",
-    img: "/ImageGalary/pic1.jpeg",
-  },
-  {
-    id: "#BK202509",
-    name: "Cocktail Masterclasses",
-    price: "£290.00",
-    date: "14 Sep 2025",
-    status: "Active",
-    img: "/ImageGalary/pic6.jpeg",
-  },
-  {
-    id: "#BK202509",
-    name: "Strippers",
-    price: "£290.00",
-    date: "14 Sep 2025",
-    status: "Paused",
-    img: "/ImageGalary/pic8.jpeg",
-  },
-];
+import { useGetServicesQuery } from "@/features/services/servicesApi";
 
 function StatusPill({ value }) {
-  const active = value === "Active";
+  const active = value?.toLowerCase() === "active";
   return (
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-1 text-[14px] font-semibold leading-none ${
-        active
-          ? "bg-[#E7FFF3] text-[#00992B]"
-          : "bg-[#FFE7FB] text-[#C90CE6]"
+        active ? "bg-[#E7FFF3] text-[#00992B]" : "bg-[#FFE7FB] text-[#C90CE6]"
       }`}
     >
       {value}
@@ -58,7 +22,7 @@ function StatusPill({ value }) {
 
 function Toggle({ checked, onChange }) {
   return (
-  <button
+    <button
       type="button"
       onClick={onChange}
       aria-pressed={checked}
@@ -75,8 +39,16 @@ function Toggle({ checked, onChange }) {
 }
 
 export default function ServiceTable() {
-  const [states, setStates] = useState(rows.map((r) => r.status === "Active"));
+  const { data: services = [], isLoading, error } = useGetServicesQuery();
 
+  console.log(services);
+  const [states, setStates] = useState([]);
+
+  useEffect(() => {
+    if (services.length > 0) {
+      setStates(services.map((service) => service?.status === "active"));
+    }
+  }, [services]);
   return (
     <div className="w-full">
       {/* Card */}
@@ -120,14 +92,16 @@ export default function ServiceTable() {
             </thead>
 
             <tbody>
-              {rows.map((r, i) => (
+              {services.map((service, index) => (
                 <tr
-                  key={i}
+                  key={index}
                   className="text-[16px] text-[#333333] hover:bg-neutral-50"
                 >
                   {/* ID */}
                   <td className="sticky left-0 z-[1] bg-white px-5 sm:px-6 py-4 align-middle">
-                    <span className="font-medium text-neutral-700">{r.id}</span>
+                    <span className="font-medium text-neutral-700">
+                      {index + 1}
+                    </span>
                   </td>
 
                   {/* Service Name with thumbnail */}
@@ -135,31 +109,32 @@ export default function ServiceTable() {
                     <div className="flex items-center gap-3">
                       <div className="h-9 w-12 overflow-hidden rounded-md ring-1 ring-black/5">
                         <Image
-                          src={r.img}
-                          alt={r.name}
+                          src={service.banner}
+                          alt={service.name}
                           width={48}
                           height={36}
                           className="h-full w-full object-cover"
                           sizes="48px"
                         />
                       </div>
-                      <span className="font-medium">{r.name}</span>
+                      <span className="font-medium">{service.name}</span>
                     </div>
                   </td>
 
                   {/* Price */}
                   <td className="px-4 py-4 align-middle">
-                    <span className="font-medium">{r.price}</span>
+                    <span className="font-medium">{service.price}</span>
                   </td>
 
                   {/* Date */}
                   <td className="px-4 py-4 align-middle">
-                    <span className="text-neutral-600">{r.date}</span>
+                    <span className="text-neutral-600">{service.date}</span>
                   </td>
 
                   {/* Status */}
                   <td className="px-4 py-4  align-middle">
-                    <StatusPill value={states[i] ? "Active" : "Paused"} />
+                    {/* {service.status} */}
+                    <StatusPill value={states[index] ? "Active" : "Paused"} />
                   </td>
 
                   {/* Actions */}
@@ -183,10 +158,10 @@ export default function ServiceTable() {
                       </button>
 
                       <Toggle
-                        checked={states[i]}
+                        checked={states[index]}
                         onChange={() =>
                           setStates((s) =>
-                            s.map((v, idx) => (idx === i ? !v : v))
+                            s.map((v, idx) => (idx === index ? !v : v))
                           )
                         }
                       />
