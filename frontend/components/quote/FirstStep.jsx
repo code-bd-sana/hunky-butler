@@ -6,6 +6,7 @@ import icon2 from "@/public/quote/icon2.png";
 import icon3 from "@/public/quote/icon3.png";
 import icon4 from "@/public/quote/icon4.png";
 import Link from "next/link";
+import { useGetServicesQuery } from "@/features/services/servicesApi";
 
 export default function FirstStep() {
   const services = [
@@ -15,6 +16,8 @@ export default function FirstStep() {
     { icon: icon4, title: "Strippers", link:"Strippers" },
   ];
 
+  const {data, isLoading, error} = useGetServicesQuery();
+  console.log(data, "service data") 
   return (
     <div
       style={{

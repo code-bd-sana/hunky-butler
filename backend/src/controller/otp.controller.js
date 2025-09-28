@@ -3,7 +3,7 @@ import User from "../models/user.model.js";
 import { sendEmail } from "../utils/utils.js";
 
 export const sendOtp = async (req, res) => {
-  console.log("Hit");
+
 
   try {
     const email = req.params.email;
@@ -33,11 +33,11 @@ export const sendOtp = async (req, res) => {
       otp
     );
 
-    console.log(datasEamil, "fuck you its");
+  
 
     res.status(200).json({ message: "Otp Sent Successfully" });
   } catch (error) {
-    console.log(error, "salar abba");
+ 
     res.status(500).json({ message: "Something went Wrong!", error });
   }
 };
@@ -45,7 +45,7 @@ export const sendOtp = async (req, res) => {
 export const verifyUser = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    console.log(email, "This is your email");
+
 
     const user = await User.findOne({ email });
 

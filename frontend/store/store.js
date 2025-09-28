@@ -5,6 +5,8 @@ import adminToolTabReducer from "../features/AdminToolTab";
 import sidebarReducer from "../features/sidebarSlice";
 import { blogApi } from "@/features/blogApi";
 import { servicesApi } from "@/features/services/servicesApi";
+import { bookingApi } from "@/features/booking";
+
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +14,7 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [blogApi.reducerPath]: blogApi.reducer,
     [servicesApi.reducerPath]: servicesApi.reducer,
+    [bookingApi.reducerPath]: bookingApi.reducer,
 
     // UI slices
     usersTab: usersTabReducer,
@@ -22,6 +25,7 @@ export const store = configureStore({
     getDefaultMiddleware().concat(
       authApi.middleware,
       blogApi.middleware,
-      servicesApi.middleware
+      servicesApi.middleware,
+      bookingApi.middleware
     ),
 });

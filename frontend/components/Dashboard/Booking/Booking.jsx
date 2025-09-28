@@ -3,10 +3,13 @@ import React, { useState } from "react";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import { LuArrowUpRight } from "react-icons/lu";
 import Image from "next/image";
+import { useGetBookingQuery } from "@/features/booking";
 
 const Booking = () => {
   const [activeButton, setActiveButton] = useState("All");
   const [open, setOpen] = useState(false);
+  const {data} = useGetBookingQuery();
+  console.log(data, "all booking")
 
   const buttons = ["All", "Completed", "Ongoing", "Cancelled"];
 

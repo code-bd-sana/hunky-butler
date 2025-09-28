@@ -6,7 +6,7 @@ import User from "../models/user.model.js";
 
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("-password");
 
     res.status(200).json({
       message: "Success",

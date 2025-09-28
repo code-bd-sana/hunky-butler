@@ -16,10 +16,10 @@ const Sidebar = () => {
   const isSidebarOpen = useSelector((state) => state.sidebar.isSidebarOpen);
   const pathname = usePathname();
   const data = useSession();
-  console.log(data, "This is your data")
+
   const role = data?.data?.user?.role;
   const status = data.status;
-  console.log(status, "This is your status")
+
 
   // Loading Skeleton
   if(status === 'loading'){
