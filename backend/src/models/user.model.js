@@ -35,7 +35,15 @@ const userSchema = mongoose.Schema({
   image: {
     type: String,
   },
-});
+   averageRating: {
+    type: Number,
+    default: 0
+  },
+  totalReviews: {
+    type: Number,
+    default: 0
+  }
+},  { timestamps: true } );
 
 const User = mongoose.model("User", userSchema);
 export default User;

@@ -6,6 +6,7 @@ import user from './user.route.js';
 // import service from './Service.js';
 import blogRoutes from './blogRoutes.js';
 import booking from './booking.route.js'
+import revew from './review.route.js'
 
 const router = Router();
 
@@ -15,7 +16,9 @@ router.use('/otp', otp);
 router.use('/user', user);
 // router.use('/services', service);
 router.use('/blogs', blogRoutes);
-router.use('/booking', booking)
+router.use('/booking', booking);
+router.use('/review', revew)
+
 
 
 router.get('/', (req, res) => {

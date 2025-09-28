@@ -88,6 +88,7 @@ const bookNowHandaler = async()=>{
 
 
         const finalData = {...firstStep, ...secondStep};
+        finalData.slug = params.category
         console.log(finalData, "Final Data")
         
     } catch (error) {

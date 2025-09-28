@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { assginToButler, createBooking, deleteBooking, getAllBooking, getSingleBooking, updateStatus } from "../controller/booking.controller.js";
+import { verifyAdmin, verifyUser } from "../middleware/privateRoute.js";
 
 const router = Router();
 
 
-router.get('/', getAllBooking);
+router.get('/',verifyUser,verifyAdmin, getAllBooking);
 router.post('/', createBooking);
 router.get('/:id', getSingleBooking);
 router.delete('/:id', deleteBooking);
