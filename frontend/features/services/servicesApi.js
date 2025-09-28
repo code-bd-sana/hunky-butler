@@ -5,11 +5,11 @@ export const servicesApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/api" }),
   endpoints: (builder) => ({
     getServices: builder.query({
-      query: () => "/services",
+      query: () => "/service",
     }),
     addService: builder.mutation({
       query: (serviceData) => ({
-        url: "/services",
+        url: "/service",
         method: "POST",
         body: serviceData,
       }),

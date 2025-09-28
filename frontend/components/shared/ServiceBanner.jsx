@@ -6,7 +6,7 @@ const ServiceBanner = ({ heading, subTitle, image }) => {
   return (
     <div
       style={{
-        backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 13%, rgba(0,0,0,1) 95%), url(${image.src})`,
+        backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 13%, rgba(0,0,0,1) 95%), url(${image})`,
       }}
       className="relative h-[80vh] w-full overflow-hidden bg-cover bg-center"
     >
