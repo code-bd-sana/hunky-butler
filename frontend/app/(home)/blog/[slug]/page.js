@@ -9,6 +9,7 @@ import Planning from "@/components/homepage/Planning";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { useGetBlogBySlugQuery } from "@/features/blogApi";
+import blogBg from "../../../../public/Blog/blog2.jpg"
 
 const BlogDetailsContent = () => {
   const { slug } = useParams();
@@ -25,7 +26,7 @@ const BlogDetailsContent = () => {
   return (
     <div className="min-h-screen bg-white">
       <Banner
-        image={blog.thumbnailUrl}
+        image={blogBg}
         service="Blog"
         title={blog.title}
         description={new Date(blog.date || blog.createdAt).toLocaleDateString(

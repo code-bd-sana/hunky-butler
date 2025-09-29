@@ -4,6 +4,8 @@ import image from "@/public/quote/bg.png";
 import { IoLocationSharp } from "react-icons/io5";
 import next from 'next';
 import { useParams, usePathname } from 'next/navigation';
+import { useBookingMutation } from '@/features/booking';
+import toast, { Toaster } from 'react-hot-toast';
 
 
 export default function SecondStep() {
@@ -12,24 +14,25 @@ export default function SecondStep() {
     const [firstStep, setFirstStep ] = useState({});
     const [secondStep, setSecondStep ] = useState({})
     const [nextStep, setNextStep] = useState("firststep")
+    const [booking, {isLoading, error}] = useBookingMutation();
     
 const firstStepHandaler = async(e)=>{
 
     try {
   e.preventDefault();
   const firstName = e.target.firstname.value;
-  const lastname = e.target.lastname.value;
+  const lastName = e.target.lastName.value;
   const email = e.target.email.value;
   const phone = e.target.phone.value;
-  const postcode = e.target.postcode.value;
+  const postCode = e.target.postCode.value;
   const location = e.target.location.value;
 
   const firstStep = {
     firstName,
-    lastname,
+    lastName,
     email,
-    phone,
-    postcode,
+   phone,
+    postCode : Number(postCode),
     location
   }
 console.log(firstStep)
@@ -53,18 +56,18 @@ const secondStepHandaler = async(e)=>{
     try {
             e.preventDefault();
 
-            const DateOfEvent = e.target.DateOfEvent.value;
-            const NumberOfStaff = e.target.NumberOfStaff.value;
-            const StartTime = e.target.StartTime.value;
-            const DurationHours = e.target.DurationHours.value;
-            const DurationMinutes = e.target.DurationMinutes.value;
+            const dateOfEvent = e.target.dateOfEvent.value;
+            const numberOfStaff = e.target.numberOfStaff.value;
+            const startTime = e.target.startTime.value;
+            const durationHours = e.target.durationHours.value;
+            const durationMinutes = e.target.durationMinutes.value;
 
             const secondStep = {
-                DateOfEvent,
-                NumberOfStaff,
-                StartTime,
-                DurationHours,
-                DurationMinutes
+                dateOfEvent,
+                numberOfStaff,
+                startTime,
+                durationHours,
+                durationMinutes
             }
 
             console.log(secondStep, "hi")
@@ -89,10 +92,20 @@ const bookNowHandaler = async()=>{
 
         const finalData = {...firstStep, ...secondStep};
         finalData.slug = params.category
+        finalData.serviceName = params.category
+        finalData.price = secondStep.durationHours * secondStep.numberOfStaff
         console.log(finalData, "Final Data")
+
+        const data = await booking(finalData).unwrap();
+        console.log(data, "saved  ki hoise baca")
+
+          toast.success('Booking Successfull')
+
+
         
     } catch (error) {
         console.log(error)
+        toast.error(error?.message || "Something went wrong!")
     }
 }
 
@@ -110,7 +123,7 @@ const bookNowHandaler = async()=>{
     >
 
 
-
+<Toaster/>
       <div className="relative z-10 flex flex-col items-center justify-end pt-40 pb-10 text-center h-full">
         <h4 className="text-5xl text-white font-medium leading-snug max-w-4xl mx-auto mb-12">
     { nextStep === "firststep" ?  "Let’s get the party started" : nextStep === "secondstep" ? "Your event information" : "Your Hunky Butler Service Quote & Party Details" }
@@ -137,8 +150,8 @@ const bookNowHandaler = async()=>{
                 </div>
                 <div className='text-left w-full mt-6 md:mt-0'>
 
-                    <label htmlFor='lastname' className='text-white text-left block'>Last Name *</label>
-                    <input required type="text" name="lastname" id="lastname" placeholder='Name' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
+                    <label htmlFor='lastName' className='text-white text-left block'>Last Name *</label>
+                    <input required type="text" name="lastName" id="lastName" placeholder='Name' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
 
 
 
@@ -158,8 +171,8 @@ const bookNowHandaler = async()=>{
                 </div>
                 <div className='text-left w-full mt-6 md:mt-0'>
 
-                    <label htmlFor='phone' className='text-white text-left block'>Phone *</label>
-                    <input required type="text" name="phone" id="phone" placeholder='Name' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
+                    <label htmlFor='phone' className='text-white text-left block'>phone *</label>
+                    <input required type="text" name="phone" id="phone" placeholder='Phone' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
 
 
 
@@ -171,8 +184,8 @@ const bookNowHandaler = async()=>{
 
                    <div className='text-left w-full'>
 
-                    <label htmlFor='postcode'  className='text-white text-left block'>Post Code *</label>
-                    <input required type="text" name="postcode" id="postcode" placeholder='Enter Post Code' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
+                    <label htmlFor='postCode'  className='text-white text-left block'>Post Code *</label>
+                    <input required type="number" name="postCode" id="postCode" placeholder='Enter Post Code' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
 
 
 
@@ -222,7 +235,7 @@ const bookNowHandaler = async()=>{
             required
             type="date"
             id='date'
-            name="DateOfEvent"
+            name="dateOfEvent"
             className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
           />
           
@@ -233,7 +246,7 @@ const bookNowHandaler = async()=>{
           <input
             required
             type="number"
-            name="NumberOfStaff"
+            name="numberOfStaff"
             placeholder="Enter number"
             className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
           />
@@ -249,7 +262,7 @@ const bookNowHandaler = async()=>{
             required
             type="time"
             id='time'
-            name="StartTime"
+            name="startTime"
             className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
           />
         </div>
@@ -261,7 +274,7 @@ const bookNowHandaler = async()=>{
               required
               type="number"
               min="0"
-              name="DurationHours"
+              name="durationHours"
               placeholder="Hours"
               className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
             />
@@ -270,7 +283,7 @@ const bookNowHandaler = async()=>{
               type="number"
               min="0"
               max="59"
-              name="DurationMinutes"
+              name="durationMinutes"
               placeholder="Minutes"
               className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
             />
@@ -298,7 +311,7 @@ const bookNowHandaler = async()=>{
 <section className='text-white p-12'>
 
       <h6>Your total price</h6>
-      <h6 className='text-5xl font-bold py-6'> $ {secondStep.DurationHours * secondStep.NumberOfStaff  }</h6>
+      <h6 className='text-5xl font-bold py-6'> $ {secondStep.durationHours * secondStep.numberOfStaff  }</h6>
 
       <div className='border-1  border-white'>
 
@@ -306,9 +319,9 @@ const bookNowHandaler = async()=>{
 
 
       <div className='py-4 space-y-4'>
-        <h4 className='font-medium text-sm md:text-xl text-left'><span className='mr-4'>Event start on    </span>  <span className='text-right ml-[10px] '>  : <span className='ml-4'>{secondStep.DateOfEvent} At {secondStep.StartTime }</span> </span></h4>
-        <h4 className='font-medium  text-sm md:text-xl text-left'><span className='mr-4'>Event Duration </span>  <span className='-ml-[1px]'>  : <span className='ml-4'>{secondStep.DurationHours} Hours</span> </span></h4>
-        <h4 className='font-medium text-sm md:text-xl text-left'><span className='md:mr-4'> Stuff  </span>  <span className=' ml-[73px] md:ml-[82px]'>  : <span className='ml-4'>{secondStep.NumberOfStaff} Butlers </span></span></h4>
+        <h4 className='font-medium text-sm md:text-xl text-left'><span className='mr-4'>Event start on    </span>  <span className='text-right ml-[10px] '>  : <span className='ml-4'>{secondStep.dateOfEvent} At {secondStep.startTime }</span> </span></h4>
+        <h4 className='font-medium  text-sm md:text-xl text-left'><span className='mr-4'>Event Duration </span>  <span className='-ml-[1px]'>  : <span className='ml-4'>{secondStep.durationHours} Hours</span> </span></h4>
+        <h4 className='font-medium text-sm md:text-xl text-left'><span className='md:mr-4'> Stuff  </span>  <span className=' ml-[73px] md:ml-[82px]'>  : <span className='ml-4'>{secondStep.numberOfStaff} Butlers </span></span></h4>
         <h4 className='font-medium text-sm md:text-xl  text-left'> <span className='md:mr-4'>Quote ID </span>  <span className='ml-12'> :  <span className='ml-4'> {params?.category}</span>  </span></h4>
 
 
@@ -317,7 +330,9 @@ const bookNowHandaler = async()=>{
               style={{ color: "rgba(255,0,106,1)" }}
               className="px-[16px] py-[8px] w-[164px] mt-12 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
             >
-              Book  Now
+              {
+                isLoading ? "Loading..." : "Book  Now"
+              }
             </button>
 
       </div>
