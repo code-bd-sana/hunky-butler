@@ -6,6 +6,7 @@ import { Trash2 } from "lucide-react";
 import Image from "next/image";
 import { FiEdit } from "react-icons/fi";
 import { useGetServicesQuery } from "@/features/services/servicesApi";
+import { base_url } from "@/utils/utils";
 
 function StatusPill({ value }) {
   const active = value?.toLowerCase() === "active";
@@ -49,6 +50,7 @@ export default function ServiceTable() {
       setStates(services.map((service) => service?.status === "active"));
     }
   }, [services]);
+
   return (
     <div className="w-full">
       {/* Card */}
@@ -140,14 +142,15 @@ export default function ServiceTable() {
                   {/* Actions */}
                   <td className="px-4 py-4 align-middle">
                     <div className="flex items-center gap-4">
-                      <button
-                        type="button"
+                      <Link
+                        href={`/dashboard/services/update/${service.slug}`}
                         className="text-neutral-500 hover:text-neutral-700"
                         aria-label="Edit"
                         title="Edit"
                       >
                         <FiEdit size={18} />
-                      </button>
+                      </Link>
+
                       <button
                         type="button"
                         className="text-neutral-500 hover:text-red-600"
@@ -172,7 +175,6 @@ export default function ServiceTable() {
             </tbody>
           </table>
         </div>
-
         <div className="h-3" />
       </div>
     </div>
