@@ -99,9 +99,7 @@ const bookNowHandaler = async()=>{
         const data = await booking(finalData).unwrap();
         console.log(data, "saved  ki hoise baca")
 
-        if(data.status === 200){
           toast.success('Booking Successfull')
-        }
 
 
         

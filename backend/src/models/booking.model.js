@@ -64,12 +64,22 @@ price:{
 },
 status:{
     type:String,
-    enum:['completed', 'ongoing', 'cancel'],
+    enum:['completed', 'ongoing', 'cancel', "cancelled"],
     default:'ongoing'
 },
 butler:{
     type:mongoose.Schema.Types.ObjectId,
     ref:User
+},
+location:{
+        type:String,
+        required:[true, "location is required"]
+},
+
+
+paid:{
+    type:String,
+    default:'unpaid'
 }
 
 
