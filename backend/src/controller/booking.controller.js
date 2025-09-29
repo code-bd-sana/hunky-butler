@@ -5,34 +5,41 @@ import Booking from "../models/booking.model.js";
 
 
 
-export const getAllBooking = async(req, res)=>{
+export const getAllBooking = async (req, res) => {
+  try {
+    const skip = parseInt(req.query.skip) || 0;   // convert string to number
+    const limit = parseInt(req.query.limit) || 10;
+    const status = req.query.status;
 
-      console.log(req.cookies["next-auth.session-token"]);
+    console.log(skip, "skip");
+    console.log(limit, "limit");
+    console.log(status, "status");
 
-
-    try {
-
-        const skip = req.query.skip;
-        const limit = req.query.limit
-
-  
-
-        const allBooking = await Booking.find().skip(skip).limit(limit);
-
-        res.status(200).json({
-            message:"Success",
-            data: allBooking
-        })
-
-        
-    } catch (error) {
-        res.status(500).json({
-            error: error.message,
-            message:"Something went wrong!"
-        })
+    let filter = {};
+    if (status && status !== "all") {
+      filter.status = status.toLowerCase();
     }
-}
 
+    // Apply filter in both find() and countDocuments()
+    const allBooking = await Booking.find(filter)
+      .skip(skip)
+      .limit(limit)
+      .populate("butler");
+
+    const total = await Booking.countDocuments(filter);
+
+    res.status(200).json({
+      message: "Success",
+      data: allBooking,
+      total,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message,
+    });
+  }
+};
 
 
 export const getSingleBooking = async(req, res)=>{
@@ -102,6 +109,12 @@ export const updateStatus = async(req, res)=>{
         const updated = await Booking.updateOne({_id:id}, {$set:{
             status:status
         }});
+
+        if(status === "completed"){
+            await Booking.updateOne({_id:id}, {$set:{
+                paid:"Paid"
+            }})
+        }
 
         res.status(200).json({
             message:"Success",
