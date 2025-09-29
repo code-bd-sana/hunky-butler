@@ -35,6 +35,22 @@ const BlogDetails = ({ blog }) => {
             className="blog-content text-gray-600 text-lg leading-relaxed"
             dangerouslySetInnerHTML={{ __html: blog?.content }}
           />
+
+          {/* Tags Section */}
+          {blog?.tags?.length > 0 && (
+            <div className="mt-10 pt-6 border-t border-gray-200">
+              <div className="flex flex-wrap gap-2">
+                {blog.tags.map((tag, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center px-4 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-[#FF006A] hover:text-white cursor-pointer transition"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
