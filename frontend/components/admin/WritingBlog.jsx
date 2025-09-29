@@ -29,14 +29,25 @@ export default function WritingBlog({ initialData, onClose }) {
   const isLoading = adding || updating;
 
   // Prefill fields when editing
-  useEffect(() => {
-    if (initialData) {
-      setTitle(initialData.title || "");
-      setEditorData(initialData.content || "");
-      setTags(initialData.tags || []);
-      setPreview(initialData.thumbnailUrl || initialData.image || null);
+useEffect(() => {
+  if (initialData) {
+    console.log("Editing blog, incoming tags:", initialData.tags);
+
+    setTitle(initialData.title || "");
+    setEditorData(initialData.content || "");
+    
+    // Ensure tags are always an array of strings
+    if (Array.isArray(initialData.tags)) {
+      setTags(initialData.tags);
+    } else if (typeof initialData.tags === "string") {
+      setTags(initialData.tags.split(",").map((t) => t.trim()));
+    } else {
+      setTags([]);
     }
-  }, [initialData]);
+
+    setPreview(initialData.thumbnailUrl || initialData.image || null);
+  }
+}, [initialData]);
 
   const openPicker = () => fileInputRef.current?.click();
 
