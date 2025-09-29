@@ -8,6 +8,8 @@ import blogRoutes from './blogRoutes.js';
 import booking from './booking.route.js'
 import ServiceRoute from "./serviceRoute.js"
 import review from './review.route.js'
+import butler from './butler.route.js'
+import summury from './summury.route.js'
 
 const router = Router();
 
@@ -18,7 +20,9 @@ router.use('/user', user);
 router.use('/service', ServiceRoute);
 router.use('/blogs', blogRoutes);
 router.use('/booking', booking);
-router.use('/review', review)
+router.use('/review', review);
+router.use('/butler', butler);
+router.use('/summury', summury)
 
 
 

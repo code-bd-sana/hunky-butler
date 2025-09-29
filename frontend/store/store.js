@@ -6,6 +6,9 @@ import sidebarReducer from "../features/sidebarSlice";
 import { blogApi } from "@/features/blogApi";
 import { servicesApi } from "@/features/services/servicesApi";
 import { bookingApi } from "@/features/booking";
+import { butlerApi } from "@/features/butler";
+import { summuryApi } from "@/features/summury";
+import middleware from "@/middleware";
 
 
 export const store = configureStore({
@@ -15,6 +18,8 @@ export const store = configureStore({
     [blogApi.reducerPath]: blogApi.reducer,
     [servicesApi.reducerPath]: servicesApi.reducer,
     [bookingApi.reducerPath]: bookingApi.reducer,
+    [butlerApi.reducerPath]: butlerApi.reducer,
+    [summuryApi.reducerPath]: summuryApi.reducer,
 
     // UI slices
     usersTab: usersTabReducer,
@@ -26,6 +31,8 @@ export const store = configureStore({
       authApi.middleware,
       blogApi.middleware,
       servicesApi.middleware,
-      bookingApi.middleware
+      bookingApi.middleware,
+      butlerApi.middleware,
+      summuryApi.middleware
     ),
 });
