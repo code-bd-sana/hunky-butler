@@ -5,7 +5,7 @@ import { verifyAdmin, verifyUser } from "../middleware/privateRoute.js";
 const router = Router();
 
 
-router.get('/',verifyUser,verifyAdmin, getAllBooking);
+router.get('/', getAllBooking);
 router.post('/', createBooking);
 router.get('/:id', getSingleBooking);
 router.delete('/:id', deleteBooking);
