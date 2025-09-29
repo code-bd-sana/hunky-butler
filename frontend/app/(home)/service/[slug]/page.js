@@ -9,11 +9,11 @@ import { base_url } from "@/utils/utils";
 import React from "react";
 
 export default async function ServiceDetails({ params }) {
-  console.log("Server params:", params); // 👉 টার্মিনালে দেখাবে
+  console.log("Server params:", params);
   const { slug } = params;
 
   const res = await fetch(`${base_url}/service/${slug}`, {
-    cache: "no-store", // optional: disable caching for dynamic data
+    cache: "no-store",
   });
 
   if (!res.ok) {
