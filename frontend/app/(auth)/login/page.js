@@ -57,8 +57,14 @@ export default function Page() {
         _id: user._id,
       });
 
+
+
       if (res.status === 200) {
-        window.location.href = "/";
+        if (user.role === 'admin') {
+          window.location.href = "/dashboard";
+        } else {
+          window.location.href = "/";
+        }
       }
 
       console.log(res, "This is your res");

@@ -25,7 +25,7 @@ email:{
 
 
 phone:{
-    type:Number,
+    type:String,
     required:[true, "Phone Number is Required"]
 },
 postCode:{
@@ -41,15 +41,15 @@ numberOfStaff:{
     required:[true, "Number Of Staff is Required"]
 },
 startTime:{
-    type: Date,
+    type: String,
     required:[true, "Start Time is Required"]
 },
 
-DurationHours:{
+durationHours:{
     type:Number,
     required:[true, "Duration Hours is Required"]
 },
-DurationMinutes:{
+durationMinutes:{
     type:Number,
     required:[true, "Duration Minutes Is Required"]
 
