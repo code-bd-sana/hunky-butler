@@ -8,7 +8,7 @@ const Planning = ({ title, highlight, description }) => {
       date: "February 11, 2014",
       title: "Cocktail Making: Tools You Need At Home",
       desc: "From Buff Butlers to Masterclasses—transparent pricing, verified staff, anywhere in your postcode.",
-      img: "/Planning/planningPic1.jpeg", // put your image inside public folder
+      img: "/Planning/planningPic1.jpeg",
     },
     {
       id: 2,
