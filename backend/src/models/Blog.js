@@ -7,7 +7,7 @@ const blogSchema = new mongoose.Schema(
     content: { type: String, required: true },
     tags: [{ type: String }],
     thumbnailUrl: { type: String },
-    status: { type: String, enum: ["draft", "published"], default: "draft" },
+    status: { type: String, enum: ["active", "inactive"], default: "inactive" },
     date: { type: Date, default: Date.now },
   },
   { timestamps: true }

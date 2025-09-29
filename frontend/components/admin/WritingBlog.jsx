@@ -117,7 +117,7 @@ export default function WritingBlog({ initialData, onClose }) {
         content: editorData.trim(),
         tags,
         thumbnailUrl: imageUrl,
-        status: initialData?.status || "published",
+        ...(initialData?.status && { status: initialData.status }),
       };
 
       if (initialData) {
