@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 
 export default function QuillEditor({ onChange, initialText = "" }) {
+  const hasSetInitial = useRef(false);
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
@@ -36,14 +37,14 @@ export default function QuillEditor({ onChange, initialText = "" }) {
   useEffect(() => {
     if (!quill) return;
 
-    // set initial plain text (optional)
-    if (initialText) {
-      quill.setText(initialText);
-      onChange?.(initialText);
+    // Only set initial content once
+    if (initialText && !hasSetInitial.current) {
+      quill.clipboard.dangerouslyPasteHTML(initialText);
+      hasSetInitial.current = true;
     }
 
     const handler = () => {
-      const html = quill.root.innerHTML; 
+      const html = quill.root.innerHTML;
       onChange?.(html);
     };
 
