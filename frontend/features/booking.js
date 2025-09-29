@@ -10,9 +10,16 @@ export const bookingApi = createApi({
         getBooking: builder.query({
             query: () => "/booking",
             providesTags: ["booking"]
+        }),
+        booking:builder.mutation({
+            query:(data)=>({
+                url:'/booking',
+                method:"POST",
+                body:data
+            })
         })
     })
 });
 
 
-export const { useGetBookingQuery } = bookingApi;
+export const { useGetBookingQuery, useBookingMutation } = bookingApi;

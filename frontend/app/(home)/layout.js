@@ -3,6 +3,7 @@ import "../globals.css";
 import Navbar from "@/components/shared/Navbar";
 import { SessionProvider } from "next-auth/react";
 import { Poppins } from "next/font/google";
+import ReduxProvider from "../provider/ReduxProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -55,8 +56,11 @@ export default function RootLayout({ children }) {
     <html lang="en" className={poppins.variable}>
       <body className="font-sans">
     
-         <Navbar />
+     <ReduxProvider>
+
+          <Navbar />
         {children}
+     </ReduxProvider>
 
       </body>
     </html>
