@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import SubTitle from "../shared/typography/SubTitle";
 import QuillEditor from "./QuillEditor";
 import { useRouter } from "next/navigation";
-import { useAddBlogMutation } from "@/features/blogApi";
+import { useAddBlogMutation, useUpdateBlogMutation } from "@/features/blogApi";
 
-export default function WritingBlog() {
+export default function WritingBlog({ initialData, onClose }) {
   // ---- form state ----
   const [title, setTitle] = useState("");
   const [editorData, setEditorData] = useState("");
@@ -22,8 +22,21 @@ export default function WritingBlog() {
   const [preview, setPreview] = useState(null);
   const [imgError, setImgError] = useState("");
 
-  // RTK Query mutation hook
-  const [addBlog, { isLoading }] = useAddBlogMutation();
+  // RTK Query mutation hooks
+  const [addBlog, { isLoading: adding }] = useAddBlogMutation();
+  const [updateBlog, { isLoading: updating }] = useUpdateBlogMutation();
+
+  const isLoading = adding || updating;
+
+  // Prefill fields when editing
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title || "");
+      setEditorData(initialData.content || "");
+      setTags(initialData.tags || []);
+      setPreview(initialData.thumbnailUrl || initialData.image || null);
+    }
+  }, [initialData]);
 
   const openPicker = () => fileInputRef.current?.click();
 
@@ -43,7 +56,7 @@ export default function WritingBlog() {
   };
 
   const clearImage = () => {
-    if (preview) URL.revokeObjectURL(preview);
+    if (preview && typeof preview === "string") URL.revokeObjectURL(preview);
     setFile(null);
     setPreview(null);
     setImgError("");
@@ -94,7 +107,7 @@ export default function WritingBlog() {
     if (isLoading) return;
 
     try {
-      let imageUrl = null;
+      let imageUrl = preview;
       if (file) {
         imageUrl = await uploadToImgBB(file);
       }
@@ -104,31 +117,49 @@ export default function WritingBlog() {
         content: editorData.trim(),
         tags,
         thumbnailUrl: imageUrl,
-        status: "published",
+        status: initialData?.status || "published",
       };
 
-      await addBlog(payload).unwrap();
+      if (initialData) {
+        // Edit existing blog
+        await updateBlog({ id: initialData._id, ...payload }).unwrap();
+      } else {
+        // Create new blog
+        await addBlog(payload).unwrap();
+      }
 
-      router.push("/blog");
+      if (onClose) {
+        onClose();
+      } else {
+        router.push("/blog");
+      }
     } catch (e) {
       console.error(e);
-      alert(e?.message || "Failed to post. Please try again.");
+      alert(e?.message || "Failed to save. Please try again.");
     }
   };
 
   return (
     <div>
       {/* Header row */}
-      <section className="lg:flex-row flex flex-col-reverse gap-8 justify-between">
+      <section className="lg:flex-row flex flex-col gap-8 justify-between">
         <div className="flex-1">
           <div className="flex justify-between bg-white rounded-3xl p-6 shadow-sm">
-            <h4 className="font-medium text-3xl">Writing blog</h4>
+            <h4 className="font-medium text-3xl">
+              {initialData ? "Edit Blog" : "Writing Blog"}
+            </h4>
             <button
               onClick={onPost}
               className="bg-[#FF006A] text-white py-2 px-6 rounded-full"
               disabled={isLoading}
             >
-              {isLoading ? "Posting..." : "Post"}
+              {isLoading
+                ? initialData
+                  ? "Updating..."
+                  : "Posting..."
+                : initialData
+                ? "Update"
+                : "Post"}
             </button>
           </div>
 
@@ -148,7 +179,10 @@ export default function WritingBlog() {
 
           {/* Editor */}
           <div className="mt-8">
-            <QuillEditor onChange={(val) => setEditorData(val)} />
+            <QuillEditor
+              initialText={editorData}
+              onChange={(val) => setEditorData(val)}
+            />
           </div>
         </div>
 
@@ -240,7 +274,7 @@ export default function WritingBlog() {
 
             <div className="px-6">
               <SubTitle
-                text={"Please Use JPEG Format With Non Transparent Background."}
+                text={"Add multiple tags to help categorize your blog."}
               />
             </div>
 
