@@ -5,11 +5,11 @@ import { useParams } from "next/navigation";
 import BlogDetails from "@/components/BlogDetails/BlogDetails";
 import Footer from "@/components/homepage/Footer";
 import Banner from "@/components/shared/Banner";
-import Planning from "@/components/homepage/Planning";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { useGetBlogBySlugQuery } from "@/features/blogApi";
-import blogBg from "../../../../public/Blog/blog2.jpg"
+import blogBg from "../../../../public/Blog/blog2.jpg";
+import RelatedBlog from "@/components/blog/RelatedBlog";
 
 const BlogDetailsContent = () => {
   const { slug } = useParams();
@@ -35,7 +35,7 @@ const BlogDetailsContent = () => {
         )}
       />
       <BlogDetails blog={blog} />
-      <Planning title="Related" highlight="Blog" />
+      <RelatedBlog currentBlog={blog} />
       <Footer />
     </div>
   );
