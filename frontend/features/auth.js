@@ -47,10 +47,15 @@ forgotPassword: builder.mutation({
   }),
 }),
 
+    getAllUser: builder.query({
+            query: () => `/user`,
+            providesTags: ["user"]
+        }),
+
 
 
 
   }),
 });
 
-export const { useSaveRegisterMutation, useLoginMutation,   useVerifyOtpMutation, useSendOtpMutation, useForgotPasswordMutation } = authApi;
+export const { useSaveRegisterMutation, useLoginMutation,   useVerifyOtpMutation, useSendOtpMutation, useForgotPasswordMutation, useGetAllUserQuery } = authApi;

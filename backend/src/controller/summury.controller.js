@@ -17,6 +17,8 @@ export const GetAdminSummary = async (req, res) => {
       999
     );
 
+
+
     // Find bookings created in current month
     const totalMonthly = await Booking.countDocuments({
       createdAt: {
@@ -32,10 +34,21 @@ export const GetAdminSummary = async (req, res) => {
       },
       paid: "Paid",
     });
+    const totalCustomerThisMonths = await User.countDocuments({
+      createdAt: {
+        $gte: startOfMonth,
+        $lte: endOfMonth,
+      },
+      role: "customer",
+    });
 
     const activePerformer = await User.countDocuments({ role: "butler" });
+    const totalCustomer = await User.countDocuments({role:"customer"})
 
     const unpaidBooking = await Booking.find({ paid: "unpaid" });
+    const activeBooking = await Booking.countDocuments({status:"ongoing"});
+    const totalVerifiedButler = await User.countDocuments({role:'butler', isVerified:true})
+
 
     const totalPendingBooking = unpaidBooking.reduce((sum, booking) => {
       return sum + booking.price;
@@ -52,6 +65,12 @@ export const GetAdminSummary = async (req, res) => {
       performer: activePerformer,
       pendingPayout: totalPendingBooking,
       revenue: toatlRevenue,
+      totalCustomer:totalCustomer,
+      activeBooking:activeBooking,
+      totalCustomerThisMonths: totalCustomerThisMonths,
+      totalVerifiedButler:totalVerifiedButler
+
+
     });
   } catch (error) {
     res.status(500).json({
