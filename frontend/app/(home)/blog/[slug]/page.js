@@ -5,10 +5,11 @@ import { useParams } from "next/navigation";
 import BlogDetails from "@/components/BlogDetails/BlogDetails";
 import Footer from "@/components/homepage/Footer";
 import Banner from "@/components/shared/Banner";
-import Planning from "@/components/homepage/Planning";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { useGetBlogBySlugQuery } from "@/features/blogApi";
+import blogBg from "../../../../public/Blog/blog2.jpg";
+import RelatedBlog from "@/components/blog/RelatedBlog";
 
 const BlogDetailsContent = () => {
   const { slug } = useParams();
@@ -25,7 +26,7 @@ const BlogDetailsContent = () => {
   return (
     <div className="min-h-screen bg-white">
       <Banner
-        image={blog.thumbnailUrl}
+        image={blogBg}
         service="Blog"
         title={blog.title}
         description={new Date(blog.date || blog.createdAt).toLocaleDateString(
@@ -34,7 +35,7 @@ const BlogDetailsContent = () => {
         )}
       />
       <BlogDetails blog={blog} />
-      <Planning title="Related" highlight="Blog" />
+      <RelatedBlog currentBlog={blog} />
       <Footer />
     </div>
   );

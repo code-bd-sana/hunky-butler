@@ -2,7 +2,6 @@
 
 import React from "react";
 import Image from "next/image";
-
 import { useRouter } from "next/navigation";
 import { useGetBlogsQuery } from "@/features/blogApi";
 
@@ -26,10 +25,13 @@ const BlogSection = () => {
     );
   }
 
+  // filter active blogs only
+  const activeBlogs = blogs.filter((post) => post.status === "active");
+
   return (
     <section className="max-w-[1240px] mx-auto px-4 py-4 md:py-12 pb-[500px]">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
-        {blogs.map((post) => (
+        {activeBlogs.map((post) => (
           <div
             key={post._id}
             className="rounded-2xl overflow-hidden cursor-pointer"

@@ -1,4 +1,4 @@
-import Service from "../models/Service.js";  // ✅ works now
+import Service from "../models/Service.js"; // ✅ works now
 
 // import Service from "../models/service.js";
 // import Service from "../models/service.js";
@@ -54,15 +54,34 @@ export const createService = async (req, res) => {
 };
 
 // // Update a service
-// export const updateService = async (req, res) => {
-//   try {
-//     const updatedService = await Service.findByIdAndUpdate(req.params.id, req.body, { new: true });
-//     if (!updatedService) return res.status(404).json({ message: "Service not found" });
-//     res.status(200).json(updatedService);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// };
+export const updateService = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const { name, description, includes, faqs, banner } = req.body;
+
+    // Build the update object dynamically
+    const updateData = {};
+    if (name !== undefined) updateData.name = name;
+    if (description !== undefined) updateData.description = description;
+    if (includes !== undefined) updateData.included = includes;
+    if (faqs !== undefined) updateData.faqs = faqs;
+    if (banner !== undefined) updateData.banner = banner;
+
+    const updatedService = await Service.findOneAndUpdate(
+      { slug },
+      updateData,
+      { new: true } // return the updated document
+    );
+
+    if (!updatedService) {
+      return res.status(404).json({ message: "Service not found" });
+    }
+
+    res.status(200).json(updatedService);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 // // Delete a service
 // export const deleteService = async (req, res) => {
