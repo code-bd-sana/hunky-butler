@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -13,10 +13,24 @@ import {
   FaTelegram,
 } from "react-icons/fa";
 import logo from "@/public/logo/logo.png";
+import ServicePopup from "../servicePopup/ServicePopup";
 
 const Navbar = () => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showService, setShowService] = useState(false);
+
+  const hideTimer = useRef(null);
+
+  const startHideTimer = () => {
+    hideTimer.current = setTimeout(() => {
+      setShowService(false);
+    }, 500); 
+  };
+
+  const cancelHideTimer = () => {
+    clearTimeout(hideTimer.current);
+  };
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -28,8 +42,8 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed mt-[32px] top-0 left-0 w-full z-100">
-      <div className="max-w-[1866px] mx-auto">
+    <nav className="fixed mt-[32px] top-0 left-0 w-full z-[100]">
+      <div className="max-w-[1866px] mx-auto relative">
         <div
           className="flex items-center justify-between px-[32px] py-[20px] rounded-[100px] h-[68px] bg-transparent backdrop-blur-lg text-white shadow-xl"
           style={{ background: "rgba(74, 74, 74, 0.4)" }}
@@ -52,6 +66,30 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-[8px] font-medium relative">
             {navLinks.map((link) => {
               const isActive = pathname === link.href && link.name !== "Home";
+
+              if (link.name === "Service") {
+                return (
+                  <div
+                    key={link.href}
+                    onMouseEnter={() => {
+                      cancelHideTimer();
+                      setShowService(true);
+                    }}
+                    onMouseLeave={startHideTimer}
+                  >
+                    <Link
+                      href={link.href}
+                      className={`px-4 py-2 rounded-full transition-colors ${
+                        isActive
+                          ? "bg-[rgba(255,0,106,1)]"
+                          : "hover:bg-[rgba(255,0,106,1)] text-white"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  </div>
+                );
+              }
 
               return (
                 <Link
@@ -130,7 +168,10 @@ const Navbar = () => {
               </a>
             </div>
 
-            <Link href={'/quote'} className="inline-flex items-center justify-center px-6 h-11 min-w-[164px] bg-white text-[#FF006A] rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap text-center">
+            <Link
+              href={"/quote"}
+              className="inline-flex items-center justify-center px-6 h-11 min-w-[164px] bg-white text-[#FF006A] rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap text-center"
+            >
               Get Instant Quote
             </Link>
           </div>
@@ -146,6 +187,19 @@ const Navbar = () => {
             </button>
           </div>
         </div>
+
+        {/* Service Dropdown Mega Menu */}
+        {showService && (
+          <div
+            className="absolute left-0 top-full w-full mt-4 px-[32px] z-[200]"
+            onMouseEnter={cancelHideTimer}
+            onMouseLeave={startHideTimer}
+          >
+            <div className="max-w-[1866px] mx-auto">
+              <ServicePopup />
+            </div>
+          </div>
+        )}
 
         {/* Mobile Menu Dropdown */}
         {isMenuOpen && (

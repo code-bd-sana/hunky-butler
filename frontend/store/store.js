@@ -8,7 +8,8 @@ import { servicesApi } from "@/features/services/servicesApi";
 import { bookingApi } from "@/features/booking";
 import { butlerApi } from "@/features/butler";
 import { summuryApi } from "@/features/summury";
-import middleware from "@/middleware";
+import { customerApi } from "@/features/customer";
+
 
 
 export const store = configureStore({
@@ -20,6 +21,7 @@ export const store = configureStore({
     [bookingApi.reducerPath]: bookingApi.reducer,
     [butlerApi.reducerPath]: butlerApi.reducer,
     [summuryApi.reducerPath]: summuryApi.reducer,
+    [customerApi.reducerPath]:customerApi.reducer,
 
     // UI slices
     usersTab: usersTabReducer,
@@ -33,6 +35,8 @@ export const store = configureStore({
       servicesApi.middleware,
       bookingApi.middleware,
       butlerApi.middleware,
-      summuryApi.middleware
+      summuryApi.middleware,
+      customerApi.middleware
+
     ),
 });

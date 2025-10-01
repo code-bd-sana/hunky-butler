@@ -1,8 +1,8 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
 import { FiPlus, FiEdit, FiTrash2 } from "react-icons/fi";
 import Image from "next/image";
-import author from '@/public/Dashboard/article/author.png';
+import author from "@/public/Dashboard/article/author.png";
 import WritingBlog from "./WritingBlog";
 import {
   useGetBlogsQuery,
@@ -13,7 +13,7 @@ import {
 export default function ArticleManagement() {
   const [activeTab, setActiveTab] = useState("all");
   const [addNewArticle, setAddNewArticle] = useState(false);
-  const [editArticle, setEditArticle] = useState(null); // ✅ track editing blog
+  const [editArticle, setEditArticle] = useState(null); // track editing blog
 
   // Fetch blogs
   const { data: blogs = [], isLoading, isError } = useGetBlogsQuery();
@@ -29,14 +29,15 @@ export default function ArticleManagement() {
   useEffect(() => {
     if (blogs?.length) {
       setLocalArticles(
-        blogs.map(b => ({
+        blogs.map((b) => ({
           _id: b._id,
           title: b.title,
           content: b.content,
+          tags: b.tags || [],
           date: new Date(b.date || b.createdAt).toLocaleDateString("en-US", {
             month: "long",
             day: "numeric",
-            year: "numeric"
+            year: "numeric",
           }),
           author: b.author || "Unknown Author",
           image: b.thumbnailUrl || "/placeholder.png",
@@ -86,7 +87,7 @@ export default function ArticleManagement() {
 
   return (
     <div>
-      <div className={`p-4 ${addNewArticle ? 'hidden': 'block'}`}>
+      <div className={`p-4 ${addNewArticle ? "hidden" : "block"}`}>
         {/* Tabs + Add Button */}
         <section className="lg:flex justify-between items-center">
           <ul className="p-2 bg-white rounded-full flex items-center gap-2 shadow-sm">
@@ -100,25 +101,30 @@ export default function ArticleManagement() {
             </li>
             <li
               className={`py-2 px-4 rounded-full cursor-pointer ${
-                activeTab === "active" ? "bg-[#FF006A] text-white" : "text-[#555]"
+                activeTab === "active"
+                  ? "bg-[#FF006A] text-white"
+                  : "text-[#555]"
               }`}
               onClick={() => setActiveTab("active")}
             >
-              Active ({localArticles.filter(a => a.status === "active").length})
+              Active (
+              {localArticles.filter((a) => a.status === "active").length})
             </li>
             <li
               className={`py-2 px-4 rounded-full cursor-pointer ${
                 activeTab === "inactive"
                   ? "bg-[#FF006A] text-white"
-                  : "text-[#555]"}`}
+                  : "text-[#555]"
+              }`}
               onClick={() => setActiveTab("inactive")}
             >
-              Inactive ({localArticles.filter(a => a.status === "inactive").length})
+              Inactive (
+              {localArticles.filter((a) => a.status === "inactive").length})
             </li>
           </ul>
 
           <button
-            onClick={()=>{
+            onClick={() => {
               setAddNewArticle(true);
               setEditArticle(null); // ✅ new blog mode
             }}
@@ -168,9 +174,13 @@ export default function ArticleManagement() {
                 {/* Status Toggle Switch */}
                 <div
                   className={`${
-                    article.status === "active" ? "bg-[#FF006A]" : "bg-[#3D3D3D]"
+                    article.status === "active"
+                      ? "bg-[#FF006A]"
+                      : "bg-[#3D3D3D]"
                   } w-22 h-7 p-2 cursor-pointer rounded-2xl transition-colors duration-300 relative`}
-                  onClick={() => toggleArticleStatus(article._id, article.status)}
+                  onClick={() =>
+                    toggleArticleStatus(article._id, article.status)
+                  }
                 >
                   {article.status === "active" && (
                     <span className="text-white ml-2 -mt-1 absolute text-sm mr-8">
@@ -183,7 +193,7 @@ export default function ArticleManagement() {
                         ? "translate-x-7 -mt-[10px] mb-4 w-5 h-8 bg-white rounded-full ml-8"
                         : "translate-x-0 w-5 -mt-[10px] h-8 bg-white rounded-full -ml-2 -mb-4"
                     }  transition-all duration-300`}
-                    style={{boxShadow: "1px 2px 5px 2px rgb(0,0,0,0.1)"}}
+                    style={{ boxShadow: "1px 2px 5px 2px rgb(0,0,0,0.1)" }}
                   >
                     {article.status !== "active" && (
                       <span className="text-white absolute text-center ml-6 mr-8 text-sm mt-[4px]">
