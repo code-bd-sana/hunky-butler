@@ -4,6 +4,8 @@ import UserButtler from "@/components/Dashboard/UsersCardForAdmin/UserButtler";
 import UserCustomer from "@/components/Dashboard/UsersCardForAdmin/UserCustomer";
 import ButtlerList from "@/components/Dashboard/UsersTableForAdmin/ButtlerList";
 import CustomersList from "@/components/Dashboard/UsersTableForAdmin/CustomersList";
+import { useGetAdminSummuryQuery } from "@/features/summury";
+
 import { useActiveTab, useSetTab } from "@/hooks/useUsersTab";
 import React, { useEffect, useState } from "react";
 
@@ -11,6 +13,12 @@ export default function UserPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const setUserTab = useSetTab();
   const activeTab = useActiveTab();
+  const data = useGetAdminSummuryQuery();
+  
+  
+
+
+
 
   const tab = [
     {
@@ -23,6 +31,7 @@ export default function UserPage() {
     },
   ];
 
+
   useEffect(() => {
     setUserTab("customer");
   }, []);
@@ -34,9 +43,9 @@ export default function UserPage() {
         tab={tab}
       />
       {activeTab === "customer" ? (
-        <UserCustomer></UserCustomer>
+        <UserCustomer data={data}></UserCustomer>
       ) : (
-        <UserButtler />
+        <UserButtler  data={data}/>
       )}
       {activeTab === "customer" ? (
         <CustomersList></CustomersList>

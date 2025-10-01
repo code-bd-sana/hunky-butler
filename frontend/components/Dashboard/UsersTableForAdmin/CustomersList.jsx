@@ -1,69 +1,170 @@
 "use client"
+import { useGetCustomerOverviwQuery } from "@/features/booking";
+import { useGetAllCustomerQuery } from "@/features/customer";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { LuArrowUpRight } from "react-icons/lu";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const customers = [
-  {
-    name: "James H.",
-    id: "#BK202509",
-    joinDate: "14 Sep 2025 • 7:30 PM",
-    services: "3 Times",
-    location: "Shoreditch, London",
-    spent: "£290.00",
-    color: "bg-yellow-400",
-  },
-  {
-    name: "Darlene Robertson",
-    id: "#BK202509",
-    joinDate: "14 Sep 2025 • 7:30 PM",
-    services: "2 Times",
-    location: "Berlin, Germany",
-    spent: "£290.00",
-    color: "bg-pink-500",
-  },
-  {
-    name: "Bessie Cooper",
-    id: "#BK202509",
-    joinDate: "14 Sep 2025 • 7:30 PM",
-    services: "6 Times",
-    location: "Los Angeles, CA",
-    spent: "£290.00",
-    color: "bg-purple-500",
-  },
-  {
-    name: "James H.",
-    id: "#BK202509",
-    joinDate: "14 Sep 2025 • 7:30 PM",
-    services: "4 Times",
-    location: "Shoreditch, London",
-    spent: "£290.00",
-    color: "bg-indigo-500",
-  },
-  {
-    name: "Darlene Robertson",
-    id: "#BK202509",
-    joinDate: "14 Sep 2025 • 7:30 PM",
-    services: "34 Times",
-    location: "Berlin, Germany",
-    spent: "£290.00",
-    color: "bg-teal-500",
-  },
-  {
-    name: "Darlene Robertson",
-    id: "#BK202509",
-    joinDate: "14 Sep 2025 • 7:30 PM",
-    services: "8 Times",
-    location: "Berlin, Germany",
-    spent: "£290.00",
-    color: "bg-amber-500",
-  },
-];
+// Individual customer row component
+const CustomerRow = ({ customer }) => {
+  const { data: bookingData } = useGetCustomerOverviwQuery(customer.email);
+  
+  const serviceTaken = bookingData?.totalServiceTaken || 0;
+  const totalSpent = bookingData?.totalSpent || 0;
+
+  return (
+    <tr className="h-[56px] bg-white hover:bg-zinc-50/60 border-b border-[#EFE7EA]">
+      <td className="px-4 sm:px-6">
+        <div className="flex items-center gap-3 min-w-0">
+          <Image
+            src="/Dashboard/customer.png"
+            alt={customer.name}
+            width={32}
+            height={32}
+            className="rounded-[8px] object-cover"
+          />
+          <span className="truncate">{customer.name || 'Guest'}</span>
+        </div>
+      </td>
+
+      <td className="px-2 align-middle text-zinc-600 whitespace-nowrap">
+        {customer._id?.slice(0, 6)}...
+      </td>
+      
+      <td className="px-2 align-middle whitespace-nowrap">
+        {customer?.createdAt && new Date(customer.createdAt).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        })}
+      </td>
+      
+      <td className="px-2 align-middle whitespace-nowrap">
+        {serviceTaken} Times
+      </td>
+      
+      <td className="px-2 align-middle">{customer?.email}</td>
+
+      <td className="px-4 sm:px-6 align-middle font-medium whitespace-nowrap text-right tabular-nums">
+        £{totalSpent.toFixed(2)}
+      </td>
+    </tr>
+  );
+};
+
+// Pagination Component
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const pages = [];
+  
+  // Show limited page numbers
+  const maxVisiblePages = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+  
+  if (endPage - startPage + 1 < maxVisiblePages) {
+    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
+  }
+
+  return (
+    <div className="flex items-center justify-center space-x-2 mt-6">
+      {/* Previous Button */}
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className={`flex items-center justify-center w-10 h-10 rounded-lg border ${
+          currentPage === 1
+            ? 'border-gray-300 text-gray-400 cursor-not-allowed'
+            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+        }`}
+      >
+        <FaChevronLeft className="text-sm" />
+      </button>
+
+      {/* First Page */}
+      {startPage > 1 && (
+        <>
+          <button
+            onClick={() => onPageChange(1)}
+            className={`flex items-center justify-center w-10 h-10 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50`}
+          >
+            1
+          </button>
+          {startPage > 2 && <span className="px-2">...</span>}
+        </>
+      )}
+
+      {/* Page Numbers */}
+      {pages.map(page => (
+        <button
+          key={page}
+          onClick={() => onPageChange(page)}
+          className={`flex items-center justify-center w-10 h-10 rounded-lg border ${
+            currentPage === page
+              ? 'border-[#FF006A] bg-[#FF006A] text-white'
+              : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+
+      {/* Last Page */}
+      {endPage < totalPages && (
+        <>
+          {endPage < totalPages - 1 && <span className="px-2">...</span>}
+          <button
+            onClick={() => onPageChange(totalPages)}
+            className={`flex items-center justify-center w-10 h-10 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50`}
+          >
+            {totalPages}
+          </button>
+        </>
+      )}
+
+      {/* Next Button */}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className={`flex items-center justify-center w-10 h-10 rounded-lg border ${
+          currentPage === totalPages
+            ? 'border-gray-300 text-gray-400 cursor-not-allowed'
+            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+        }`}
+      >
+        <FaChevronRight className="text-sm" />
+      </button>
+    </div>
+  );
+};
 
 export default function CustomersList() {
   const [open, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const ddRef = useRef(null);
+
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+      setCurrentPage(1); // Reset to first page when searching
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  const { data, isLoading, error } = useGetAllCustomerQuery({
+    page: currentPage,
+    limit: 10,
+    search: debouncedSearch
+  });
 
   useEffect(() => {
     const onClick = (e) => {
@@ -79,13 +180,52 @@ export default function CustomersList() {
     };
   }, [open]);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setDebouncedSearch(searchTerm);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll to top when page changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (isLoading) {
+    return (
+      <section className="w-full rounded-2xl border border-zinc-100 bg-white shadow-sm p-8">
+        <div className="flex items-center justify-center">
+          <p className="text-lg">Loading customers...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="w-full rounded-2xl border border-zinc-100 bg-white shadow-sm p-8">
+        <div className="flex items-center justify-center">
+          <p className="text-lg text-red-500">Error loading customers</p>
+        </div>
+      </section>
+    );
+  }
+
+  const customers = data?.data || [];
+  const totalPages = data?.totalPages || 1;
+  const totalCustomers = data?.total || 0;
+
   return (
     <section className="w-full rounded-2xl border border-zinc-100 bg-white shadow-sm">
       {/* Top bar */}
       <div className="flex items-center justify-between gap-4 px-4 sm:px-6 pt-5">
-        <h2 className="text-[18px] font-semibold text-zinc-800">
-          Customer List
-        </h2>
+        <div>
+          <h2 className="text-[18px] font-semibold text-zinc-800">
+            Customer List
+          </h2>
+         
+        </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <button className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#F6F4F5] text-[#FF006A] text-[12px] hover:bg-pink-100 hover:text-pink-500 transition">
@@ -151,24 +291,26 @@ export default function CustomersList() {
           </span>
           <input
             type="text"
-            placeholder="Search User"
+            placeholder="Search by name or email"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="h-11 w-full rounded-[8px] border border-[#EFE7EA] bg-[#FFFFFF] pl-9 pr-3 text-[16px] text-[#3D3D3D] placeholder:text-[#3D3D3D] outline-none ring-0 focus:border-[#FF006A]"
           />
         </div>
 
         <button
           type="button"
+          onClick={handleSearch}
           className="h-11 rounded-[30px] bg-[#FF006A] px-4 sm:px-5 text-[16px] font-medium text-white shadow-sm hover:bg-pink-600 active:bg-pink-700"
         >
           Search
         </button>
       </div>
 
-      {/* Always-table with controlled column widths */}
+      {/* Table */}
       <div className="px-2 pb-4">
-        <div className="overflow-x-auto max-h-[338px] scrollbar-hide overflow-y-auto rounded-xl">
+        <div className="overflow-x-auto max-h-[500px] scrollbar-hide overflow-y-auto rounded-xl">
           <table className="w-full border-collapse min-w-[820px]">
-            {/* Make last column wide enough on all screens */}
             <colgroup>
               <col className="w-[28%]" />
               <col className="w-[14%]" />
@@ -188,8 +330,7 @@ export default function CustomersList() {
                 <th className="px-2 text-left whitespace-nowrap">
                   Service Taken
                 </th>
-                <th className="px-2 text-left whitespace-nowrap">Location</th>
-                {/* prevent wrap of header */}
+                <th className="px-2 text-left whitespace-nowrap">Email</th>
                 <th className="px-4 sm:px-6 text-right whitespace-nowrap">
                   Total&nbsp;Spent
                 </th>
@@ -197,47 +338,29 @@ export default function CustomersList() {
             </thead>
 
             <tbody className="text-[16px] text-[#333333]">
-              {customers.map((c, i) => (
-                <tr key={i} className="h-[56px] bg-white hover:bg-zinc-50/60">
-                  <td className="px-4 sm:px-6">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <Image
-                        src="/Dashboard/customer.png"
-                        alt={c.name}
-                        width={32}
-                        height={32}
-                        className="rounded-[8px] object-cover"
-                      />
-
-                      <span className="truncate">{c.name}</span>
-                    </div>
-                  </td>
-
-                  <td className="px-2 align-middle text-zinc-600 whitespace-nowrap">
-                    {c.id}
-                  </td>
-                  <td className="px-2 align-middle whitespace-nowrap">
-                    {c.joinDate}
-                  </td>
-                  <td className="px-2 align-middle whitespace-nowrap">
-                    {c.services}
-                  </td>
-                  <td className="px-2 align-middle">{c.location}</td>
-
-                  {/* right-align numbers, never wrap, use tabular figures */}
-                  <td className="px-4 sm:px-6 align-middle font-medium whitespace-nowrap text-right tabular-nums">
-                    {c.spent}
+              {customers.length > 0 ? (
+                customers.map((customer) => (
+                  <CustomerRow key={customer._id} customer={customer} />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="px-4 sm:px-6 py-8 text-center text-gray-500">
+                    No customers found
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* Optional hint */}
-        {/* <p className="md:hidden mt-2 text-center text-[11px] text-zinc-400">
-          Tip: Swipe horizontally to see more columns.
-        </p> */}
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </section>
   );

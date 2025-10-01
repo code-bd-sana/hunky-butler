@@ -1,5 +1,6 @@
+// features/butler.js
 import { base_url } from "@/utils/utils";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; // note '/react'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const butlerApi = createApi({
   reducerPath: "butlerApi",
@@ -7,7 +8,8 @@ export const butlerApi = createApi({
   tagTypes: ["butler"],
   endpoints: (builder) => ({
     getAllButler: builder.query({
-      query: () => `/butler`,
+      query: ({ page = 1, limit = 10, search = '' } = {}) => 
+        `/user/butlers?page=${page}&limit=${limit}&search=${search}`,
       providesTags: ["butler"],
     }),
   }),

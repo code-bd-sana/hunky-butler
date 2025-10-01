@@ -2,6 +2,7 @@ import { base_url } from "@/utils/utils";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; 
 
 
+
 export const bookingApi = createApi({
     reducerPath: "bookingApi",
     baseQuery: fetchBaseQuery({ baseUrl: base_url, credentials:"include" }),
@@ -33,7 +34,16 @@ export const bookingApi = createApi({
                 method:"PUT",
                 body:data
             })
+        }),
+
+        getCustomerOverviw:builder.query({
+            query:(email)=> `/booking/customerBooking/${email}`
+        }),
+        getButlerOverviw:builder.query({
+            query:(id)=> `/booking/butlerBookingOverview/${id}`
         })
+
+      
 
       
 
@@ -41,4 +51,4 @@ export const bookingApi = createApi({
     })
 });
 
-export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation  } = bookingApi;
+export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery  } = bookingApi;

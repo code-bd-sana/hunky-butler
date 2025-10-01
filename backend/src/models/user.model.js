@@ -42,6 +42,11 @@ const userSchema = mongoose.Schema({
   totalReviews: {
     type: Number,
     default: 0
+  },
+
+  serviceTaken:{
+    type:Number,
+    default:0
   }
 },  { timestamps: true } );
 
