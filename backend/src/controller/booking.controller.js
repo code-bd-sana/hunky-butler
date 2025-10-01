@@ -58,6 +58,16 @@ export const createBooking = async (req, res) => {
     const data = req.body;
     const newData = new Booking(data);
     const savedData = await newData.save();
+    const {email} = req.body;
+      res.status(200).json({
+      message: "Success",
+      data: savedData,
+    });
+    await User.updateOne(
+  { email: email },
+  { $inc: { serviceTaken: 1 } }  
+);
+
     res.status(200).json({
       message: "Success",
       data: savedData,
@@ -143,3 +153,72 @@ export const assginToButler = async (req, res) => {
     });
   }
 };
+
+
+
+
+export const getBookingOverviewCustomer = async (req, res) => {
+  try {
+    const email = req.params.email;
+
+    const result = await Booking.aggregate([
+      { $match: { email: email } }, 
+      {
+        $group: {
+          _id: null,
+          totalSpent: { $sum: "$price" },         // সব price যোগ
+          totalServiceTaken: { $sum: 1 }          // মোট booking সংখ্যা
+        }
+      }
+    ]);
+
+    let totalSpent = 0;
+    let totalServiceTaken = 0;
+
+    if (result.length > 0) {
+      totalSpent = result[0].totalSpent;
+      totalServiceTaken = result[0].totalServiceTaken;
+    }
+
+    return res.status(200).json({
+      email,
+      totalSpent,
+      totalServiceTaken
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Something went wrong!"
+    });
+  }
+};
+
+
+
+
+export const getBookingOverviewButler = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Get all bookings for this butler
+    const bookings = await Booking.find({ butler: id });
+
+    // Calculate totalSpent and totalServiceProvided
+    const totalSpent = bookings.reduce((sum, booking) => sum + (booking.price || 0), 0);
+    const totalServiceProvided = bookings.length;
+
+    return res.status(200).json({
+      totalSpent,
+      totalServiceProvided
+    });
+
+  } catch (error) {
+    console.error("Booking Overview Error:", error);
+    return res.status(500).json({
+      message: "Something went wrong!",
+      error: error.message
+    });
+  }
+};
+

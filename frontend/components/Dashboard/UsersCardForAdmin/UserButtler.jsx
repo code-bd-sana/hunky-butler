@@ -11,7 +11,7 @@ console.log(summury, "usr customer data");
           Total Butlers
         </h2>
 
-        <p className="text-3xl md:text-4xl lg:text-5xl font-bold">{summury.performer}</p>
+        <p className="text-3xl md:text-4xl lg:text-5xl font-bold">{summury?.performer}</p>
         <span className="text-sm md:text-base lg:text-lg opacity-90">
           Updated 1 min ago
         </span>
@@ -22,7 +22,7 @@ console.log(summury, "usr customer data");
           Verified
         </h2>
 
-        <p className="text-3xl md:text-4xl lg:text-5xl font-bold">{summury.totalVerifiedButler
+        <p className="text-3xl md:text-4xl lg:text-5xl font-bold">{summury?.totalVerifiedButler
 }</p>
         <span className="text-sm md:text-base lg:text-lg  opacity-90">
           Updated 1 min ago
