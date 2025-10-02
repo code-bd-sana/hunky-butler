@@ -20,7 +20,7 @@ const CustomerRow = ({ customer }) => {
         <div className="flex items-center gap-3 min-w-0">
           <Image
             src="/Dashboard/customer.png"
-            alt={customer.name}
+            alt={"image"}
             width={32}
             height={32}
             className="rounded-[8px] object-cover"
@@ -228,14 +228,14 @@ export default function CustomersList() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <button className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#F6F4F5] text-[#FF006A] text-[12px] hover:bg-pink-100 hover:text-pink-500 transition">
+          {/* <button className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#F6F4F5] text-[#FF006A] text-[12px] hover:bg-pink-100 hover:text-pink-500 transition">
             See All
             <LuArrowUpRight className="text-xl" />
-          </button>
+          </button> */}
 
           {/* Range dropdown */}
           <div ref={ddRef} className="relative inline-block text-left">
-            <button
+            {/* <button
               onClick={() => setOpen((o) => !o)}
               className="flex items-center px-4 py-2 rounded-full bg-[#F6F4F5] text-[#333333] text-[12px] hover:bg-pink-100 hover:text-pink-500 transition"
               aria-haspopup="listbox"
@@ -247,7 +247,7 @@ export default function CustomersList() {
                   open ? "rotate-180" : ""
                 }`}
               />
-            </button>
+            </button> */}
 
             {open && (
               <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
