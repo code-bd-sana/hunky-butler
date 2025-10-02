@@ -526,3 +526,52 @@ export const getBookingOverviewButler = async (req, res) => {
   }
 };
 
+
+
+
+
+
+export const getButlerOverview = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const totalBookingCompleted = await Booking.countDocuments({
+      butler: id,
+      status: "completed", 
+    });
+
+    
+    const totalEarningThisMonth = await Booking.aggregate([
+      {
+        $match: {
+          butler: id,
+          status: "completed",
+          createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$price" },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      totalBookingCompleted,
+      totalEarningThisMonth: totalEarningThisMonth.length > 0 ? totalEarningThisMonth[0].total : 0,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong!",
+      error,
+    });
+  }
+};
+
+

@@ -56,7 +56,7 @@ export const addReview = async (req, res) => {
 
     await transporter.sendMail({
       from: `"Butler Service" <${process.env.SMTP_USER}>`,
-      to: user.email, // Butler এর email
+      to: user.email, 
       subject: subject,
       html: message,
     });
