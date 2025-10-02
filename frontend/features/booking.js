@@ -12,6 +12,14 @@ export const bookingApi = createApi({
             query: ({ limit = 10, skip = 0, status="all" }) => `/booking/?skip=${skip}&limit=${limit}&&status=${status}`,
             providesTags: ["booking"]
         }),
+        getBookingButler: builder.query({
+            query: ({ limit = 10, skip = 0, status="all", id }) => `/booking/${id}/?skip=${skip}&limit=${limit}&&status=${status}`,
+            providesTags: ["booking"]
+        }),
+        getBookingCustomer: builder.query({
+            query: ({ limit = 10, skip = 0, status="all", email }) => `/booking/customer/${email}/?skip=${skip}&limit=${limit}&&status=${status}`,
+            providesTags: ["bookingCustomer"]
+        }),
         booking: builder.mutation({
             query: (data) => ({
                 url: '/booking',
@@ -51,4 +59,4 @@ export const bookingApi = createApi({
     })
 });
 
-export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery  } = bookingApi;
+export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery, useGetBookingButlerQuery, useGetBookingCustomerQuery  } = bookingApi;

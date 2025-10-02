@@ -5,10 +5,11 @@ import { LuArrowUpRight } from "react-icons/lu";
 import { FiEye } from "react-icons/fi";
 import { MdOutlineEdit } from "react-icons/md";
 import Image from "next/image";
-import { useAssignToButlerMutation, useGetBookingQuery, useUpdaterStatusMutation } from "@/features/booking";
+import { useAssignToButlerMutation, useGetBookingCustomerQuery, useUpdaterStatusMutation } from "@/features/booking";
 import { useGetAllButlerQuery } from "@/features/butler";
 import toast, { Toaster } from "react-hot-toast";
 import { useGetAdminSummuryQuery } from "@/features/summury";
+import { useSession } from "next-auth/react";
 
 // Details Modal Component
 const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
@@ -426,9 +427,8 @@ const StatusChangeModal = ({ booking, isOpen, onClose, onStatusChange, updateLoa
               >
                 <option value="">Choose status</option>
                 <option value="completed">Completed</option>
-                <option value="ongoing">Ongoing</option>
-                <option value="cancelled">Cancelled</option>
                 <option value="accepted">Accepted</option>
+         
               </select>
             </div>
             <div className="text-sm text-gray-600">
@@ -561,7 +561,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPe
   );
 };
 
-const Booking = () => {
+const CustomerBooking = () => {
   const [activeButton, setActiveButton] = useState("all");
   const [open, setOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -570,16 +570,29 @@ const Booking = () => {
   const [butlerModalOpen, setButlerModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+    const {data:user, status} = useSession();
+ 
+  
+    const email = user?.user?.email;
+       console.log(status, 'user information id')
+
+       if(status === 'loading...'){
+        return <p>loading....</p>
+       }
 
   // Calculate skip based on current page
   const skip = (currentPage - 1) * itemsPerPage;
   
   // Use the hook with object parameters
-  const { data, isLoading, error, refetch } = useGetBookingQuery(
+  
+
+
+  const { data, isLoading, error, refetch } = useGetBookingCustomerQuery(
     { 
       limit: itemsPerPage, 
       skip: skip,
-      status: activeButton 
+      status: activeButton ,
+      email:email
     },
     {
       refetchOnMountOrArgChange: true,
@@ -883,13 +896,12 @@ const Booking = () => {
               <th className="p-3 font-medium">Ref</th>
               <th className="p-3 font-medium">Date/Time</th>
               <th className="p-3 font-medium">Service</th>
-              <th className="p-3 font-medium">Customer</th>
-              <th className="p-3 font-medium">Butler</th>
+              <th className="p-3 font-medium">Staff</th>
+     
               <th className="p-3 font-medium">Location</th>
               <th className="p-3 font-medium">Status</th>
               <th className="p-3 font-medium">Total</th>
-              <th className="p-3 font-medium">Fee (Platform)</th>
-               <th className="p-3 font-medium">Payment Status</th>
+         
               <th className="p-3 font-medium">Action</th>
             </tr>
           </thead>
@@ -914,20 +926,7 @@ const Booking = () => {
                     <span>{b.firstName + " " + b.lastName}</span>
                   </div>
                 </td>
-                <td className="p-3">
-                  <div className="flex items-center gap-2">
-                    {b?.butler?.email ? (
-                      <span className="text-green-600 font-medium">{b.butler.email}</span>
-                    ) : (
-                      <button
-                        onClick={() => handleAssignButler(b)}
-                        className="px-3 py-1 bg-[#FF006A] text-white rounded-full text-sm font-medium hover:bg-[#e5005f] transition-colors"
-                      >
-                        Assign Butler
-                      </button>
-                    )}
-                  </div>
-                </td>
+             
                 <td className="p-3 text-center">{b.location || "--"}</td>
                 <td className="p-3">
                   <span
@@ -940,8 +939,7 @@ const Booking = () => {
                 </td>
                 <td className="p-3">${b.price}</td>
                  
-                <td className="p-3">${(b.price * 0.2).toFixed(2)}</td>
-                  <td className="p-3">{b.paid}</td>
+             
                 <td className="p-3">
                   <div className="flex items-center gap-2">
                     {/* View Details Button */}
@@ -954,13 +952,13 @@ const Booking = () => {
                     </button>
                     
                     {/* Change Status Button */}
-                    <button
+                    {/* <button
                       onClick={() => handleStatusChange(b)}
                       className="p-2 text-gray-600 hover:text-[#FF006A] transition-colors"
                       title="Change Status"
                     >
                       <MdOutlineEdit className="text-lg" />
-                    </button>
+                    </button> */}
                   </div>
                 </td>
               </tr>
@@ -1011,4 +1009,4 @@ const Booking = () => {
   );
 };
 
-export default Booking;
+export default CustomerBooking;
