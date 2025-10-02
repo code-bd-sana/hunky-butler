@@ -272,7 +272,10 @@ export const updateStatus = async (req, res) => {
 
     // Fetch booking info for email
     const booking = await Booking.findById(id);
-    const { email, firstName, serviceName } = booking;
+    const { email, firstName, serviceName, butler } = booking;
+
+    // Find butler info (if assigned)
+    const butlerId = butler ? butler.toString() : null;
 
     // Nodemailer transporter
     const transporter = nodemailer.createTransport({
@@ -284,6 +287,9 @@ export const updateStatus = async (req, res) => {
         pass: "noqq kzxv olzf clzz",
       },
     });
+
+    // Construct review link (customer email + butler id)
+    const reviewLink = `https://hunky-butler.vercel.app/review/${email}/?id=${butlerId}`;
 
     // Email template
     let subject = "";
@@ -305,6 +311,11 @@ export const updateStatus = async (req, res) => {
           <h2 style="color: #ff1673;">Service Completed</h2>
           <p>Hello ${firstName},</p>
           <p>Your service <strong>${serviceName}</strong> has been completed. Thank you for staying with us!</p>
+          <p style="margin-top:20px;">
+            <a href="${reviewLink}" style="background-color:#ff1673; color:#fff; padding:12px 24px; border-radius:9999px; text-decoration:none; font-weight:600;">
+              Give a Review
+            </a>
+          </p>
         </div>
       `;
     }
