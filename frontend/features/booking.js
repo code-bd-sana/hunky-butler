@@ -49,6 +49,14 @@ export const bookingApi = createApi({
         }),
         getButlerOverviw:builder.query({
             query:(id)=> `/booking/butlerBookingOverview/${id}`
+        }),
+        submitReview:builder.mutation({
+            query:(data)=>({
+                url:'/review',
+                method:"POST",
+                body:data
+            })
+
         })
 
       
@@ -59,4 +67,4 @@ export const bookingApi = createApi({
     })
 });
 
-export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery, useGetBookingButlerQuery, useGetBookingCustomerQuery  } = bookingApi;
+export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery, useGetBookingButlerQuery, useGetBookingCustomerQuery , useSubmitReviewMutation  } = bookingApi;

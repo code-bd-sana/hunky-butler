@@ -12,7 +12,12 @@ const reviewSchema = mongoose.Schema(
     reviewer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: User,
-      required: [true, "Reviewr id is Required"],
+    
+    },
+    reviewerEmail:{
+      type:String,
+      required:[true, "Email Is Required"]
+
     },
     rating: {
       type: Number,
