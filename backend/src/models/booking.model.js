@@ -58,7 +58,7 @@ const bookingSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["completed", "ongoing", "cancel", "cancelled"],
+      enum: ["completed", "ongoing", "cancel", "cancelled", "accepted"],
       default: "ongoing",
     },
     butler: {
