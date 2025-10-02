@@ -19,14 +19,12 @@ const ButlerLocation = () => {
           {locations.map((loc, index) => (
             <Link
               key={index}
-
-
               href={`/${loc.slug}`}
               className="flex items-center gap-2 text-[#333] hover:text-[#FF006A] transition-colors duration-200"
             >
               <Image
                 src={icon}
-                alt="go"
+                alt="Arrow icon"
                 width={24}
                 height={24}
                 className="flex-shrink-0 mt-0.5"
