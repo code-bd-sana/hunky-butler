@@ -1,0 +1,213 @@
+[
+  {
+    "slug": "buff-butlers-derby",
+    "name": "Buff Butlers Derby",
+    "description": "Hire our Buff Butlers in Derby for hen parties, birthdays, and special events.",
+    "image": "/images/derby.jpg"
+  },
+  {
+    "slug": "buff-butlers-chesterfield",
+    "name": "Buff Butlers Chesterfield",
+    "description": "Book Buff Butlers in Chesterfield for fun, cheeky, and unforgettable nights.",
+    "image": "/images/chesterfield.jpg"
+  },
+  {
+    "slug": "buff-butlers-matlock",
+    "name": "Buff Butlers Matlock",
+    "description": "Our professional Buff Butlers in Matlock are perfect for classy party entertainment.",
+    "image": "/images/matlock.jpg"
+  },
+  {
+    "slug": "buff-butlers-manchester",
+    "name": "Buff Butlers Manchester",
+    "description": "Manchester’s favourite Buff Butlers for hen dos, birthdays, and more.",
+    "image": "/images/manchester.jpg"
+  },
+  {
+    "slug": "buff-butlers-salford",
+    "name": "Buff Butlers Salford",
+    "description": "Book cheeky Buff Butlers in Salford to entertain your guests.",
+    "image": "/images/salford.jpg"
+  },
+  {
+    "slug": "buff-butlers-blackpool",
+    "name": "Buff Butlers Blackpool",
+    "description": "Make your Blackpool party unforgettable with our Buff Butlers.",
+    "image": "/images/blackpool.jpg"
+  },
+  {
+    "slug": "buff-butlers-bolton",
+    "name": "Buff Butlers Bolton",
+    "description": "Add fun and charm to your event with Buff Butlers in Bolton.",
+    "image": "/images/bolton.jpg"
+  },
+  {
+    "slug": "buff-butlers-birmingham",
+    "name": "Buff Butlers Birmingham",
+    "description": "Hire Buff Butlers in Birmingham for the ultimate party entertainment.",
+    "image": "/images/birmingham.jpg"
+  },
+  {
+    "slug": "buff-butlers-solihull",
+    "name": "Buff Butlers Solihull",
+    "description": "Solihull Buff Butlers ready to host your event with style.",
+    "image": "/images/solihull.jpg"
+  },
+  {
+    "slug": "buff-butlers-stoke-on-trent",
+    "name": "Buff Butlers Stoke on Trent",
+    "description": "Book Buff Butlers in Stoke-on-Trent for cheeky party vibes.",
+    "image": "/images/stoke.jpg"
+  },
+  {
+    "slug": "buff-butlers-walsall",
+    "name": "Buff Butlers Walsall",
+    "description": "Hire Buff Butlers in Walsall for entertainment with a twist.",
+    "image": "/images/walsall.jpg"
+  },
+  {
+    "slug": "buff-butlers-coventry",
+    "name": "Buff Butlers Coventry",
+    "description": "Coventry’s Buff Butlers bring fun and excitement to any party.",
+    "image": "/images/coventry.jpg"
+  },
+  {
+    "slug": "buff-butlers-tamworth",
+    "name": "Buff Butlers Tamworth",
+    "description": "Hire cheeky Buff Butlers in Tamworth for birthdays and hen dos.",
+    "image": "/images/tamworth.jpg"
+  },
+  {
+    "slug": "buff-butlers-dudley",
+    "name": "Buff Butlers Dudley",
+    "description": "Buff Butlers in Dudley to host and entertain at your next party.",
+    "image": "/images/dudley.jpg"
+  },
+  {
+    "slug": "buff-butlers-liverpool",
+    "name": "Buff Butlers Liverpool",
+    "description": "Liverpool Buff Butlers ready to make your party unforgettable.",
+    "image": "/images/liverpool.jpg"
+  },
+  {
+    "slug": "buff-butlers-chester",
+    "name": "Buff Butlers Chester",
+    "description": "Hire Buff Butlers in Chester for a cheeky and fun event.",
+    "image": "/images/chester.jpg"
+  },
+  {
+    "slug": "buff-butlers-birkenhead",
+    "name": "Buff Butlers Birkenhead",
+    "description": "Buff Butlers in Birkenhead to spice up your celebration.",
+    "image": "/images/birkenhead.jpg"
+  },
+  {
+    "slug": "buff-butlers-kirkby",
+    "name": "Buff Butlers Kirkby",
+    "description": "Cheeky Buff Butlers available in Kirkby for private parties.",
+    "image": "/images/kirkby.jpg"
+  },
+  {
+    "slug": "buff-butlers-warrington",
+    "name": "Buff Butlers Warrington",
+    "description": "Hire Buff Butlers in Warrington for classy party fun.",
+    "image": "/images/warrington.jpg"
+  },
+  {
+    "slug": "buff-butlers-st-helens",
+    "name": "Buff Butlers St Helens",
+    "description": "Buff Butlers in St Helens ready to host your next event.",
+    "image": "/images/sthelens.jpg"
+  },
+  {
+    "slug": "buff-butlers-widnes",
+    "name": "Buff Butlers Widnes",
+    "description": "Book Buff Butlers in Widnes for unforgettable entertainment.",
+    "image": "/images/widnes.jpg"
+  },
+  {
+    "slug": "buff-butlers-leeds",
+    "name": "Buff Butlers Leeds",
+    "description": "Leeds Buff Butlers for hen dos, parties, and more.",
+    "image": "/images/leeds.jpg"
+  },
+  {
+    "slug": "buff-butlers-bradford",
+    "name": "Buff Butlers Bradford",
+    "description": "Book Buff Butlers in Bradford for cheeky party fun.",
+    "image": "/images/bradford.jpg"
+  },
+  {
+    "slug": "buff-butlers-harrogate",
+    "name": "Buff Butlers Harrogate",
+    "description": "Harrogate Buff Butlers ready to entertain at your next event.",
+    "image": "/images/harrogate.jpg"
+  },
+  {
+    "slug": "buff-butlers-york",
+    "name": "Buff Butlers York",
+    "description": "Buff Butlers in York for classy, cheeky party entertainment.",
+    "image": "/images/york.jpg"
+  },
+  {
+    "slug": "buff-butlers-newcastle",
+    "name": "Buff Butlers Newcastle",
+    "description": "Hire Buff Butlers in Newcastle for cheeky, fun parties.",
+    "image": "/images/newcastle.jpg"
+  },
+  {
+    "slug": "buff-butlers-sunderland",
+    "name": "Buff Butlers Sunderland",
+    "description": "Sunderland Buff Butlers available for hen parties and events.",
+    "image": "/images/sunderland.jpg"
+  },
+  {
+    "slug": "buff-butlers-middlesborough",
+    "name": "Buff Butlers Middlesborough",
+    "description": "Middlesborough Buff Butlers ready to spice up your party.",
+    "image": "/images/middlesborough.jpg"
+  },
+  {
+    "slug": "buff-butlers-nottingham",
+    "name": "Buff Butlers Nottingham",
+    "description": "Hire Buff Butlers in Nottingham for birthdays and hen nights.",
+    "image": "/images/nottingham.jpg"
+  },
+  {
+    "slug": "buff-butlers-leicester",
+    "name": "Buff Butlers Leicester",
+    "description": "Leicester Buff Butlers available for classy, cheeky parties.",
+    "image": "/images/leicester.jpg"
+  },
+  {
+    "slug": "buff-butlers-bristol",
+    "name": "Buff Butlers Bristol",
+    "description": "Buff Butlers in Bristol for cheeky party entertainment.",
+    "image": "/images/bristol.jpg"
+  },
+  {
+    "slug": "buff-butlers-northampton",
+    "name": "Buff Butlers Northampton",
+    "description": "Northampton Buff Butlers ready to entertain your party guests.",
+    "image": "/images/northampton.jpg"
+  },
+  {
+    "slug": "buff-butlers-milton-keynes",
+    "name": "Buff Butlers Milton Keynes",
+    "description": "Book Buff Butlers in Milton Keynes for cheeky event fun.",
+    "image": "/images/miltonkeynes.jpg"
+  },
+  {
+    "slug": "buff-butlers-bedford",
+    "name": "Buff Butlers Bedford",
+    "description": "Buff Butlers in Bedford to add fun and charm to your event.",
+    "image": "/images/bedford.jpg"
+  },
+  {
+    "slug": "buff-butlers-luton",
+    "name": "Buff Butlers Luton",
+    "description": "Luton Buff Butlers available for hen parties and private events.",
+    "image": "/images/luton.jpg"
+  }
+]
+
