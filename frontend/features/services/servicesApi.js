@@ -12,7 +12,7 @@ export const servicesApi = createApi({
     }),
     getService: builder.query({
       query: (slug) => `/service/${slug}`,
-      providesTags: (result, error, slug) => [{ type: "Service", id: slug }],
+      providesTags: ['Service']
     }),
     addService: builder.mutation({
       query: (serviceData) => ({
@@ -22,17 +22,17 @@ export const servicesApi = createApi({
       }),
     }),
     // Update service by slug
-    updateService: builder.mutation({
-      query: ({ slug, ...data }) => ({
-        url: `/service/${slug}`,
-        method: "PUT",
-        body: data, // ekhane 'data' holo FormData
-        // **Content-Type na set korlei browser auto handle korbe multipart/form-data**
-      }),
-      invalidatesTags: (result, error, { slug }) => [
-        { type: "Service", id: slug },
-      ],
-    }),
+    // updateService: builder.mutation({
+    //   query: ({ slug, ...data }) => ({
+    //     url: `/service/${slug}`,
+    //     method: "PUT",
+    //     body: data, // ekhane 'data' holo FormData
+    //     // **Content-Type na set korlei browser auto handle korbe multipart/form-data**
+    //   }),
+    //   invalidatesTags: (result, error, { slug }) => [
+    //     { type: "Service", id: slug },
+    //   ],
+    // }),
 
     deleteService: builder.mutation({
       query: (id) => ({
@@ -48,6 +48,6 @@ export const {
   useGetServicesQuery,
   useAddServiceMutation,
   useGetServiceQuery,
-  useUpdateServiceMutation,
+  // useUpdateServiceMutation,
   useDeleteServiceMutation,
 } = servicesApi; // ✅ named export

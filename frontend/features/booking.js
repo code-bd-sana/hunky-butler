@@ -57,6 +57,9 @@ export const bookingApi = createApi({
                 body:data
             })
 
+        }),
+        getButlerPersonalOverview:builder.query({
+            query:(id)=> `/booking/butlerOverview/${id}`
         })
 
       
@@ -67,4 +70,4 @@ export const bookingApi = createApi({
     })
 });
 
-export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery, useGetBookingButlerQuery, useGetBookingCustomerQuery , useSubmitReviewMutation  } = bookingApi;
+export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery, useGetBookingButlerQuery, useGetBookingCustomerQuery , useSubmitReviewMutation , useGetButlerPersonalOverviewQuery  } = bookingApi;
