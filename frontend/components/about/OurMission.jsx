@@ -26,7 +26,7 @@ export default function OurMission() {
               "Our mission is simple: take the stress out of planning, so you can focus on enjoying the party. We connect you with trusted professionals who bring energy, fun, and reliability to every booking. With transparent pricing, secure payments, and flexible cancellation, it’s never been easier to book your perfect event."
             }
           />
-          <p className=" mt-16 ">
+          <p className=" mt-10 ">
              <SubTitle
             text={
               "Whether it’s a cocktail masterclass in Birmingham, a life drawing hen do in London, or a group looking to hire buff butlers in Manchester, our team delivers nationwide coverage with the same high standards every time. We make it simple to:"
