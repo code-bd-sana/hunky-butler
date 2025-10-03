@@ -188,7 +188,7 @@ export const createBooking = async (req, res) => {
 
     // Send email to user
     await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+      from: '"Hunky Butler Service"',
       to: email,
       subject: "Booking Confirmation",
       html: userEmailHtml,
@@ -215,7 +215,7 @@ export const createBooking = async (req, res) => {
 
 
     await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+      from: '"Hunky Butler Service"',
       to: adminEmail,
       subject: "New Booking Alert",
       html: adminEmailHtml,
@@ -323,7 +323,7 @@ export const updateStatus = async (req, res) => {
     // Send email if status is accepted or completed
     if (emailHtml) {
       await transporter.sendMail({
-        from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+        from: '"Hunky Butler Service"',
         to: email,
         subject: subject,
         html: emailHtml,
@@ -388,7 +388,7 @@ export const assginToButler = async (req, res) => {
     `;
 
     await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+      from: '"Hunky Butler Service"',
       to: butlerEmail,
       subject: "New Booking Assigned",
       html: butlerEmailHtml,
@@ -421,7 +421,7 @@ export const assginToButler = async (req, res) => {
           `;
 
           await transporter.sendMail({
-            from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+            from: '"Hunky Butler Service"',
             to: butlerEmail,
             subject: "Booking Removed Due to Late Acceptance",
             html: lateEmailHtml,
@@ -437,7 +437,7 @@ export const assginToButler = async (req, res) => {
           `;
 
           await transporter.sendMail({
-            from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+            from: '"Hunky Butler Service"',
             to: "bannah76769@gmail.com", // admin
             subject: "Booking Requires Reassignment",
             html: adminEmailHtml,
