@@ -16,7 +16,7 @@ const Entertainment = () => {
             alt=""
             width={574}
             height={374}
-            className="object-cover rounded-lg border-8 border-[#FF006A]"
+            className="object-cover rounded-3xl"
           />
         </div>
         <div className="w-full md:w-1/2 space-y-6">

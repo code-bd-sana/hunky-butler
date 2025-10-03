@@ -46,13 +46,14 @@ export default function ServiceTable() {
   const [states, setStates] = useState([]);
 
   const { data: services = [], isLoading, error } = useGetServicesQuery();
+  console.log("services", services);
   const [deleteService] = useDeleteServiceMutation();
 
   const handleDelete = async (id) => {
     console.log(id);
     try {
       await deleteService(id).unwrap();
-      setStates((prev) => prev.filter((_, idx) => idx !== index));
+      // setStates((prev) => prev.filter((_, idx) => idx !== index));
       alert("Service deleted successfully!");
     } catch (err) {
       console.error("Delete failed:", err);
@@ -74,7 +75,7 @@ export default function ServiceTable() {
         {/* Header */}
         <div className="flex items-center justify-between px-5 sm:px-6 py-4">
           <div className="text-[18px] font-medium text-[#141414]">
-            Services <span className="text-[#141414]">(4)</span>
+            Services <span className="text-[#141414]">{services?.length}</span>
           </div>
 
           <Link

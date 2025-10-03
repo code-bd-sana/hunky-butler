@@ -13,37 +13,8 @@ import {
 const Footer = () => {
   return (
     <div className="bg-[#F2EDEF] w-full relative md:mt-[550px]">
-      {/* <div
-        className="bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-center p-12 h-[350px] md:h-[480px] absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden"
-        style={{
-          backgroundImage: "url('/Footer/bg.png')",
-          backgroundSize: "cover", // not backgroundImage: "cover"
-          backgroundRepeat: "no-repeat", // optional
-        }}
-      >
-        <img
-          src="/Footer/loon.png"
-          alt="Logo"
-          className="w-[545px] absolute top-24 -left-72 -rotate-[13deg] "
-        />
-        <img
-          src="/Footer/loon.png"  
-          alt="Logo"
-          className="w-[792px] absolute -top-[300px] -right-[645px] "
-        />
-
-        <h2 className="text-2xl md:text-3xl md:text-[76px] font-semibold my-4 leading-tight">
-          Ready To Book Your Next <br /> Event Pro?
-        </h2>
-        <p className="my-6 text-lg md:text-2xl md:text-[32px] capitalize">
-          Get a price in seconds and secure your perfect host today.
-        </p>
-        <button className="bg-white text-[#FF006A] px-5 py-3 rounded-full hover:bg-gray-100 transition md:mt-4 font-semibold">
-          Get An Instant Quote
-        </button>
-      </div> */}
       <div
-        className="bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-start h-[350px] md:h-[497px] pt-8 md:pt-24 pl-6 md:pl-20 absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden"
+        className=" bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-start h-[350px] md:h-[497px] pt-8 md:pt-16 pl-6 md:pl-20 absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden"
         style={{
           backgroundImage: "url('/Footer/bg2.png')",
           backgroundSize: "cover", // not backgroundImage: "cover"
@@ -62,12 +33,14 @@ const Footer = () => {
         />
 
         <h2 className="text-xl md:text-5xl font-semibold leading-tight">
-          Ready to Book Your Buff <br /> Butlers or Entertainers?
+          Ready to Book Your <br /> Buff Butlers or <br /> Entertainers?
         </h2>
-        <p className="my-6 text-sm md:text-base capitalize w-1/2">
-          From Buff Butlers and Cocktail Classes to Life Drawing and Strippers, Hunky Butler Service has everything you need for an unforgettable night. Get your instant quote now and secure your entertainers today.
+        <p className="my-5 text-sm md:text-base capitalize w-1/2">
+          From Buff Butlers and Cocktail Classes to Life Drawing and Strippers,
+          Hunky Butler Service has everything you need for an unforgettable
+          night. Get your instant quote now and secure your entertainers today.
         </p>
-        <button className="bg-white text-sm text-[#FF006A] px-2 py-1 md:px-5 md:py-3 rounded-full hover:bg-gray-100 transition md:mt-4 font-semibold">
+        <button className="bg-white relative text-sm text-[#FF006A] px-2 py-1 md:px-5 md:py-[14px] rounded-full hover:bg-gray-100 transition md:mt-4 font-semibold z-50">
           Get An Instant Quote
         </button>
 
@@ -94,15 +67,16 @@ const Footer = () => {
               Hunky Butler Service
             </h3>
             <p className="text-sm text-[#808080] mb-4">
-              Hunky Butler Service is the UK’s trusted provider of hen party entertainment, delivering cheeky buff butlers, fun cocktail masterclasses, unforgettable life drawing classes, and professional male strippers. With Hundreds of five-star reviews and nationwide coverage, we make party planning easy, secure, and stress-free.
+              36a Renshaw Street <br /> Liverpool <br /> L1 4EF <br />
+              United Kingdom
             </p>
             <p className="text-base text-gray-800 flex items-center gap-2 mb-4">
               <IoMdMail className=" text-[#FF006A]" />
-              <span className="font-bold">info@hunkybutlerserv.com</span>
+              <span className="font-bold">info@hunkybutlerservice.co.uk</span>
             </p>
             <p className="text-base text-gray-800 flex items-center gap-2">
               <IoCallSharp className="text-[#FF006A]" />{" "}
-              <span className="font-bold">+ (907) 555-0101</span>
+              <span className="font-bold">+44 7745 865352</span>
             </p>
           </div>
 
@@ -147,7 +121,7 @@ const Footer = () => {
               </button>
             </div>
             <p className="text-sm text-gray-500">
-              By Subscribing You Agree To Our{" "}
+              By Subscribing You Agree To Our
               <span className="text-[#FF006A] cursor-pointer">
                 Privacy Policy
               </span>
