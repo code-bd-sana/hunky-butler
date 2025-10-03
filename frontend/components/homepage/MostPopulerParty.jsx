@@ -60,7 +60,7 @@ export default function MostPopulerParty() {
 
   
             <div className='absolute left-0 bottom-0 w-full p-5 text-white'>
-              <h4 className='text-2xl md:text-3xl font-bold mb-2'>{data.heading}</h4>
+              <h4 className='text-2xl md:text-3xl font-medium mb-2'>{data.heading}</h4>
               <p className='text-sm md:text-base opacity-90 leading-relaxed'>{data.title}</p>
 
      

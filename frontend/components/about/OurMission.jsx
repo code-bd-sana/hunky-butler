@@ -3,7 +3,7 @@ import MainTitle from "../shared/typography/MainTitle";
 import SubTitle from "../shared/typography/SubTitle";
 
 import icon from "@/public/icons/arowright.png";
-import aboutImg from "@/public/images/home/about.png";
+import aboutImg from "@/public/images/home/aboutImage16.png";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 import image1 from "@/public/icons/home/about1.png";
@@ -20,15 +20,18 @@ export default function OurMission() {
     <div className="bg-[#FFF0F6] py-8 md:py-24   relative">
       <div className="max-w-7xl mx-auto md:flex px-4 md:px-0 items-center gap-4 mt-16">
         <section className="flex-1">
-          <MainTitle text={"Our Mission"} />
+          <MainTitle text={"Our Mission: Making Events Effortless"} />
           <SubTitle
             text={
-              "At hunky butler SERV, we believe unforgettable events should be effortless to plan. That’s why we created a platform where hosts, entertainers, and event professionals come together seamlessly powered by smart technology and transparent pricing."
+              "Our mission is simple: take the stress out of planning, so you can focus on enjoying the party. We connect you with trusted professionals who bring energy, fun, and reliability to every booking. With transparent pricing, secure payments, and flexible cancellation, it’s never been easier to book your perfect event."
             }
           />
-          <p className="font-medium text-xl mt-16 capitalize">
-            Whether you’re planning a hen night, birthday, or a fun corporate
-            gathering, we make it simple to:
+          <p className=" mt-16 ">
+             <SubTitle
+            text={
+              "Whether it’s a cocktail masterclass in Birmingham, a life drawing hen do in London, or a group looking to hire buff butlers in Manchester, our team delivers nationwide coverage with the same high standards every time. We make it simple to:"
+            }
+          />
           </p>
 
           <div>

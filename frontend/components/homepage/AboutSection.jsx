@@ -3,7 +3,7 @@ import MainTitle from "../shared/typography/MainTitle";
 import SubTitle from "../shared/typography/SubTitle";
 
 import icon from "@/public/icons/arowright.png";
-import aboutImg from "@/public/images/home/about.png";
+import aboutImg from "@/public/images/home/aboutFinal.png";
 import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 import image1 from "@/public/icons/home/about1.png";
@@ -33,8 +33,7 @@ export default function AboutSection() {
               Our work has taken us everywhere — from collaborating with household brands like Ann Summers to being featured on ITV News. Beyond parties, we’re proud to give back: we’ve supported a number of charities, including recent events in aid of Cancer Research UK and the Harrogate Baby Care Unit.
           </p>
           <p className="font-medium text-xl mt-16 capitalize">
-            Whether you’re planning a hen night, birthday, or a fun corporate
-            gathering, we make it simple to:
+           Whether you’re planning a hen night in Liverpool, a birthday in Birmingham, or a life drawing party in London , we make it simple to:
           </p>
 
           <div>
