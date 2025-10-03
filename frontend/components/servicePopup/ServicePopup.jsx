@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import icon from "@/public/icons/arowright.png";
+import { useGetServicesQuery } from "@/features/services/servicesApi";
 
 const SERVICES = [
   {
@@ -47,9 +48,17 @@ const SERVICES = [
   },
 ];
 
-export default function ServicePopup({ items = SERVICES }) {
-  const [activeId, setActiveId] = useState(items[0]?.id);
-  const active = items.find((i) => i.id === activeId) || items[0];
+export default function ServicePopup() {
+  const { data: services = [], isLoading, error } = useGetServicesQuery();
+  console.log("services", services);
+  const [activeId, setActiveId] = useState(services[0]?._id);
+  // Set the first service as active when data loads
+  useEffect(() => {
+    if (services.length > 0 && !activeId) {
+      setActiveId(services[0]._id);
+    }
+  }, [services, activeId]);
+  const active = services.find((i) => i._id === activeId) || services[0] || {};
 
   return (
     <div className="">
@@ -62,12 +71,12 @@ export default function ServicePopup({ items = SERVICES }) {
           {/* Left list */}
           <div className="w-full lg:w-5/12 xl:w-1/2">
             <ul className="flex flex-col gap-3 sm:gap-4 max-h-[52vh] sm:max-h-[56vh] lg:max-h-[420px] pr-1">
-              {items.map((item, idx) => {
-                const isActive = item.id === activeId;
+              {services.map((service, idx) => {
+                const isActive = service.id === activeId;
                 return (
-                  <li key={item.id} className="flex flex-col">
+                  <li key={service._id} className="flex flex-col">
                     <button
-                      onClick={() => setActiveId(item.id)}
+                      onClick={() => setActiveId(service._id)}
                       className={[
                         "group flex items-center justify-between",
                         "rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] px-4 sm:px-5 lg:px-6 h-12 sm:h-14 lg:h-[72px] w-full",
@@ -84,7 +93,7 @@ export default function ServicePopup({ items = SERVICES }) {
                           isActive ? "text-[#FF006A]" : "text-white",
                         ].join(" ")}
                       >
-                        {item.label}
+                        {service?.name}
                       </span>
 
                       {/* Arrow grows responsively */}
@@ -102,7 +111,7 @@ export default function ServicePopup({ items = SERVICES }) {
                       )}
                     </button>
 
-                    {idx < items.length - 1 && !isActive && (
+                    {idx < services.length - 1 && !isActive && (
                       <div className="mt-3 sm:mt-4 h-px w-full bg-white" />
                     )}
                   </li>
@@ -118,8 +127,8 @@ export default function ServicePopup({ items = SERVICES }) {
                 {/* Image */}
                 <div className="relative w-full h-56 sm:h-72 lg:h-[400px] overflow-hidden rounded-[12px] sm:rounded-[14px] lg:rounded-[16px]">
                   <Image
-                    src={active.img}
-                    alt={active.label}
+                    src={active?.banner}
+                    alt={active?.description}
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 320px"
@@ -129,8 +138,8 @@ export default function ServicePopup({ items = SERVICES }) {
 
                 {/* Text + CTA */}
                 <div className="flex flex-col p-2 sm:p-3 lg:p-4">
-                  <p className="text-[#141414] w-full text-base sm:text-lg md:text-xl xl:text-4xl whitespace-pre-line">
-                    {active.description}
+                  <p className="text-[#141414] w-full text-base sm:text-lg md:text-xl xl:text-3xl whitespace-pre-line">
+                    {active.short_des}
                   </p>
 
                   <div className="mt-auto pt-4">
