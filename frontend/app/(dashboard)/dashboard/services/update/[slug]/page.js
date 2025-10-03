@@ -5,16 +5,14 @@ import {
   useUpdateServiceMutation,
 } from "@/features/services/servicesApi";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 
 const UpdateService = ({ params }) => {
-  const { slug } = params;
+  const { slug } = use(params);
   const { data: service, isLoading, isError } = useGetServiceQuery(slug);
   const [updateService] = useUpdateServiceMutation();
-
   const fileRef = useRef(null);
 
-  // Form state
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -24,17 +22,13 @@ const UpdateService = ({ params }) => {
     bannerPreview: "",
   });
 
-  // যখন service আসবে তখন form এ সেট করো
+  // Load service into form
   useEffect(() => {
     if (service) {
-      // Ensure every FAQ has question and answer keys
       const normalizedFaqs = service.faqs?.map((f) => ({
         question: f.question || f.q || "",
         answer: f.answer || f.a || "",
-      })) || [
-        { question: "", answer: "" },
-        { question: "", answer: "" },
-      ];
+      })) || [{ question: "", answer: "" }];
 
       setForm({
         name: service.name || "",
@@ -49,65 +43,87 @@ const UpdateService = ({ params }) => {
     }
   }, [service]);
 
-  // // Handle includes update
-  // const setInclude = (idx, val) => {
-  //   setForm((p) => {
-  //     const includes = [...p.includes];
-  //     includes[idx] = val;
-  //     return { ...p, includes };
-  //   });
-  // };
-
-  // // Handle FAQ update
-  // const setFaq = (idx, key, val) => {
-  //   setForm((p) => {
-  //     const faqs = [...p.faqs];
-  //     faqs[idx] = { ...faqs[idx], [key]: val };
-  //     return { ...p, faqs };
-  //   });
-  // };
-
-  const addFaq = () => {
-    setForm((p) => ({ ...p, faqs: [...p.faqs, { question: "", answer: "" }] }));
-  };
-
-  const handleRemove = () => {
-    setForm((p) => ({ ...p, bannerFile: null, bannerPreview: "" }));
-    if (fileRef.current) fileRef.current.value = "";
+  // Controlled handlers
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setForm((p) => ({ ...p, [name]: value }));
   };
 
   const handleIncludeChange = (index, value) => {
     const updated = [...form.includes];
     updated[index] = value;
-    setForm({ ...form, includes: updated });
+    setForm((p) => ({ ...p, includes: updated }));
   };
 
   const handleFaqChange = (index, key, value) => {
     const updated = [...form.faqs];
     updated[index][key] = value;
-    setForm({ ...form, faqs: updated });
+    setForm((p) => ({ ...p, faqs: updated }));
+  };
+
+  const addFaq = () => {
+    setForm((p) => ({ ...p, faqs: [...p.faqs, { question: "", answer: "" }] }));
+  };
+
+  const removeBanner = () => {
+    setForm((p) => ({ ...p, bannerFile: null, bannerPreview: "" }));
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const handleBannerChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setForm((p) => ({
+        ...p,
+        bannerFile: file,
+        bannerPreview: URL.createObjectURL(file),
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("hit up");
     try {
-      const formData = new FormData();
-      formData.append("slug", service.slug);
-      formData.append("name", form.name);
-      formData.append("description", form.description);
-      formData.append("includes", JSON.stringify(form.includes));
-      formData.append("faqs", JSON.stringify(form.faqs));
+      let uploadedImageUrl = form.bannerPreview; // default existing banner
 
+      // Jodi notun file select kora hoy
       if (form.bannerFile) {
-        formData.append("banner", form.bannerFile); // actual file
+        const imageData = new FormData();
+        imageData.append("image", form.bannerFile);
+
+        // Upload to imgbb (example)
+        const imgbbRes = await fetch(
+          `https://api.imgbb.com/1/upload?key=08dd2c25fadca9984c9fe58a66d619e7`,
+          {
+            method: "POST",
+            body: imageData,
+          }
+        );
+        const imgbbData = await imgbbRes.json();
+        uploadedImageUrl = imgbbData.data.url; // image URL
       }
 
-      const updated = await updateService(formData).unwrap();
+      // JSON body pathano
+      const updated = await updateService({
+        slug: service.slug,
+        name: form.name,
+        description: form.description,
+        includes: form.includes,
+        faqs: form.faqs,
+        banner: uploadedImageUrl,
+      }).unwrap();
+
+      console.log(updated);
+
       console.log("Updated service:", updated);
     } catch (err) {
       console.error("Update failed:", err);
     }
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error loading service!</div>;
 
   return (
     <div className="min-h-screen w-full bg-[#f6f4f5]">
@@ -118,33 +134,28 @@ const UpdateService = ({ params }) => {
         >
           {/* LEFT: Inputs */}
           <div>
-            {/* Service Name */}
             <label className="block">
               <div className="text-[18px] font-medium mb-2">Service Name</div>
               <input
+                name="name"
                 value={form.name}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, name: e.target.value }))
-                }
+                onChange={handleInputChange}
                 placeholder="Enter Your Service Name"
                 className="w-full rounded-[24px] border px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-[#FF006A]"
               />
             </label>
 
-            {/* Description */}
             <div className="mt-6">
               <div className="text-[18px] font-medium mb-2">Description</div>
               <textarea
+                name="description"
                 value={form.description}
-                onChange={(e) =>
-                  setForm((p) => ({ ...p, description: e.target.value }))
-                }
+                onChange={handleInputChange}
                 placeholder="Describe How Your Service Works"
                 className="w-full h-44 resize-none rounded-[24px] border px-4 py-3.5 text-sm outline-none focus:ring-2 focus:ring-[#FF006A]"
               />
             </div>
 
-            {/* Includes */}
             <div className="mt-6">
               <div className="text-[18px] font-medium mb-3">
                 What Is Included In This Service?
@@ -162,7 +173,6 @@ const UpdateService = ({ params }) => {
               </div>
             </div>
 
-            {/* FAQs */}
             <div className="mt-8">
               <div className="text-[18px] font-medium mb-3">FAQ’s</div>
               <div className="space-y-5">
@@ -223,16 +233,7 @@ const UpdateService = ({ params }) => {
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (file) {
-                    setForm((p) => ({
-                      ...p,
-                      bannerFile: file,
-                      bannerPreview: URL.createObjectURL(file), // <-- show preview
-                    }));
-                  }
-                }}
+                onChange={handleBannerChange}
               />
 
               <div className="mt-3 flex items-center justify-around px-1">
@@ -245,7 +246,7 @@ const UpdateService = ({ params }) => {
                 </button>
                 <button
                   type="button"
-                  onClick={handleRemove}
+                  onClick={removeBanner}
                   disabled={!form.bannerPreview}
                   className={`text-[12px] ${
                     form.bannerPreview

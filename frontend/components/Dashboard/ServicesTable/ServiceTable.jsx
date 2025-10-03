@@ -5,7 +5,10 @@ import Link from "next/link";
 import { Trash2 } from "lucide-react";
 import Image from "next/image";
 import { FiEdit } from "react-icons/fi";
-import { useGetServicesQuery } from "@/features/services/servicesApi";
+import {
+  useDeleteServiceMutation,
+  useGetServicesQuery,
+} from "@/features/services/servicesApi";
 import { base_url } from "@/utils/utils";
 
 function StatusPill({ value }) {
@@ -40,10 +43,23 @@ function Toggle({ checked, onChange }) {
 }
 
 export default function ServiceTable() {
+  const [states, setStates] = useState([]);
+
   const { data: services = [], isLoading, error } = useGetServicesQuery();
+  const [deleteService] = useDeleteServiceMutation();
+
+  const handleDelete = async (id) => {
+    console.log(id);
+    try {
+      await deleteService(id).unwrap();
+      setStates((prev) => prev.filter((_, idx) => idx !== index));
+      alert("Service deleted successfully!");
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
+  };
 
   console.log(services);
-  const [states, setStates] = useState([]);
 
   useEffect(() => {
     if (services.length > 0) {
@@ -136,7 +152,9 @@ export default function ServiceTable() {
                   {/* Status */}
                   <td className="px-4 py-4  align-middle">
                     {/* {service.status} */}
-                    <StatusPill value={states[index] ? "Active" : "Paused"} />
+                    <StatusPill
+                      value={service.status === "active" ? "Active" : "Paused"}
+                    />
                   </td>
 
                   {/* Actions */}
@@ -156,6 +174,7 @@ export default function ServiceTable() {
                         className="text-neutral-500 hover:text-red-600"
                         aria-label="Delete"
                         title="Delete"
+                        onClick={() => handleDelete(service._id)}
                       >
                         <Trash2 size={18} />
                       </button>
