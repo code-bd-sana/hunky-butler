@@ -5,49 +5,6 @@ import Image from "next/image";
 import icon from "@/public/icons/arowright.png";
 import { useGetServicesQuery } from "@/features/services/servicesApi";
 
-const SERVICES = [
-  {
-    id: "buff-butlers",
-    label: "BUFF BUTLERS",
-    description:
-      "We Won’t Be Beaten on Price!\nFound a Better Quote? We’ll Match It — and Beat It by £20!\n(Full details in our Terms & Conditions)",
-    img: "/ImageGalary/pic8.jpeg",
-    ctaHref: "/book/buff-butlers",
-  },
-  {
-    id: "hen-life-drawing",
-    label: "HEN PARTY LIFE DRAWING",
-    description:
-      "Cheeky, Classy & So Much Fun\nProfessional models & tutors\nAll materials provided\nPerfect ice-breaker for hens",
-    img: "/ImageGalary/pic8.jpeg",
-    ctaHref: "/book/hen-party-life-drawing",
-  },
-  {
-    id: "hen-cocktail-class",
-    label: "HEN PARTY COCKTAIL CLASS",
-    description:
-      "Shake, Stir, Sip\nMix 3 signature cocktails\nAll kit supplied at your venue\nTasty upgrades available",
-    img: "/ImageGalary/pic8.jpeg",
-    ctaHref: "/book/hen-party-cocktail-class",
-  },
-  {
-    id: "male-strippers",
-    label: "MALE STRIPPERS",
-    description:
-      "Turn Up The Heat\nUK-wide performers\nCustom themes & playlists\nDiscreet, reliable booking",
-    img: "/ImageGalary/pic8.jpeg",
-    ctaHref: "/book/male-strippers",
-  },
-  {
-    id: "location-services",
-    label: "LOCATION BASED SERVICES",
-    description:
-      "We Come To You\nApartments • Houses • Venues\nNationwide coverage\nTransparent pricing",
-    img: "/ImageGalary/pic8.jpeg",
-    ctaHref: "/book/location-services",
-  },
-];
-
 export default function ServicePopup() {
   const { data: services = [], isLoading, error } = useGetServicesQuery();
   console.log("services", services);
@@ -59,6 +16,54 @@ export default function ServicePopup() {
     }
   }, [services, activeId]);
   const active = services.find((i) => i._id === activeId) || services[0] || {};
+
+  if (isLoading) {
+    return   <div className="">
+      <section className="mx-3 sm:mx-4 lg:mx-8 2xl:mx-12 z-300 rounded-[20px] sm:rounded-[24px] lg:rounded-[28px] p-4 sm:p-6 lg:p-10 text-white bg-black/60 backdrop-blur-lg ring-1 ring-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.35)] animate-pulse">
+        {/* Title Skeleton */}
+        <div className="h-8 sm:h-10 lg:h-12 w-40 bg-white/30 rounded mb-4 sm:mb-6"></div>
+
+        <div className="flex flex-col gap-5 lg:gap-6 lg:flex-row lg:items-stretch">
+          {/* Left list skeleton */}
+          <div className="w-full lg:w-5/12 xl:w-1/2">
+            <ul className="flex flex-col gap-3 sm:gap-4 max-h-[52vh] sm:max-h-[56vh] lg:max-h-[420px] pr-1">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <li key={i}>
+                  <div className="rounded-[14px] sm:rounded-[16px] lg:rounded-[18px] px-4 sm:px-5 lg:px-6 h-12 sm:h-14 lg:h-[72px] w-full bg-white/20"></div>
+                  {i < 5 && <div className="mt-3 sm:mt-4 h-px w-full bg-white/20" />}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Right preview skeleton */}
+          <div className="flex-1">
+            <div className="h-full rounded-[20px] sm:rounded-[24px] lg:rounded-[28px] bg-white/10 text-slate-900 shadow-[0_14px_50px_rgba(0,0,0,0.25)] p-4 sm:p-6 lg:p-8 flex">
+              <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:gap-8 w-full lg:grid-cols-[320px_1fr]">
+                {/* Image skeleton */}
+                <div className="relative w-full h-56 sm:h-72 lg:h-[400px] overflow-hidden rounded-[12px] sm:rounded-[14px] lg:rounded-[16px] bg-white/20"></div>
+
+                {/* Text + Button skeleton */}
+                <div className="flex flex-col justify-between p-2 sm:p-3 lg:p-4 w-full">
+                  <div className="space-y-3">
+                    <div className="h-4 sm:h-5 lg:h-6 bg-white/20 rounded w-3/4"></div>
+                    <div className="h-4 sm:h-5 lg:h-6 bg-white/20 rounded w-2/3"></div>
+                    <div className="h-4 sm:h-5 lg:h-6 bg-white/20 rounded w-5/6"></div>
+                  </div>
+
+                  <div className="mt-6">
+                    <div className="inline-block rounded-full bg-[#FF006A]/40 h-9 sm:h-10 w-32"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="h-4 sm:h-6 lg:h-0" />
+          </div>
+        </div>
+      </section>
+    </div>
+  }
 
   return (
     <div className="">
