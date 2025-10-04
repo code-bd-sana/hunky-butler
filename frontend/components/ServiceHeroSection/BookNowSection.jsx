@@ -9,7 +9,7 @@ import bg from "@/public/images/services/bg3.png";
 export default function BookNowSection({ name,banner, included }) {
   console.log(banner, included);
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       <div className="max-w-7xl z-50 mx-auto container md:px-8 lg:px-0 py-16">
         <p className="text-3xl z-50 italic  leading-normal text-center capitalize text-[#292929]">
           {/* {text} */}

@@ -72,7 +72,8 @@ export default function ServicePopup() {
           <div className="w-full lg:w-5/12 xl:w-1/2">
             <ul className="flex flex-col gap-3 sm:gap-4 max-h-[52vh] sm:max-h-[56vh] lg:max-h-[420px] pr-1">
               {services.map((service, idx) => {
-                const isActive = service.id === activeId;
+                const isActive = service._id === activeId;
+
                 return (
                   <li key={service._id} className="flex flex-col">
                     <button
