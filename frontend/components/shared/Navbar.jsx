@@ -25,7 +25,7 @@ const Navbar = () => {
   const startHideTimer = () => {
     hideTimer.current = setTimeout(() => {
       setShowService(false);
-    }, 500); 
+    }, 500);
   };
 
   const cancelHideTimer = () => {
@@ -50,19 +50,20 @@ const Navbar = () => {
           style={{ background: "rgba(74, 74, 74, 0.4)" }}
         >
           {/* Logo */}
-          <div className="flex items-center gap-[3.5px]">
-            <Image
-              src={logo}
-              alt="Hunky Butler Service Logo"
-              className="object-contain"
-              width={35}
-              height={40}
-            />
-            <h1 className="text-xl hidden xl:block font-semibold tracking-wide whitespace-nowrap">
-              Hunky Butler Service
-            </h1>
-          </div>
-
+          <Link href="/">
+            <div className="flex items-center gap-2">
+              <Image
+                src={logo}
+                alt="Hunky Butler Service Logo"
+                className="object-contain"
+                width={35}
+                height={40}
+              />
+              <h1 className="text-xl hidden xl:block font-semibold tracking-wide whitespace-nowrap">
+                Hunky Butler Service
+              </h1>
+            </div>
+          </Link>
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-[8px] font-medium relative">
             {navLinks.map((link) => {
