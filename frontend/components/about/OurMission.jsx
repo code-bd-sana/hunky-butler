@@ -26,20 +26,18 @@ export default function OurMission() {
               "Our mission is simple: take the stress out of planning, so you can focus on enjoying the party. We connect you with trusted professionals who bring energy, fun, and reliability to every booking. With transparent pricing, secure payments, and flexible cancellation, it’s never been easier to book your perfect event."
             }
           />
-          <p className=" mt-10 ">
-             <SubTitle
-            text={
-              "Whether it’s a cocktail masterclass in Birmingham, a life drawing hen do in London, or a group looking to hire buff butlers in Manchester, our team delivers nationwide coverage with the same high standards every time. We make it simple to:"
-            }
-          />
-          </p>
+          <div className=" mt-10 ">
+            <SubTitle
+              text={
+                "Whether it’s a cocktail masterclass in Birmingham, a life drawing hen do in London, or a group looking to hire buff butlers in Manchester, our team delivers nationwide coverage with the same high standards every time. We make it simple to:"
+              }
+            />
+          </div>
 
           <div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />
-              <div
-                className="text-[#333333]"
-              >
+              <div className="text-[#333333]">
                 <SubTitle
                   text={
                     "Discover exciting services like Buff Butlers, Cocktail Masterclasses, and Life Drawing."
@@ -49,9 +47,7 @@ export default function OurMission() {
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <div
-                className="text-[#333333]"
-              >
+              <div className="text-[#333333]">
                 <SubTitle
                   text={
                     "Get instant quotes with no hidden fees—factoring in time, staff, location, and travel."
@@ -61,17 +57,13 @@ export default function OurMission() {
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <div
-                className="text-[#333333]"
-              >
+              <div className="text-[#333333]">
                 <SubTitle text={"Book and pay securely within minutes."} />
               </div>
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <div
-                className="text-[#333333]"
-              >
+              <div className="text-[#333333]">
                 <SubTitle
                   text={
                     "Connect with verified professionals who are reviewed, rated, and ready to bring the fun."
