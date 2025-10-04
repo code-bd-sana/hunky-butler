@@ -6,7 +6,7 @@ import ButlerLocation from "@/components/Location/ButlerLocation";
 import LocationDynamicBanner from "@/components/Location/LocationDynamicBanner";
 import WhatsIncluede from "@/components/Location/WhatsIncluede";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
-
+import GlobalNotFound from "../global-not-found";
 
 export async function generateStaticParams() {
   return locations.map((loc) => ({
@@ -18,12 +18,11 @@ export default function LocationPage({ params }) {
   const location = locations.find((loc) => loc.slug === params.slug);
 
   if (!location) {
-    return <div className="p-8 text-center">Location not found</div>;
+    return <GlobalNotFound />;
   }
 
   return (
     <div>
-     
       <LocationDynamicBanner
         image={location.image}
         title={location.name}
