@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import arrow from "@/public/icons/greaterthan.png";
+import Link from "next/link";
 
 const ServiceBanner = ({ heading, subTitle, image }) => {
   return (
@@ -33,9 +34,11 @@ const ServiceBanner = ({ heading, subTitle, image }) => {
           {subTitle}
         </div>
 
-        <button className="rounded-full border-2 border-white px-[24px] py-[16px] text-lg font-semibold bg-white text-[#292929]">
-          Get Instant Quote
-        </button>
+        <Link href="/quote">
+          <button className="rounded-full border-2 border-white px-[24px] py-[16px] text-lg font-semibold bg-white text-[#292929]">
+            Get Instant Quote
+          </button>
+        </Link>
       </div>
     </div>
   );
