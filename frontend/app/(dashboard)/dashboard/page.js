@@ -16,7 +16,7 @@ const DashboardHome = () => {
 
   const usrRole = data?.user?.role;
   return (
-    <>
+    <div>
       <DashNav />
 
       {
@@ -26,7 +26,7 @@ const DashboardHome = () => {
 {
   usrRole  === "admin" ?       <Booking /> : usrRole === 'butler' ? <ButlerBooking/> : <CustomerBooking/>
 }
-    </>
+    </div>
   );
 };
 

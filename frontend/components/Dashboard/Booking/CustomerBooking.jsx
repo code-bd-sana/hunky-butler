@@ -501,63 +501,65 @@ const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPe
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-gray-200">
-      {/* Items count */}
-      <div className="text-sm text-gray-600">
-        Showing {startItem} to {endItem} of {totalItems} entries
-      </div>
+   <div className="flex flex-col gap-4 mt-6 pt-6 border-t border-gray-200">
+  {/* Items count */}
+  <div className="text-sm text-gray-600 text-center sm:text-left">
+    Showing {startItem} to {endItem} of {totalItems} entries
+  </div>
 
-      {/* Pagination controls */}
-      <div className="flex items-center gap-2">
-        {/* Previous button */}
+  {/* Pagination controls */}
+  <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+    {/* Previous button - Top left on mobile */}
+    <button
+      onClick={() => onPageChange(currentPage - 1)}
+      disabled={currentPage === 1}
+      className={`flex items-center justify-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors sm:w-auto ${
+        currentPage === 1
+          ? "text-gray-400 cursor-not-allowed bg-gray-100"
+          : "text-gray-700 hover:bg-gray-100 border border-gray-300"
+      }`}
+    >
+      <MdChevronLeft className="text-lg" />
+      <span className="sm:block hidden">Previous</span>
+      <span className="sm:hidden block">Prev</span>
+    </button>
+
+    {/* Page numbers - Centered and compact */}
+    <div className="flex items-center gap-1 overflow-x-auto max-w-full py-2">
+      {getPageNumbers().map((page, index) => (
         <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-            currentPage === 1
-              ? "text-gray-400 cursor-not-allowed"
-              : "text-gray-700 hover:bg-gray-100"
+          key={index}
+          onClick={() => typeof page === 'number' && onPageChange(page)}
+          className={`min-w-[36px] h-9 flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-colors flex-shrink-0 ${
+            page === currentPage
+              ? "bg-[#FF006A] text-white shadow-sm"
+              : typeof page === 'number'
+              ? "text-gray-700 hover:bg-gray-100 border border-gray-200"
+              : "text-gray-400 cursor-default"
           }`}
+          disabled={page === '...'}
         >
-          <MdChevronLeft className="text-lg" />
-          Previous
+          {page}
         </button>
-
-        {/* Page numbers */}
-        <div className="flex items-center gap-1">
-          {getPageNumbers().map((page, index) => (
-            <button
-              key={index}
-              onClick={() => typeof page === 'number' && onPageChange(page)}
-              className={`min-w-[40px] h-10 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                page === currentPage
-                  ? "bg-[#FF006A] text-white shadow-sm"
-                  : typeof page === 'number'
-                  ? "text-gray-700 hover:bg-gray-100"
-                  : "text-gray-400 cursor-default"
-              }`}
-              disabled={page === '...'}
-            >
-              {page}
-            </button>
-          ))}
-        </div>
-
-        {/* Next button */}
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-            currentPage === totalPages
-              ? "text-gray-400 cursor-not-allowed"
-              : "text-gray-700 hover:bg-gray-100"
-          }`}
-        >
-          Next
-          <MdChevronRight className="text-lg" />
-        </button>
-      </div>
+      ))}
     </div>
+
+    {/* Next button - Top right on mobile */}
+    <button
+      onClick={() => onPageChange(currentPage + 1)}
+      disabled={currentPage === totalPages}
+      className={`flex items-center justify-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors sm:w-auto ${
+        currentPage === totalPages
+          ? "text-gray-400 cursor-not-allowed bg-gray-100"
+          : "text-gray-700 hover:bg-gray-100 border border-gray-300"
+      }`}
+    >
+      <span className="sm:block hidden">Next</span>
+      <span className="sm:hidden block">Next</span>
+      <MdChevronRight className="text-lg" />
+    </button>
+  </div>
+</div>
   );
 };
 
@@ -809,9 +811,9 @@ const CustomerBooking = () => {
           Bookings
         </h2>
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
           {/* Tabs */}
-          <div className="flex items-center gap-1 rounded-full bg-[#F6F4F5] p-1 h-[40px] sm:h-[44px] lg:h-[48px] overflow-x-auto whitespace-nowrap lg:overflow-visible lg:whitespace-normal [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+          <div className="flex flex-wrap items-center gap-1 rounded-full bg-[#F6F4F5] md:p-1 justify-center  p-4 mx-auto sm:h-[44px] lg:h-[48px] overflow-x-auto whitespace-nowrap lg:overflow-visible lg:whitespace-normal [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
             {buttons.map((btn) => {
               const isActive = activeButton === btn.status;
               return (
@@ -889,7 +891,7 @@ const CustomerBooking = () => {
       </div>
 
       {/* Table */}
-      <div className="max-h-[370px] max-w-screen overflow-scroll scrollbar-hide overflow-y-auto">
+      <div className="max-h-[370px] max-w-[76vw] overflow-scroll scrollbar-hide overflow-y-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="text-[#333333] border-b text-base">

@@ -19,11 +19,12 @@ export const getAllBooking = async (req, res) => {
 
     // Apply filter in both find() and countDocuments()
     const allBooking = await Booking.find(filter)
+      .sort({createdAt: -1})
       .skip(skip)
       .limit(limit)
       .populate("butler");
 
-    const total = await Booking.countDocuments(filter);
+    const total = await Booking.countDocuments(filter).sort({createdAt: 1});
 
     res.status(200).json({
       message: "Success",

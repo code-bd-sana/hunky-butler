@@ -16,7 +16,7 @@ import Entertainment from "@/components/homepage/Entertainment";
 
 export default function page() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen overfh bg-white">
       <Navbar />
       <HomeBanner />
       <TrustStrip />

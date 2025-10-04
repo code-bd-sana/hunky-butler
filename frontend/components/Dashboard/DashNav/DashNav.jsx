@@ -40,7 +40,7 @@ const DashNav = ({ tab }) => {
   };
 
   return (
-    <div className="flex justify-between bg-white items-center mb-6  rounded-3xl py-4 px-2 md:px-8">
+    <div className="flex justify-between overflow-hidden max-w-[90vw] bg-white items-center mb-6  rounded-3xl py-4 px-2 md:px-8">
       {tab ? (
         <div className="flex items-center">
           <div className="lg:hidden">
@@ -74,8 +74,8 @@ const DashNav = ({ tab }) => {
 
                 <div
                   className={`mt-1 mx-auto md:mx-0 h-[1px] 
-        ${tab.slug === "notification" ? "" : "w-28"} 
-        ${tab.slug === "article" ? "" : "w-28"}   
+        ${tab.slug === "notification" ? "" : " w-16 md:w-28"} 
+        ${tab.slug === "article" ? "" : "w-16 md:w-28"}   
         ${activeTab === tab.slug ? "bg-[#FF006A]" : ""}`}
                 ></div>
               </div>

@@ -14,7 +14,7 @@ console.log(summury, "usr customer data");
 
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div className="grid grid-cols-1  md:grid-cols-3 gap-4 mb-8">
       <div className="bg-[#6A24A0] text-white p-6 pt-8 rounded-xl shadow-md space-y-4">
         <h2 className="text-base md:text-lg lg:text-xl font-medium">Total Customers</h2>
 
