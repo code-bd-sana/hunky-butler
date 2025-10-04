@@ -1,14 +1,19 @@
 import locations from "@/app/locations/locations.json";
+import ImageGallery from "@/components/about/ImageGallery";
+import Footer from "@/components/homepage/Footer";
+import BuffButlersEvents from "@/components/Location/BuffButtlersEvents";
+import ButlerLocation from "@/components/Location/ButlerLocation";
+import LocationDynamicBanner from "@/components/Location/LocationDynamicBanner";
+import WhatsIncluede from "@/components/Location/WhatsIncluede";
+import Navbar from "@/components/shared/Navbar";
 import Image from "next/image";
 import Link from "next/link";
-
 
 export async function generateStaticParams() {
   return locations.map((loc) => ({
     slug: loc.slug,
   }));
 }
-
 
 export default function LocationPage({ params }) {
   const location = locations.find((loc) => loc.slug === params.slug);
@@ -18,30 +23,22 @@ export default function LocationPage({ params }) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4">
-      <h1 className="text-3xl md:text-5xl font-bold text-[#0A014F] mb-6">
-        {location.name}
-      </h1>
+    <div>
+      <Navbar></Navbar>
+      <LocationDynamicBanner
+        image={location.image}
+        title={location.name}
+        tagline={location.tagline}
+        description={location.description}
+      />
 
-      {location.image && (
-        <Image
-          src={location.image}
-          alt={location.name}
-          width={800}
-          height={400}
-          className="rounded-2xl shadow-md mb-6"
-        />
-      )}
+      {/* Content section */}
+      <WhatsIncluede city={location.city} />
+      <BuffButlersEvents city={location.city} />
 
-      <p className="text-lg text-gray-700 mb-6">{location.description}</p>
-      
-
-      <Link
-        href="/location"
-        className="inline-block px-6 py-3 bg-[#FF006A] text-white rounded-xl hover:bg-pink-700 transition"
-      >
-        ← Back to Locations
-      </Link>
+      <ButlerLocation />
+      <ImageGallery></ImageGallery>
+      <Footer></Footer>
     </div>
   );
 }
