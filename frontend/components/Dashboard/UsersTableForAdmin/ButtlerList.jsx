@@ -224,9 +224,7 @@ export default function ButlerList() {
           <h2 className="text-[18px] font-semibold text-zinc-800">
             Butler List
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
-            Total {totalButlers} butlers found
-          </p>
+      
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -236,7 +234,7 @@ export default function ButlerList() {
           </button>
 
           {/* Range dropdown */}
-          <div ref={ddRef} className="relative inline-block text-left">
+          {/* <div ref={ddRef} className="relative inline-block text-left">
             <button
               onClick={() => setOpen((o) => !o)}
               className="flex items-center px-4 py-2 rounded-full bg-[#F6F4F5] text-[#333333] text-[12px] hover:bg-pink-100 hover:text-pink-500 transition"
@@ -268,7 +266,7 @@ export default function ButlerList() {
                 </ul>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -311,8 +309,8 @@ export default function ButlerList() {
 
       {/* Table */}
       <div className="px-2 pb-4">
-        <div className="overflow-x-auto max-h-[500px] scrollbar-hide overflow-y-auto rounded-xl">
-          <table className="w-full border-collapse min-w-[820px]">
+        <div className="overflow-x-auto max-w-[76vw] max-h-[500px] scrollbar-hide overflow-y-auto rounded-xl">
+          <table className="w-full overflow-scroll border-collapse min-w-[820px]">
             <colgroup>
               <col className="w-[28%]" />
               <col className="w-[14%]" />

@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import DashNav from "@/components/Dashboard/DashNav/DashNav";
 
 export default function Page() {
   const calendarRef = useRef(null);
@@ -135,7 +136,12 @@ export default function Page() {
   );
 
   return (
-    <div className="relative p-4">
+ <div>
+
+        <DashNav/>
+     <div className="relative p-4">
+
+
       {/*  Date Bar */}
       <div className="mb-3 flex items-center gap-3">
         {/* Today pill */}
@@ -306,5 +312,6 @@ export default function Page() {
         </div>
       )}
     </div>
+ </div>
   );
 }

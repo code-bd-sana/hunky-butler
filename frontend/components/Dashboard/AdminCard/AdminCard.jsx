@@ -16,7 +16,7 @@ const AdminCard = () => {
   
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
       <div className="bg-[#68A024] text-white p-6 pt-8 rounded-xl shadow-md space-y-4">
         <h2 className="text-xl font-medium">Total Bookings (This Month)</h2>
 
