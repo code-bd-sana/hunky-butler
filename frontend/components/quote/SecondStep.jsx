@@ -2,351 +2,446 @@
 import React, { useState } from 'react'
 import image from "@/public/quote/bg.png";
 import { IoLocationSharp } from "react-icons/io5";
-import next from 'next';
-import { useParams, usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useBookingMutation } from '@/features/booking';
 import toast, { Toaster } from 'react-hot-toast';
 
+// Step Indicator Component
+const StepIndicator = ({ currentStep, bookingSuccess }) => {
+  const steps = [
+    { id: "selectservice", number: 1, label: "Select Service" },
+    { id: "firststep", number: 2, label: "Your Information" },
+    { id: "secondstep", number: 3, label: "Event Information" },
+    { id: "thirdstep", number: 4, label: "Confirmation" }
+  ];
+
+  const getStepIndex = (step) => {
+    return steps.findIndex(s => s.id === step);
+  };
+
+  const currentIndex = getStepIndex(currentStep);
+
+  return (
+    <div className="flex justify-center items-center space-x-4 mb-12">
+      {steps.map((step, index) => (
+        <React.Fragment key={step.id}>
+          <div className="flex flex-col items-center">
+            <div
+              className={`w-12 h-12 rounded-full flex items-center justify-center border-2 ${
+                step.id === currentStep && !bookingSuccess
+                  ? "bg-[#FF3388] border-[#FF3388] text-white"
+                  : index < currentIndex || bookingSuccess
+                  ? "bg-green-500 border-green-500 text-white"
+                  : "border-gray-400 text-gray-400"
+              } font-semibold transition-all duration-300`}
+            >
+              {(index < currentIndex || bookingSuccess) ? "✓" : step.number}
+            </div>
+            <span
+              className={`text-sm mt-2 ${
+                step.id === currentStep && !bookingSuccess 
+                  ? "text-[#FF3388]" : 
+                (index < currentIndex || bookingSuccess)
+                  ? "text-green-500" 
+                  : "text-gray-400"
+              } font-medium hidden sm:block`}
+            >
+              {step.label}
+            </span>
+          </div>
+          {index < steps.length - 1 && (
+            <div
+              className={`w-8 sm:w-16 h-1 ${
+                (index < currentIndex || bookingSuccess) ? "bg-green-500" : "bg-gray-400"
+              } transition-all duration-300`}
+            />
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+};
 
 export default function SecondStep() {
-
-
-    const [firstStep, setFirstStep ] = useState({});
-    const [secondStep, setSecondStep ] = useState({})
-    const [nextStep, setNextStep] = useState("firststep")
-    const [booking, {isLoading, error}] = useBookingMutation();
-    
-const firstStepHandaler = async(e)=>{
-
-    try {
-  e.preventDefault();
-  const firstName = e.target.firstname.value;
-  const lastName = e.target.lastName.value;
-  const email = e.target.email.value;
-  const phone = e.target.phone.value;
-  const postCode = e.target.postCode.value;
-  const location = e.target.location.value;
-
-  const firstStep = {
-    firstName,
-    lastName,
-    email,
-   phone,
-    postCode : Number(postCode),
-    location
-  }
-console.log(firstStep)
-setFirstStep(firstStep);
-setNextStep("secondstep")
-
-
-
-
-    
-        
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-const params = useParams();
-console.log(params, "this is your params")
-
-const secondStepHandaler = async(e)=>{
-    try {
-            e.preventDefault();
-
-            const dateOfEvent = e.target.dateOfEvent.value;
-            const numberOfStaff = e.target.numberOfStaff.value;
-            const startTime = e.target.startTime.value;
-            const durationHours = e.target.durationHours.value;
-            const durationMinutes = e.target.durationMinutes.value;
-
-            const secondStep = {
-                dateOfEvent,
-                numberOfStaff,
-                startTime,
-                durationHours,
-                durationMinutes
-            }
-
-            console.log(secondStep, "hi")
-            setSecondStep(secondStep);
-            setNextStep("thirdstep")
-
-
-
-
-
-
-        
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-
-const bookNowHandaler = async()=>{
-    try {
-
-
-        const finalData = {...firstStep, ...secondStep};
-        finalData.slug = params.category
-        finalData.serviceName = params.category
-        finalData.price = secondStep.durationHours * secondStep.numberOfStaff
-        console.log(finalData, "Final Data")
-
-        const data = await booking(finalData).unwrap();
-        console.log(data, "saved  ki hoise baca")
-
-          toast.success('Booking Successfull')
-
-
-        
-    } catch (error) {
-        console.log(error)
-        toast.error(error?.message || "Something went wrong!")
-    }
-}
-
-
-    
-  return (
-
-
+  const [firstStep, setFirstStep] = useState({});
+  const [secondStep, setSecondStep] = useState({});
+  const [bookingData, setBookingData] = useState({});
+  const [nextStep, setNextStep] = useState("firststep");
+  const [booking, { isLoading, error }] = useBookingMutation();
+  const [bookingSuccess, setBookingSuccess] = useState(false);
   
-  <div
+  const params = useParams();
+
+  const firstStepHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const form = e.target;
+      const firstName = form.firstname.value;
+      const lastName = form.lastName.value;
+      const email = form.email.value;
+      const phone = form.phone.value;
+      const postCode = form.postCode.value;
+      const location = form.location.value;
+
+      const firstStepData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        postCode: Number(postCode),
+        location
+      };
+
+      console.log(firstStepData);
+      setFirstStep(firstStepData);
+      setNextStep("secondstep");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to save personal information");
+    }
+  };
+
+  const secondStepHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const form = e.target;
+      const dateOfEvent = form.dateOfEvent.value;
+      const numberOfStaff = form.numberOfStaff.value;
+      const startTime = form.startTime.value;
+      const durationHours = form.durationHours.value;
+      const durationMinutes = form.durationMinutes.value;
+
+      const secondStepData = {
+        dateOfEvent,
+        numberOfStaff: Number(numberOfStaff),
+        startTime,
+        durationHours: Number(durationHours),
+        durationMinutes: Number(durationMinutes)
+      };
+
+      console.log(secondStepData, "Event Information");
+      setSecondStep(secondStepData);
+      setNextStep("thirdstep");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to save event information");
+    }
+  };
+
+  const bookNowHandler = async () => {
+    try {
+      const finalData = {
+        ...firstStep,
+        ...secondStep,
+        slug: params.category,
+        serviceName: params.category,
+        price: secondStep.durationHours * secondStep.numberOfStaff
+      };
+
+      console.log(finalData, "Final Data");
+      
+      // Show loading
+      const data = await booking(finalData).unwrap();
+      console.log(data, "Booking Response");
+      
+      // Set booking data and success state
+      setBookingData(finalData);
+      setBookingSuccess(true);
+      
+      toast.success('Booking Successful!');
+      
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.message || "Something went wrong!");
+    }
+  };
+
+  const getStepTitle = () => {
+    switch (nextStep) {
+      case "firststep":
+        return "Let's get the party started";
+      case "secondstep":
+        return "Your event information";
+      case "thirdstep":
+        return bookingSuccess ? "Booking Confirmed!" : "Complete Your Booking";
+      default:
+        return "Let's get the party started";
+    }
+  };
+
+  return (
+    <div
       style={{
         backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 13%, rgba(0,0,0,1) 95%), url(${image.src})`,
       }}
       className="relative min-h-screen w-full overflow-hidden bg-cover bg-center"
     >
-
-
-<Toaster/>
+      <Toaster />
+      
       <div className="relative z-10 flex flex-col items-center justify-end pt-40 pb-10 text-center h-full">
-        <h4 className="text-5xl text-white font-medium leading-snug max-w-4xl mx-auto mb-12">
-    { nextStep === "firststep" ?  "Let’s get the party started" : nextStep === "secondstep" ? "Your event information" : "Your Hunky Butler Service Quote & Party Details" }
+        {/* Step Indicator - Select Service is always completed/green */}
+        <StepIndicator currentStep={nextStep} bookingSuccess={bookingSuccess} />
+        
+        <h4 className="text-3xl md:text-5xl text-white font-medium leading-snug max-w-4xl mx-auto mb-8 md:mb-12">
+          {getStepTitle()}
         </h4>
 
-        {/* Responsive grid for equal cards */}
-     { nextStep === "firststep" &&  <section className="   w-full max-w-6xl px-6">
-            <div className='   rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F]  backdrop-blur-md backdrop-saturate-15   border border-white/20 shadow-lg  '>
+        {/* Step 1: Personal Information */}
+        {nextStep === "firststep" && (
+          <section className="w-full max-w-4xl px-6">
+            <div className="rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F] backdrop-blur-md backdrop-saturate-15 border border-white/20 shadow-lg">
+              <form onSubmit={firstStepHandler} className="p-6 md:p-8">
+                <section className="md:flex items-center gap-4">
+                  <div className="text-left w-full">
+                    <label htmlFor="firstname" className="text-white text-left block">First Name *</label>
+                    <input
+                      required
+                      type="text"
+                      name="firstname"
+                      id="firstname"
+                      placeholder="First Name"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]"
+                    />
+                  </div>
+                  <div className="text-left w-full mt-6 md:mt-0">
+                    <label htmlFor="lastName" className="text-white text-left block">Last Name *</label>
+                    <input
+                      required
+                      type="text"
+                      name="lastName"
+                      id="lastName"
+                      placeholder="Last Name"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]"
+                    />
+                  </div>
+                </section>
 
+                <section className="md:flex items-center gap-4 mt-6 md:mt-8">
+                  <div className="text-left w-full">
+                    <label htmlFor="email" className="text-white text-left block">E-Mail *</label>
+                    <input
+                      required
+                      type="email"
+                      name="email"
+                      id="email"
+                      placeholder="Email"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]"
+                    />
+                  </div>
+                  <div className="text-left w-full mt-6 md:mt-0">
+                    <label htmlFor="phone" className="text-white text-left block">Phone *</label>
+                    <input
+                      required
+                      type="text"
+                      name="phone"
+                      id="phone"
+                      placeholder="Phone"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]"
+                    />
+                  </div>
+                </section>
 
-            <form onSubmit={firstStepHandaler} className='p-8'>
+                <section className="md:flex items-center gap-4 mt-6 md:mt-8">
+                  <div className="text-left w-full">
+                    <label htmlFor="postCode" className="text-white text-left block">Post Code *</label>
+                    <input
+                      required
+                      type="number"
+                      name="postCode"
+                      id="postCode"
+                      placeholder="Enter Post Code"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]"
+                    />
+                  </div>
+                  <div className="text-left w-full mt-6 md:mt-0 relative">
+                    <label htmlFor="location" className="text-white text-left block">Location *</label>
+                    <input
+                      required
+                      type="text"
+                      name="location"
+                      id="location"
+                      placeholder="Add Location"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669] pl-12"
+                    />
+                    <IoLocationSharp className="absolute left-4 bottom-4 text-white text-xl" />
+                  </div>
+                </section>
 
-
-             <section className='md:flex items-center gap-4'>
-
-
-                   <div className='text-left w-full'>
-
-                    <label htmlFor='firstname' className='text-white text-left block'>First Name *</label>
-                    <input required type="text"  name="firstname" id="firstname" placeholder='Name' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
-
-
-
-                </div>
-                <div className='text-left w-full mt-6 md:mt-0'>
-
-                    <label htmlFor='lastName' className='text-white text-left block'>Last Name *</label>
-                    <input required type="text" name="lastName" id="lastName" placeholder='Name' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
-
-
-
-                </div>
-
-             </section>
-             <section className='md:flex items-center gap-4 mt-8'>
-
-
-                   <div className='text-left w-full'>
-
-                    <label htmlFor='email' className='text-white text-left block'>E-Mail *</label>
-                    <input required type="email" name="email" id="email" placeholder='Email' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
-
-
-
-                </div>
-                <div className='text-left w-full mt-6 md:mt-0'>
-
-                    <label htmlFor='phone' className='text-white text-left block'>phone *</label>
-                    <input required type="text" name="phone" id="phone" placeholder='Phone' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
-
-
-
-                </div>
-
-             </section>
-             <section className='md:flex items-center gap-4 mt-8'>
-
-
-                   <div className='text-left w-full'>
-
-                    <label htmlFor='postCode'  className='text-white text-left block'>Post Code *</label>
-                    <input required type="number" name="postCode" id="postCode" placeholder='Enter Post Code' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
-
-
-
-                </div>
-                <div className='text-left w-full mt-6 md:mt-0'>
-
-                    <label htmlFor='location' className='text-white text-left block'>Location *</label>
-                    <input required type="text" name="location" id="location" placeholder='Add Location' className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white placeholder:ml-28 border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'/>
-
-
-
-
-
-                </div>
-
-               
-
-             </section>
-
-
-
-
-   <button
-              style={{ color: "rgba(255,0,106,1)" }}
-              className="px-[16px] py-[8px] w-[164px] cursor-pointer mt-8 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
-            >
-              Next
-            </button>
-            </form>
-               
+                <button
+                  type="submit"
+                  style={{ color: "rgba(255,0,106,1)" }}
+                  className="px-[16px] py-[8px] w-[164px] cursor-pointer mt-8 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
+                >
+                  Next
+                </button>
+              </form>
             </div>
-    
-        </section>}
+          </section>
+        )}
 
+        {/* Step 2: Event Information */}
+        {nextStep === "secondstep" && (
+          <section className="mt-8 md:mt-28 w-full max-w-4xl px-6">
+            <div className="rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F] backdrop-blur-md backdrop-saturate-15 border border-white/20 shadow-lg">
+              <form onSubmit={secondStepHandler} className="p-6 md:p-8">
+                <section className="md:flex items-center gap-4">
+                  <div className="text-left w-full">
+                    <label htmlFor="dateOfEvent" className="text-white text-left block">Date of event *</label>
+                    <input
+                      required
+                      type="date"
+                      id="dateOfEvent"
+                      name="dateOfEvent"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
+                    />
+                  </div>
+                  <div className="text-left mt-6 md:mt-0 w-full">
+                    <label className="text-white text-left block">Number of staff *</label>
+                    <input
+                      required
+                      type="number"
+                      name="numberOfStaff"
+                      placeholder="Enter number"
+                      min="1"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
+                    />
+                  </div>
+                </section>
 
+                <section className="md:flex items-center gap-4 mt-6 md:mt-8">
+                  <div className="text-left w-full">
+                    <label htmlFor="startTime" className="text-white text-left block">Start Time *</label>
+                    <input
+                      required
+                      type="time"
+                      id="startTime"
+                      name="startTime"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
+                    />
+                  </div>
+                  <div className="text-left w-full mt-6 md:mt-0">
+                    <label className="text-white text-left block">Duration *</label>
+                    <div className="flex items-center gap-2 md:gap-4">
+                      <input
+                        required
+                        type="number"
+                        min="0"
+                        name="durationHours"
+                        placeholder="Hours"
+                        className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
+                      />
+                      <input
+                        required
+                        type="number"
+                        min="0"
+                        max="59"
+                        name="durationMinutes"
+                        placeholder="Minutes"
+                        className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
+                      />
+                    </div>
+                  </div>
+                </section>
 
+                <button
+                  type="submit"
+                  style={{ color: "rgba(255,0,106,1)" }}
+                  className="px-[16px] py-[8px] w-[164px] mt-8 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
+                >
+                  Next
+                </button>
+              </form>
+            </div>
+          </section>
+        )}
 
-  { nextStep === 'secondstep' && <section className="mt-28 w-full max-w-6xl px-6">
-  <div className="rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F]  backdrop-blur-md backdrop-saturate-15 border border-white/20 shadow-lg">
-    <form   onSubmit={secondStepHandaler} className="p-8">
-      {/* Date + Staff */}
-      <section className="md:flex items-center gap-4">
-        {/* Date */}
-        <div className="text-left w-full">
-          <label htmlFor='date' className="text-white text-left block">Date of event *</label>
-          <input
-            required
-            type="date"
-            id='date'
-            name="dateOfEvent"
-            className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-          />
-          
-        </div>
-        {/* Staff */}
-        <div className="text-left mt-6 md:mt-0 w-full">
-          <label className="text-white text-left block">Number of staff *</label>
-          <input
-            required
-            type="number"
-            name="numberOfStaff"
-            placeholder="Enter number"
-            className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-          />
-        </div>
-      </section>
+        {/* Step 3: Booking Confirmation */}
+        {nextStep === "thirdstep" && (
+          <section className="mt-8 w-full max-w-2xl px-6">
+            <div className="rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F] backdrop-blur-md backdrop-saturate-15 border border-white/20 shadow-lg">
+              <section className="text-white p-6 md:p-12">
+                
+                {bookingSuccess ? (
+                  // Success State - After booking is confirmed
+                  <>
+                    <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                    </div>
+                    
+                    <h6 className="text-2xl md:text-3xl font-bold mb-4">Booking Confirmed!</h6>
+                    <p className="text-lg mb-6">Thank you for your booking. We're excited to make your event special!</p>
 
-      {/* Time + Duration */}
-      <section className="md:flex items-center gap-4 mt-8">
-        {/* Start Time */}
-        <div className="text-left w-full">
-          <label  htmlFor='time' className="text-white text-left block">Start Time *</label>
-          <input
-            required
-            type="time"
-            id='time'
-            name="startTime"
-            className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-          />
-        </div>
-        {/* Duration */}
-        <div className="text-left w-full mt-6 md:mt-0">
-          <label className="text-white text-left block">Duration*</label>
-          <div className="flex items-center gap-4">
-            <input
-              required
-              type="number"
-              min="0"
-              name="durationHours"
-              placeholder="Hours"
-              className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-            />
-            <input
-              required
-              type="number"
-              min="0"
-              max="59"
-              name="durationMinutes"
-              placeholder="Minutes"
-              className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-            />
-          </div>
-        </div>
-      </section>
+                    <div className="border-t border-white/20 my-6"></div>
 
-      {/* Button */}
-      <button
-      type='submit'
-        style={{ color: "rgba(255,0,106,1)" }}
-        className="px-[16px] py-[8px] w-[164px] mt-8 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
-      >
-        Next
-      </button>
-    </form>
-  </div>
-</section>
-}
+                    <div className="space-y-4 text-left">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Service:</span>
+                        <span className="capitalize">{params?.category}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Total Amount:</span>
+                        <span className="font-bold">${secondStep.durationHours * secondStep.numberOfStaff}</span>
+                      </div>
+                    </div>
 
+                    <button
+                      onClick={() => window.location.href = '/'}
+                      style={{ color: "rgba(255,0,106,1)" }}
+                      className="px-[16px] py-[8px] w-[164px] mt-8 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
+                    >
+                      Back to Home
+                    </button>
+                  </>
+                ) : (
+                  // Before booking confirmation - Show booking summary
+                  <>
+                    <h6 className="text-lg font-semibold">Your total price</h6>
+                    <h6 className="text-4xl md:text-5xl font-bold py-4 md:py-6">
+                      ${secondStep.durationHours * secondStep.numberOfStaff}
+                    </h6>
 
-  { nextStep === 'thirdstep' && <section className="mt-8 w-full max-w-xl px-6">
-  <div className="rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F]  backdrop-blur-md backdrop-saturate-15 border border-white/20 shadow-lg">
+                    <div className="border-t border-white/20 my-4"></div>
 
-<section className='text-white p-12'>
+                    <div className="py-4 space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-sm md:text-lg">Event starts on</span>
+                        <span className="text-right">
+                          {secondStep.dateOfEvent} at {secondStep.startTime}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-sm md:text-lg">Event Duration</span>
+                        <span className="text-right">
+                          {secondStep.durationHours} Hours {secondStep.durationMinutes > 0 && `${secondStep.durationMinutes} Minutes`}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-sm md:text-lg">Staff</span>
+                        <span className="text-right">{secondStep.numberOfStaff} Butlers</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-sm md:text-lg">Service Type</span>
+                        <span className="text-right capitalize">{params?.category}</span>
+                      </div>
+                    </div>
 
-      <h6>Your total price</h6>
-      <h6 className='text-5xl font-bold py-6'> $ {secondStep.durationHours * secondStep.numberOfStaff  }</h6>
-
-      <div className='border-1  border-white'>
-
-      </div>
-
-
-      <div className='py-4 space-y-4'>
-        <h4 className='font-medium text-sm md:text-xl text-left'><span className='mr-4'>Event start on    </span>  <span className='text-right ml-[10px] '>  : <span className='ml-4'>{secondStep.dateOfEvent} At {secondStep.startTime }</span> </span></h4>
-        <h4 className='font-medium  text-sm md:text-xl text-left'><span className='mr-4'>Event Duration </span>  <span className='-ml-[1px]'>  : <span className='ml-4'>{secondStep.durationHours} Hours</span> </span></h4>
-        <h4 className='font-medium text-sm md:text-xl text-left'><span className='md:mr-4'> Stuff  </span>  <span className=' ml-[73px] md:ml-[82px]'>  : <span className='ml-4'>{secondStep.numberOfStaff} Butlers </span></span></h4>
-        <h4 className='font-medium text-sm md:text-xl  text-left'> <span className='md:mr-4'>Quote ID </span>  <span className='ml-12'> :  <span className='ml-4'> {params?.category}</span>  </span></h4>
-
-
-            <button
-            onClick={bookNowHandaler}
-              style={{ color: "rgba(255,0,106,1)" }}
-              className="px-[16px] py-[8px] w-[164px] mt-12 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
-            >
-              {
-                isLoading ? "Loading..." : "Book  Now"
-              }
-            </button>
-
-      </div>
-</section>
-  
-  </div>
-</section>
-}
-
-
-
-
-
+                    <button
+                      onClick={bookNowHandler}
+                      style={{ color: "rgba(255,0,106,1)" }}
+                      className="px-[16px] py-[8px] w-[164px] mt-8 md:mt-12 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap disabled:opacity-50"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? "Processing..." : "Confirm Booking"}
+                    </button>
+                  </>
+                )}
+              </section>
+            </div>
+          </section>
+        )}
       </div>
     </div>
-  )
+  );
 }
