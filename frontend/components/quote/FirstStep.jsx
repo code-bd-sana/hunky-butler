@@ -20,6 +20,52 @@ const serviceIcons = {
 // Fallback icon if service name doesn't match
 const defaultIcon = icon1;
 
+// Step indicator component
+const StepIndicator = ({ currentStep } ) => {
+  const steps = [
+    { number: 1, label: "Select Service" },
+    { number: 2, label: "Your Information" },
+    { number: 3, label: "Event Information" },
+    { number: 4, label: "Confirmation" }
+  ];
+
+  return (
+    <div className="flex justify-center items-center space-x-4 mb-12">
+      {steps.map((step, index) => (
+        <React.Fragment key={step.number}>
+          <div className="flex flex-col items-center">
+            <div
+              className={`w-12 h-12 rounded-full flex items-center justify-center border-2 ${
+                step.number === currentStep
+                  ? "bg-[#FF3388] border-[#FF3388] text-white"
+                  : step.number < currentStep
+                  ? "bg-green-500 border-green-500 text-white"
+                  : "border-gray-400 text-gray-400"
+              } font-semibold`}
+            >
+              {step.number < currentStep ? "✓" : step.number}
+            </div>
+            <span
+              className={`text-sm mt-2 ${
+                step.number === currentStep ? "text-[#FF3388]" : "text-gray-400"
+              } font-medium`}
+            >
+              {step.label}
+            </span>
+          </div>
+          {index < steps.length - 1 && (
+            <div
+              className={`w-16 h-1 ${
+                step.number < currentStep ? "bg-green-500" : "bg-gray-400"
+              }`}
+            />
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+};
+
 export default function FirstStep() {
   const { data, isLoading, error } = useGetServicesQuery();
 
@@ -32,6 +78,7 @@ export default function FirstStep() {
         className="relative min-h-screen w-full overflow-hidden bg-cover bg-center"
       >
         <div className="relative z-10 flex flex-col items-center justify-end pt-40 pb-10 text-center h-full">
+          <StepIndicator currentStep={1} />
           <h4 className="text-5xl text-white font-medium leading-snug max-w-4xl mx-auto mb-12">
             What service would you like to book?
           </h4>
@@ -62,13 +109,12 @@ export default function FirstStep() {
         className="relative min-h-screen w-full overflow-hidden bg-cover bg-center"
       >
         <div className="relative z-10 flex flex-col items-center justify-center pt-40 pb-10 text-center h-full">
+          <StepIndicator currentStep={1} />
           <p className="text-2xl text-white">Failed to load services. Please try again.</p>
         </div>
       </div>
     );
   }
-
-  console.log(data, "service data");
 
   return (
     <div
@@ -78,6 +124,8 @@ export default function FirstStep() {
       className="relative min-h-screen w-full overflow-hidden bg-cover bg-center"
     >
       <div className="relative z-10 flex flex-col items-center justify-end pt-40 pb-10 text-center h-full">
+        <StepIndicator currentStep={1} />
+        
         <h4 className="text-5xl text-white font-medium leading-snug max-w-4xl mx-auto mb-12">
           What service would you like to book?
         </h4>
