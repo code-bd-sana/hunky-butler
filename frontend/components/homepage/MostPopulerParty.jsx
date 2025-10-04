@@ -55,7 +55,7 @@ export default function MostPopulerParty() {
                 className='object-cover transition-transform duration-500 group-hover:scale-105'
               />
      
-              <div className='absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent'></div>
+              <div className='absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/20 lg:via-transparent lg:to-transparent'></div>
             </div>
 
   

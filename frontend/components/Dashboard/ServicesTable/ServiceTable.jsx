@@ -83,15 +83,15 @@ export default function ServiceTable() {
             className="group inline-flex items-center gap-2 rounded-full px-4 py-2 text-[16px] font-semibold text-white shadow-sm transition
               bg-[#FF006A]"
           >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full">
+            <span className="flex  whitespace-nowrap h-5 w-5 items-center justify-center rounded-full">
               +
             </span>
-            Add New Service
+           <span className="whitespace-nowrap"> Add New Service</span>
           </Link>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
+        <div className=" max-w-[76vw] overflow-scroll">
           <table className="min-w-full border-separate border-spacing-0">
             <thead>
               <tr className="text-[16px] text-[#333333]">

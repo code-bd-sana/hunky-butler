@@ -159,8 +159,8 @@ const Payouts = () => {
       </div>
 
       {/* Table — keep payouts table */}
-      <div className="overflow-x-auto max-h-[370px] scrollbar-hide overflow-y-auto">
-        <table className="w-full text-left border-collapse">
+      <div className="overflow-x-auto max-h-[370px] max-w-[76vw] overflow-scroll scrollbar-hide overflow-y-auto">
+        <table className="w-full text-left overflow-scroll border-collapse">
           <thead className="border-b">
             <tr className="text-[#333333] text-base">
               <th className="p-3">Performer</th>
