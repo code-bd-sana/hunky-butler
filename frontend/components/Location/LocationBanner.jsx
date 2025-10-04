@@ -1,12 +1,13 @@
 import Image from "next/image";
 import React from "react";
 import arrow from "@/public/icons/greaterthan.png";
+import defaultBanner from "@/public/ImageGalary/pic6.jpeg";
 
 export default function LocationBanner({ service, title, description, image }) {
   return (
     <div
       style={{
-        backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%), url()`,
+        backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.9) 100%), url(${defaultBanner.src})`,
       }}
       className="relative h-[520px] w-full overflow-hidden bg-cover bg-center flex items-center"
     >
