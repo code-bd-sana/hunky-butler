@@ -82,7 +82,7 @@ export default function ALLServices() {
                 <div className="relative w-full aspect-[581/632] sm:aspect-[581/450] md:aspect-[581/632] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.08)]">
                   <Image
                     src={service?.banner || "/default.jpg"}
-                    alt={service.serviceName}
+                    alt={service?.name}
                     fill
                     className="object-cover rounded-2xl"
                   />
