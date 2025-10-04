@@ -7,6 +7,8 @@ import LocationDynamicBanner from "@/components/Location/LocationDynamicBanner";
 import WhatsIncluede from "@/components/Location/WhatsIncluede";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import GlobalNotFound from "../global-not-found";
+import ReduxProvider from "../provider/ReduxProvider";
+import Navbar from "@/components/shared/Navbar";
 
 export async function generateStaticParams() {
   return locations.map((loc) => ({
@@ -23,6 +25,9 @@ export default function LocationPage({ params }) {
 
   return (
     <div>
+      <ReduxProvider>
+        <Navbar></Navbar>
+      </ReduxProvider>
       <LocationDynamicBanner
         image={location.image}
         title={location.name}
