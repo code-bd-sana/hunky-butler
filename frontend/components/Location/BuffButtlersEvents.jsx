@@ -1,25 +1,25 @@
 import React from "react";
 import Image from "next/image";
 
-
-
 import henImg from "@/public/ImageGalary/henparty.jpeg";
 import birthdayImg from "@/public/ImageGalary/pic1.jpeg";
 import corporateImg from "@/public/ImageGalary/pic4.jpeg";
 
 const BuffButlersEvents = ({ city }) => {
   return (
-    <div className="max-w-7xl mx-auto py-12 space-y-12">
+    <div className="max-w-7xl mx-auto py-24 space-y-12">
       {/* Section Title */}
-      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#0A012A] mb-10">
+      <h2 className="text-2xl md:text-3xl text-center lg:text-4xl font-bold text-[#0A012A] mb-20">
         Top Buff Butler Services for {city} Events
       </h2>
 
       {/* Hen Parties */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 mb-18 gap-8 items-center">
         <div>
           <Image
             src={henImg}
+            width={500}
+            height={320}
             alt={`Hen Parties in ${city}`}
             className="rounded-xl shadow-md"
           />
@@ -40,6 +40,8 @@ const BuffButlersEvents = ({ city }) => {
         <div className="md:order-2">
           <Image
             src={birthdayImg}
+            width={500}
+            height={320}
             alt={`Birthday Celebrations in ${city}`}
             className="rounded-xl shadow-md"
           />
@@ -59,10 +61,12 @@ const BuffButlersEvents = ({ city }) => {
       </div>
 
       {/* Corporate Events */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 mb-18  gap-8 items-center">
         <div>
           <Image
             src={corporateImg}
+            width={500}
+            height={320}
             alt={`Corporate Events in ${city}`}
             className="rounded-xl shadow-md"
           />

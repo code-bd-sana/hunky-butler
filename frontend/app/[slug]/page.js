@@ -5,9 +5,8 @@ import BuffButlersEvents from "@/components/Location/BuffButtlersEvents";
 import ButlerLocation from "@/components/Location/ButlerLocation";
 import LocationDynamicBanner from "@/components/Location/LocationDynamicBanner";
 import WhatsIncluede from "@/components/Location/WhatsIncluede";
-import Navbar from "@/components/shared/Navbar";
-import Image from "next/image";
-import Link from "next/link";
+import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
+
 
 export async function generateStaticParams() {
   return locations.map((loc) => ({
@@ -24,7 +23,7 @@ export default function LocationPage({ params }) {
 
   return (
     <div>
-      <Navbar></Navbar>
+     
       <LocationDynamicBanner
         image={location.image}
         title={location.name}
@@ -34,6 +33,7 @@ export default function LocationPage({ params }) {
 
       {/* Content section */}
       <WhatsIncluede city={location.city} />
+      <ReviewSection></ReviewSection>
       <BuffButlersEvents city={location.city} />
 
       <ButlerLocation />
