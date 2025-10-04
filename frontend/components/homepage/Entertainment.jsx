@@ -9,7 +9,7 @@ const Entertainment = () => {
         backgroundRepeat: "no-repeat", // optional
       }}
     >
-      <div className="flex flex-col md:flex-row items-start max-w-[1240px] mx-auto  my-10 md:my-44 gap-6 md:gap-8">
+      <div className="flex flex-col md:flex-row items-start p-2 md:p-0 max-w-[1240px] mx-auto  my-10 md:my-44 gap-6 md:gap-8">
         <div className="w-full md:w-1/2">
           <Image
             src="/Entertainment/img.jpeg"
