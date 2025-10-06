@@ -75,7 +75,7 @@ export default function OurMission() {
         </section>
 
         <section className="flex-1 relative">
-          <Image alt="img" src={aboutImg} />
+          <Image alt="Cheeky buff butler entertainer with party guests" src={aboutImg} />
 
           {/* star */}
 

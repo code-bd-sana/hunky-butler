@@ -29,7 +29,7 @@ const JoinForm = () => {
           <div className="w-full h-[600px] md:w-[582px] md:h-[732px] relative">
             <Image
               src="/Join/join.png"
-              alt="Contact"
+              alt="Buff butler entertainer working at UK hen party"
               fill
               className="rounded-lg shadow-lg object-cover"
               c
