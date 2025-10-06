@@ -20,7 +20,7 @@ const BlogDetails = ({ blog }) => {
           <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px]">
             <Image
               src={blog.thumbnailUrl}
-              alt={blog.title}
+              alt="Hen party ideas and games UK"
               fill
               className="object-cover rounded-t-2xl"
               priority

@@ -5,43 +5,42 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useGetBlogsQuery } from "@/features/blogApi";
 
-const BlogSection = () => {
+const JoinBlog = () => {
   const router = useRouter();
   const { data: blogs = [], isLoading, isError } = useGetBlogsQuery();
 
-  if (isLoading) {
-    return (
-      <section className="max-w-[1240px] mx-auto px-4 py-4 md:py-12">
-        <p className="text-center text-gray-500">Loading blogs...</p>
-      </section>
-    );
-  }
+  if (isLoading) return <p className="text-center text-gray-500">Loading...</p>;
+  if (isError)
+    return <p className="text-center text-red-500">Failed to load blogs.</p>;
 
-  if (isError) {
-    return (
-      <section className="max-w-[1240px] mx-auto px-4 py-4 md:py-12">
-        <p className="text-center text-red-500">Failed to load blogs.</p>
-      </section>
-    );
-  }
-
-  // filter active blogs only
-  const activeBlogs = blogs.filter((post) => post.status === "active");
+  const activeBlogs = blogs.filter((b) => b.status === "active").slice(0, 3);
 
   return (
-    <section className="max-w-[1240px] mx-auto px-4 py-4 md:py-12 pb-[500px]">
+    <section className="max-w-[1240px] mx-auto px-4 py-4 md:py-12">
+      <div className="text-center mb-6 md:mb-20 space-y-4">
+        <h1 className="text-2xl md:text-5xl font-semibold leading-tight">
+          Planning{" "}
+          <span className="text-[#FF006A] italic">Inspiration & Tips</span>
+        </h1>
+        <p className="text-[#808080] text-sm md:text-base max-w-2xl mx-auto">
+          Not sure where to start? Our blog is full of ideas to make your Next
+          Event unique. From cocktail recipes to creative party games, we share
+          expert tips to help you plan the perfect night.
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
         {activeBlogs.map((post) => (
           <div
             key={post._id}
             className="rounded-2xl overflow-hidden cursor-pointer"
-            onClick={() => router.push(`/blog/${post.slug}`)} 
+            onClick={() => router.push(`/blog/${post.slug}`)}
           >
             {/* Thumbnail */}
             {post.thumbnailUrl && (
               <Image
                 src={post.thumbnailUrl}
-                alt="Hen party ideas and games UK"
+                alt={post.title || "Hen party ideas and games UK"}
                 width={396}
                 height={372}
                 className="w-full h-64 object-cover rounded-lg"
@@ -53,14 +52,17 @@ const BlogSection = () => {
               <p className="text-pink-600 text-sm font-medium">
                 {new Date(post.date || post.createdAt).toLocaleDateString(
                   "en-US",
-                  { month: "long", day: "numeric", year: "numeric" }
+                  {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  }
                 )}
               </p>
-              <h3 className="text-xl font-semibold mt-2">{post.title}</h3>
+              <h3 className="text-2xl font-semibold mt-2">{post.title}</h3>
               <p className="text-[#808080] text-base mt-2">
                 {post.content
                   ?.replace(/<[^>]+>/g, "")
-                  .replace(post.title, "")
                   .trim()
                   .slice(0, 100)}
                 ...
@@ -73,4 +75,4 @@ const BlogSection = () => {
   );
 };
 
-export default BlogSection;
+export default JoinBlog;
