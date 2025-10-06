@@ -24,8 +24,8 @@ export default function page() {
         }
       ></ServAndAboutBanner>
       <Provider store={store}>
-      <ALLServices />
-    </Provider>
+        <ALLServices />
+      </Provider>
       <WhyBookSection />
       <HowItWorkSection />
       <HomeMarque />

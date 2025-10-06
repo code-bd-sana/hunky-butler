@@ -37,7 +37,7 @@ export default function BookNowSection({ name,banner, included }) {
 
             {/* button */}
 
-            <button className="btn-primary mt-16"> Book Now </button>
+            {/* <button className="btn-primary mt-16"> Book Now </button> */}
           </section>
 
           <section className="flex-1 mt-4 md:mt-0">
