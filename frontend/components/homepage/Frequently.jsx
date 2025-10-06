@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { useState } from "react";
 import { GiHeartMinus } from "react-icons/gi";
 import { GiHeartPlus } from "react-icons/gi";
@@ -68,15 +69,15 @@ const Frequently = () => {
         </p>
       </div>
       <div className="flex flex-col md:flex-row items-start gap-4 md:gap-10">
-        <div>
+        <div className="cursor-pointer">
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="border border-gray-100 rounded-2xl mb-4 bg-white shadow-sm"
+              className="border border-gray-100 rounded-2xl mb-4 bg-white shadow-sm cursor-pointer"
             >
               <button
                 onClick={() => toggle(index)}
-                className="w-full flex justify-between items-center px-5 h-[100px] text-left font-semibold hover:bg-gray-50 transition-colors"
+                className="w-full flex justify-between items-center px-5 h-[100px] text-left font-semibold hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <span className="text-xl md:text-3xl">{faq.question}</span>
                 <span className="text-xl md:text-3xl">
@@ -109,7 +110,7 @@ const Frequently = () => {
             >
               <button
                 onClick={() => toggle(index)}
-                className="w-full flex justify-between items-start px-5 h-[100px] text-left font-semibold hover:bg-gray-50 transition-colors"
+                className="w-full flex justify-between items-start px-5 h-[100px] text-left font-semibold hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <span className="text-xl md:text-3xl">{faq.question}</span>
                 <span className="text-xl md:text-3xl">
@@ -135,9 +136,12 @@ const Frequently = () => {
         </div>
       </div>
       <div className="flex justify-center my-4 md:my-10">
-        <button className="bg-none text-[#FF006A] px-4 md:px-6 py-2 md:py-4 rounded-full font-medium text-base md:text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A]">
-          Try a 30-second quote now
-        </button>
+        <Link href={'/quote'}>
+          <button className="cursor-pointer bg-none text-[#FF006A] px-4 md:px-6 py-2 md:py-4 rounded-full font-medium text-base md:text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A]">
+            Try a 30-second quote now
+          </button>
+        </Link>
+
       </div>
     </div>
   );

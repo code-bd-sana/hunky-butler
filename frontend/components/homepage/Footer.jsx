@@ -9,6 +9,7 @@ import {
   FaYoutube,
   FaTumblr,
 } from "react-icons/fa";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -40,13 +41,16 @@ const Footer = () => {
           Hunky Butler Service has everything you need for an unforgettable
           night. Get your instant quote now and secure your entertainers today.
         </p>
-        <button className="bg-white relative text-sm text-[#FF006A] px-2 py-1 md:px-5 md:py-[14px] rounded-full hover:bg-gray-100 transition md:mt-4 font-semibold z-50">
-          Get An Instant Quote
-        </button>
+        <Link href={'/quote'}>
+            <button className="bg-white relative text-sm text-[#FF006A] px-2 py-1 md:px-5 md:py-[14px] cursor-pointer rounded-full hover:bg-gray-100 transition md:mt-4 font-semibold z-50">
+              Get An Instant Quote
+            </button>
+        </Link>
 
         <img
           src="/Footer/twoBoy.png"
-          alt="Logo"
+          alt="Book buff butlers and hen party entertainment UK"
+          title="Book Buff Butlers UK"
           className="w-[280px] md:w-[640px] absolute -top-[25px] md:-top-[185px] -right-[59px] md:-right-[100px] brightness-125"
         />
       </div>
@@ -116,7 +120,7 @@ const Footer = () => {
                 placeholder="Enter Your Email"
                 className="w-11/12 px-4 py-2 rounded-full focus:outline-none text-sm bg-white"
               />
-              <button className="bg-none border-[#FF006A] text-[#FF006A] px-10 py-2 rounded-full  font-medium text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A">
+              <button className="cursor-pointer bg-none border-[#FF006A] text-[#FF006A] px-10 py-2 rounded-full  font-medium text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A">
                 Subscribe
               </button>
             </div>

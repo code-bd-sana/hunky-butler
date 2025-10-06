@@ -68,7 +68,7 @@ export default function ALLServices() {
 
                 <div className="mt-8">
                   <Link
-                    href={`/service/${service.slug}`}
+                    href={`/party-entertainment-services/${service.slug}`}
                   >
                     <button className="bg-[#ff1673] hover:bg-[#e41468] text-white font-semibold rounded-full px-6 py-3 text-base shadow-[0_6px_20px_rgba(255,22,115,0.2)] transition-all">
                       Book Now

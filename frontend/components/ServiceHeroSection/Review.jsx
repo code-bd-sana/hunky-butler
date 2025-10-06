@@ -95,7 +95,7 @@ export const ReviewCard = ({
           <figcaption className="text-sm font-medium dark:text-white">
            <div className="flex justify-between pt-12">
                <div className="flex items-center gap-2">
-                   <img className="rounded-full" width="32" height="32" alt="" src={img} />
+                   <img className="rounded-full" width="32" height="32" title="Hunky Butler Service Reviews" alt="Customer reviews of buff butlers UK" src={img} />
             {name}
               </div>
 
