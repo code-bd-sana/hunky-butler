@@ -46,7 +46,8 @@ const Footer = () => {
 
         <img
           src="/Footer/twoBoy.png"
-          alt="Logo"
+          alt="Book buff butlers and hen party entertainment UK"
+          title="Book Buff Butlers UK"
           className="w-[280px] md:w-[640px] absolute -top-[25px] md:-top-[185px] -right-[59px] md:-right-[100px] brightness-125"
         />
       </div>
