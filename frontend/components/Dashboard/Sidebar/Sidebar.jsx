@@ -9,7 +9,8 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "@/features/sidebarSlice";
 import { GiHandcuffs } from "react-icons/gi";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
+import { MdOutlineLogin } from "react-icons/md";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -159,8 +160,17 @@ const Sidebar = () => {
         </div>
 
         {/* Footer pinned at bottom */}
-        <div className="text-gray-400 text-sm shrink-0">
+        <div className="text-gray-400 flex justify-between  font-semibold items-center  text-sm shrink-0">
           <p>Version 0.1</p>
+
+        <div onClick={async()=>{
+          await signOut()
+        }} className="flex cursor-pointer items-center gap-2 ">
+            <MdOutlineLogin className="text-red-500 text-xl " />
+          <button className="text-red-500 cursor-pointer ">
+            Log Out
+          </button>
+        </div>
         </div>
       </div>
 

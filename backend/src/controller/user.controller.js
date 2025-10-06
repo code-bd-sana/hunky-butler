@@ -74,3 +74,67 @@ export const allButler = async(req, res)=>{
     })
   }
 }
+
+
+
+
+export const myProfile = async(req, res)=>{
+  try {
+    const id = req.params.id;
+    const user = await User.findOne({_id:id}).select('-password');
+    res.status(200).json({
+      message:'Success',
+      data: user
+    })
+    
+  } catch (error) {
+    res.status(500).json({
+      message:"Something went wrong!"
+    })
+  }
+}
+
+
+
+
+export const updateProfile = async(req, res)=>{
+  try {
+    const {bio, dob, email, firstName, lastName, gender, location, phone, postcode, profileImage, image}  = req.body;
+    console.log(email, 'amo to emol amdarho')
+
+
+
+
+
+    const updated = await User.updateOne({email:email}, {$set:{
+      bio,
+      dob,
+      firstName,
+      lastName,
+      gender,
+      phone,
+      location,
+      postcode,
+      image,
+      profileImage:image
+
+
+
+    }}) ;
+
+    console.log(updated)
+    
+    
+    res.status(200).json({
+      message:'Success',
+      data: updated
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({
+      message:"Something went wrong!",
+      error
+    
+    })
+  }
+}

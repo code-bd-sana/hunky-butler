@@ -43,6 +43,40 @@ const userSchema = mongoose.Schema({
     type: Number,
     default: 0
   },
+  firstName:{
+    type:String,
+
+  },
+  lastName:{
+    type:String,
+
+  },
+  location:{
+    type:String
+  },
+  postcode:{
+    type:Number
+  },
+  bio:{
+    type:String
+  },
+  isButler:{
+    type: Boolean,
+    default: false
+  },
+  gender:{
+    type:String,
+    
+  },
+  dob:{
+    type: Date
+  },
+  phone:{
+    type: String
+  },
+  profileImage:String,
+
+
 
   serviceTaken:{
     type:Number,
