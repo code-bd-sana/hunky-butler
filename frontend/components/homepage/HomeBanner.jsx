@@ -12,6 +12,8 @@ export default function HomeBanner() {
         muted
         playsInline
         className="absolute inset-0 h-full w-full object-cover"
+        title="Buff Butlers Hen Party Entertainment UK"
+        aria-label="Buff butlers and hen party entertainment across the UK"
       >
         <source src="/videos/BannerVid.mp4" type="video/mp4" />
         Your browser does not support the video tag.

@@ -1,4 +1,4 @@
- import React from "react";
+import React from "react";
 import Image from "next/image";
 const Entertainment = () => {
   return (
@@ -13,7 +13,8 @@ const Entertainment = () => {
         <div className="w-full md:w-1/2">
           <Image
             src="/Entertainment/img.jpeg"
-            alt=""
+            alt="Map showing buff butler services across the UK"
+            title="Buff Butlers Nationwide Coverage"
             width={574}
             height={374}
             className="object-cover rounded-3xl"
