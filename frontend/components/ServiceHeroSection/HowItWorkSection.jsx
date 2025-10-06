@@ -62,15 +62,8 @@ export default function HowItWorkSection({ text1, text2, text3 }) {
             </div>
           ))}
         </section>
-<<<<<<< HEAD
         <Link href={'/quote'}>
           <button className='mt-16 btn-secondary text-center mx-auto flex justify-center cursor-pointer'>Try a 30-second quote now</button>
-=======
-        <Link href={"/"}>
-          <button className="mt-16 btn-secondary text-center mx-auto flex justify-center">
-            Try a 30-second quote now
-          </button>
->>>>>>> dcf66f70ade12243f60fb3d83be573fb5630bfae
         </Link>
       </div>
     </div>
