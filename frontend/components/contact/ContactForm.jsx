@@ -29,7 +29,7 @@ const ContactForm = () => {
           <div className="w-full h-[600px] md:w-[582px] md:h-[732px] relative">
             <Image
               src="/Contact/contact.png"
-              alt="Contact"
+              alt="Buff butler entertainer with party guests"
               fill
               className="rounded-lg shadow-lg object-cover"
               c
