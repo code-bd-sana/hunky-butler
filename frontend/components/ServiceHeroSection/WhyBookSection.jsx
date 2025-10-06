@@ -47,8 +47,8 @@ export default function WhyBookSection() {
             </div>
           </div>
 
-          <Link href={'/'}>
-            <button className='btn-secondary mt-8 md:mt-12 text-sm md:text-base px-6 py-3 md:px-8 md:py-4'>
+          <Link href={'/quote'}>
+            <button className='btn-secondary mt-8 md:mt-12 text-sm md:text-base px-6 py-3 md:px-8 md:py-4 cursor-pointer'>
               Try a 30-second quote now
             </button>
           </Link>

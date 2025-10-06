@@ -1,5 +1,4 @@
 // "use client";
-
 import Link from "next/link";
 import { FaStar } from "react-icons/fa";
 
@@ -48,13 +47,15 @@ export default function HomeBanner() {
 
             <div className="mt-10 md:mt-12 flex flex-row md:flex-wrap justify-center md:justify-start gap-3">
               <Link href="/quote">
-                <button className="rounded-full bg-[#FF006A] px-5 py-3 md:px-6 md:py-3 text-sm md:text-lg font-medium shadow-md transition">
+                <button className="cursor-pointer rounded-full bg-[#FF006A] px-5 py-3 md:px-6 md:py-3 text-sm md:text-lg font-medium shadow-md transition">
                   Get An Instant Quote
                 </button>
               </Link>
-              <button className="rounded-full bg-white px-5 py-3 md:px-6 md:py-3 text-sm md:text-lg font-medium text-black shadow-md transition">
-                Explore Services
-              </button>
+              <Link href="/party-entertainment-services">
+                <button className="cursor-pointer rounded-full bg-white px-5 py-3 md:px-6 md:py-3 text-sm md:text-lg font-medium text-black shadow-md transition">
+                  Explore Services
+                </button>
+              </Link>
             </div>
 
             {/* Rating (mobile & mid) */}
