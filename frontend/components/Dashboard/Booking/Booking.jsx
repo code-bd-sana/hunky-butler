@@ -953,7 +953,7 @@ const Booking = () => {
                       className="p-2 text-gray-600 hover:text-[#FF006A] transition-colors"
                       title="View Details"
                     >
-                      <FiEye className="text-lg" />
+                      <FiEye className="text-lg cursor-pointer" />
                     </button>
                     
                     {/* Change Status Button */}
@@ -962,7 +962,7 @@ const Booking = () => {
                       className="p-2 text-gray-600 hover:text-[#FF006A] transition-colors"
                       title="Change Status"
                     >
-                      <MdOutlineEdit className="text-lg" />
+                      <MdOutlineEdit className="text-lg cursor-pointer" />
                     </button>
                   </div>
                 </td>
