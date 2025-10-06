@@ -4,6 +4,7 @@ import { useAdminToolTab } from "@/hooks/useAdminToolTab";
 import { useActiveTab, useSetTab } from "@/hooks/useUsersTab";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
 import { FiBell, FiSun } from "react-icons/fi";
 import { HiMenuAlt1 } from "react-icons/hi";
@@ -26,7 +27,22 @@ const DashNav = ({ tab }) => {
 
 
   if(status === "loading"){
-    return <h4>Loading...</h4>
+    return <div className="flex justify-between items-center max-w-[90vw] bg-white mb-6 rounded-3xl py-4 px-4 md:px-8 animate-pulse border border-zinc-100 shadow-sm">
+      {/* Left section */}
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-gray-200 rounded-md"></div>
+        <div>
+          <div className="h-4 w-28 bg-gray-200 rounded mb-2"></div>
+          <div className="h-5 w-40 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+
+      {/* Right section */}
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+      </div>
+    </div>
   }
 
   ``
@@ -129,9 +145,10 @@ const DashNav = ({ tab }) => {
             <div className="absolute right-6  mt-2 w-40 bg-white border border-gray-200 rounded-lg z-10">
               <ul className="py-2 text-sm text-gray-700">
                 <li>
-                  <button className="w-full text-left  px-4 py-2 hover:bg-pink-100 hover:text-pink-500">
+                 <Link href={'/dashboard/profile'}> 
+                  <button className="w-full text-left cursor-pointer px-4 py-2 hover:bg-pink-100 hover:text-pink-500">
                     Profile
-                  </button>
+                  </button></Link>
                 </li>
               </ul>
             </div>

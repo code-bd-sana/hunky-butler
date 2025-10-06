@@ -51,6 +51,30 @@ forgotPassword: builder.mutation({
             query: () => `/user`,
             providesTags: ["user"]
         }),
+        myProfile:builder.query({
+          query:(id)=> `user/profile/${id}`,
+          providesTags: ['user']
+        }),
+
+
+        updateMyProfile: builder.mutation({
+         
+            query:(data) => ({
+              url:`/user/updateProfile`,
+              method:"PUT",
+              body: data
+            
+          })
+        }),
+        changePassword: builder.mutation({
+          query:(data)=>({
+            url:`/auth/changePassword`,
+            method:"PUT",
+            body:data
+
+           
+          })
+        })
 
 
 
@@ -58,4 +82,4 @@ forgotPassword: builder.mutation({
   }),
 });
 
-export const { useSaveRegisterMutation, useLoginMutation,   useVerifyOtpMutation, useSendOtpMutation, useForgotPasswordMutation, useGetAllUserQuery } = authApi;
+export const { useSaveRegisterMutation, useLoginMutation,   useVerifyOtpMutation, useSendOtpMutation, useForgotPasswordMutation, useGetAllUserQuery, useMyProfileQuery, useUpdateMyProfileMutation, useChangePasswordMutation } = authApi;
