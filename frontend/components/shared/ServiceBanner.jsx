@@ -3,7 +3,7 @@ import React from "react";
 import arrow from "@/public/icons/greaterthan.png";
 import Link from "next/link";
 
-const ServiceBanner = ({ heading, subTitle, image }) => {
+const ServiceBanner = ({ heading, subTitle, image, slug }) => {
   return (
     <div
       style={{
@@ -34,7 +34,7 @@ const ServiceBanner = ({ heading, subTitle, image }) => {
           {subTitle}
         </div>
 
-        <Link href="/quote">
+        <Link href={`/quote/${slug}`}>
           <button className="rounded-full border-2 border-white px-[24px] py-[16px] text-lg font-semibold bg-white text-[#292929]">
             Get Instant Quote
           </button>
