@@ -18,45 +18,22 @@ import { useParams } from "next/navigation";
 import React from "react";
 
 
-  // const res = await fetch(`${base_url}/service/${slug}`, {
-  //   cache: "no-store",
-  // });
+export default function ServiceDetailspage() {
 
-  // if (!res.ok) {
-  //   throw new Error("Failed to fetch service details");
-  // }
-  // const service = await res.json();
-  // console.log(service);
 
-  let service = null;
+console.log('tomi sodo amar')
+const {slug} = useParams();
+console.log(slug, "tomi amar personal slug");
+const {data} = useGetServiceJoyBanglaQuery(slug);
+console.log(data, "please allah")
 
-  try {
-    const res = await fetch(`${base_url}/service/${slug}`, {
-      cache: "no-store",
-    });
+// if(loadiing){
+//   return <p>Loading...</p>
+// }
+// if(error){
+//   console.log(error, "ami tomar error")
+// }
 
-    if (!res.ok) {
-      console.error("Service fetch failed:", res.status, await res.text());
-      // fallback to null
-      service = null;
-    } else {
-      service = await res.json();
-    }
-  } catch (err) {
-    console.error("Error fetching service:", err);
-    service = null;
-  }
-
-  // If service data is not available, show fallback UI
-  if (!service) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <h2 className="text-xl font-semibold text-red-600">
-          Service details are currently unavailable. Please try again later.
-        </h2>
-      </div>
-    );
-  }
 
   return (
      <div>
@@ -82,12 +59,18 @@ import React from "react";
       {/* <WhyBookSection />
       <KeepTheFun />
       <Cocktail />
-      <BuffLocation />
-      <ReviewSection />
-      <Frequently />
-      <Nationwide />
-      <ImageGallery />
+      <BuffLocation/> */}
+      {/* <ReviewSection />
+      <Frequently /> */}
+         {/* <BuffLocation/> */}
+         <WhyBookSection />
+ <KeepTheFun />
+              <Cocktail />
+    <ReviewSection />
+  <Frequently />
+        {/* <Nationwide /> */}
+           <ImageGallery /> 
       <Footer />
     </div>
-  );
+  )
 }
