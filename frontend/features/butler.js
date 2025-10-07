@@ -36,6 +36,3 @@ export const butlerApi = createApi({
 });
 
 export const { useGetAllButlerQuery , useActiveButlerMutation, useRejectButlerMutation,  useGetServiceJoyBanglaQuery} = butlerApi;
-
-
-
