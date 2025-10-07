@@ -15,6 +15,7 @@ export const getAllServices = async (req, res) => {
 
 // Get single service by ID
 export const getServiceBySlug = async (req, res) => {
+  console.log('Hit')
   try {
     const { slug } = req.params;
 

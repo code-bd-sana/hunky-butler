@@ -74,6 +74,11 @@ forgotPassword: builder.mutation({
 
            
           })
+        }),
+
+
+        butlerApplication: builder.query({
+          query:()=> `user/all/butlerApplicaiton`
         })
 
 
@@ -82,4 +87,4 @@ forgotPassword: builder.mutation({
   }),
 });
 
-export const { useSaveRegisterMutation, useLoginMutation,   useVerifyOtpMutation, useSendOtpMutation, useForgotPasswordMutation, useGetAllUserQuery, useMyProfileQuery, useUpdateMyProfileMutation, useChangePasswordMutation } = authApi;
+export const { useSaveRegisterMutation, useLoginMutation,   useVerifyOtpMutation, useSendOtpMutation, useForgotPasswordMutation, useGetAllUserQuery, useMyProfileQuery, useUpdateMyProfileMutation, useChangePasswordMutation, useButlerApplicationQuery } = authApi;
