@@ -1,28 +1,19 @@
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
-import nation1 from "../../public/Nationwide/nation1.png";
-// import nations from "../../public/locations.json";
-import fs from "fs";
-import path from "path";
+import nation1 from "../../public/service/nation.jpeg";
 import SubTitle from "../shared/typography/SubTitle";
 import SecondaryTitle from "../shared/typography/SecondaryTitle";
-const Nationwide = async () => {
+const BuffLocation = async () => {
   const res = await fetch("http://localhost:5000/api/locations");
   const nations = await res.json();
-  console.log(nations);
 
-  // const filePath = path.join(process.cwd(), "public", "locations.json");
-  // const data = fs.readFileSync(filePath, "utf-8");
-  // const nations = JSON.parse(data);
   return (
-    <section className="max-w-7xl mx-auto px-4 py-14 text-center">
-      <SecondaryTitle text1={"Buff Butlers Available Nationwide"} />
+    <section className="max-w-7xl mx-auto px-4 py-12 text-center">
+      <SecondaryTitle text1={"Buff Butlers Locations We Cover"} />
       <SubTitle title="Life Drawing Available Nationwide" />
       <p className="max-w-3xl mx-auto text-gray-600 mb-12 leading-relaxed">
-        Looking for buff butlers in your area? We cover the whole of the UK —
-        from Liverpool and Manchester to London, Birmingham, Leeds, Newcastle,
-        and beyond. Wherever your event is, our butlers are ready to bring the
-        fun.
+        We provide professional stripper hire across the UK. Popular locations
+        include:
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -52,4 +43,4 @@ const Nationwide = async () => {
   );
 };
 
-export default Nationwide;
+export default BuffLocation;
