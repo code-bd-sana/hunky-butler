@@ -18,7 +18,7 @@ import { useParams } from "next/navigation";
 import React from "react";
 
 
-export default function page() {
+export default function ServiceDetailspage() {
 
 
 console.log('tomi sodo amar')
