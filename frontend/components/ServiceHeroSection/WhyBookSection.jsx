@@ -9,26 +9,18 @@ import icon4 from "@/public/icons/services/whybook4.png";
 import bg from "@/public/images/services/bg3.png";
 import Link from "next/link";
 import SecondaryTitle from "../shared/typography/SecondaryTitle";
-<<<<<<< HEAD
-import Extra from "../Extra/Extra";
-=======
->>>>>>> b98505598f3e51cd59d3e462dc31af8f710cc43a
 
 export default function WhyBookSection() {
   return (
     <div className="bg-[#F6F4F5] relative overflow-hidden">
       <div className="flex flex-col-reverse lg:flex-row pb-10 md:pb-16 gap-8 md:gap-14 max-w-7xl mx-auto px-4 md:px-6 lg:px-0 pt-8 md:pt-12">
         <section className="flex-1">
-<<<<<<< HEAD
-          <Image alt="img" src={image} className="w-full h-auto rounded-lg" />
-=======
           <Image
             alt="Verified buff butler entertainers UK nationwide"
             title="Why Choose Hunky Butler Service"
             src={image}
             className="w-full h-auto rounded-lg"
           />
->>>>>>> b98505598f3e51cd59d3e462dc31af8f710cc43a
         </section>
 
         <section className="flex-1">
@@ -83,13 +75,8 @@ export default function WhyBookSection() {
             </div>
           </div>
 
-<<<<<<< HEAD
-          <Link href={"/"}>
-            <button className="btn-secondary mt-8 md:mt-12 text-sm md:text-base px-6 py-3 md:px-8 md:py-4">
-=======
           <Link href={'/quote'}>
             <button className='btn-secondary mt-8 md:mt-12 text-sm md:text-base px-6 py-3 md:px-8 md:py-4 cursor-pointer'>
->>>>>>> b98505598f3e51cd59d3e462dc31af8f710cc43a
               Try a 30-second quote now
             </button>
           </Link>
@@ -100,10 +87,6 @@ export default function WhyBookSection() {
         {" "}
         <Image alt="img" src={bg} className="min-w-screen" />{" "}
       </div>
-<<<<<<< HEAD
-      <Extra />
-=======
->>>>>>> b98505598f3e51cd59d3e462dc31af8f710cc43a
     </div>
   );
 }
