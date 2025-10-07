@@ -1,7 +1,9 @@
 import ImageGallery from "@/components/about/ImageGallery";
+import BuffLocation from "@/components/BuffLocation/BuffLocation";
 import Cocktail from "@/components/cocktail/Cocktail";
 import Extra from "@/components/Extra/Extra";
 import Footer from "@/components/homepage/Footer";
+import Frequently from "@/components/homepage/Frequently";
 import KeepTheFun from "@/components/KeepTheFun/KeepTheFun";
 import Nationwide from "@/components/Nationwide/Nationwide";
 import BookNowSection from "@/components/ServiceHeroSection/BookNowSection";
@@ -50,8 +52,10 @@ export default async function ServiceDetails({ params }) {
       <WhyBookSection />
       <KeepTheFun />
       <Cocktail />
-      <Nationwide/>
+      <BuffLocation/>
       <ReviewSection />
+      <Frequently />
+      <Nationwide />
       <ImageGallery />
       <Footer />
     </div>
