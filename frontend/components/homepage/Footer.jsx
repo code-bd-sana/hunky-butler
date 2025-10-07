@@ -15,7 +15,7 @@ const Footer = () => {
   return (
     <div className="bg-[#F2EDEF] w-full relative md:mt-[550px]">
       <div
-        className=" bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-start h-[350px] md:h-[497px] pt-8 md:pt-16 pl-6 md:pl-20 absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden"
+        className=" bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-start h-[350px] md:h-[497px] pt-8 md:pt-16 pl-6 md:pl-20 absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden "
         style={{
           backgroundImage: "url('/Footer/bg2.png')",
           backgroundSize: "cover", // not backgroundImage: "cover"
@@ -146,7 +146,7 @@ const Footer = () => {
               <FaTumblr className="cursor-pointer hover:text-pink-500" />
             </div>
           </div>
-          <h1>© 2025 Hunky butler serv. All Rights Reserved.</h1>
+          <h1>© 2025 Hunky butler serv. All Rights Reserved. </h1>
         </div>
       </footer>
     </div>

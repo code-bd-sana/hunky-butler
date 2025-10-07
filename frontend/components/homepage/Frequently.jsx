@@ -68,7 +68,7 @@ const Frequently = () => {
           Parties and more.
         </p>
       </div>
-      <div className="flex flex-col md:flex-row items-start gap-4 md:gap-10">
+      <div className="flex flex-col md:flex-row items-start gap-4 md:gap-10 md:mx-3.5">
         <div className="cursor-pointer">
           {faqs.map((faq, index) => (
             <div
