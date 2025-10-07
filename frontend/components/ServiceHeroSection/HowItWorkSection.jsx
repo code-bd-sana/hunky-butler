@@ -34,7 +34,7 @@ export default function HowItWorkSection({ text1, text2, text3 }) {
       <div className=" py-16 max-w-7xl mx-auto ">
         <div className="text-center">
           <MainTitle text={"How It Works: Easy Party Entertainment"} />
-          <p className="text-center mt-4 text-[#292929]">
+          <p className="text-center capitalize mt-4 text-[#292929]">
             Booking with us couldn’t be easier. Just follow three simple steps:
           </p>
         </div>
