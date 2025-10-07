@@ -13,7 +13,7 @@ import SecondaryTitle from "../shared/typography/SecondaryTitle";
 export default function WhyBookSection() {
   return (
     <div className="bg-[#F6F4F5] relative overflow-hidden">
-      <div className="flex flex-col-reverse md:flex-row pb-10 md:pb-16 gap-8 md:gap-14 max-w-7xl mx-auto px-4 md:px-6 lg:px-0 pt-8 md:pt-12">
+      <div className="flex flex-col-reverse lg:flex-row pb-10 md:pb-16 gap-8 md:gap-14 max-w-7xl mx-auto px-4 md:px-6 lg:px-0 pt-8 md:pt-12">
         <section className="flex-1">
           <Image
             alt="Verified buff butler entertainers UK nationwide"
@@ -51,7 +51,7 @@ export default function WhyBookSection() {
             </div>
             <div className="flex items-center gap-4">
               <Image alt="icon" src={icon4} className="w-6 h-6 md:w-8 md:h-8" />
-              <p className="text-2xl tracking-[-0.01em] text-[#292929]">
+              <p className="text-base md:text-2xl tracking-[-0.01em] text-[#292929]">
                 Verified & Insured Staff.
               </p>
             </div>
@@ -69,7 +69,7 @@ export default function WhyBookSection() {
             </div>
             <div className="flex items-center gap-4">
               <Image alt="icon" src={icon2} className="w-6 h-6 md:w-8 md:h-8" />
-              <p className="text-2xl tracking-[-0.01em] text-[#292929]">
+              <p className="text-base md:text-2xl tracking-[-0.01em] text-[#292929]">
                 24/7 Support For Your Event Day
               </p>
             </div>

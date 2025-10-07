@@ -97,7 +97,7 @@ export default function AboutSection() {
 
           {/* star */}
 
-          <div className="flex md:absolute bottom-12  left-1/4 lg:left-1/3 gap-4 items-center bg-white p-4 max-w-sm rounded-2xl justify-center">
+          <div className="flex lg:absolute bottom-12  left-1/4 lg:left-1/3 gap-4 items-center bg-white p-4 max-w-sm rounded-2xl mx-auto mt-4 lg:mt-0  justify-center">
             <FaStar className="text-[#FFAF1B] text-5xl" />
             <MainTitle text={"4.9"} />
             <SubTitle text={"Satisfied Client Review"} />
