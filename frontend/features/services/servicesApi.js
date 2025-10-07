@@ -48,6 +48,6 @@ export const {
   useGetServicesQuery,
   useAddServiceMutation,
   useGetServiceQuery,
-  // useUpdateServiceMutation,
+  useUpdateServiceMutation,
   useDeleteServiceMutation,
 } = servicesApi; // ✅ named export

@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useGetServiceQuery,
-  useUpdateServiceMutation,
-} from "@/features/services/servicesApi";
+import { useGetServiceQuery, useUpdateServiceMutation } from "@/features/services/servicesApi";
 import Image from "next/image";
 import React, { use, useEffect, useRef, useState } from "react";
 

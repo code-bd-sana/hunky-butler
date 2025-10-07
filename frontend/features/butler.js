@@ -27,8 +27,15 @@ export const butlerApi = createApi({
 
 
       })
+    }),
+
+    getServiceJoyBangla: builder.query({
+      query:(slug)=>`/service/${slug}`
     })
   }),
 });
 
-export const { useGetAllButlerQuery , useActiveButlerMutation, useRejectButlerMutation} = butlerApi;
+export const { useGetAllButlerQuery , useActiveButlerMutation, useRejectButlerMutation,  useGetServiceJoyBanglaQuery} = butlerApi;
+
+
+
