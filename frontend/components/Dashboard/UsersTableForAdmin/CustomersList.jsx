@@ -195,9 +195,70 @@ export default function CustomersList() {
   if (isLoading) {
     return (
       <section className="w-full rounded-2xl border border-zinc-100 bg-white shadow-sm p-8">
-        <div className="flex items-center justify-center">
-          <p className="text-lg">Loading customers...</p>
-        </div>
+     <section className="w-full rounded-2xl border border-zinc-100 bg-white shadow-sm p-6 animate-pulse">
+      {/* Top bar placeholder */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="h-6 w-40 bg-gray-200 rounded"></div>
+        <div className="h-9 w-24 bg-gray-200 rounded-full"></div>
+      </div>
+
+      {/* Table header skeleton */}
+      <div className="overflow-hidden border border-[#EFE7EA] rounded-xl">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="h-11 border-b border-[#EFE7EA] bg-gray-50">
+              <th className="px-4 sm:px-6 text-left">
+                <div className="h-4 w-24 bg-gray-200 rounded"></div>
+              </th>
+              <th className="px-2 text-left">
+                <div className="h-4 w-10 bg-gray-200 rounded"></div>
+              </th>
+              <th className="px-2 text-left">
+                <div className="h-4 w-16 bg-gray-200 rounded"></div>
+              </th>
+              <th className="px-2 text-left">
+                <div className="h-4 w-20 bg-gray-200 rounded"></div>
+              </th>
+              <th className="px-2 text-left">
+                <div className="h-4 w-32 bg-gray-200 rounded"></div>
+              </th>
+              <th className="px-4 sm:px-6 text-right">
+                <div className="h-4 w-16 bg-gray-200 rounded"></div>
+              </th>
+            </tr>
+          </thead>
+
+          {/* Table body skeleton rows */}
+          <tbody>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <tr key={i} className="h-[56px] border-b border-[#EFE7EA]">
+                <td className="px-4 sm:px-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                    <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                  </div>
+                </td>
+                <td className="px-2">
+                  <div className="h-4 w-10 bg-gray-200 rounded"></div>
+                </td>
+                <td className="px-2">
+                  <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                </td>
+                <td className="px-2">
+                  <div className="h-4 w-16 bg-gray-200 rounded"></div>
+                </td>
+                <td className="px-2">
+                  <div className="h-4 w-28 bg-gray-200 rounded"></div>
+                </td>
+                <td className="px-4 sm:px-6 text-right">
+                  <div className="h-4 w-12 bg-gray-200 rounded ml-auto"></div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
       </section>
     );
   }

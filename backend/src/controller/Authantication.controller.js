@@ -124,3 +124,44 @@ export const fortgetPassword = async (req, res) => {
     });
   }
 };
+
+export const changePassword = async(req, res)=>{
+  try {
+    const {oldPassword, newPassword, email} = req.body;
+    const findUser = await User.findOne({email:email});
+    if(!findUser){
+      return res.status(500).json({
+        messageL:"User Not Found!"
+      })
+    };
+
+    const matched = await bcrypt.compare(oldPassword, findUser.password);
+    if(!matched){
+      return res.status(500).json({
+        message:"Incorrect password"
+      })
+    }
+
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+    const updated = await User.updateOne({email:email}, {$set:{
+      password: newPasswordHash
+    }});
+
+    res.status(200).json({
+      message:"Success",
+      data:updated
+    })
+
+
+    
+  } catch (error) {
+
+    console.log(error)
+    res.status(500).json({
+      message:"Something went wrong!",
+      error : error
+    })
+  }
+}

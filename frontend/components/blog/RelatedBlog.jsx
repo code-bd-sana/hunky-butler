@@ -60,7 +60,7 @@ const RelatedBlog = ({ currentBlog }) => {
             {post.thumbnailUrl && (
               <Image
                 src={post.thumbnailUrl}
-                alt={post.title}
+                alt="Hen party ideas and games UK"
                 width={396}
                 height={372}
                 className="w-full h-64 object-cover rounded-lg"
