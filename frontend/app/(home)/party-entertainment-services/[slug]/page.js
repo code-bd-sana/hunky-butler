@@ -18,15 +18,45 @@ export default async function ServiceDetails({ params }) {
   console.log("Server params:", params);
   const { slug } = params;
 
-  const res = await fetch(`${base_url}/service/${slug}`, {
-    cache: "no-store",
-  });
+  // const res = await fetch(`${base_url}/service/${slug}`, {
+  //   cache: "no-store",
+  // });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch service details");
+  // if (!res.ok) {
+  //   throw new Error("Failed to fetch service details");
+  // }
+  // const service = await res.json();
+  // console.log(service);
+
+  let service = null;
+
+  try {
+    const res = await fetch(`${base_url}/service/${slug}`, {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      console.error("Service fetch failed:", res.status, await res.text());
+      // fallback to null
+      service = null;
+    } else {
+      service = await res.json();
+    }
+  } catch (err) {
+    console.error("Error fetching service:", err);
+    service = null;
   }
-  const service = await res.json();
-  console.log(service);
+
+  // If service data is not available, show fallback UI
+  if (!service) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <h2 className="text-xl font-semibold text-red-600">
+          Service details are currently unavailable. Please try again later.
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -52,7 +82,7 @@ export default async function ServiceDetails({ params }) {
       <WhyBookSection />
       <KeepTheFun />
       <Cocktail />
-      <BuffLocation/>
+      <BuffLocation />
       <ReviewSection />
       <Frequently />
       <Nationwide />
