@@ -2,7 +2,7 @@ import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 import nation1 from "../../public/Nationwide/nation1.png";
 // import nations from "../../public/locations.json";
-import fs from "fs";
+
 import path from "path";
 import SubTitle from "../shared/typography/SubTitle";
 import SecondaryTitle from "../shared/typography/SecondaryTitle";

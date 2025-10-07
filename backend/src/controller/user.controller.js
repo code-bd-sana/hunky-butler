@@ -323,7 +323,7 @@ export const suspendButler = async(req, res)=>{
     
   }
 }
-export const pendingButler = async(req, res)=>{
+export const activeButler = async(req, res)=>{
   try {
     const email = req.params.email;
     const updated = await User.updateOne({email: email}, {$set:{
@@ -389,7 +389,7 @@ export const getPendingButler = async(req, res)=>{
   try {
 
 
-    const pendingButler = await User.find({isButler: 'none'});
+    const pendingButler = await User.find({isButler: 'pending'});
     res.status(200).json({
       message:"Success",
       data: pendingButler

@@ -12,7 +12,30 @@ export const butlerApi = createApi({
         `/user/butlers?page=${page}&limit=${limit}&search=${search}`,
       providesTags: ["butler"],
     }),
+    activeButler:builder.mutation({
+      query:(email)=>({
+        url:`/user/activeButler/${email}`,
+        method:"PUT",
+
+
+      })
+    }),
+    rejectButler:builder.mutation({
+      query:(email)=>({
+        url:`/user/rejectButler/${email}`,
+        method:"PUT",
+
+
+      })
+    }),
+
+    getServiceJoyBangla: builder.query({
+      query:(slug)=>`/service/${slug}`
+    })
   }),
 });
 
-export const { useGetAllButlerQuery } = butlerApi;
+export const { useGetAllButlerQuery , useActiveButlerMutation, useRejectButlerMutation,  useGetServiceJoyBanglaQuery} = butlerApi;
+
+
+
