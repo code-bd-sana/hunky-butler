@@ -61,8 +61,9 @@ const userSchema = mongoose.Schema({
     type:String
   },
   isButler:{
-    type: Boolean,
-    default: false
+    type: String,
+    default: 'none',
+    enum:['active', 'none', 'pending', 'reject', 'suspend']
   },
   gender:{
     type:String,
