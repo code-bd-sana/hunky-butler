@@ -56,7 +56,7 @@ export default function HowItWorkSection({ text1, text2, text3 }) {
                 />
               </div>
 
-              <p className="text-[#141414] font-medium pb-4 text-2xl mt-auto">
+              <p className="text-[#141414] font-medium pb-4 text-xl md:text-2xl mt-auto">
                 {item.title}
               </p>
             </div>

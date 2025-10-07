@@ -6,7 +6,7 @@ export default function MainTitle({text}) {
 
 
         <div>
-            <h4 className='text-[#141414] text-2xl sm:text-3xl md:text-5xl  font-medium leading-snug  max-w-7xl mx-auto  '>
+            <h4 className='text-[#141414] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-snug  max-w-7xl mx-auto  '>
 
           {text}
         </h4>

@@ -7,9 +7,10 @@ const Entertainment = () => {
         backgroundImage: "url('/Entertainment/EntertainmentBg.png')",
         backgroundSize: "cover", // not backgroundImage: "cover"
         backgroundRepeat: "no-repeat", // optional
+        padding: "0 20px"
       }}
     >
-      <div className="flex flex-col md:flex-row items-start p-2 md:p-0 max-w-[1240px] mx-auto  my-10 md:my-44 gap-6 md:gap-8">
+      <div className="flex flex-col md:flex-row items-start p-2 md:p-0 max-w-[1240px] mx-auto   my-10 md:my-44 gap-6 md:gap-8">
         <div className="w-full md:w-1/2">
           <Image
             src="/Entertainment/img.jpeg"
