@@ -1,5 +1,11 @@
 import ImageGallery from "@/components/about/ImageGallery";
+import BuffLocation from "@/components/BuffLocation/BuffLocation";
+import Cocktail from "@/components/cocktail/Cocktail";
+import Extra from "@/components/Extra/Extra";
 import Footer from "@/components/homepage/Footer";
+import Frequently from "@/components/homepage/Frequently";
+import KeepTheFun from "@/components/KeepTheFun/KeepTheFun";
+import Nationwide from "@/components/Nationwide/Nationwide";
 import BookNowSection from "@/components/ServiceHeroSection/BookNowSection";
 import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
@@ -30,6 +36,7 @@ export default async function ServiceDetails({ params }) {
           "Fun, cheeky and professional butlers to keep your guests entertained, wherever you’re celebrating."
         }
         image={service.banner}
+        slug={service.slug}
       />
       <BookNowSection
         name={service.name}
@@ -43,7 +50,12 @@ export default async function ServiceDetails({ params }) {
         text3={"Enjoy a fun, stress-free night with your Buff Butler."}
       />
       <WhyBookSection />
+      <KeepTheFun />
+      <Cocktail />
+      <BuffLocation/>
       <ReviewSection />
+      <Frequently />
+      <Nationwide />
       <ImageGallery />
       <Footer />
     </div>

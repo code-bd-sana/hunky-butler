@@ -1,4 +1,4 @@
- import React from "react";
+import React from "react";
 import Image from "next/image";
 const Entertainment = () => {
   return (
@@ -7,13 +7,15 @@ const Entertainment = () => {
         backgroundImage: "url('/Entertainment/EntertainmentBg.png')",
         backgroundSize: "cover", // not backgroundImage: "cover"
         backgroundRepeat: "no-repeat", // optional
+        padding: "0 20px"
       }}
     >
-      <div className="flex flex-col md:flex-row items-start p-2 md:p-0 max-w-[1240px] mx-auto  my-10 md:my-44 gap-6 md:gap-8">
+      <div className="flex flex-col md:flex-row items-start p-2 md:p-0 max-w-[1240px] mx-auto   my-10 md:my-44 gap-6 md:gap-8">
         <div className="w-full md:w-1/2">
           <Image
             src="/Entertainment/img.jpeg"
-            alt=""
+            alt="Map showing buff butler services across the UK"
+            title="Buff Butlers Nationwide Coverage"
             width={574}
             height={374}
             className="object-cover rounded-3xl"

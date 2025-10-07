@@ -27,21 +27,29 @@ export default function AboutSection() {
             }
           /> */}
           <p className="text-lg my-3 text-[#3D3D3D]">
-              At Hunky Butler Service, we believe parties should be stress-free, memorable, and filled with laughter. We’ve been proudly providing hen party entertainment across the UK since 2013, and over the years we’ve built a reputation as one of the most trusted names in the industry. 
+            At Hunky Butler Service, we believe parties should be stress-free,
+            memorable, and filled with laughter. We’ve been proudly providing
+            hen party entertainment across the UK since 2013, and over the years
+            we’ve built a reputation as one of the most trusted names in the
+            industry.
           </p>
           <p className="text-lg my-3 text-[#3D3D3D]">
-              Our work has taken us everywhere — from collaborating with household brands like Ann Summers to being featured on ITV News. Beyond parties, we’re proud to give back: we’ve supported a number of charities, including recent events in aid of Cancer Research UK and the Harrogate Baby Care Unit.
+            Our work has taken us everywhere — from collaborating with household
+            brands like Ann Summers to being featured on ITV News. Beyond
+            parties, we’re proud to give back: we’ve supported a number of
+            charities, including recent events in aid of Cancer Research UK and
+            the Harrogate Baby Care Unit.
           </p>
           <p className="font-medium text-xl mt-16 capitalize">
-           Whether you’re planning a hen night in Liverpool, a birthday in Birmingham, or a life drawing party in London , we make it simple to:
+            Whether you’re planning a hen night in Liverpool, a birthday in
+            Birmingham, or a life drawing party in London , we make it simple
+            to:
           </p>
 
           <div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />
-              <div
-                className="text-[#333333]"
-              >
+              <div className="text-[#333333]">
                 <SubTitle
                   text={
                     " Discover exciting services like Buff Butlers, Cocktail Masterclasses, and Life Drawing."
@@ -51,9 +59,7 @@ export default function AboutSection() {
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />
-              <div
-                className="text-[#333333]"
-              >
+              <div className="text-[#333333]">
                 <SubTitle
                   text={
                     " Discover exciting services like Buff Butlers, Cocktail Masterclasses, and Life Drawing."
@@ -63,17 +69,13 @@ export default function AboutSection() {
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />
-              <div
-                className="text-[#333333]"
-              >
+              <div className="text-[#333333]">
                 <SubTitle text={" Book and pay securely within minutes."} />
               </div>
             </div>
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />{" "}
-              <div
-                className="text-[#333333]"
-              >
+              <div className="text-[#333333]">
                 <SubTitle
                   text={
                     " Connect with verified professionals who are reviewed, rated, and ready to bring the fun."
@@ -86,12 +88,16 @@ export default function AboutSection() {
 
         <section className="flex-1 mx-auto flex flex-col  justify-center z-50 relative">
           <div className="flex justify-center">
-            <Image alt="img" src={aboutImg} />
+            <Image
+              alt="Two buff butlers posing together at a hen party event"
+              title="Hunky Butler Service UK"
+              src={aboutImg}
+            />
           </div>
 
           {/* star */}
 
-          <div className="flex md:absolute bottom-12  left-1/4 lg:left-1/3 gap-4 items-center bg-white p-4 max-w-sm rounded-2xl justify-center">
+          <div className="flex lg:absolute bottom-12  left-1/4 lg:left-1/3 gap-4 items-center bg-white p-4 max-w-sm rounded-2xl mx-auto mt-4 lg:mt-0  justify-center">
             <FaStar className="text-[#FFAF1B] text-5xl" />
             <MainTitle text={"4.9"} />
             <SubTitle text={"Satisfied Client Review"} />
@@ -130,7 +136,7 @@ export default function AboutSection() {
 
       <div className="absolute overflow-hidden top-0 left-0">
         {" "}
-        <Image alt="img" src={bg1}  className="min-w-screen overflow-hidden"/>
+        <Image alt="img" src={bg1} className="min-w-screen overflow-hidden" />
       </div>
       <div className="absolute bottom-0 leading-0">
         {" "}

@@ -39,7 +39,8 @@ const Planning = ({ title, highlight, description }) => {
           <div key={post.id} className="rounded-2xl overflow-hidden">
             <Image
               src={post.img}
-              alt={post.title}
+              alt="Hen party planning inspiration with buff butlers"
+              title=" Hen Party Ideas Blog UK"
               width={396}
               height={372}
               className="w-full h-64 object-cover rounded-lg"

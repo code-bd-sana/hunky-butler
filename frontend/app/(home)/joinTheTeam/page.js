@@ -2,6 +2,7 @@ import Footer from "@/components/homepage/Footer";
 import Banner from "@/components/shared/Banner";
 import img from "@/public/ImageGalary/pic2.jpeg";
 import JoinForm from "@/components/JoinTheTeam/JoinForm";
+import JoinBlog from "@/components/JoinTheTeam/JoinBlog";
 
 export default function joinTheTeam() {
   return (
@@ -16,6 +17,7 @@ export default function joinTheTeam() {
         }
       />
       <JoinForm />
+      <JoinBlog />
       <Footer />
     </div>
   );

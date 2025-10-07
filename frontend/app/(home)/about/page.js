@@ -5,6 +5,7 @@ import HomeMarque from "@/components/homepage/HomeMarque";
 import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
 import Banner from "@/components/shared/Banner";
+import MainTitle from "@/components/shared/typography/MainTitle";
 import ServAndAboutBanner from "@/components/shared/typography/ServAndAboutBanner";
 import img from "@/public/About/aboutBannerImg.jpeg";
 
@@ -47,7 +48,19 @@ export default function About() {
       <HomeMarque />
       <HowItWorkSection />
       <OurMission />
-      <ImageGallery />
+      <div>
+        <div className="max-w-7xl mx-auto text-center pb-6 pt-28">
+          <MainTitle text={"Looking Ahead: Expanding Beyond the UK"} />
+          <p className="text-center capitalize mt-4 text-[#292929]">
+            Since 2024, Hunky Butler Service has started branching into Europe,
+            bringing our popular hen party experiences to international
+            destinations such as Ibiza, Marbella and Albufeira . Our goal is to
+            become the leading name in buff butler hire not just in the UK, but
+            worldwide.
+          </p>
+        </div>
+        <ImageGallery />
+      </div>
       <Footer />
     </div>
   );

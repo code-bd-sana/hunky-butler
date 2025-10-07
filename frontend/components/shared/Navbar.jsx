@@ -34,7 +34,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Service", href: "/service" },
+    { name: "Service", href: "/party-entertainment-services" },
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
@@ -59,13 +59,13 @@ const Navbar = () => {
                 width={35}
                 height={40}
               />
-              <h1 className="text-xl hidden xl:block font-semibold tracking-wide whitespace-nowrap">
+              <h1 className="text-xl hidden 2xl:block font-semibold tracking-wide whitespace-nowrap">
                 Hunky Butler Service
               </h1>
             </div>
           </Link>
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-[8px] font-medium relative">
+          <div className="hidden xl:flex items-center gap-[8px] font-medium relative">
             {navLinks.map((link) => {
               const isActive = pathname === link.href && link.name !== "Home";
 
@@ -110,7 +110,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Social + Button */}
-          <div className="hidden lg:flex items-center gap-[32px]">
+          <div className="hidden xl:flex items-center gap-[32px]">
             <div className="flex gap-4">
               <a
                 href="https://facebook.com"
@@ -179,7 +179,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden">
+          <div className="xl:hidden">
             <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? (
                 <HiX className="w-8 h-8 text-white" />
@@ -205,7 +205,7 @@ const Navbar = () => {
 
         {/* Mobile Menu Dropdown */}
         {isMenuOpen && (
-          <div className="lg:hidden mt-2 px-[32px] py-4 bg-white text-black rounded-[24px] shadow-lg">
+          <div className="xl:hidden mt-2 px-[32px] py-4 bg-white text-black rounded-[24px] shadow-lg">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <Link

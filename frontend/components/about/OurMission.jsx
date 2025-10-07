@@ -17,9 +17,11 @@ import bg4 from "@/public/images/home/aboutbg2.png";
 
 export default function OurMission() {
   return (
-    <div className="bg-[#FFF0F6] py-8 md:py-24   relative">
-      <div className="max-w-7xl mx-auto md:flex px-4 md:px-0 items-center gap-4 mt-16">
-        <section className="flex-1">
+    <div className="bg-[#FFF0F6]  py-8 md:py-24   relative">
+
+      <div className="max-w-7xl mx-auto lg:flex px-8 items-center gap-4 mt-16">
+        <section className="flex-1 z-50 relative">
+            
           <MainTitle text={"Our Mission: Making Events Effortless"} />
           <SubTitle
             text={
@@ -73,13 +75,12 @@ export default function OurMission() {
             </div>
           </div>
         </section>
-
-        <section className="flex-1 relative">
-          <Image alt="img" src={aboutImg} />
+        <section className="flex-1 mx-auto z-50 relative">
+          <Image alt="Cheeky buff butler entertainer with party guests" src={aboutImg} className="mx-auto"/>
 
           {/* star */}
 
-          <div className="flex md:absolute bottom-12  md:left-[136px] gap-4 items-center bg-white p-4 max-w-sm rounded-2xl justify-center">
+          <div className="flex lg:absolute bottom-12  left-1/4 lg:left-1/3 gap-4 items-center bg-white p-4 max-w-sm rounded-2xl mx-auto mt-4 lg:mt-0  justify-center">
             <FaStar className="text-[#FFAF1B] text-5xl" />
             <MainTitle text={"4.9"} />
             <SubTitle text={"Satisfied Client Review"} />
@@ -88,7 +89,7 @@ export default function OurMission() {
       </div>
 
       {/* icn section */}
-      <section className="md:flex z-50  justify-between max-w-7xl mx-auto mt-16">
+      <section className="md:flex z-50 relative px-4  justify-between max-w-7xl mx-auto mt-16">
         <div className="flex flex-col  justify-center text-center">
           <Image alt="icon" src={image1} className="mx-auto" />
           <p className="font-medium text-lg"> Verified Professionals</p>

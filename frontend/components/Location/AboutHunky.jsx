@@ -1,6 +1,5 @@
 import React from "react";
 import Image from "next/image";
-
 import image from "@/public/logo/logo.png";
 import bg from "@/public/images/services/bg3.png";
 import MainTitle from "../shared/typography/MainTitle";
