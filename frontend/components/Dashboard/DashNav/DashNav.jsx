@@ -1,4 +1,5 @@
 "use client";
+import { useMyProfileQuery } from "@/features/auth";
 import { toggleSidebar } from "@/features/sidebarSlice";
 import { useAdminToolTab } from "@/hooks/useAdminToolTab";
 import { useActiveTab, useSetTab } from "@/hooks/useUsersTab";
@@ -24,6 +25,7 @@ const DashNav = ({ tab }) => {
 
   const role = data?.data?.user?.role;
   const status = data.status;
+  const {data:profile, isLoading} = useMyProfileQuery(data?.data?.user?.id)
 
 
   if(status === "loading"){
@@ -124,14 +126,14 @@ const DashNav = ({ tab }) => {
           {/* Button */}
           <button
             onClick={() => setOpen(!open)}
-            className="flex  items-center px-2 py-1 md:px-3 md:py-2 rounded-full border bg-white text-gray-600 border-gray-300 text-sm font-medium hover:bg-pink-100 hover:text-pink-500 transition"
+            className="flex  items-center px-2 py-1 cursor-pointer md:px-3 md:py-2 rounded-full border bg-white text-gray-600 border-gray-300 text-sm font-medium hover:bg-pink-100 hover:text-pink-500 transition"
           >
             <Image
-              src="/Dashboard/customer.png" // public folder er image
-              alt=""
+              src={profile?.data?.image}// public folder er image
+              alt="profile"
               width={40}
               height={40}
-              className="rounded-full object-cover"
+              className="rounded-full w-10 h-10 object-cover"
             />
             <MdKeyboardArrowDown
               className={`text-2xl ml-1 transition-transform ${

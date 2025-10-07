@@ -11,6 +11,8 @@ import { toggleSidebar } from "@/features/sidebarSlice";
 import { GiHandcuffs } from "react-icons/gi";
 import { signOut, useSession } from "next-auth/react";
 import { MdOutlineLogin } from "react-icons/md";
+import { VscGitStashApply } from "react-icons/vsc";
+
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -88,6 +90,7 @@ const Sidebar = () => {
     { name: "Services", icon: <FaCog />, href: "/dashboard/services" },
     { name: "Admin Tools", icon: <FaCog />, href: "/dashboard/adminTools" },
     { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
+    { name: "Butler Application", icon: <VscGitStashApply />, href: "/dashboard/application" },
   ];
   
   const customerSidebar = [
