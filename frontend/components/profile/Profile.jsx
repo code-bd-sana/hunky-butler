@@ -32,19 +32,18 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
   
   // Mock user data - in real app this would come from your backend
   const [userData, setUserData] = useState({
-    firstName: profile?.data?.firstName || '--',
-    lastName: profile?.data?.lastName || '--',
+    firstName: profile?.data?.firstName ,
+    lastName: profile?.data?.lastName ,
     email: profile?.data?.email,
-    phone: profile?.data?.phone || '--',
+    phone: profile?.data?.phone,
     createdAt: profile?.data?.createdAt ,
     profileImage: "/default-avatar.png",
     role: "butler",
-    location: profile?.data?.location || "--",
-    postcode: profile?.data?.postcode || '--',
-
-    dob: "1990-01-01",
-    gender: "male",
-    bio: profile?.data?.bio || 'A brief description about myself...'
+    location: profile?.data?.location ,
+    postcode: profile?.data?.postcode,
+    dob: profile?.data?.dob,
+    gender: profile?.data?.gender ,
+    bio: profile?.data?.bio 
   });
 
   const [formData, setFormData] = useState({ ...userData });
@@ -230,7 +229,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                 >
                   Change Password
                 </button>
-                {userData.role === 'butler' && (
+                {user?.role === 'butler' && (
                   <button
                     onClick={() => setActiveTab('professional')}
                     className={`w-full text-left px-4 py-3 rounded-xl transition-colors ${
@@ -298,7 +297,11 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                         <FaCalendarAlt className="text-[#FF006A]"/>
                         <div>
                           <p className="text-sm text-[#666]">Member Since</p>
-                          <p className="font-medium text-[#424242]">{profile?.data?.createdAt}</p>
+                          <p className="font-medium text-[#424242]">  {profile?.data?.createdAt && new Date(profile?.data?.createdAt).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        })}</p>
                         </div>
                       </div>
 
@@ -401,7 +404,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
             )}
 
             {/* Professional Information (Butler only) */}
-{activeTab === "professional" && userData.role === "butler" && (
+{activeTab === "professional" && user?.role === "butler" && (
   <div className="bg-white rounded-3xl shadow-sm p-6">
     <div className="flex items-center justify-between mb-6">
       <div>
