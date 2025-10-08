@@ -7,6 +7,7 @@ import Planning from "@/components/homepage/Planning";
 import Footer from "@/components/homepage/Footer";
 import MainTitle from "@/components/shared/typography/MainTitle";
 import SubTitle from "@/components/shared/typography/SubTitle";
+import JoinBlog from "@/components/JoinTheTeam/JoinBlog";
 const contact = () => {
   return (
     <div className="bg-[#f6f4f5] min-h-screen">
@@ -16,7 +17,7 @@ const contact = () => {
         <div className=" max-w-7xl mx-auto mt-4">
           <SubTitle
             text={
-              "Planning a hen party, birthday, or special event? Whether you’re looking to hire buff butlers in Liverpool, book a cocktail masterclass in Manchester, or organise a life drawing class in London, our friendly team is here to help. Simply fill out the form below and one of our event coordinators will get back to you quickly. We aim to respond to all enquiries within 24 hours."
+              "Planning a hen party, birthday, or special event? Whether you’re looking to hire buff butlers in Liverpool, book a cocktail masterclass in Manchester, or organise a life drawing class in London, our friendly team is here to help.Simply fill out the form below and one of our event coordinators will get back to you quickly. We aim to respond to all enquiries within 24 hours."
             }
           />
         </div>
@@ -24,6 +25,7 @@ const contact = () => {
       {/* <Card /> */}
       <ContactForm />
       <Planning />
+      <JoinBlog/>
       <Footer />
     </div>
   );
