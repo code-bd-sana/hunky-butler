@@ -16,7 +16,7 @@ const DashboardHome = () => {
 
   const usrRole = data?.user?.role;
   return (
-    <div>
+    <div className="overflow-hidden">
       <DashNav />
 
       {

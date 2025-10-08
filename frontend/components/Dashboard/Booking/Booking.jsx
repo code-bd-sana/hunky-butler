@@ -719,8 +719,8 @@ const Booking = () => {
         </div>
 
         {/* Table Skeleton */}
-        <div className="max-h-[370px] max-w-screen overflow-scroll scrollbar-hide overflow-y-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="max-h-[370px]  max-w-screen overflow-scroll scrollbar-hide overflow-y-auto">
+          <table className="w-full max-h-[370px] overflow-y-scroll text-left border-collapse">
             <thead>
               <tr className="text-[#333333] border-b text-base">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((header) => (
@@ -790,7 +790,7 @@ const Booking = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6">
+    <div className="bg-white rounded-xl  shadow-md p-6">
 
       <Toaster/>
       {/* Header */}
@@ -879,8 +879,8 @@ const Booking = () => {
       </div>
 
       {/* Table */}
-      <div className=" max-w-[76vw]   overflow-scroll scrollbar-hide overflow-y-auto">
-        <table className=" text-left border-collapse">
+    <div className="max-h-[370px] max-w-screen   overflow-scroll scrollbar-hide overflow-y-auto">
+          <table className="w-full  max-h-[370px] overflow-y-scroll text-left border-collapse">
           <thead>
             <tr className="text-[#333333] border-b text-base">
               <th className="p-3 font-medium">Ref</th>
@@ -920,7 +920,7 @@ const Booking = () => {
                 <td className="p-3">
                   <div className="flex items-center gap-2">
                     {b?.butler?.email ? (
-                      <span className="text-green-600 font-medium">{b.butler.email}</span>
+                      <span className="text-green-600 font-medium">{b.butler.firstName}</span>
                     ) : (
                       <button
                         onClick={() => handleAssignButler(b)}
@@ -969,11 +969,9 @@ const Booking = () => {
               </tr>
             ))}
           </tbody>
+          
         </table>
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
+         {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -982,6 +980,10 @@ const Booking = () => {
           itemsPerPage={itemsPerPage}
         />
       )}
+      </div>
+
+      {/* Pagination */}
+     
 
       {/* Modals */}
       <BookingDetailsModal

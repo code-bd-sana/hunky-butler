@@ -10,3 +10,4 @@ export const createNotificaiton = async (req, res) => {
     });
   }
 };
+
