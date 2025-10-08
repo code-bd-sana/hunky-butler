@@ -372,7 +372,7 @@ export default function CustomersList() {
 
       {/* Table */}
       <div className="px-2 pb-4">
-        <div className=" max-h-[500px] max-w-[76vw]   overflow-scroll scrollbar-hide overflow-y-auto rounded-xl">
+        <div className=" max-h-[370px] max-w-[76vw]   overflow-scroll scrollbar-hide overflow-y-auto rounded-xl">
           <table className=" overflow-scroll  w-full border-collapse ">
             <colgroup>
               <col className="w-[28%]" />

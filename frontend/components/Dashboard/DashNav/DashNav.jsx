@@ -61,7 +61,7 @@ const DashNav = ({ tab }) => {
     <div className="flex justify-between overflow-hidden max-w-[90vw] bg-white items-center mb-6  rounded-3xl py-4 px-2 md:px-8">
       {tab ? (
         <div className="flex items-center">
-          <div className="lg:hidden">
+          <div className="2xl:hidden">
             <button
               onClick={() => dispatch(toggleSidebar())}
               className="text-xl md:text-2xl text-[#FF006A]  border-2 border-gray-300 p-2 rounded-md"
@@ -102,7 +102,7 @@ const DashNav = ({ tab }) => {
         </div>
       ) : (
         <div className="flex items-center gap-3">
-          <div className="lg:hidden">
+          <div className="2xl:hidden">
             <button
               onClick={() => dispatch(toggleSidebar())}
               className="text-2xl text-[#FF006A]  border-2 border-gray-300 p-2 rounded-md"
