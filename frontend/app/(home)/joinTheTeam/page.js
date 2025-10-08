@@ -1,23 +1,18 @@
 import Footer from "@/components/homepage/Footer";
-import Banner from "@/components/shared/Banner";
 import img from "@/public/ImageGalary/pic2.jpeg";
 import JoinForm from "@/components/JoinTheTeam/JoinForm";
-import JoinBlog from "@/components/JoinTheTeam/JoinBlog";
+import ServAndAboutBanner from "@/components/shared/typography/ServAndAboutBanner";
 
 export default function joinTheTeam() {
   return (
     <div className="min-h-screen bg-white">
-      <Banner
+      <ServAndAboutBanner
         image={img}
         service={"Join The Team"}
-        title={
-          <>
-            Join the Team – Buff Butler <br /> Jobs UK
-          </>
-        }
+        title={<>Join the Team – Buff Butler Jobs UK</>}
+        description={"Looking for flexible, fun, and well-paid work? Hunky Butler Service is always on the lookout for confident, professional, and outgoing people to join our team. From buff butlers and topless waiters to cocktail masterclass hosts and strippers, we provide some of the best party entertainment jobs in the UK."}
       />
       <JoinForm />
-      <JoinBlog />
       <Footer />
     </div>
   );
