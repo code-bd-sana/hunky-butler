@@ -429,7 +429,7 @@ export default function ButlerList() {
 
       {/* Table */}
       <div className="px-2 pb-4">
-        <div className="overflow-x-auto max-w-[76vw] max-h-[500px] scrollbar-hide overflow-y-auto rounded-xl">
+        <div className="overflow-x-auto max-h-[370px] max-w-[76vw]  scrollbar-hide overflow-y-auto rounded-xl">
           <table className="w-full overflow-scroll border-collapse min-w-[820px]">
             <colgroup>
               <col className="w-[28%]" />

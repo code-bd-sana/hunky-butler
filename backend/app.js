@@ -31,6 +31,8 @@ app.use(cors({
 }));
 
 
+const server = http.createServer(app);
+
 
 
 app.use('/api', routes);
