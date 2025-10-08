@@ -5,7 +5,7 @@ import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { LuArrowUpRight } from "react-icons/lu";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaUser } from "react-icons/fa";
 
 // Individual customer row component
 const CustomerRow = ({ customer }) => {
@@ -18,14 +18,16 @@ const CustomerRow = ({ customer }) => {
     <tr className="h-[56px] bg-white hover:bg-zinc-50/60 border-b border-[#EFE7EA]">
       <td className="px-4 sm:px-6">
         <div className="flex items-center gap-3 min-w-0">
-          <Image
-            src="/Dashboard/customer.png"
+         {
+          customer?.image ?  <Image
+            src={customer?.image || `/Dashboard/customer.png`}
             alt={"image"}
             width={32}
             height={32}
             className="rounded-[8px] object-cover"
-          />
-          <span className="truncate">{customer.name || 'Guest'}</span>
+          /> : <FaUser />
+         }
+          <span className="truncate">{customer?.firstName || '-'} {customer?.lastName || '-'}</span>
         </div>
       </td>
 

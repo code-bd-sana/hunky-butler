@@ -5,7 +5,7 @@ import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { LuArrowUpRight } from "react-icons/lu";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaUser } from "react-icons/fa";
 
 // Individual butler row component
 const ButlerRow = ({ butler }) => {
@@ -17,16 +17,18 @@ const ButlerRow = ({ butler }) => {
   return (
     <tr className="h-[56px] bg-white hover:bg-zinc-50/60 border-b border-[#EFE7EA]">
       <td className="px-4 sm:px-6">
-        <div className="flex items-center gap-3 min-w-0">
-          <Image
-            src={butler.profileImage || "/Dashboard/customer.png"}
-            alt={"img"}
-            width={32}
-            height={32}
-            className="rounded-[8px] object-cover"
-          />
-          <span className="truncate">{butler.name || 'Butler'}</span>
-        </div>
+         <div className="flex items-center gap-3 min-w-0">
+                {
+                 butler?.image ?  <Image
+                   src={butler?.image || `/Dashboard/customer.png`}
+                   alt={"image"}
+                   width={32}
+                   height={32}
+                   className="rounded-[8px] object-cover"
+                 /> : <FaUser />
+                }
+                 <span className="truncate">{butler?.firstName || '-'} {butler?.lastName || '-'}</span>
+               </div>
       </td>
 
       <td className="px-2 align-middle text-zinc-600 whitespace-nowrap">
