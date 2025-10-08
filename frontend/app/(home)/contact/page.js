@@ -2,12 +2,11 @@
 import Banner from "@/components/shared/Banner";
 import img from "@/public/Blog/BlogSection/BlogSection9.jpeg";
 import ContactForm from "@/components/contact/ContactForm";
-import Card from "@/components/Dashboard/Card";
-import Planning from "@/components/homepage/Planning";
 import Footer from "@/components/homepage/Footer";
 import MainTitle from "@/components/shared/typography/MainTitle";
 import SubTitle from "@/components/shared/typography/SubTitle";
 import JoinBlog from "@/components/JoinTheTeam/JoinBlog";
+import WhyContactUsSection from "@/components/contact/WhyContactUsSection";
 const contact = () => {
   return (
     <div className="bg-[#f6f4f5] min-h-screen">
@@ -24,7 +23,7 @@ const contact = () => {
       </div>
       {/* <Card /> */}
       <ContactForm />
-      <Planning />
+            <WhyContactUsSection></WhyContactUsSection>
       <JoinBlog/>
       <Footer />
     </div>
