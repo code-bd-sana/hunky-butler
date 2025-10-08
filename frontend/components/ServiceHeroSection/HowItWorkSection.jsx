@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import MainTitle from "../shared/typography/MainTitle";
 
-export default function HowItWorkSection({ text1, text2, text3 }) {
+export default function HowItWorkSection({ text1, text2, text3, name }) {
   const data = [
     {
       icon1: icon1,
@@ -33,7 +33,7 @@ export default function HowItWorkSection({ text1, text2, text3 }) {
     <div className="bg-[#F6F4F5] px-6 lg:px-4">
       <div className=" py-16 max-w-7xl mx-auto ">
         <div className="text-center">
-          <MainTitle text={"How It Works: Easy Party Entertainment"} />
+          <MainTitle text={`How It Works: Booking a ${name} is Simple`} />
           <p className="text-center capitalize mt-4 text-[#292929]">
             Booking with us couldn’t be easier. Just follow three simple steps:
           </p>
@@ -62,8 +62,10 @@ export default function HowItWorkSection({ text1, text2, text3 }) {
             </div>
           ))}
         </section>
-        <Link href={'/quote'}>
-          <button className='mt-16 btn-secondary text-center mx-auto flex justify-center cursor-pointer'>Try a 30-second quote now</button>
+        <Link href={"/quote"}>
+          <button className="mt-16 btn-secondary text-center mx-auto flex justify-center cursor-pointer">
+            Try a 30-second quote now
+          </button>
         </Link>
       </div>
     </div>

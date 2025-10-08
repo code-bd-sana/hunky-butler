@@ -9,6 +9,7 @@ import icon4 from "@/public/icons/services/whybook4.png";
 import bg from "@/public/images/services/bg3.png";
 import Link from "next/link";
 import SecondaryTitle from "../shared/typography/SecondaryTitle";
+import Extra from "../Extra/Extra";
 
 export default function WhyBookSection() {
   return (
@@ -87,6 +88,7 @@ export default function WhyBookSection() {
         {" "}
         <Image alt="img" src={bg} className="min-w-screen" />{" "}
       </div>
+      <Extra/>
     </div>
   );
 }

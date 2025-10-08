@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 
 import icon from "@/public/icons/arowright.png";
@@ -6,7 +6,7 @@ import Image from "next/image";
 import MainTitle from "../shared/typography/MainTitle";
 import bg from "@/public/images/services/bg3.png";
 
-export default function BookNowSection({ name,banner, included }) {
+export default function BookNowSection({ name, banner, included }) {
   console.log(banner, included);
   return (
     <div className="relative overflow-hidden">
@@ -25,11 +25,7 @@ export default function BookNowSection({ name,banner, included }) {
                 {included?.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-4">
                     <Image alt="icon" src={icon} />{" "}
-                    <p
-                      className="text-[#333333]"
-                    >
-                      {item}
-                    </p>
+                    <p className="text-[#333333]">{item}</p>
                   </div>
                 ))}
               </div>
@@ -41,18 +37,20 @@ export default function BookNowSection({ name,banner, included }) {
           </section>
 
           <section className="flex-1 mt-4 md:mt-0">
-            <Image
-              alt="banner"
-              src={banner}
-              width={600} // specify width
-              height={400} // specify height
-              className="object-cover"
-            />
+            {banner && (
+              <Image
+                alt="banner"
+                src={banner}
+                width={600}
+                height={400}
+                className="object-cover"
+              />
+            )}
           </section>
         </div>
         <div className="absolute top-0 -z-10 left-0">
           {" "}
-          <Image alt="img" className="objecco min-w-screen" src={bg}/>{" "}
+          <Image alt="img" className="objecco min-w-screen" src={bg} />{" "}
         </div>
       </div>
     </div>

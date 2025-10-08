@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import ImageGallery from "@/components/about/ImageGallery";
 import BuffLocation from "@/components/BuffLocation/BuffLocation";
 import Cocktail from "@/components/cocktail/Cocktail";
@@ -12,54 +12,29 @@ import HowItWorkSection from "@/components/ServiceHeroSection/HowItWorkSection";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
 import ServiceBanner from "@/components/shared/ServiceBanner";
+import MainTitle from "@/components/shared/typography/MainTitle";
+import SubTitle from "@/components/shared/typography/SubTitle";
 import { useGetServiceJoyBanglaQuery } from "@/features/butler";
 import { base_url } from "@/utils/utils";
 import { useParams } from "next/navigation";
 import React from "react";
 
+export default function ServiceDetailspage() {
+  console.log("tomi sodo amar");
+  const { slug } = useParams();
+  console.log(slug, "tomi amar personal slug");
+  const { data } = useGetServiceJoyBanglaQuery(slug);
+  console.log(data, "please allah");
 
-  // const res = await fetch(`${base_url}/service/${slug}`, {
-  //   cache: "no-store",
-  // });
-
-  // if (!res.ok) {
-  //   throw new Error("Failed to fetch service details");
+  // if(loadiing){
+  //   return <p>Loading...</p>
   // }
-  // const service = await res.json();
-  // console.log(service);
-
-  let service = null;
-
-  try {
-    const res = await fetch(`${base_url}/service/${slug}`, {
-      cache: "no-store",
-    });
-
-    if (!res.ok) {
-      console.error("Service fetch failed:", res.status, await res.text());
-      // fallback to null
-      service = null;
-    } else {
-      service = await res.json();
-    }
-  } catch (err) {
-    console.error("Error fetching service:", err);
-    service = null;
-  }
-
-  // If service data is not available, show fallback UI
-  if (!service) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <h2 className="text-xl font-semibold text-red-600">
-          Service details are currently unavailable. Please try again later.
-        </h2>
-      </div>
-    );
-  }
+  // if(error){
+  //   console.log(error, "ami tomar error")
+  // }
 
   return (
-     <div>
+    <div>
       <ServiceBanner
         heading={"Buff Butlers for Hire – UK’s Top Hen Party & Event Hosts"}
         subTitle={
@@ -68,6 +43,17 @@ import React from "react";
         image={data?.banner}
         slug={data?.slug}
       />
+
+      <div className="text-center mb-12 pt-16">
+        <MainTitle text={"Hire Buff Butlers for Parties, Hen Dos & Events"} />
+        <div className=" max-w-7xl mx-auto mt-4">
+          <SubTitle
+            text={
+              "Our buff butlers are more than just eye-candy — they’re charming, cheeky, and professional hosts who know how to make your night one to remember. Whether you’re planning a hen party in Liverpool, a birthday in Manchester, or a glamorous night out in London, our butlers will greet guests with a smile, serve drinks, host fun party games, and pose for photos. Hiring buff butlers is the perfect way to keep the party alive from start to finish."
+            }
+          />
+        </div>
+      </div>
       <BookNowSection
         name={data?.name}
         included={data?.included}
@@ -75,6 +61,7 @@ import React from "react";
         // bulletPoints={bulletPoints}
       />
       <HowItWorkSection
+        name={data?.name}
         text={"Enter postcode, date, and duration, Get instant pricing."}
         text1={"Choose your preferred butler & confirm."}
         text3={"Enjoy a fun, stress-free night with your Buff Butler."}
@@ -82,10 +69,17 @@ import React from "react";
       {/* <WhyBookSection />
       <KeepTheFun />
       <Cocktail />
-      <BuffLocation />
+      <BuffLocation/> */}
+      {/* <ReviewSection />
+      <Frequently /> */}
+      <WhyBookSection />
+
+      <KeepTheFun />
+      <Cocktail />
+      <BuffLocation name={data?.name} />
       <ReviewSection />
       <Frequently />
-      <Nationwide />
+      <Nationwide name={data?.name} />
       <ImageGallery />
       <Footer />
     </div>
