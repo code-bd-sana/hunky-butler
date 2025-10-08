@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 import nation1 from "../../public/Nationwide/nation1.png";
@@ -6,17 +7,35 @@ import nation1 from "../../public/Nationwide/nation1.png";
 import path from "path";
 import SubTitle from "../shared/typography/SubTitle";
 import SecondaryTitle from "../shared/typography/SecondaryTitle";
-const Nationwide = async () => {
-  const res = await fetch("http://localhost:5000/api/locations");
-  const nations = await res.json();
-  console.log(nations);
+import { useEffect, useState } from "react";
+import { base_url } from "@/utils/utils";
+const Nationwide = ({ name }) => {
+  const [nations, setNations] = useState([]);
+
+  useEffect(() => {
+    // Example: fetch from API or JSON file
+    const fetchNations = async () => {
+      try {
+        const res = await fetch(`${base_url}/locations`); // JSON file in public folder
+        const data = await res.json();
+        setNations(data);
+      } catch (err) {
+        console.error("Error fetching nations:", err);
+      }
+    };
+
+    fetchNations();
+  }, []);
+  // const res = await fetch("http://localhost:5000/api/locations");
+  // const nations = await res.json();
+  // console.log(nations);
 
   // const filePath = path.join(process.cwd(), "public", "locations.json");
   // const data = fs.readFileSync(filePath, "utf-8");
   // const nations = JSON.parse(data);
   return (
     <section className="max-w-7xl mx-auto px-4 py-14 text-center">
-      <SecondaryTitle text1={"Buff Butlers Available Nationwide"} />
+      <SecondaryTitle text1={`${name ? name : "Loading"} Locations We Cover`} />
       <SubTitle title="Life Drawing Available Nationwide" />
       <p className="max-w-3xl mx-auto text-gray-600 mb-12 leading-relaxed">
         Looking for buff butlers in your area? We cover the whole of the UK —
@@ -26,7 +45,7 @@ const Nationwide = async () => {
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {nations.slice(0, 6).map((nation, i) => (
+        {nations?.slice(0, 6).map((nation, i) => (
           <div
             key={i}
             className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 border border-gray-100 hover:border-pink-500"
