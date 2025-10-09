@@ -1,20 +1,27 @@
 import cookieParser from "cookie-parser";
-import express from "express"
+import express from "express";
 const app = express();
-import routes from './src/routes/index.js'
-
-
-import dotenv from 'dotenv'
-import cors from 'cors'
+import routes from './src/routes/index.js';
+import dotenv from 'dotenv';
+import cors from 'cors';
 import connectDB from "./src/config/db.js";
-
-
-
+import http from 'http';
+import { Server } from 'socket.io';
 
 dotenv.config();
 
+// Socket.IO setup
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ['http://localhost:5174', 'http://localhost:5173', 'http://localhost:3000', 'https://hnk-test.vercel.app', "https://hunky-butler.vercel.app"],
+    credentials: true
+  },
+  transports: ['websocket', 'polling']
+});
 
-
+// Make io accessible to routes
+app.set('io', io);
 
 // app.post(
 //   "/api/webhook",
@@ -24,17 +31,10 @@ dotenv.config();
 app.use(express.json());
 app.use(cookieParser());
 
-
 app.use(cors({
-    origin: [  'http://localhost:5174', 'http://localhost:5173','http://localhost:3000','https://hnk-test.vercel.app',  "https://hunky-butler.vercel.app" ],
-    credentials: true 
+  origin: ['http://localhost:5174', 'http://localhost:5173', 'http://localhost:3000', 'https://hnk-test.vercel.app', "https://hunky-butler.vercel.app"],
+  credentials: true
 }));
-
-
-
-
-
-
 
 app.use('/api', routes);
 app.get('/', (req, res) => {
@@ -81,15 +81,47 @@ app.get('/', (req, res) => {
   `);
 });
 
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('🔌 User connected:', socket.id);
 
+  // Join user to their personal room based on email
+  socket.on('join-user', (userEmail) => {
+    socket.join(userEmail);
+    console.log(`👤 User ${userEmail} joined room`);
+  });
 
+  // Handle notification seen event
+  socket.on('notification-seen', (data) => {
+    console.log('📭 Notification seen:', data);
+    // Broadcast to other clients if needed
+    socket.to(data.userEmail).emit('notification-updated');
+  });
 
-await connectDB()
+  // Handle all notifications seen
+  socket.on('all-notifications-seen', (data) => {
+    console.log('📭 All notifications seen for:', data.userEmail);
+    socket.to(data.userEmail).emit('notification-updated');
+  });
 
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    console.log('🔌 User disconnected:', socket.id);
+  });
 
-app.use((err, req, res, next) => {
-    // console.log(err);
-    res.status(500).send("Something Broke!")
+  // Handle connection error
+  socket.on('connect_error', (error) => {
+    console.error('🔌 Connection error:', error);
+  });
 });
 
-export default app;
+await connectDB();
+
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).send("Something Broke!");
+});
+
+// Export both app and server
+export { app, io };
+export default server;

@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import Notificaton from '../models/notification.model.js';
 
 export const sendEmail = async (to, sub, text, otp = null, link = null) => {
   try {
@@ -155,6 +156,7 @@ export const sendEmail = async (to, sub, text, otp = null, link = null) => {
 
 
 
+export const adminGmail = 'admin@gmail.com'
 
 
 
@@ -165,6 +167,40 @@ export const sendEmail = async (to, sub, text, otp = null, link = null) => {
 
 
 
+
+// controllers/notificationController.js
+export const storeNotification = async (receiver, message, sender = '', link = '') => {
+  try {
+    const newNotification = {
+      receiver,
+      message,
+      sender,
+      link
+    };
+    
+    const newNotificationSave = new Notificaton(newNotification);
+    await newNotificationSave.save();
+
+    // Get the saved notification with populated data if needed
+    const savedNotification = await Notificaton.findById(newNotificationSave._id);
+
+    // Emit real-time notification using the imported io
+    const { io } = await import('../../app.js');
+    
+    if (io) {
+      io.to(receiver).emit('new-notification', savedNotification);
+      console.log('🔔 Notification sent via socket to:', receiver);
+    } else {
+      console.log('❌ Socket.IO not available');
+    }
+
+    return savedNotification;
+    
+  } catch (error) {
+    console.log('❌ Error storing notification:', error);
+    throw error;
+  }
+};
 
 
 
