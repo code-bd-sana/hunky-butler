@@ -7,10 +7,16 @@ import ButlerBooking from "@/components/Dashboard/Booking/ButlerBooking";
 import CustomerBooking from "@/components/Dashboard/Booking/CustomerBooking";
 import CustomerCard from "@/components/Dashboard/CustomerCard/CustomerCard";
 import DashNav from "@/components/Dashboard/DashNav/DashNav";
+import { useGetAllUserQuery } from "@/features/auth";
 import { useSession } from "next-auth/react";
 
 
 const DashboardHome = () => {
+
+  const {data:user, isLoading, error} = useGetAllUserQuery();
+console.log(user, "ayyyy ayy sobai user ra")
+
+
 
   const {data} = useSession();
 

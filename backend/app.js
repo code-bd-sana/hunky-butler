@@ -186,4 +186,13 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something Broke!");
 });
 
-export default app;
+await connectDB();
+
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.status(500).send("Something Broke!");
+});
+
+// Export both app and server
+export { app, io };
+export default server;

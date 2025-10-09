@@ -1,20 +1,31 @@
 import mongoose from "mongoose";
+import User from "./user.model.js";
 
 const NotificaitonSchema = mongoose.Schema(
   {
-    title: {
-      type: String,
-      required: [true, "Title is Required"],
+
+    sender:{
+      type:String,
+      ref: User
     },
-    message: {
+
+    receiver:{
       type: String,
-      required: [true, "Message Is Required"],
+      ref: User,
+      required: true
     },
-    sendToAllUser: Boolean,
-    sendToButler: Boolean,
-    sendToCustomer: Boolean,
+    message:{
+      type:String,
+      required: true
+    },
+  seen:{
+    type: Boolean,
+    default: false
   },
-  { timestamps: true }
+  link:{
+    type:String
+  }
+  }
 );
 
 const Notificaton = mongoose.model("notification", NotificaitonSchema);

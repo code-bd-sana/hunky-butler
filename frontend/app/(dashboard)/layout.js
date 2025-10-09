@@ -7,6 +7,7 @@ import { Poppins } from "next/font/google";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { SessionProvider } from "next-auth/react";
+import { SocketProvider } from "../provider/SocketProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -20,7 +21,8 @@ const DashboardLayout = ({ children }) => {
   return (
     <html lang="en">
       <body className="antialiased ">
-       <SessionProvider>
+   <SocketProvider>
+        <SessionProvider>
          <Provider store={store}>
           <div className="w-full max-w-screen bg-[#f6f4f5] flex flex-col md:flex-row gap-0 lg:gap-8 min-h-screen pt-2 md:py-10 px-2 md:px-6 lg:px-10 md:pl-0">
             <Sidebar
@@ -34,6 +36,7 @@ const DashboardLayout = ({ children }) => {
           </div>
         </Provider>
        </SessionProvider>
+   </SocketProvider>
       </body>
     </html>
   );

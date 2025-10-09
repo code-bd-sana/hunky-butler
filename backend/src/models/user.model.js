@@ -82,7 +82,19 @@ const userSchema = mongoose.Schema({
   serviceTaken:{
     type:Number,
     default:0
-  }
+  },
+  isOnline : {
+    type: Boolean,
+    
+  },
+ 
+lastActive : {
+  type: String,
+  default: '3 Hours Ago'
+}
+
+
+ 
 },  { timestamps: true } );
 
 const User = mongoose.model("User", userSchema);

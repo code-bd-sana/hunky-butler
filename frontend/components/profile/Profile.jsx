@@ -4,7 +4,7 @@ import DashNav from '../Dashboard/DashNav/DashNav'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import logo from "@/public/logo/logo.png";
-import { FaChevronLeft, FaEdit, FaPhone, FaUnlockAlt, FaUser, FaEnvelope, FaCalendarAlt } from 'react-icons/fa'
+import { FaChevronLeft, FaEdit, FaPhone, FaUnlockAlt, FaUser, FaEnvelope, FaCalendarAlt, FaUserCircle } from 'react-icons/fa'
 import { useChangePasswordMutation, useMyProfileQuery, useUpdateMyProfileMutation } from '@/features/auth'
 import { uploadToImgBB } from '@/utils/utils'
 import toast, { Toaster } from 'react-hot-toast'
@@ -26,6 +26,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
   console.log(user, "Joy Bangla Joy Bangabandhu");
 
   const { data:profile, refetch} = useMyProfileQuery(user?.id);
+  console.log(profile, "Eta tomar profile")
   const [changePassword, {isLoading:changeLoading, error:changePasswordError}] = useChangePasswordMutation()
   console.log(profile, "mama barir abdar");
   const [up] = useUpdateMyProfileMutation()
@@ -256,13 +257,13 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                   {/* Profile Image */}
                   <div className="flex-shrink-0">
                     <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                      <Image 
+                     { profile?.data?.image ? <Image 
                        src={profile?.data?.image || formData?.profileImage} 
                         alt="Profile" 
                         width={128} 
                         height={128} 
                         className="w-full h-full object-cover"
-                      />
+                      /> : <FaUserCircle  className='text-4xl'/>}
                     </div>
                   </div>
 
