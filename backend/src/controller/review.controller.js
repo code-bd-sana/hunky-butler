@@ -1,6 +1,7 @@
 import Review from "../models/review.model.js";
 import User from "../models/user.model.js";
 import nodemailer from "nodemailer";
+import { storeNotification } from "../utils/utils.js";
 
 export const addReview = async (req, res) => {
   try {
@@ -65,6 +66,8 @@ export const addReview = async (req, res) => {
       message: "Success",
       data: saved,
     });
+
+  storeNotification(user?.email, `⭐ You got ${data.rating} star`, '', '')
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong",

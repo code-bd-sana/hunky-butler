@@ -9,6 +9,7 @@ import { bookingApi } from "@/features/booking";
 import { butlerApi } from "@/features/butler";
 import { summuryApi } from "@/features/summury";
 import { customerApi } from "@/features/customer";
+import { notificationApi } from "@/features/notificationApi";
 
 
 
@@ -22,6 +23,7 @@ export const store = configureStore({
     [butlerApi.reducerPath]: butlerApi.reducer,
     [summuryApi.reducerPath]: summuryApi.reducer,
     [customerApi.reducerPath]:customerApi.reducer,
+    [notificationApi.reducerPath]: notificationApi.reducer,
 
     // UI slices
     usersTab: usersTabReducer,
@@ -36,7 +38,8 @@ export const store = configureStore({
       bookingApi.middleware,
       butlerApi.middleware,
       summuryApi.middleware,
-      customerApi.middleware
+      customerApi.middleware,
+      notificationApi.middleware
 
     ),
 });
