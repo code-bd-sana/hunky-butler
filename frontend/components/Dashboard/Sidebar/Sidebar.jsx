@@ -121,6 +121,7 @@ const Sidebar = () => {
       >
         {/* Header (no scroll) */}
         <div className="space-y-6 shrink-0">
+          <Link href={'/'}>
           <div className="flex items-center gap-2">
             <Image
               src="/Footer/logo.png"
@@ -136,7 +137,7 @@ const Sidebar = () => {
             >
               <GiHandcuffs />
             </button>
-          </div>
+          </div></Link>
         </div>
 
         {/* Scrollable menu ONLY */}

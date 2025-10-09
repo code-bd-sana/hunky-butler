@@ -11,6 +11,7 @@ import LocationRoute from "./locationRoute.js"
 import review from './review.route.js'
 import butler from './butler.route.js'
 import summury from './summury.route.js'
+import notification from './notificaton.route.js'
 
 const router = Router();
 
@@ -24,7 +25,8 @@ router.use('/booking', booking);
 router.use('/review', review);
 router.use('/butler', butler);
 router.use('/summury', summury)
-router.use('/locations', LocationRoute)
+router.use('/locations', LocationRoute);
+router.use('/notification', notification)
 
 
 

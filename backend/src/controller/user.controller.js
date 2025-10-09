@@ -2,6 +2,7 @@
 
 import User from "../models/user.model.js";
 import nodemailer from 'nodemailer'
+import { storeNotification } from "../utils/utils.js";
 
 // import User from "../models/user.model";
 
@@ -251,6 +252,9 @@ export const rejectButler = async(req, res)=>{
       message:'Success',
       data:updated
     })
+
+
+    storeNotification(email, 'Reject you application. Please submit valid infromation', '', '')
     
   } catch (error) {
 
@@ -312,7 +316,7 @@ export const suspendButler = async(req, res)=>{
       message:'Success',
       data:updated
     })
-    
+    storeNotification(email, `Your Butler Account is suspend. Please contact support`, '', '')
   } catch (error) {
 
 
@@ -373,7 +377,7 @@ export const activeButler = async(req, res)=>{
       message:'Success',
       data:updated
     })
-    
+    storeNotification(email, 'Your Butler Application accepted', '', '')
   } catch (error) {
 
 

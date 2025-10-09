@@ -1,6 +1,8 @@
 import Booking from "../models/booking.model.js";
 import nodemailer from "nodemailer";
 import User from "../models/user.model.js";
+import Notificaton from "../models/notification.model.js";
+import { adminGmail, storeNotification } from "../utils/utils.js";
 
 export const getAllBooking = async (req, res) => {
   try {
@@ -163,6 +165,15 @@ export const createBooking = async (req, res) => {
       { $inc: { serviceTaken: 1 } }
     );
 
+
+const notificationData = {
+  receiver: adminGmail,
+  message: `New ${serviceName} Service Order Received`
+}
+
+
+    await storeNotification(adminGmail, `New ${serviceName}`, '', '/dashboard',)
+
     // Nodemailer transporter
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -228,6 +239,9 @@ export const createBooking = async (req, res) => {
       data: savedData,
     });
 
+
+
+
   } catch (error) {
     console.log(error, "confusion unga bunga");
     res.status(500).json({
@@ -236,6 +250,17 @@ export const createBooking = async (req, res) => {
     });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
 export const deleteBooking = async (req, res) => {
   try {
     const id = req.params.id;
@@ -297,6 +322,8 @@ export const updateStatus = async (req, res) => {
     let emailHtml = "";
 
     if (status === "accepted") {
+
+     await storeNotification (email, `Your ${serviceName} Booking Accept`, '', '/dashboard')
       subject = "Booking Accepted";
       emailHtml = `
         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border:2px solid #ff1673; border-radius:12px;">
@@ -306,6 +333,8 @@ export const updateStatus = async (req, res) => {
         </div>
       `;
     } else if (status === "completed") {
+
+           await storeNotification (email, `Your ${serviceName} Booking Completed. Make a Review?`, '', `https://hunky-butler.vercel.app/review/${email}/?id=${butlerId}`)
       subject = "Service Completed";
       emailHtml = `
         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border:2px solid #ff1673; border-radius:12px;">
@@ -400,6 +429,8 @@ export const assginToButler = async (req, res) => {
       data: updatedBooking,
     });
 
+    await storeNotification(butlerEmail, `A New ${serviceName} Service assign to you`, '', `/dashboard`)
+
     // 15 min timeout
     setTimeout(async () => {
       try {
@@ -428,6 +459,8 @@ export const assginToButler = async (req, res) => {
             html: lateEmailHtml,
           });
 
+          await storeNotification(butlerEmail, 'Booking Not Accepted In Time and has been removed from your assignments', '', '')
+
           // Email to Admin
           const adminEmailHtml = `
             <div style="font-family: Arial, sans-serif; padding: 20px; background:#fff; text-align:center; border:2px solid #ff1673; border-radius:12px;">
@@ -439,10 +472,14 @@ export const assginToButler = async (req, res) => {
 
           await transporter.sendMail({
             from: '"Hunky Butler Service"',
-            to: "bannah76769@gmail.com", // admin
+            to: adminGmail, // admin
             subject: "Booking Requires Reassignment",
             html: adminEmailHtml,
           });
+
+          storeNotification(adminGmail, `Booking Needs Reassignmen - The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(dateOfEvent).toLocaleDateString()}) was not accepted by the assigned butler.`, '', '/dashboard')
+
+
 
           console.log(`Butler removed from booking ${bookingId} due to no acceptance`);
         }
