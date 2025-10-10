@@ -175,6 +175,13 @@ const notificationData = {
 
     await storeNotification(adminGmail, `New ${serviceName}`, '', '/dashboard',)
 
+
+        // Response after user email sent
+    res.status(200).json({
+      message: "Booking created and emails sent successfully",
+      data: savedData,
+    })
+
     // Nodemailer transporter
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -234,11 +241,7 @@ const notificationData = {
       html: adminEmailHtml,
     });
 
-    // Response after user email sent
-    res.status(200).json({
-      message: "Booking created and emails sent successfully",
-      data: savedData,
-    });
+;
 
 
 
