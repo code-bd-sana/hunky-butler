@@ -75,6 +75,7 @@ const bookingSchema = mongoose.Schema(
       default: "unpaid",
     },
   },
+  
   { timestamps: true }
 );
 

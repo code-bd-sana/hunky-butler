@@ -1,6 +1,6 @@
 export const base_url = `https://hunky-butler-2.onrender.com/api`
 // export const base_url = `https://hunkey-butler-test.vercel.app/api`
-export const SOCKET_URL = `https://hunky-butler-2.onrender.com/`
+export const SOCKET_URL = `https://hunky-butler-2.onrender.com`
 // export const SOCKET_URL = `https://hunkey-butler-test.vercel.app`
 
 
@@ -32,7 +32,6 @@ export const SOCKET_URL = `https://hunky-butler-2.onrender.com/`
       return error;
     }
   };
-
 
 
 
