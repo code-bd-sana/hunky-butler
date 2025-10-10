@@ -19,10 +19,10 @@ export default function RootLayout({ children }) {
     <html lang="en" className={poppins.variable}>
       <body className="font-sans">
 
-<SocketProvider>
+
 
   {children}
-</SocketProvider>
+
 
       </body>
     </html>
