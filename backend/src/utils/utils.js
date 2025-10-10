@@ -169,29 +169,41 @@ export const adminGmail = 'admin@gmail.com'
 
 
 // controllers/notificationController.js
-export const storeNotification = async (receiver, message, sender = '', link = '') => {
+export const storeNotification = async (receiver, message, sender = '', link = '', req = null) => {
   try {
     const newNotification = {
       receiver,
       message,
       sender,
-      link
+      link,
+      createdAt: new Date()
     };
     
     const newNotificationSave = new Notificaton(newNotification);
     await newNotificationSave.save();
 
-    // Get the saved notification with populated data if needed
+    // Get the saved notification
     const savedNotification = await Notificaton.findById(newNotificationSave._id);
 
-    // Emit real-time notification using the imported io
-    const { io } = await import('../../app.js');
-    
-    if (io) {
-      io.to(receiver).emit('new-notification', savedNotification);
-      console.log('🔔 Notification sent via socket to:', receiver);
-    } else {
-      console.log('❌ Socket.IO not available');
+    // Emit real-time notification - multiple approaches
+    try {
+      // Approach 1: Get io from request app settings
+      if (req && req.app.get('io')) {
+        const io = req.app.get('io');
+        io.to(receiver).emit('new-notification', savedNotification);
+        console.log('🔔 Notification sent via socket to:', receiver);
+      }
+      // Approach 2: Dynamic import (for cases where req is not available)
+      else {
+        const { io } = await import('../../app.js');
+        if (io) {
+          io.to(receiver).emit('new-notification', savedNotification);
+          console.log('🔔 Notification sent via socket to:', receiver);
+        }
+      }
+    } catch (socketError) {
+      console.log('⚠️ Socket emission failed, but notification saved:', socketError);
+      // Continue even if socket fails - notification is saved in DB
     }
 
     return savedNotification;
@@ -201,6 +213,7 @@ export const storeNotification = async (receiver, message, sender = '', link = '
     throw error;
   }
 };
+
 
 
 
