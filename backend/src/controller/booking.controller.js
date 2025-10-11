@@ -103,6 +103,7 @@ export const getBookingCustomer = async (req, res) => {
 
     // Apply filter in both find() and countDocuments()
     const allBooking = await Booking.find(filter)
+    .sort({createdAt: -1})
       .skip(skip)
       .limit(limit)
       .populate("butler");
@@ -174,7 +175,6 @@ const notificationData = {
 
 
     await storeNotification(adminGmail, `New ${serviceName}`, '', '/dashboard',)
-
 
         // Response after user email sent
     res.status(200).json({
@@ -354,6 +354,16 @@ export const updateStatus = async (req, res) => {
       `;
     }
 
+
+      res.status(200).json({
+      message: "Status updated and email sent successfully",
+      data: updated,
+    });
+
+        res.status(200).json({
+      message: "Status updated and email sent successfully",
+      data: updated,
+    });
     // Send email if status is accepted or completed
     if (emailHtml) {
       await transporter.sendMail({
@@ -364,10 +374,7 @@ export const updateStatus = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      message: "Status updated and email sent successfully",
-      data: updated,
-    });
+
 
   } catch (error) {
     console.log(error);
@@ -408,6 +415,14 @@ export const assginToButler = async (req, res) => {
       },
     });
 
+
+        res.status(200).json({
+      message: "Butler assigned and email sent successfully",
+      data: updatedBooking,
+    });
+
+        await storeNotification(butlerEmail, `A New ${serviceName} Service assign to you`, '', `/dashboard`)
+
     // Email to Butler (assigned)
     const butlerEmailHtml = `
       <div style="font-family: Arial, sans-serif; padding: 20px; background:#fff; text-align:center; border:2px solid #ff1673; border-radius:12px;">
@@ -421,19 +436,14 @@ export const assginToButler = async (req, res) => {
       </div>
     `;
 
-    await transporter.sendMail({
+   transporter.sendMail({
       from: '"Hunky Butler Service"',
       to: butlerEmail,
       subject: "New Booking Assigned",
       html: butlerEmailHtml,
     });
 
-    res.status(200).json({
-      message: "Butler assigned and email sent successfully",
-      data: updatedBooking,
-    });
 
-    await storeNotification(butlerEmail, `A New ${serviceName} Service assign to you`, '', `/dashboard`)
 
     // 15 min timeout
     setTimeout(async () => {
@@ -446,6 +456,10 @@ export const assginToButler = async (req, res) => {
             { _id: bookingId },
             { $set: { butler: null } }
           );
+
+               storeNotification(adminGmail, `Booking Needs Reassignmen - The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(dateOfEvent).toLocaleDateString()}) was not accepted by the assigned butler.`, '', '/dashboard')
+               
+          await storeNotification(butlerEmail, 'Booking Not Accepted In Time and has been removed from your assignments', '', '')
 
           // Email to Butler (late acceptance)
           const lateEmailHtml = `
@@ -463,7 +477,6 @@ export const assginToButler = async (req, res) => {
             html: lateEmailHtml,
           });
 
-          await storeNotification(butlerEmail, 'Booking Not Accepted In Time and has been removed from your assignments', '', '')
 
           // Email to Admin
           const adminEmailHtml = `
@@ -481,8 +494,7 @@ export const assginToButler = async (req, res) => {
             html: adminEmailHtml,
           });
 
-          storeNotification(adminGmail, `Booking Needs Reassignmen - The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(dateOfEvent).toLocaleDateString()}) was not accepted by the assigned butler.`, '', '/dashboard')
-
+     
 
 
           console.log(`Butler removed from booking ${bookingId} due to no acceptance`);

@@ -282,7 +282,9 @@ const DashNav = ({ tab }) => {
           <div>
             <p className="text-gray-500 text-sm">Good Morning</p>
             <h2 className="text-xl md:text-2xl font-semibold">
-              {getUserName()}
+           {
+            profile?.data?.firstName ?   profile.data.firstName + ' ' + profile.data.lastName : profile?.data?.role
+           }
             </h2>
           </div>
         </div>

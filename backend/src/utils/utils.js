@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer'
 import Notificaton from '../models/notification.model.js';
 
+
+
 export const sendEmail = async (to, sub, text, otp = null, link = null) => {
   try {
     const htmlTemplate = `

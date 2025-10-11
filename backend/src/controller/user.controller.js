@@ -135,6 +135,11 @@ const updated = await User.updateOne(
   }
 );
 
+ res.status(200).json({
+      message:'Success',
+      data: updated
+    })
+
     console.log(updated)
 
     if(isButler){
@@ -180,10 +185,7 @@ const updated = await User.updateOne(
     }
     
     
-    res.status(200).json({
-      message:'Success',
-      data: updated
-    })
+   
   } catch (error) {
     console.log(error)
     res.status(500).json({
@@ -202,6 +204,13 @@ export const rejectButler = async(req, res)=>{
       isButler:'reject'
     }});
 
+        res.status(200).json({
+      message:'Success',
+      data:updated
+    })
+
+
+    storeNotification(email, 'Reject you application. Please submit valid infromation', '', '')
        const transporter = nodemailer.createTransport({
           host: "smtp.gmail.com",
           port: 587,
@@ -248,13 +257,7 @@ export const rejectButler = async(req, res)=>{
           html: userEmailHtml,
         });
 
-    res.status(200).json({
-      message:'Success',
-      data:updated
-    })
 
-
-    storeNotification(email, 'Reject you application. Please submit valid infromation', '', '')
     
   } catch (error) {
 
@@ -283,6 +286,11 @@ export const suspendButler = async(req, res)=>{
           },
         });
     
+           res.status(200).json({
+      message:'Success',
+      data:updated
+    })
+    storeNotification(email, `Your Butler Account is suspend. Please contact support`, '', '')
         // User email HTML template
         const userEmailHtml = `
          <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border-radius: 12px;">
@@ -312,11 +320,7 @@ export const suspendButler = async(req, res)=>{
           html: userEmailHtml,
         });
 
-    res.status(200).json({
-      message:'Success',
-      data:updated
-    })
-    storeNotification(email, `Your Butler Account is suspend. Please contact support`, '', '')
+ 
   } catch (error) {
 
 
@@ -333,6 +337,12 @@ export const activeButler = async(req, res)=>{
     const updated = await User.updateOne({email: email}, {$set:{
       isButler:'active'
     }});
+
+       res.status(200).json({
+      message:'Success',
+      data:updated
+    })
+    storeNotification(email, 'Your Butler Application accepted', '', '')
 
        const transporter = nodemailer.createTransport({
           host: "smtp.gmail.com",
@@ -373,11 +383,7 @@ export const activeButler = async(req, res)=>{
           html: userEmailHtml,
         });
 
-    res.status(200).json({
-      message:'Success',
-      data:updated
-    })
-    storeNotification(email, 'Your Butler Application accepted', '', '')
+ 
   } catch (error) {
 
 

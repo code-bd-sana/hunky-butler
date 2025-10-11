@@ -26,8 +26,16 @@ export const notificationApi = createApi({
         
       }),
       providesTags:["notification"]
+    }),
+    createNotification: builder.mutation({
+      query:(data)=>({
+        url:`/notification`,
+        method: "POST",
+        body:data
+      })
     })
+
   }),
 });
 
-export const { useMyNotificationQuery, useMarkSeenMutation, useMarkSeenAllMutation } = notificationApi;
+export const { useMyNotificationQuery, useMarkSeenMutation, useMarkSeenAllMutation, useCreateNotificationMutation } = notificationApi;
