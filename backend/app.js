@@ -22,6 +22,7 @@ const io = new Server(server, {
    transports: ["websocket", "polling"],
 });
 
+app.set('io', io);
 // io.on("connection", (socket) => {
 //   console.log("🟢 A user connected:", socket.id);
 //   socket.on("disconnect", () => {
