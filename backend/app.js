@@ -29,10 +29,11 @@ app.set('io', io);
 //   webhook
 // );
 app.use(express.json());
-app.use(cookieParser());app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 app.use(cors({
   origin: ['http://localhost:5174', 'http://localhost:5173', 'http://localhost:3000', 'https://hnk-test.vercel.app', "https://hunky-butler.vercel.app"],
-   methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
 
   credentials: true
 }));

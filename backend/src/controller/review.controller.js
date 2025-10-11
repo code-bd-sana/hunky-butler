@@ -25,6 +25,13 @@ export const addReview = async (req, res) => {
     let subject = "You received a new review!";
     let message = "";
 
+       res.status(200).json({
+      message: "Success",
+      data: saved,
+    });
+    
+  storeNotification(user?.email, `⭐ You got ${data.rating} star`, '', '')
+
     if (data.rating >= 4) {
       message = `
         <div style="font-family: Arial, sans-serif; background:#f0fff4; padding:20px; border-radius:8px;">
@@ -62,12 +69,8 @@ export const addReview = async (req, res) => {
       html: message,
     });
 
-    res.status(200).json({
-      message: "Success",
-      data: saved,
-    });
+ 
 
-  storeNotification(user?.email, `⭐ You got ${data.rating} star`, '', '')
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong",

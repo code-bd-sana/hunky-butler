@@ -5,6 +5,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import { useParams } from 'next/navigation';
 import { useBookingMutation } from '@/features/booking';
 import toast, { Toaster } from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 // Step Indicator Component
 const StepIndicator = ({ currentStep, bookingSuccess }) => {
@@ -15,9 +16,11 @@ const StepIndicator = ({ currentStep, bookingSuccess }) => {
     { id: "thirdstep", number: 4, label: "Confirmation" }
   ];
 
+
   const getStepIndex = (step) => {
     return steps.findIndex(s => s.id === step);
   };
+  const {data} = useSession();
 
   const currentIndex = getStepIndex(currentStep);
 
@@ -169,6 +172,9 @@ export default function SecondStep() {
     }
   };
 
+
+  const {data}  = useSession();
+
   return (
     <div
       style={{
@@ -224,6 +230,7 @@ export default function SecondStep() {
                       type="email"
                       name="email"
                       id="email"
+                      defaultValue={data?.user?.email}
                       placeholder="Email"
                       className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]"
                     />
