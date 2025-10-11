@@ -918,13 +918,26 @@ const CustomerBooking = () => {
                 <td className="p-3">{b.serviceName}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
-                    <Image
-                      src="/Dashboard/customer.png"
+                   
+
+                   {
+                    b?.image &&  <Image
+                      src={b?.image}
                       alt={b.customer || 'img'}
                       width={32}
                       height={32}
                       className="rounded-full object-cover"
                     />
+                   }
+                   {
+                   !b?.image &&   <Image
+                        src="/Dashboard/customer.png"
+                        alt={b.customer || 'img'}
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover"
+                      />
+                   }
                     <span>{b.firstName + " " + b.lastName}</span>
                   </div>
                 </td>
@@ -967,10 +980,7 @@ const CustomerBooking = () => {
             ))}
           </tbody>
         </table>
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
+          {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -979,6 +989,10 @@ const CustomerBooking = () => {
           itemsPerPage={itemsPerPage}
         />
       )}
+      </div>
+
+      {/* Pagination */}
+    
 
       {/* Modals */}
       <BookingDetailsModal

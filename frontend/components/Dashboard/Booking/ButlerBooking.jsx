@@ -918,13 +918,24 @@ const ButlerBooking = () => {
                 <td className="p-3">{b.serviceName}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
-                    <Image
-                      src="/Dashboard/customer.png"
-                      alt={b.customer || 'img'}
-                      width={32}
-                      height={32}
-                      className="rounded-full object-cover"
-                    />
+                      {
+                                       b?.image &&  <Image
+                                         src={b?.image}
+                                         alt={b.customer || 'img'}
+                                         width={32}
+                                         height={32}
+                                         className="rounded-full object-cover"
+                                       />
+                                      }
+                                      {
+                                      !b?.image &&   <Image
+                                           src="/Dashboard/customer.png"
+                                           alt={b.customer || 'img'}
+                                           width={32}
+                                           height={32}
+                                           className="rounded-full object-cover"
+                                         />
+                                      }
                     <span>{b.firstName + " " + b.lastName}</span>
                   </div>
                 </td>
@@ -966,11 +977,10 @@ const ButlerBooking = () => {
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+         
 
-      {/* Pagination */}
-      {totalPages > 1 && (
+        </table>
+             {totalPages > 1 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -980,6 +990,10 @@ const ButlerBooking = () => {
         />
       )}
 
+      </div>
+
+      {/* Pagination */}
+  
       {/* Modals */}
       <BookingDetailsModal
         booking={selectedBooking}

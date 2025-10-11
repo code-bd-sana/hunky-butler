@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import messageIcon from '@/public/Dashboard/message.png'
 import Image from "next/image";
+import { useCreateNotificationMutation } from "@/features/notificationApi";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function NotificationManagement() {
   const [notificationData, setNotificationData] = useState({
@@ -13,6 +15,9 @@ export default function NotificationManagement() {
       customer: false
     }
   });
+
+
+const [createNotification, {isLoading, error}] = useCreateNotificationMutation();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -32,20 +37,51 @@ export default function NotificationManagement() {
     }));
   };
 
-
-  const handler = async(e)=>{
+  const handler = async(e) => {
     try {
-
-      e.preventDefault()
-
+      e.preventDefault();
+      
+      // Console e data gulo dekha
+      console.log("📤 Notification Data to be sent:");
+      console.log("Title:", notificationData.title);
+      console.log("Message:", notificationData.message);
+      console.log("Recipients:", notificationData.recipients);
+      console.log("Full Data Object:", notificationData);
+      await createNotification(notificationData).unwrap();
+      toast.success("Notification sent Successfully.")
+      
+      // Ekhane tumi API call korte paro
+      // Example:
+      // const response = await fetch('/api/send-notification', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(notificationData),
+      // });
+      
+      // if (response.ok) {
+      //   console.log('Notification sent successfully!');
+      //   // Reset form
+      //   setNotificationData({
+      //     title: "",
+      //     message: "",
+      //     recipients: {
+      //       allUsers: false,
+      //       butler: false,
+      //       customer: false
+      //     }
+      //   });
+      // }
       
     } catch (error) {
-      console.log(error)
+      console.log("Error sending notification:", error);
     }
-  }
+  };
 
   return (
-    <div className=" mx-auto p-4">
+    <div className="mx-auto p-4">
+      <Toaster/>
       <form onSubmit={handler}>
         {/* Notification Content Section */}
         <section className="bg-white p-6 rounded-3xl shadow-sm">
@@ -153,11 +189,13 @@ export default function NotificationManagement() {
             className="bg-[#FF006A] text-white px-6 py-3 rounded-full font-medium cursor-pointer transition-colors duration-300"
           >
            <div className="flex items-center gap-2">
-
             <Image src={messageIcon} alt="icon"/>
+             <span>
 
-
-             <span>Send Notification</span>
+              {
+                isLoading ? "Loading..." : "Send Notification"
+              }
+             </span>
            </div>
           </button>
         </div>
@@ -165,5 +203,3 @@ export default function NotificationManagement() {
     </div>
   );
 }
-
-

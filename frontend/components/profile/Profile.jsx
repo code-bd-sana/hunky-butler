@@ -230,7 +230,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                 >
                   Change Password
                 </button>
-                {user?.role === 'butler' && (
+                {user?.role === 'butler' && profile?.data?.isButler !== "active" && (
                   <button
                     onClick={() => setActiveTab('professional')}
                     className={`w-full text-left px-4 py-3 rounded-xl transition-colors ${
@@ -405,7 +405,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
             )}
 
             {/* Professional Information (Butler only) */}
-{activeTab === "professional" && user?.role === "butler" && (
+{activeTab === "professional" && user?.role === "butler" && profile?.data?.isButler !== "active" && (
   <div className="bg-white rounded-3xl shadow-sm p-6">
     <div className="flex items-center justify-between mb-6">
       <div>
