@@ -19,9 +19,10 @@ const io = new Server(server, {
     origin: "*",
     credentials: true,
   },
-  // transports: ["websocket", "polling"],
+   transports: ["websocket", "polling"],
 });
 
+app.set('io', io);
 // io.on("connection", (socket) => {
 //   console.log("🟢 A user connected:", socket.id);
 //   socket.on("disconnect", () => {
@@ -36,6 +37,25 @@ io.on("connection", (socket) => {
     socket.join(userId);
     console.log("👤 User joined room:", userId);
   });
+  //   // Join user to their personal room based on email
+  socket.on("join-user", (userEmail) => {
+    socket.join(userEmail);
+    console.log(`👤 User ${userEmail} joined room`);
+  });
+
+//   // Handle notification seen event
+  socket.on("notification-seen", (data) => {
+    console.log("📭 Notification seen:", data);
+    // Broadcast to other clients if needed
+    socket.to(data.userEmail).emit("notification-updated");
+  });
+
+//   // Handle all notifications seen
+  socket.on("all-notifications-seen", (data) => {
+    console.log("📭 All notifications seen for:", data.userEmail);
+    socket.to(data.userEmail).emit("notification-updated");
+  });
+
 
   // Get chat history between two users
   socket.on("getMessages", async ({ senderId, receiverId }) => {
