@@ -9,7 +9,7 @@ import { useGetAllUserQuery, useMyProfileQuery } from "@/features/auth"; // keep
 import { useSession } from "next-auth/react";
 // import toast if you want notifications
 
-const Chat = () => {
+const Chat2 = () => {
   const { data: usersRes, isLoading } = useGetAllUserQuery();
   const users = usersRes?.data || []; // adapt to your API response shape
   const data = useSession();
@@ -19,11 +19,19 @@ const Chat = () => {
   const userId = data?.data?.user?.id;
 
   const { data: user } = useMyProfileQuery(userId, {
-    skip: status === "loading", // ⛔ skip if userId doesn't exist
+    skip: !userId || status !== "authenticated",
   });
+
+  console.log(user);
   // 3️⃣ Extract your user data
   const myUser = user?.data;
+  console.log(myUser);
 
+  useEffect(() => {
+    console.log("Session:", data);
+    console.log("User ID:", userId);
+    console.log("My user:", myUser);
+  }, [data, userId, myUser]);
   // replace this with your actual logged-in user (from Redux / context)
   // const myUser = {
   //   _id: "1",
@@ -31,8 +39,16 @@ const Chat = () => {
   //   picture: "/user1.png",
   //   isOnline: true,
   // };
+  // EDITED: restore selectedUser from localStorage on mount
+  // const [selectedUser, setSelectedUser] = useState(() => {
+  //   if (typeof window !== "undefined") {
+  //     const stored = localStorage.getItem("selectedUser");
+  //     return stored ? JSON.parse(stored) : null;
+  //   }
+  //   return null;
+  // });
 
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null); // Start null
   // messagesMap: { [otherUserId]: [ { senderId, receiverId, content, timestamp } ] }
   const [messagesMap, setMessagesMap] = useState({});
   const [inputValue, setInputValue] = useState("");
@@ -41,31 +57,34 @@ const Chat = () => {
 
   // Connect socket and join user room
   useEffect(() => {
-    if (!myUser?._id) return;
+    if (!myUser?._id) {
+      console.warn("User not loaded yet — please wait");
+      return;
+    }
 
     // connect only once
     if (!socket.connected) socket.connect();
 
     socket.emit("join", { userId: myUser?._id });
 
-    const onConnect = () => {
-      console.log("socket connected", socket.id);
-    };
+    // const onConnect = () => {
+    //   console.log("socket connected", socket.id);
+    // };
 
-    const onDisconnect = (reason) => {
-      console.log("socket disconnected", reason);
-    };
+    // const onDisconnect = (reason) => {
+    //   console.log("socket disconnected", reason);
+    // };
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
+    // socket.on("connect", onConnect);
+    // socket.on("disconnect", onDisconnect);
 
     return () => {
       // leave room and cleanup
       try {
         socket.emit("leave", { userId: myUser?._id });
       } catch (e) {}
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
+      // socket.off("connect", onConnect);
+      // socket.off("disconnect", onDisconnect);
       // remove other handlers as well
       socket.off("receiveMessage");
       socket.off("messageHistory");
@@ -73,6 +92,7 @@ const Chat = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myUser?._id]);
+  // myUser?._id
 
   // receive a single incoming message
   useEffect(() => {
@@ -83,7 +103,12 @@ const Chat = () => {
 
       setMessagesMap((prev) => {
         const prevArr = prev[otherId] ? [...prev[otherId]] : [];
-        // append - keep chronological order (old -> new)
+        // ✅ prevent duplicate messages
+        const exists = prevArr.some(
+          (m) => m.timestamp === msg.timestamp && m.content === msg.content
+        );
+        if (exists) return prev;
+
         return { ...prev, [otherId]: [...prevArr, msg] };
       });
     };
@@ -119,6 +144,7 @@ const Chat = () => {
 
   // when user clicks a chat partner
   const handleUserClick = (user) => {
+    console.log(user);
     setSelectedUser(user);
     setIsSidebarOpen(false);
 
@@ -133,9 +159,41 @@ const Chat = () => {
   };
 
   // send message
-  const sendMessage = () => {
-    if (!selectedUser || !inputValue.trim()) return;
+  // const sendMessage = () => {
+  //   console.log("myUser:", myUser);
+  //   console.log("selectedUser:", selectedUser);
+  //   if (!myUser?._id || !selectedUser?._id || !inputValue.trim()) {
+  //     console.warn("Message not sent — user not ready or empty message");
+  //     return;
+  //   }
+  //   const newMsg = {
+  //     senderId: myUser._id,
+  //     receiverId: selectedUser._id,
+  //     content: inputValue.trim(),
+  //     timestamp: Date.now(),
+  //   };
 
+  //   // emit to server
+  //   socket.emit("sendMessage", newMsg);
+
+  //   // optimistically update UI
+  //   setMessagesMap((prev) => {
+  //     const prevArr = prev[selectedUser._id] ? [...prev[selectedUser._id]] : [];
+  //     return { ...prev, [selectedUser._id]: [...prevArr, newMsg] };
+  //   });
+
+  //   setInputValue("");
+  //   setTimeout(() => scrollToBottom(), 50);
+  // };
+
+  const sendMessage = () => {
+    if (!myUser?._id || !selectedUser?._id || !inputValue.trim()) {
+      console.warn("Message not sent — user not ready or empty message");
+      return;
+    }
+    
+    console.log('sender',myUser._id);
+    console.log('select',selectedUser._id);
     const newMsg = {
       senderId: myUser._id,
       receiverId: selectedUser._id,
@@ -143,15 +201,10 @@ const Chat = () => {
       timestamp: Date.now(),
     };
 
-    // emit to server
+    // emit to server (server should broadcast back)
     socket.emit("sendMessage", newMsg);
 
-    // optimistically update UI
-    setMessagesMap((prev) => {
-      const prevArr = prev[selectedUser._id] ? [...prev[selectedUser._id]] : [];
-      return { ...prev, [selectedUser._id]: [...prevArr, newMsg] };
-    });
-
+    // ✅ no optimistic update here
     setInputValue("");
     setTimeout(() => scrollToBottom(), 50);
   };
@@ -313,4 +366,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default Chat2;
