@@ -1,12 +1,13 @@
 import cookieParser from "cookie-parser";
 import express from "express";
 const app = express();
-import routes from './src/routes/index.js';
-import dotenv from 'dotenv';
-import cors from 'cors';
+import routes from "./src/routes/index.js";
+import dotenv from "dotenv";
+import cors from "cors";
 import connectDB from "./src/config/db.js";
-import http from 'http';
-import { Server } from 'socket.io';
+import http from "http";
+import { Server } from "socket.io";
+import Message from "./src/models/Message.js";
 
 dotenv.config();
 
@@ -14,14 +15,65 @@ dotenv.config();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5174', 'http://localhost:5173', 'http://localhost:3000', 'https://hnk-test.vercel.app', "https://hunky-butler.vercel.app"],
-    credentials: true
+    // origin: ['http://localhost:5174', 'http://localhost:5173', 'http://localhost:3000', 'https://hnk-test.vercel.app', "https://hunky-butler.vercel.app"],
+    origin: "*",
+    credentials: true,
   },
-  transports: ['websocket', 'polling']
+  // transports: ["websocket", "polling"],
+});
+
+// io.on("connection", (socket) => {
+//   console.log("🟢 A user connected:", socket.id);
+//   socket.on("disconnect", () => {
+//     console.log("🔴 User disconnected:", socket.id);
+//   });
+// });
+
+io.on("connection", (socket) => {
+  console.log("🟢 A user connected:", socket.id);
+
+  socket.on("join", ({ userId }) => {
+    socket.join(userId);
+    console.log("👤 User joined room:", userId);
+  });
+
+  // Get chat history between two users
+  socket.on("getMessages", async ({ senderId, receiverId }) => {
+    try {
+      const messages = await Message.find({
+        $or: [
+          { senderId, receiverId },
+          { senderId: receiverId, receiverId: senderId },
+        ],
+      }).sort({ timestamp: 1 });
+
+      socket.emit("messageHistory", { withUserId: receiverId, messages });
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    }
+  });
+
+  // Handle sending new message
+  socket.on("sendMessage", async (msg) => {
+    console.log(msg);
+    try {
+      const newMsg = await Message.create(msg);
+
+      // Send to receiver’s room
+      io.to(msg.receiverId).emit("receiveMessage", newMsg);
+      io.to(msg.senderId).emit("receiveMessage", newMsg);
+    } catch (err) {
+      console.error("Error saving message:", err);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("🔴 User disconnected:", socket.id);
+  });
 });
 
 // Make io accessible to routes
-app.set('io', io);
+app.set("io", io);
 
 // app.post(
 //   "/api/webhook",
@@ -30,17 +82,25 @@ app.set('io', io);
 // );
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5174",
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://hnk-test.vercel.app",
+      "https://hunky-butler.vercel.app",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
 
-app.use(cors({
-  origin: ['http://localhost:5174', 'http://localhost:5173', 'http://localhost:3000', 'https://hnk-test.vercel.app', "https://hunky-butler.vercel.app"],
-  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
+    credentials: true,
+  })
+);
 
-  credentials: true
-}));
-
-app.use('/api', routes);
-app.get('/', (req, res) => {
-  res.status(200).type('html').send(`
+app.use("/api", routes);
+app.get("/", (req, res) => {
+  res.status(200).type("html").send(`
     <!doctype html>
     <html lang="en">
     <head>
@@ -84,38 +144,38 @@ app.get('/', (req, res) => {
 });
 
 // Socket.IO connection handling
-io.on('connection', (socket) => {
-  console.log('🔌 User connected:', socket.id);
+// io.on("connection", (socket) => {
+//   // console.log("🔌 User connected:", socket.id);
 
-  // Join user to their personal room based on email
-  socket.on('join-user', (userEmail) => {
-    socket.join(userEmail);
-    console.log(`👤 User ${userEmail} joined room`);
-  });
+//   // Join user to their personal room based on email
+//   socket.on("join-user", (userEmail) => {
+//     socket.join(userEmail);
+//     console.log(`👤 User ${userEmail} joined room`);
+//   });
 
-  // Handle notification seen event
-  socket.on('notification-seen', (data) => {
-    console.log('📭 Notification seen:', data);
-    // Broadcast to other clients if needed
-    socket.to(data.userEmail).emit('notification-updated');
-  });
+//   // Handle notification seen event
+//   socket.on("notification-seen", (data) => {
+//     console.log("📭 Notification seen:", data);
+//     // Broadcast to other clients if needed
+//     socket.to(data.userEmail).emit("notification-updated");
+//   });
 
-  // Handle all notifications seen
-  socket.on('all-notifications-seen', (data) => {
-    console.log('📭 All notifications seen for:', data.userEmail);
-    socket.to(data.userEmail).emit('notification-updated');
-  });
+//   // Handle all notifications seen
+//   socket.on("all-notifications-seen", (data) => {
+//     console.log("📭 All notifications seen for:", data.userEmail);
+//     socket.to(data.userEmail).emit("notification-updated");
+//   });
 
-  // Handle disconnect
-  socket.on('disconnect', () => {
-    console.log('🔌 User disconnected:', socket.id);
-  });
+//   // Handle disconnect
+//   // socket.on("disconnect", () => {
+//   //   console.log("🔌 User disconnected:", socket.id);
+//   // });
 
-  // Handle connection error
-  socket.on('connect_error', (error) => {
-    console.error('🔌 Connection error:', error);
-  });
-});
+//   // Handle connection error
+//   socket.on("connect_error", (error) => {
+//     console.error("🔌 Connection error:", error);
+//   });
+// });
 
 await connectDB();
 
