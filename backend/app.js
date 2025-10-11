@@ -19,7 +19,7 @@ const io = new Server(server, {
     origin: "*",
     credentials: true,
   },
-  // transports: ["websocket", "polling"],
+   transports: ["websocket", "polling"],
 });
 
 // io.on("connection", (socket) => {
