@@ -89,21 +89,21 @@ const Sidebar = () => {
     },
     { name: "Services", icon: <FaCog />, href: "/dashboard/services" },
     { name: "Admin Tools", icon: <FaCog />, href: "/dashboard/adminTools" },
-    { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
+    // { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
     { name: "Butler Application", icon: <VscGitStashApply />, href: "/dashboard/application" },
   ];
   
   const customerSidebar = [
     { name: "My Bookings", icon: <BsBook />, href: "/dashboard" },
     { name: "Payments details", icon: <FaUsers />, href: "/dashboard/payments" },
-    { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
+    // { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
   ];
   
   const butlerSidebar = [
     { name: "My Bookings", icon: <BsBook />, href: "/dashboard" },
     { name: "Payments details", icon: <FaUsers />, href: "/dashboard/payments" },
     { name: "Schedule", icon: <FaUsers />, href: "/dashboard/schedule" },
-    { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
+    // { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
   ];
 
   let sidebarItems = [];

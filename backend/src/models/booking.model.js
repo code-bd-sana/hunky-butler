@@ -74,6 +74,14 @@ const bookingSchema = mongoose.Schema(
       type: String,
       default: "unpaid",
     },
+
+    paymentStatus:String,
+     stripePaymentIntentId: String,
+     stripePaymentIntentId: String,
+    //  paidAt:Date
+     
+
+             
   },
   
   { timestamps: true }
