@@ -1,5 +1,11 @@
 import cookieParser from "cookie-parser";
 import express from "express";
+
+
+
+// router.post('/webhook', express.raw({type: 'application/json'}), handleStripeWebhook);
+
+
 const app = express();
 import routes from "./src/routes/index.js";
 import dotenv from "dotenv";
@@ -8,8 +14,15 @@ import connectDB from "./src/config/db.js";
 import http from "http";
 import { Server } from "socket.io";
 import Message from "./src/models/Message.js";
+import { handleStripeWebhook } from "./src/controller/payment.controller.js";
 
 dotenv.config();
+
+app.post(
+  "/api/webhook",
+  express.raw({ type: "application/json" }),
+ handleStripeWebhook
+);
 
 // Socket.IO setup
 const server = http.createServer(app);
@@ -37,6 +50,8 @@ io.on("connection", (socket) => {
     socket.join(userId);
     console.log("👤 User joined room:", userId);
   });
+
+  
   //   // Join user to their personal room based on email
   socket.on("join-user", (userEmail) => {
     socket.join(userEmail);
@@ -117,6 +132,9 @@ app.use(
     credentials: true,
   })
 );
+
+
+
 
 app.use("/api", routes);
 app.get("/", (req, res) => {

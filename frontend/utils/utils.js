@@ -1,6 +1,6 @@
-export const base_url = `https://hunky-butler-2.onrender.com/api`
+// export const base_url = `https://hunky-butler-2.onrender.com/api`
 // export const base_url = `http://localhost:5000/api`
-// export const base_url = `https://hunkey-butler-test.vercel.app/api`
+export const base_url = `https://hunky-butler-backend.vercel.app/api`
 export const SOCKET_URL = `https://hunky-butler-2.onrender.com`
 // export const SOCKET_URL = `http://localhost:5000`
 // export const SOCKET_URL = `https://hunkey-butler-test.vercel.app`

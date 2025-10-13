@@ -24,6 +24,9 @@ const NotificaitonSchema = mongoose.Schema(
   },
   link:{
     type:String
+  },
+  obj:{
+    type: Object
   }
   }
 );

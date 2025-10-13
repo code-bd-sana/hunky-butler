@@ -13,7 +13,7 @@ const FinancialsPage = () => {
               isSidebarOpen={isSidebarOpen}
               setIsSidebarOpen={setIsSidebarOpen}
             />
-      <FinancialsCard/>
+      {/* <FinancialsCard/> */}
      
        <Payouts/>
     
