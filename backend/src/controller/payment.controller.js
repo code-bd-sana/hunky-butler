@@ -8,7 +8,7 @@ import { storeNotification } from '../utils/utils.js';
 import PaymentHistory from '../models/payment.model.js';
 import mongoose from 'mongoose';
 
-const stripe = stripePackage('sk_test_51RWA5gFVdJBgYBDxzKX5BRz3IgX5pvEiksT16UsQ8VsE3p2YIOx2UOrpQ2Ivet8egKkncZt0BBqPozUeiqXeEjed00BqZ6eqcp');
+const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
