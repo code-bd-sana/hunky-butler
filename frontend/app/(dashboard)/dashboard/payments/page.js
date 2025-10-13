@@ -7,7 +7,7 @@ import DashNav from '@/components/Dashboard/DashNav/DashNav'
 import { useSession } from 'next-auth/react'
 import React from 'react'
 
-export default function page() {
+export default function Paymentpage() {
   const {data} = useSession();
   const role = data?.user?.role;
 

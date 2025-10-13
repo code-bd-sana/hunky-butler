@@ -1,16 +1,15 @@
 "use client";
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import Image from "next/image";
 import image from "@/public/quote/bg.png";
 
 export default function PaymentSuccessPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+ 
 
-  const sessionId = searchParams.get('session_id');
-  const bookingId = searchParams.get('booking_id');
+
 
   const handleGoToDashboard = () => {
     router.push('/dashboard');
@@ -45,12 +44,7 @@ export default function PaymentSuccessPage() {
         {/* Success Details */}
         <div className="bg-[#46434362] backdrop-blur-md backdrop-saturate-15 border border-green-300/30 rounded-2xl p-6 mb-8 max-w-md">
           <div className="space-y-3 text-white text-left">
-            {bookingId && (
-              <div className="flex justify-between">
-                <span className="text-gray-300">Booking ID:</span>
-                <span className="font-medium">#{bookingId.slice(-8)}</span>
-              </div>
-            )}
+         
             
             <div className="flex justify-between">
               <span className="text-gray-300">Status:</span>
