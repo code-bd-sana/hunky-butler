@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { MdKeyboardArrowDown, MdChevronLeft, MdChevronRight, MdStar } from "react-icons/md";
+import { MdKeyboardArrowDown, MdChevronLeft, MdChevronRight, MdStar, MdPayments } from "react-icons/md";
 import { LuArrowUpRight } from "react-icons/lu";
 import { FiEye } from "react-icons/fi";
 import { MdOutlineEdit } from "react-icons/md";
@@ -10,6 +10,7 @@ import { useGetAllButlerQuery } from "@/features/butler";
 import toast, { Toaster } from "react-hot-toast";
 import { useGetAdminSummuryQuery } from "@/features/summury";
 import { useSession } from "next-auth/react";
+import { base_url } from "@/utils/utils";
 
 // Details Modal Component
 const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
@@ -801,6 +802,48 @@ const CustomerBooking = () => {
     );
   }
 
+
+
+  const  PaymentsHandaler  = async (id) => {
+    try {
+
+      
+      const response = await fetch(`${base_url}/payment/create-checkout-session-exist`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: id,
+            successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancelUrl: `${window.location.origin}/booking/cancel`,
+          }),
+        });
+  
+        const { sessionId, success, error, checkoutUrl } = await response.json();
+        
+        if (!success) {
+          throw new Error(error || 'Failed to create checkout session');
+        }
+        
+        // Method 2: Use the checkout URL directly from backend
+        if (checkoutUrl) {
+          window.location.href = checkoutUrl;
+        } else {
+          // Method 3: Construct the URL manually
+          window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
+        }
+        
+    
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.message || "Payment processing failed");
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
 
@@ -902,6 +945,7 @@ const CustomerBooking = () => {
      
               <th className="p-3 font-medium">Location</th>
               <th className="p-3 font-medium">Status</th>
+              <th className="p-3 font-medium">Payment</th>
               <th className="p-3 font-medium">Total</th>
          
               <th className="p-3 font-medium">Action</th>
@@ -952,6 +996,15 @@ const CustomerBooking = () => {
                     {b.status?.charAt(0).toUpperCase() + b.status?.slice(1)}
                   </span>
                 </td>
+                <td className="p-3">
+                  <span
+                    className={`px-3 py-2 rounded-full text-sm font-medium ${
+                      statusColors[b?.paid] || "bg-gray-100 text-gray-600"
+                    }`}
+                  >
+                   {b?.paid}
+                  </span>
+                </td>
                 <td className="p-3">${b.price}</td>
                  
              
@@ -965,6 +1018,16 @@ const CustomerBooking = () => {
                     >
                       <FiEye className="text-lg" />
                     </button>
+                
+                {
+                  b?.paid !== "paid" &&     <button
+                      onClick={() => PaymentsHandaler(b?._id)}
+                      className="p-2 text-gray-600 hover:text-[#FF006A] transition-colors"
+                      title="View Details"
+                    >
+                     <MdPayments className="text-lg cursor-pointer"/>
+                    </button>
+                }
                     
                     {/* Change Status Button */}
                     {/* <button

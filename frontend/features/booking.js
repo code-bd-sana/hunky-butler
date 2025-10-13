@@ -60,7 +60,20 @@ export const bookingApi = createApi({
         }),
         getButlerPersonalOverview:builder.query({
             query:(id)=> `/booking/butlerOverview/${id}`
-        })
+        }),
+      // features/booking/bookingApi.ts
+getPaymentHistory: builder.query({
+  query: ({ skip = 0, limit = 5 }) => 
+    `/payment/allPayments?skip=${skip}&limit=${limit}`
+}),
+getCustomerPaymentHistory: builder.query({
+    query:({skip = 0 , limit = 5, email })=>
+        `/payment/customer/${email}/?skip=${skip}&limit=${limit}` 
+}),
+getButlerPaymentHistory: builder.query({
+    query:({skip = 0 , limit = 5, id })=>
+        `/payment/butler/${id}/?skip=${skip}&limit=${limit}` 
+})
 
       
 
@@ -70,4 +83,4 @@ export const bookingApi = createApi({
     })
 });
 
-export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery, useGetBookingButlerQuery, useGetBookingCustomerQuery , useSubmitReviewMutation , useGetButlerPersonalOverviewQuery  } = bookingApi;
+export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery, useGetBookingButlerQuery, useGetBookingCustomerQuery , useSubmitReviewMutation , useGetButlerPersonalOverviewQuery, useGetPaymentHistoryQuery, useGetCustomerPaymentHistoryQuery, useGetButlerPaymentHistoryQuery  } = bookingApi;

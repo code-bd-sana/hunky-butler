@@ -3,6 +3,7 @@ import nodemailer from "nodemailer";
 import User from "../models/user.model.js";
 import Notificaton from "../models/notification.model.js";
 import { adminGmail, storeNotification } from "../utils/utils.js";
+import PaymentHistory from "../models/payment.model.js";
 
 export const getAllBooking = async (req, res) => {
   try {
@@ -265,6 +266,7 @@ const notificationData = {
 
 
 
+
 export const deleteBooking = async (req, res) => {
   try {
     const id = req.params.id;
@@ -293,12 +295,12 @@ export const updateStatus = async (req, res) => {
     );
 
     // If completed, mark as paid
-    if (status === "completed") {
-      await Booking.updateOne(
-        { _id: id },
-        { $set: { paid: "Paid" } }
-      );
-    }
+    // if (status === "completed") {
+    //   await Booking.updateOne(
+    //     { _id: id },
+    //     { $set: { paid: "Paid" } }
+    //   );
+    // }
 
     // Fetch booking info for email
     const booking = await Booking.findById(id);
@@ -403,6 +405,14 @@ export const assginToButler = async (req, res) => {
     // Find booking info
     const booking = await Booking.findById(bookingId);
     const { firstName, lastName, email, serviceName, dateOfEvent } = booking;
+   await PaymentHistory.updateOne(
+  { bookingId: bookingId },
+  {
+    $set: {
+      butlerId: butlerId
+    }
+  }
+);
 
     // Nodemailer transporter
     const transporter = nodemailer.createTransport({
