@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import image from "@/public/quote/bg.png";
 import { IoLocationSharp } from "react-icons/io5";
 import { useParams } from 'next/navigation';
@@ -11,7 +11,217 @@ import { base_url } from '@/utils/utils';
 
 const stripePromise = loadStripe('pk_test_51RWA5gFVdJBgYBDxRIUNli1dDlicyaiOTCEECLujXMHTyVEujYQJ2pZ9DFlUeNPpaKzy7cPYJ1QlA6cUe7A9m6Eg00nP3ZNUFM');
 
-// Step Indicator Component (keep as is)
+// Google Places Autocomplete Component
+const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
+  const [query, setQuery] = useState(value || '');
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const autocompleteService = useRef(null);
+  const placesService = useRef(null);
+
+  useEffect(() => {
+    // Load Google Maps script
+    if (!window.google) {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBzl1SSnafhWC9jUanB6uu9QWbJBNdBJRk&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
+      
+      script.onload = () => {
+        initializeServices();
+      };
+    } else {
+      initializeServices();
+    }
+
+    function initializeServices() {
+      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      placesService.current = new window.google.maps.places.PlacesService(document.createElement('div'));
+    }
+  }, []);
+
+  useEffect(() => {
+    setQuery(value || '');
+  }, [value]);
+
+  const fetchPredictions = (input) => {
+    if (!autocompleteService.current || input.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    setIsLoading(true);
+
+    autocompleteService.current.getPlacePredictions(
+      {
+        input: input,
+        componentRestrictions: { country: 'gb' }, // UK only
+        types: ['geocode'] // addresses only
+      },
+      (predictions, status) => {
+        setIsLoading(false);
+        if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
+          setSuggestions(predictions.slice(0, 8)); // Show top 8 results
+          setShowSuggestions(true);
+        } else {
+          setSuggestions([]);
+          setShowSuggestions(false);
+        }
+      }
+    );
+  };
+
+  useEffect(() => {
+    const debounceTimer = setTimeout(() => {
+      if (query.length > 1) {
+        fetchPredictions(query);
+      } else {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [query]);
+
+  const getPlaceDetails = (placeId) => {
+    if (!placesService.current) return;
+
+    placesService.current.getDetails(
+      {
+        placeId: placeId,
+        fields: ['formatted_address', 'name', 'geometry', 'address_components']
+      },
+      (place, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK && place) {
+          const fullAddress = place.formatted_address;
+          setQuery(fullAddress);
+          setShowSuggestions(false);
+          
+          if (onLocationSelect) {
+            onLocationSelect({
+              fullAddress: fullAddress,
+              placeId: placeId,
+              latitude: place.geometry?.location?.lat(),
+              longitude: place.geometry?.location?.lng()
+            });
+          }
+        }
+      }
+    );
+  };
+
+  const handleSelect = (prediction) => {
+    getPlaceDetails(prediction.place_id);
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setQuery(value);
+    
+    // If user is typing manually, update the location
+    if (onLocationSelect) {
+      onLocationSelect({ fullAddress: value });
+    }
+  };
+
+  const handleInputFocus = () => {
+    if (query.length > 1 && suggestions.length > 0) {
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleInputBlur = () => {
+    // Delay hiding suggestions to allow for click
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 200);
+  };
+
+  // Alternative: Simple UK cities list as fallback
+  const ukCities = [
+    "London, UK", "Manchester, UK", "Birmingham, UK", "Liverpool, UK", 
+    "Leeds, UK", "Sheffield, UK", "Bristol, UK", "Glasgow, UK",
+    "Edinburgh, UK", "Cardiff, UK", "Newcastle upon Tyne, UK", "Nottingham, UK"
+  ];
+
+  const getFallbackSuggestions = (input) => {
+    return ukCities.filter(city =>
+      city.toLowerCase().includes(input.toLowerCase())
+    ).slice(0, 8);
+  };
+
+  const handleFallbackSelect = (location) => {
+    setQuery(location);
+    setShowSuggestions(false);
+    
+    if (onLocationSelect) {
+      onLocationSelect({
+        fullAddress: location
+      });
+    }
+  };
+
+  const displaySuggestions = suggestions.length > 0 ? suggestions : 
+    (query.length > 1 ? getFallbackSuggestions(query) : []);
+
+  return (
+    <div className="text-left w-full mt-6 md:mt-0 relative">
+      <label htmlFor="location" className="text-white text-left block">Location *</label>
+      <div className="relative">
+        <input
+          required
+          type="text"
+          name="location"
+          id="location"
+          value={query}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          placeholder="Enter UK address or city (e.g., London, Manchester)"
+          className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669] pl-12 pr-10"
+        />
+        <IoLocationSharp className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-xl" />
+        
+        {isLoading && (
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+          </div>
+        )}
+      </div>
+      
+      {showSuggestions && displaySuggestions.length > 0 && (
+        <div className="absolute z-50 w-full mt-1 bg-[#000000ee] border border-[#6D6669] rounded-lg shadow-lg max-h-60 overflow-y-auto backdrop-blur-md">
+          {displaySuggestions.map((item, index) => (
+            <div
+              key={index}
+              className="px-4 py-3 cursor-pointer hover:bg-[#FF3388] text-white border-b border-[#6D6669] last:border-b-0 transition-colors duration-200"
+              onClick={() => 
+                item.place_id ? handleSelect(item) : handleFallbackSelect(item)
+              }
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              {item.description || item}
+            </div>
+          ))}
+        </div>
+      )}
+      
+      {showSuggestions && displaySuggestions.length === 0 && query.length > 1 && (
+        <div className="absolute z-50 w-full mt-1 bg-[#000000ee] border border-[#6D6669] rounded-lg shadow-lg backdrop-blur-md">
+          <div className="px-4 py-3 text-gray-400 text-center">
+            No locations found
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Step Indicator Component
 const StepIndicator = ({ currentStep, bookingSuccess }) => {
   const steps = [
     { id: "selectservice", number: 1, label: "Select Service" },
@@ -74,11 +284,21 @@ export default function SecondStep() {
   const [nextStep, setNextStep] = useState("firststep");
   const [booking, { isLoading, error }] = useBookingMutation();
   const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('pay_now'); // 'pay_now' or 'pay_later'
+  const [paymentMethod, setPaymentMethod] = useState('pay_now');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   
   const params = useParams();
   const { data: session } = useSession();
+
+  // Service duration mapping
+  const getServiceDuration = (serviceName) => {
+    const durations = {
+      'cocktail': 2,
+      'life-drawing': 1.5,
+      'stripers': 0.25
+    };
+    return durations[serviceName] || 2;
+  };
 
   const firstStepHandler = async (e) => {
     try {
@@ -91,13 +311,33 @@ export default function SecondStep() {
       const postCode = form.postCode.value;
       const location = form.location.value;
 
+      // Phone number validation
+      const phoneRegex = /^[0-9+\-\s()]{10,}$/;
+      if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+        toast.error("Please enter a valid phone number");
+        return;
+      }
+
+      // Post code validation
+      const postCodeRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
+      if (!postCodeRegex.test(postCode)) {
+        toast.error("Please enter a valid UK postcode");
+        return;
+      }
+
+      // Location validation
+      if (!location.trim()) {
+        toast.error("Please enter your location");
+        return;
+      }
+
       const firstStepData = {
         firstName,
         lastName,
         email,
         phone,
-        postCode: Number(postCode),
-        location
+        postCode: postCode.toUpperCase(),
+        location: location.trim()
       };
 
       setFirstStep(firstStepData);
@@ -115,15 +355,22 @@ export default function SecondStep() {
       const dateOfEvent = form.dateOfEvent.value;
       const numberOfStaff = form.numberOfStaff.value;
       const startTime = form.startTime.value;
-      const durationHours = form.durationHours.value;
-      const durationMinutes = form.durationMinutes.value;
+
+      // Validate date is not in the past
+      const selectedDate = new Date(dateOfEvent);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (selectedDate < today) {
+        toast.error("Please select a future date");
+        return;
+      }
 
       const secondStepData = {
         dateOfEvent,
         numberOfStaff: Number(numberOfStaff),
         startTime,
-        durationHours: Number(durationHours),
-        durationMinutes: Number(durationMinutes)
+        durationHours: getServiceDuration(params.category)
       };
 
       setSecondStep(secondStepData);
@@ -134,59 +381,55 @@ export default function SecondStep() {
     }
   };
 
-const handlePayment = async () => {
-  try {
-    setIsProcessingPayment(true);
-    
-    const finalData = {
-      ...firstStep,
-      ...secondStep,
-      slug: params.category,
-      serviceName: params.category,
-      price: secondStep.durationHours * secondStep.numberOfStaff,
-      paymentMethod,
-      paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid'
-    };
-
-    if (paymentMethod === 'pay_now') {
-      // Create Stripe checkout session
-      const response = await fetch(`${base_url}/payment/create-checkout-session`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          bookingData: finalData,
-          successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${window.location.origin}/booking/cancel`,
-        }),
-      });
-
-      const { sessionId, success, error, checkoutUrl } = await response.json();
+  const handlePayment = async () => {
+    try {
+      setIsProcessingPayment(true);
       
-      if (!success) {
-        throw new Error(error || 'Failed to create checkout session');
-      }
-      
-      // Method 2: Use the checkout URL directly from backend
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
+      const finalData = {
+        ...firstStep,
+        ...secondStep,
+        slug: params.category,
+        serviceName: params.category,
+        price: secondStep.durationHours * secondStep.numberOfStaff,
+        paymentMethod,
+        paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid'
+      };
+
+      if (paymentMethod === 'pay_now') {
+        const response = await fetch(`${base_url}/payment/create-checkout-session`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            bookingData: finalData,
+            successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancelUrl: `${window.location.origin}/booking/cancel`,
+          }),
+        });
+
+        const { sessionId, success, error, checkoutUrl } = await response.json();
+        
+        if (!success) {
+          throw new Error(error || 'Failed to create checkout session');
+        }
+        
+        if (checkoutUrl) {
+          window.location.href = checkoutUrl;
+        } else {
+          window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
+        }
+        
       } else {
-        // Method 3: Construct the URL manually
-        window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
+        await bookNowHandler(finalData);
       }
-      
-    } else {
-      // Pay later - create booking directly
-      await bookNowHandler(finalData);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.message || "Payment processing failed");
+    } finally {
+      setIsProcessingPayment(false);
     }
-  } catch (error) {
-    console.log(error);
-    toast.error(error?.message || "Payment processing failed");
-  } finally {
-    setIsProcessingPayment(false);
-  }
-};
+  };
 
   const bookNowHandler = async (finalData = null) => {
     try {
@@ -216,6 +459,13 @@ const handlePayment = async () => {
     }
   };
 
+  const handleLocationSelect = (locationData) => {
+    setFirstStep(prev => ({
+      ...prev,
+      location: locationData.fullAddress
+    }));
+  };
+
   const getStepTitle = () => {
     switch (nextStep) {
       case "firststep":
@@ -230,6 +480,13 @@ const handlePayment = async () => {
   };
 
   const totalPrice = secondStep.durationHours * secondStep.numberOfStaff;
+
+  const formatDuration = (hours) => {
+    if (hours === 2) return "2 hours";
+    if (hours === 1.5) return "90 minutes";
+    if (hours === 0.25) return "15 minutes";
+    return `${hours} hours`;
+  };
 
   return (
     <div
@@ -247,7 +504,7 @@ const handlePayment = async () => {
           {getStepTitle()}
         </h4>
 
-        {/* Step 1: Personal Information (keep as is) */}
+        {/* Step 1: Personal Information */}
         {nextStep === "firststep" && (
           <section className="w-full max-w-4xl px-6">
             <div className="rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F] backdrop-blur-md backdrop-saturate-15 border border-white/20 shadow-lg">
@@ -294,12 +551,14 @@ const handlePayment = async () => {
                     <label htmlFor="phone" className="text-white text-left block">Phone *</label>
                     <input
                       required
-                      type="text"
+                      type="tel"
                       name="phone"
                       id="phone"
-                      placeholder="Phone"
+                      placeholder="e.g., 07123456789"
+                      pattern="[0-9+\-\s()]{10,}"
                       className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]"
                     />
+                    <p className="text-xs text-gray-400 mt-1">Enter a valid UK phone number</p>
                   </div>
                 </section>
 
@@ -308,25 +567,19 @@ const handlePayment = async () => {
                     <label htmlFor="postCode" className="text-white text-left block">Post Code *</label>
                     <input
                       required
-                      type="number"
+                      type="text"
                       name="postCode"
                       id="postCode"
-                      placeholder="Enter Post Code"
-                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]"
+                      placeholder="e.g., SW1A 1AA"
+                      pattern="[A-Za-z]{1,2}[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}"
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669] uppercase"
                     />
+                    <p className="text-xs text-gray-400 mt-1">Enter a valid UK postcode</p>
                   </div>
-                  <div className="text-left w-full mt-6 md:mt-0 relative">
-                    <label htmlFor="location" className="text-white text-left block">Location *</label>
-                    <input
-                      required
-                      type="text"
-                      name="location"
-                      id="location"
-                      placeholder="Add Location"
-                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669] pl-12"
-                    />
-                    <IoLocationSharp className="absolute left-4 bottom-4 text-white text-xl" />
-                  </div>
+                  <GooglePlacesAutocomplete 
+                    onLocationSelect={handleLocationSelect}
+                    value={firstStep.location}
+                  />
                 </section>
 
                 <button
@@ -341,7 +594,7 @@ const handlePayment = async () => {
           </section>
         )}
 
-        {/* Step 2: Event Information (keep as is) */}
+ {/* Step 2: Event Information */}
         {nextStep === "secondstep" && (
           <section className="mt-8 md:mt-28 w-full max-w-4xl px-6">
             <div className="rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F] backdrop-blur-md backdrop-saturate-15 border border-white/20 shadow-lg">
@@ -349,59 +602,69 @@ const handlePayment = async () => {
                 <section className="md:flex items-center gap-4">
                   <div className="text-left w-full">
                     <label htmlFor="dateOfEvent" className="text-white text-left block">Date of event *</label>
-                    <input
-                      required
-                      type="date"
-                      id="dateOfEvent"
-                      name="dateOfEvent"
-                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-                    />
+                    <div className="relative">
+                      <input
+                        required
+                        type="date"
+                        id="dateOfEvent"
+                        name="dateOfEvent"
+                        min={new Date().toISOString().split('T')[0]}
+                        className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669] appearance-none cursor-pointer"
+                      />
+                      {/* Custom calendar icon */}
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">Click to open calendar</p>
                   </div>
                   <div className="text-left mt-6 md:mt-0 w-full">
                     <label className="text-white text-left block">Number of staff *</label>
-                    <input
+                    <select
                       required
-                      type="number"
                       name="numberOfStaff"
-                      placeholder="Enter number"
-                      min="1"
-                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-                    />
+                      className="bg-[#00000066] text-white mt-1 outline-0 w-full border py-3.5 px-4 rounded-lg border-[#6D6669] cursor-pointer"
+                    >
+                      <option value="">Select number of staff</option>
+                      {[1, 2, 3, 4, 5].map(num => (
+                        <option key={num} value={num}>
+                          {num} {num === 1 ? 'Butler' : 'Butlers'}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </section>
 
                 <section className="md:flex items-center gap-4 mt-6 md:mt-8">
                   <div className="text-left w-full">
                     <label htmlFor="startTime" className="text-white text-left block">Start Time *</label>
-                    <input
-                      required
-                      type="time"
-                      id="startTime"
-                      name="startTime"
-                      className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-                    />
+                    <div className="relative">
+                      <input
+                        required
+                        type="time"
+                        id="startTime"
+                        name="startTime"
+                        className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669] appearance-none cursor-pointer"
+                      />
+                      {/* Custom clock icon */}
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">Click to select time</p>
                   </div>
                   <div className="text-left w-full mt-6 md:mt-0">
                     <label className="text-white text-left block">Duration *</label>
-                    <div className="flex items-center gap-2 md:gap-4">
-                      <input
-                        required
-                        type="number"
-                        min="0"
-                        name="durationHours"
-                        placeholder="Hours"
-                        className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-                      />
-                      <input
-                        required
-                        type="number"
-                        min="0"
-                        max="59"
-                        name="durationMinutes"
-                        placeholder="Minutes"
-                        className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669]"
-                      />
+                    <div className="bg-[#00000066] text-white mt-1 outline-0 w-full border py-3.5 px-4 rounded-lg border-[#6D6669]">
+                      {formatDuration(getServiceDuration(params.category))}
                     </div>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Fixed duration for {params.category} service
+                    </p>
                   </div>
                 </section>
 
@@ -448,8 +711,12 @@ const handlePayment = async () => {
                         <span className="capitalize">{params?.category}</span>
                       </div>
                       <div className="flex justify-between">
+                        <span className="font-medium">Location:</span>
+                        <span className="text-right max-w-[200px] break-words">{firstStep.location}</span>
+                      </div>
+                      <div className="flex justify-between">
                         <span className="font-medium">Total Amount:</span>
-                        <span className="font-bold">${totalPrice}</span>
+                        <span className="font-bold">£{totalPrice}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="font-medium">Payment Status:</span>
@@ -474,7 +741,7 @@ const handlePayment = async () => {
                   <>
                     <h6 className="text-lg font-semibold">Your total price</h6>
                     <h6 className="text-4xl md:text-5xl font-bold py-4 md:py-6">
-                      ${totalPrice}
+                      £{totalPrice}
                     </h6>
 
                     {/* Payment Method Selection */}
@@ -492,17 +759,6 @@ const handlePayment = async () => {
                         >
                           Pay Now
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => setPaymentMethod('pay_later')}
-                          className={`px-6 py-3 rounded-lg border-2 transition-all ${
-                            paymentMethod === 'pay_later'
-                              ? 'border-[#FF3388] bg-[#FF3388] text-white'
-                              : 'border-gray-400 text-gray-400 hover:border-[#FF3388]'
-                          }`}
-                        >
-                          Pay Later
-                        </button>
                       </div>
                     </div>
 
@@ -518,12 +774,16 @@ const handlePayment = async () => {
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Event Duration</span>
                         <span className="text-right">
-                          {secondStep.durationHours} Hours {secondStep.durationMinutes > 0 && `${secondStep.durationMinutes} Minutes`}
+                          {formatDuration(secondStep.durationHours)}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Staff</span>
-                        <span className="text-right">{secondStep.numberOfStaff} Butlers</span>
+                        <span className="text-right">{secondStep.numberOfStaff} {secondStep.numberOfStaff === 1 ? 'Butler' : 'Butlers'}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-sm md:text-lg">Location</span>
+                        <span className="text-right max-w-[200px] break-words">{firstStep.location}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Service Type</span>
@@ -537,15 +797,8 @@ const handlePayment = async () => {
                       className="px-[16px] py-[8px] w-[164px] mt-8 md:mt-12 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap disabled:opacity-50"
                       disabled={isProcessingPayment || isLoading}
                     >
-                      {isProcessingPayment ? "Processing..." : 
-                       paymentMethod === 'pay_now' ? "Pay Now" : "Confirm Booking"}
+                      {isProcessingPayment ? "Processing..." : "Pay Now"}
                     </button>
-
-                    {paymentMethod === 'pay_later' && (
-                      <p className="text-sm text-gray-300 mt-4">
-                        You can pay for this booking later. Your booking will be confirmed immediately.
-                      </p>
-                    )}
                   </>
                 )}
               </section>

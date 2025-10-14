@@ -24,7 +24,7 @@ const bookingSchema = mongoose.Schema(
       required: [true, "Phone Number is Required"],
     },
     postCode: {
-      type: Number,
+      type: String,
       required: [true, "Post Code is required"],
     },
     dateOfEvent: {
