@@ -465,7 +465,17 @@ export const assginToButler = async (req, res) => {
           await Booking.updateOne(
             { _id: bookingId },
             { $set: { butler: null } }
+
+          
           );
+ await PaymentHistory.updateOne(
+  { bookingId: bookingId },
+  {
+    $set: {
+      butlerId: null
+    }
+  }
+);
 
                storeNotification(adminGmail, `Booking Needs Reassignmen - The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(dateOfEvent).toLocaleDateString()}) was not accepted by the assigned butler.`, '', '/dashboard')
                
