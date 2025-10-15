@@ -29,6 +29,8 @@ const transporter = nodemailer.createTransport({
 // controllers/paymentController.js - এটা update করুন
 
 export const createCheckoutSessionExistngBooking = async (req, res) => {
+
+  console.log("first")
   try {
     const { id, successUrl, cancelUrl } = req.body;
 
@@ -124,22 +126,22 @@ export const createCheckoutSession = async (req, res) => {
     const amountToCharge = isDeposit ? depositAmount : totalAmount;
     const amountDue = isDeposit ? totalAmount - depositAmount : 0;
 
-    // Create booking first with pending status
+    // Create booking first with pending status - IMPORTANT: Include paymentType
     const newBooking = new Booking({
       ...bookingData,
+      paymentType: paymentType, // ✅ Eta add koro
+      depositAmount: isDeposit ? depositAmount : 0, // ✅ Eta add koro
+      amountDue: amountDue, // ✅ Eta add koro
+      amountPaid: isDeposit ? depositAmount : 0, // ✅ Eta add koro
       paid: isDeposit ? 'deposit_paid' : 'pending',
       paymentMethod: 'pay_now',
       paymentStatus: isDeposit ? 'deposit_paid' : 'pending',
-      paymentType: paymentType,
       totalAmount: totalAmount,
-      amountPaid: isDeposit ? depositAmount : 0,
-      amountDue: amountDue,
-      depositAmount: isDeposit ? depositAmount : 0,
       createdAt: new Date()
     });
 
     const savedBooking = await newBooking.save();
-    console.log('Booking created with ID:', savedBooking._id, 'Payment type:', paymentType);
+    console.log('Booking created with ID:', savedBooking._id, 'Payment type:', paymentType, 'Amount Due:', amountDue);
 
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -171,9 +173,15 @@ export const createCheckoutSession = async (req, res) => {
         lastName: bookingData?.lastName,
         serviceName: bookingData.serviceName,
         totalAmount: totalAmount.toString(),
-        paymentType: paymentType,
-        depositAmount: depositAmount.toString(),
-        amountDue: amountDue.toString()
+        paymentType: paymentType, // ✅ Eta must include
+        depositAmount: depositAmount.toString(), // ✅ Eta add koro
+        amountDue: amountDue.toString(), // ✅ Eta add koro
+        phone: bookingData.phone,
+        dateOfEvent: bookingData.dateOfEvent,
+        startTime: bookingData.startTime,
+        durationHours: bookingData.durationHours.toString(),
+        location: bookingData.location,
+        numberOfStaff: bookingData.numberOfStaff.toString()
       },
       customer_email: bookingData.email,
     });
@@ -256,15 +264,24 @@ export const handleStripeWebhook = async (req, res) => {
 };
 
 // Handle successful payment (both full and deposit)
+// Handle successful payment (both full and deposit)
 const handleSuccessfulPayment = async (session) => {
   try {
     const bookingId = session.metadata.bookingId;
     const customerEmail = session.metadata.customerEmail;
     const serviceName = session.metadata.serviceName;
     const totalAmount = parseFloat(session.metadata.totalAmount);
-    const paymentType = session.metadata.paymentType;
+    const paymentType = session.metadata.paymentType; // ✅ Eta properly read koro
     const isDeposit = paymentType === 'deposit';
     const isBalancePayment = paymentType === 'balance';
+
+    console.log('🔄 Processing payment:', { 
+      bookingId, 
+      paymentType, 
+      isDeposit, 
+      isBalancePayment,
+      metadata: session.metadata 
+    });
 
     let paymentHistory;
 
@@ -279,6 +296,7 @@ const handleSuccessfulPayment = async (session) => {
       paymentHistory.amountPaid = totalAmount;
       paymentHistory.amountDue = 0;
       paymentHistory.paymentStatus = 'paid';
+      paymentHistory.paymentType = 'full'; // ✅ Balance pay korle full hoye jabe
       paymentHistory.stripePaymentIntentId = session.payment_intent;
       paymentHistory.paymentConfirmedAt = new Date();
 
@@ -298,10 +316,11 @@ const handleSuccessfulPayment = async (session) => {
 
       await paymentHistory.save();
 
-      // Update booking
+      // Update booking - IMPORTANT: Set to paid
       await Booking.findByIdAndUpdate(bookingId, {
         paid: 'paid',
         paymentStatus: 'paid',
+        paymentType: 'full', // ✅ Balance pay korle full hoye jabe
         amountPaid: totalAmount,
         amountDue: 0,
         paymentConfirmedAt: new Date()
@@ -315,7 +334,6 @@ const handleSuccessfulPayment = async (session) => {
       const dateOfEvent = session.metadata.dateOfEvent;
       const startTime = session.metadata.startTime;
       const durationHours = session.metadata.durationHours;
-      const durationMinutes = session.metadata.durationMinutes;
       const location = session.metadata.location;
       const numberOfStaff = session.metadata.numberOfStaff;
       const depositAmount = parseFloat(session.metadata.depositAmount || 0);
@@ -323,6 +341,14 @@ const handleSuccessfulPayment = async (session) => {
 
       const amountPaid = isDeposit ? depositAmount : totalAmount;
       const paymentStatus = isDeposit ? 'deposit_paid' : 'paid';
+
+      console.log('💰 Payment details:', {
+        isDeposit,
+        amountPaid,
+        paymentStatus,
+        amountDue,
+        depositAmount
+      });
 
       // Get receipt information
       let receiptUrl = null;
@@ -346,13 +372,13 @@ const handleSuccessfulPayment = async (session) => {
         }
       }
 
-      // Create payment history
+      // Create payment history - IMPORTANT: Set paymentType correctly
       paymentHistory = new PaymentHistory({
         bookingId: bookingId,
         customerEmail: customerEmail,
         serviceName: serviceName,
         totalAmount: totalAmount,
-        paymentType: paymentType,
+        paymentType: paymentType, // ✅ Eta properly set koro
         depositAmount: depositAmount,
         amountDue: amountDue,
         amountPaid: amountPaid,
@@ -370,7 +396,7 @@ const handleSuccessfulPayment = async (session) => {
         customerName: `${firstName} ${lastName}`,
         customerPhone: phone,
         serviceTime: startTime,
-        serviceDuration: `${durationHours}h ${durationMinutes}m`,
+        serviceDuration: `${durationHours} hours`,
         serviceLocation: location,
         numberOfStaff: parseInt(numberOfStaff) || 1,
         taxAmount: 0,
@@ -385,13 +411,14 @@ const handleSuccessfulPayment = async (session) => {
 
       await paymentHistory.save();
 
-      // Update booking status
+      // Update booking status - IMPORTANT: Set paymentType correctly
       const updatedBooking = await Booking.findOneAndUpdate(
         { _id: bookingId },
         {
           $set: {
             paid: paymentStatus,
             paymentStatus: paymentStatus,
+            paymentType: paymentType, // ✅ Eta properly set koro
             stripeSessionId: session.id,
             stripePaymentIntentId: session.payment_intent,
             receiptUrl: receiptUrl,
@@ -400,7 +427,6 @@ const handleSuccessfulPayment = async (session) => {
             amountPaid: amountPaid,
             amountDue: amountDue,
             depositAmount: depositAmount,
-            paymentType: paymentType,
             currency: session.currency || 'usd',
             paymentMethod: 'card',
             status: isDeposit ? 'deposit_paid' : 'confirmed',
@@ -413,6 +439,14 @@ const handleSuccessfulPayment = async (session) => {
       if (!updatedBooking) {
         throw new Error(`Booking not found with ID: ${bookingId}`);
       }
+
+      console.log('✅ Booking updated:', {
+        bookingId: updatedBooking._id,
+        paymentType: updatedBooking.paymentType,
+        paymentStatus: updatedBooking.paymentStatus,
+        amountPaid: updatedBooking.amountPaid,
+        amountDue: updatedBooking.amountDue
+      });
 
       // Update user's serviceTaken count only for full payments
       if (!isDeposit) {
@@ -453,6 +487,7 @@ const handleSuccessfulPayment = async (session) => {
           <p><strong>Error:</strong> ${error.message}</p>
           <p><strong>Session ID:</strong> ${session?.id}</p>
           <p><strong>Booking ID:</strong> ${session?.metadata?.bookingId}</p>
+          <p><strong>Payment Type:</strong> ${session?.metadata?.paymentType}</p>
           <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
         </div>
       `
