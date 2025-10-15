@@ -55,7 +55,7 @@ const userSchema = mongoose.Schema({
     type:String
   },
   postcode:{
-    type:Number
+    type:String
   },
   bio:{
     type:String

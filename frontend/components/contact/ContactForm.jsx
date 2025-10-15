@@ -6,7 +6,7 @@ import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
 const ContactForm = () => {
 
   const data = useGetServiceJoyBanglaQuery('cocktail-masterclasses');
-  console.log(data, )
+
   return (
     <div
       className="relative overflow-hidden"

@@ -42,10 +42,10 @@ export default function Page() {
       const email = e.target.email.value;
       const password = e.target.password.value;
 
-      console.log(email, password);
+    
 
       const result = await login({ email, password, role }).unwrap();
-      console.log(result.data);
+  
       const user = result.data;
 
       toast.success("Login Success");
@@ -67,7 +67,7 @@ export default function Page() {
         }
       }
 
-      console.log(res, "This is your res");
+     
     } catch (error) {
       console.log(error.status);
 
@@ -150,11 +150,7 @@ export default function Page() {
       }).unwrap();
 
       // Log the details to console as requested
-      console.log("Password Reset Details:", {
-        email: email,
-        otp: enteredOtp,
-        newPassword: newPass,
-      });
+   
 
       toast.success(result.message || "Password reset successfully!");
 

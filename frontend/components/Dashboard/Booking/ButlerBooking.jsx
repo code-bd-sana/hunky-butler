@@ -217,7 +217,7 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
       }
 
       const response = await assignToButler(data).unwrap();
-      console.log(response)
+  
       toast.success("Assigned Success")
       refetch()
        onClose();
@@ -645,10 +645,7 @@ const ButlerBooking = () => {
   };
 
   const handleButlerAssignment = async(bookingId, butlerId) => {
-    console.log("Assigning butler:", {
-      bookingId: bookingId,
-      butlerId: butlerId
-    });
+  
 
     try {
 

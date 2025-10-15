@@ -24,7 +24,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
     // Load Google Maps script
     if (!window.google) {
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBzl1SSnafhWC9jUanB6uu9QWbJBNdBJRk&libraries=places`;
+script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA&libraries=places`;
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);
@@ -295,7 +295,7 @@ export default function SecondStep() {
     const durations = {
       'cocktail': 2,
       'life-drawing': 1.5,
-      'stripers': 0.25
+      'strippers': 0.25
     };
     return durations[serviceName] || 2;
   };

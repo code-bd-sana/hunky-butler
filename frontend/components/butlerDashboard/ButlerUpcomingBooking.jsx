@@ -39,7 +39,7 @@ export default function ButlerUpcomingBooking() {
   const calculateEarnings = (totalAmount) => {
     const amount = parseFloat(totalAmount) || 0;
     const earnings = amount * 0.20; // 20% commission
-    return earnings.toFixed(2);
+    return totalAmount;
   };
 
   // Format date
@@ -73,7 +73,7 @@ export default function ButlerUpcomingBooking() {
 
   // Handle view details
   const handleViewDetails = (payment) => {
-    console.log('View payment details:', payment);
+  
     // You can implement a modal here
     alert(`Payment Details:\n
 Booking ID: ${payment.bookingId}
@@ -244,7 +244,7 @@ Date: ${formatDate(payment.paidAt)}
 
                     {/* Earnings (20% of total amount) */}
                     <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929] font-medium">
-                      ${earnings} {payment.currency}
+                      ${payment.totalAmount} {payment.currency}
                     </td>
 
                   </tr>

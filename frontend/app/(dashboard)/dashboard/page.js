@@ -14,7 +14,6 @@ import { useSession } from "next-auth/react";
 const DashboardHome = () => {
 
   const {data:user, isLoading, error} = useGetAllUserQuery();
-console.log(user, "ayyyy ayy sobai user ra")
 
 
 
