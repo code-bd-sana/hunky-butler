@@ -24,7 +24,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
     // Load Google Maps script
     if (!window.google) {
       const script = document.createElement('script');
-script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA&libraries=places`;
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);
@@ -285,6 +285,7 @@ export default function SecondStep() {
   const [booking, { isLoading, error }] = useBookingMutation();
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('pay_now');
+  const [paymentType, setPaymentType] = useState('full'); // 'full' or 'deposit'
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   
   const params = useParams();
@@ -405,6 +406,7 @@ export default function SecondStep() {
             bookingData: finalData,
             successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
             cancelUrl: `${window.location.origin}/booking/cancel`,
+            paymentType: paymentType
           }),
         });
 
@@ -440,7 +442,8 @@ export default function SecondStep() {
         serviceName: params.category,
         price: secondStep.durationHours * secondStep.numberOfStaff,
         paymentMethod,
-        paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid'
+        paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid',
+        paymentType: paymentType
       };
 
       const data = await booking(dataToSend).unwrap();
@@ -449,7 +452,7 @@ export default function SecondStep() {
       setBookingSuccess(true);
       
       toast.success(paymentMethod === 'pay_now' 
-        ? 'Redirecting to payment...' 
+        ? `Redirecting to ${paymentType === 'deposit' ? 'deposit' : ''} payment...` 
         : 'Booking Successful!'
       );
       
@@ -480,6 +483,8 @@ export default function SecondStep() {
   };
 
   const totalPrice = secondStep.durationHours * secondStep.numberOfStaff;
+  const depositAmount = 20; // $20 deposit
+  const balanceDue = totalPrice - depositAmount;
 
   const formatDuration = (hours) => {
     if (hours === 2) return "2 hours";
@@ -594,7 +599,7 @@ export default function SecondStep() {
           </section>
         )}
 
- {/* Step 2: Event Information */}
+        {/* Step 2: Event Information */}
         {nextStep === "secondstep" && (
           <section className="mt-8 md:mt-28 w-full max-w-4xl px-6">
             <div className="rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F] backdrop-blur-md backdrop-saturate-15 border border-white/20 shadow-lg">
@@ -698,7 +703,9 @@ export default function SecondStep() {
                     <h6 className="text-2xl md:text-3xl font-bold mb-4">Booking Confirmed!</h6>
                     <p className="text-lg mb-6">
                       {paymentMethod === 'pay_now' 
-                        ? "Thank you for your payment! We're excited to make your event special!" 
+                        ? paymentType === 'deposit'
+                          ? "Thank you for your deposit! We're excited to make your event special!"
+                          : "Thank you for your payment! We're excited to make your event special!"
                         : "Thank you for your booking! You can pay later."
                       }
                     </p>
@@ -718,12 +725,31 @@ export default function SecondStep() {
                         <span className="font-medium">Total Amount:</span>
                         <span className="font-bold">£{totalPrice}</span>
                       </div>
+                      {paymentType === 'deposit' && (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="font-medium">Deposit Paid:</span>
+                            <span className="font-bold text-green-400">£{depositAmount}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="font-medium">Balance Due:</span>
+                            <span className="font-bold text-yellow-400">£{balanceDue}</span>
+                          </div>
+                        </>
+                      )}
                       <div className="flex justify-between">
                         <span className="font-medium">Payment Status:</span>
                         <span className={`font-bold ${
-                          paymentMethod === 'pay_now' ? 'text-green-400' : 'text-yellow-400'
+                          paymentMethod === 'pay_now' 
+                            ? paymentType === 'deposit' 
+                              ? 'text-yellow-400' 
+                              : 'text-green-400'
+                            : 'text-yellow-400'
                         }`}>
-                          {paymentMethod === 'pay_now' ? 'Paid' : 'Pay Later'}
+                          {paymentMethod === 'pay_now' 
+                            ? paymentType === 'deposit' ? 'Deposit Paid' : 'Paid' 
+                            : 'Pay Later'
+                          }
                         </span>
                       </div>
                     </div>
@@ -744,27 +770,61 @@ export default function SecondStep() {
                       £{totalPrice}
                     </h6>
 
-                    {/* Payment Method Selection */}
+                    {/* Payment Type Selection */}
                     <div className="mb-6">
                       <label className="block text-lg font-medium mb-4">Choose Payment Option</label>
-                      <div className="flex gap-4 justify-center">
+                      <div className="flex gap-4 justify-center flex-wrap">
                         <button
                           type="button"
-                          onClick={() => setPaymentMethod('pay_now')}
+                          onClick={() => setPaymentType('full')}
                           className={`px-6 py-3 rounded-lg border-2 transition-all ${
-                            paymentMethod === 'pay_now'
+                            paymentType === 'full'
                               ? 'border-[#FF3388] bg-[#FF3388] text-white'
                               : 'border-gray-400 text-gray-400 hover:border-[#FF3388]'
                           }`}
                         >
-                          Pay Now
+                          Pay Full Amount
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPaymentType('deposit')}
+                          className={`px-6 py-3 rounded-lg border-2 transition-all ${
+                            paymentType === 'deposit'
+                              ? 'border-[#FF3388] bg-[#FF3388] text-white'
+                              : 'border-gray-400 text-gray-400 hover:border-[#FF3388]'
+                          }`}
+                        >
+                          Pay £20 Deposit
                         </button>
                       </div>
+                      {paymentType === 'deposit' && (
+                        <p className="text-sm text-gray-300 mt-2">
+                          Pay £20 now and the remaining £{balanceDue} later
+                        </p>
+                      )}
                     </div>
 
                     <div className="border-t border-white/20 my-4"></div>
 
+                    {/* Payment Summary */}
                     <div className="py-4 space-y-4">
+                      {paymentType === 'deposit' && (
+                        <>
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-sm md:text-lg">Deposit Amount</span>
+                            <span className="text-right text-green-400 font-bold">£{depositAmount}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium text-sm md:text-lg">Balance Due</span>
+                            <span className="text-right text-yellow-400 font-bold">£{balanceDue}</span>
+                          </div>
+                          <div className="border-t border-white/20 pt-2"></div>
+                        </>
+                      )}
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-sm md:text-lg">Total Amount</span>
+                        <span className="text-right font-bold">£{totalPrice}</span>
+                      </div>
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Event starts on</span>
                         <span className="text-right">
@@ -797,7 +857,12 @@ export default function SecondStep() {
                       className="px-[16px] py-[8px] w-[164px] mt-8 md:mt-12 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap disabled:opacity-50"
                       disabled={isProcessingPayment || isLoading}
                     >
-                      {isProcessingPayment ? "Processing..." : "Pay Now"}
+                      {isProcessingPayment 
+                        ? "Processing..." 
+                        : paymentType === 'deposit' 
+                          ? `Pay £${depositAmount} Deposit` 
+                          : `Pay £${totalPrice}`
+                      }
                     </button>
                   </>
                 )}

@@ -105,9 +105,9 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
 
 export const createCheckoutSession = async (req, res) => {
   try {
-    const { bookingData, successUrl, cancelUrl,  } = req.body;
+    const { bookingData, successUrl, cancelUrl, paymentType = 'full' } = req.body;
 
-    console.log('Creating checkout session for:', bookingData);
+    console.log('Creating checkout session for:', bookingData, 'Payment type:', paymentType);
 
     // Validate required fields
     if (!bookingData || !successUrl || !cancelUrl) {
@@ -117,17 +117,29 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
 
+    // Calculate amounts based on payment type
+    const totalAmount = bookingData.price;
+    const depositAmount = 20; // $20 deposit
+    const isDeposit = paymentType === 'deposit';
+    const amountToCharge = isDeposit ? depositAmount : totalAmount;
+    const amountDue = isDeposit ? totalAmount - depositAmount : 0;
+
     // Create booking first with pending status
     const newBooking = new Booking({
       ...bookingData,
-      paid: 'pending',
+      paid: isDeposit ? 'deposit_paid' : 'pending',
       paymentMethod: 'pay_now',
-      paymentStatus: 'pending',
+      paymentStatus: isDeposit ? 'deposit_paid' : 'pending',
+      paymentType: paymentType,
+      totalAmount: totalAmount,
+      amountPaid: isDeposit ? depositAmount : 0,
+      amountDue: amountDue,
+      depositAmount: isDeposit ? depositAmount : 0,
       createdAt: new Date()
     });
 
     const savedBooking = await newBooking.save();
-    console.log('Booking created with ID:', savedBooking._id);
+    console.log('Booking created with ID:', savedBooking._id, 'Payment type:', paymentType);
 
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -137,10 +149,14 @@ export const createCheckoutSession = async (req, res) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `${bookingData.serviceName} Service Booking`,
-              description: `Butler service for ${bookingData.durationHours} hours with ${bookingData.numberOfStaff} staff members`,
+              name: isDeposit 
+                ? `${bookingData.serviceName} Service - Deposit` 
+                : `${bookingData.serviceName} Service Booking`,
+              description: isDeposit
+                ? `Deposit for ${bookingData.durationHours} hours with ${bookingData.numberOfStaff} staff members (Balance: $${amountDue})`
+                : `Butler service for ${bookingData.durationHours} hours with ${bookingData.numberOfStaff} staff members`,
             },
-            unit_amount: Math.round(bookingData.price * 100), // Convert to cents
+            unit_amount: Math.round(amountToCharge * 100), // Convert to cents
           },
           quantity: 1,
         },
@@ -154,23 +170,27 @@ export const createCheckoutSession = async (req, res) => {
         firstName: bookingData.firstName,
         lastName: bookingData?.lastName,
         serviceName: bookingData.serviceName,
-        totalAmount: bookingData.price.toString()
+        totalAmount: totalAmount.toString(),
+        paymentType: paymentType,
+        depositAmount: depositAmount.toString(),
+        amountDue: amountDue.toString()
       },
       customer_email: bookingData.email,
     });
 
-    console.log('Stripe session created:', session.id);
+    console.log('Stripe session created:', session.id, 'for payment type:', paymentType);
 
     // Send response with both sessionId and url
     res.status(200).json({
       success: true,
       sessionId: session.id,
-      checkoutUrl: session.url, // This is important for manual redirect
+      checkoutUrl: session.url,
       bookingId: savedBooking._id,
+      paymentType: paymentType,
+      amountCharged: amountToCharge,
+      amountDue: amountDue,
       message: 'Checkout session created successfully'
     });
-
-    // ... rest of your email sending code
 
   } catch (error) {
     console.error('Error creating checkout session:', error);
@@ -186,26 +206,21 @@ export const createCheckoutSession = async (req, res) => {
 export const handleStripeWebhook = async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
-  await storeNotification('alll', "webhook triger", "khnplra")
+
   try {
-    // Verify webhook signature
     event = stripe.webhooks.constructEvent(
       req.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET || 'whsec_your_webhook_secret_here'
     );
-
-   
     
     console.log('Webhook received:', event.type);
 
   } catch (err) {
     console.log(`Webhook signature verification failed.`, err.message);
-
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Handle the event
   try {
     switch (event.type) {
       case 'checkout.session.completed':
@@ -228,7 +243,7 @@ export const handleStripeWebhook = async (req, res) => {
         console.log(`Unhandled event type: ${event.type}`);
     }
 
-    res.json({ received: true, handled: true, data:event.data.object });
+    res.json({ received: true, handled: true, data: event.data.object });
     
   } catch (error) {
     console.error('Error handling webhook event:', error);
@@ -240,259 +255,194 @@ export const handleStripeWebhook = async (req, res) => {
   }
 };
 
-// Handle successful payment
+// Handle successful payment (both full and deposit)
 const handleSuccessfulPayment = async (session) => {
   try {
     const bookingId = session.metadata.bookingId;
     const customerEmail = session.metadata.customerEmail;
     const serviceName = session.metadata.serviceName;
-    const totalAmount = session.metadata.totalAmount;
-    const firstName = session.metadata.firstName;
-    const lastName = session.metadata.lastName;
-    const phone = session.metadata.phone;
-    const dateOfEvent = session.metadata.dateOfEvent;
-    const startTime = session.metadata.startTime;
-    const durationHours = session.metadata.durationHours;
-    const durationMinutes = session.metadata.durationMinutes;
-    const location = session.metadata.location;
-    const numberOfStaff = session.metadata.numberOfStaff;
+    const totalAmount = parseFloat(session.metadata.totalAmount);
+    const paymentType = session.metadata.paymentType;
+    const isDeposit = paymentType === 'deposit';
+    const isBalancePayment = paymentType === 'balance';
 
-    // ✅ Get receipt information from payment intent
-    let receiptUrl = null;
-    let receiptNumber = null;
-    let stripeChargeId = null;
+    let paymentHistory;
 
-    if (session.payment_intent) {
-      try {
+    if (isBalancePayment) {
+      // Handle balance payment
+      paymentHistory = await PaymentHistory.findById(session.metadata.originalPaymentId);
+      if (!paymentHistory) {
+        throw new Error(`Original payment not found: ${session.metadata.originalPaymentId}`);
+      }
+
+      // Update payment history for balance payment
+      paymentHistory.amountPaid = totalAmount;
+      paymentHistory.amountDue = 0;
+      paymentHistory.paymentStatus = 'paid';
+      paymentHistory.stripePaymentIntentId = session.payment_intent;
+      paymentHistory.paymentConfirmedAt = new Date();
+
+      // Update receipt information
+      if (session.payment_intent) {
         const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
           expand: ['charges.data']
         });
 
-        // Get receipt information from the first charge
         if (paymentIntent.charges?.data?.length > 0) {
           const charge = paymentIntent.charges.data[0];
-          receiptUrl = charge.receipt_url;
-          receiptNumber = charge.receipt_number;
-          stripeChargeId = charge.id;
-          
-          console.log('📄 Receipt Information:', {
+          paymentHistory.receiptUrl = charge.receipt_url;
+          paymentHistory.receiptNumber = charge.receipt_number;
+          paymentHistory.stripeChargeId = charge.id;
+        }
+      }
+
+      await paymentHistory.save();
+
+      // Update booking
+      await Booking.findByIdAndUpdate(bookingId, {
+        paid: 'paid',
+        paymentStatus: 'paid',
+        amountPaid: totalAmount,
+        amountDue: 0,
+        paymentConfirmedAt: new Date()
+      });
+
+    } else {
+      // Handle new payment (full or deposit)
+      const firstName = session.metadata.firstName;
+      const lastName = session.metadata.lastName;
+      const phone = session.metadata.phone;
+      const dateOfEvent = session.metadata.dateOfEvent;
+      const startTime = session.metadata.startTime;
+      const durationHours = session.metadata.durationHours;
+      const durationMinutes = session.metadata.durationMinutes;
+      const location = session.metadata.location;
+      const numberOfStaff = session.metadata.numberOfStaff;
+      const depositAmount = parseFloat(session.metadata.depositAmount || 0);
+      const amountDue = parseFloat(session.metadata.amountDue || 0);
+
+      const amountPaid = isDeposit ? depositAmount : totalAmount;
+      const paymentStatus = isDeposit ? 'deposit_paid' : 'paid';
+
+      // Get receipt information
+      let receiptUrl = null;
+      let receiptNumber = null;
+      let stripeChargeId = null;
+
+      if (session.payment_intent) {
+        try {
+          const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
+            expand: ['charges.data']
+          });
+
+          if (paymentIntent.charges?.data?.length > 0) {
+            const charge = paymentIntent.charges.data[0];
+            receiptUrl = charge.receipt_url;
+            receiptNumber = charge.receipt_number;
+            stripeChargeId = charge.id;
+          }
+        } catch (error) {
+          console.log('Could not retrieve receipt details:', error.message);
+        }
+      }
+
+      // Create payment history
+      paymentHistory = new PaymentHistory({
+        bookingId: bookingId,
+        customerEmail: customerEmail,
+        serviceName: serviceName,
+        totalAmount: totalAmount,
+        paymentType: paymentType,
+        depositAmount: depositAmount,
+        amountDue: amountDue,
+        amountPaid: amountPaid,
+        currency: session.currency || 'usd',
+        paymentMethodType: "card",
+        paymentMethod: "credit_card",
+        paymentStatus: paymentStatus,
+        stripeSessionId: session.id,
+        stripePaymentIntentId: session.payment_intent,
+        stripeChargeId: stripeChargeId,
+        receiptUrl: receiptUrl,
+        receiptNumber: receiptNumber,
+        paidAt: new Date(),
+        paymentConfirmedAt: new Date(),
+        customerName: `${firstName} ${lastName}`,
+        customerPhone: phone,
+        serviceTime: startTime,
+        serviceDuration: `${durationHours}h ${durationMinutes}m`,
+        serviceLocation: location,
+        numberOfStaff: parseInt(numberOfStaff) || 1,
+        taxAmount: 0,
+        discountAmount: 0,
+        serviceFee: 0,
+        notes: isDeposit 
+          ? `Deposit payment of $${depositAmount} received. Balance due: $${amountDue}` 
+          : "Full payment processed successfully via Stripe",
+        isActive: true,
+        adminVerified: false
+      });
+
+      await paymentHistory.save();
+
+      // Update booking status
+      const updatedBooking = await Booking.findOneAndUpdate(
+        { _id: bookingId },
+        {
+          $set: {
+            paid: paymentStatus,
+            paymentStatus: paymentStatus,
+            stripeSessionId: session.id,
+            stripePaymentIntentId: session.payment_intent,
             receiptUrl: receiptUrl,
             receiptNumber: receiptNumber,
-            chargeId: stripeChargeId
-          });
-        }
-      } catch (error) {
-        console.log('Could not retrieve receipt details:', error.message);
+            paidAt: new Date(),
+            amountPaid: amountPaid,
+            amountDue: amountDue,
+            depositAmount: depositAmount,
+            paymentType: paymentType,
+            currency: session.currency || 'usd',
+            paymentMethod: 'card',
+            status: isDeposit ? 'deposit_paid' : 'confirmed',
+            updatedAt: new Date()
+          }
+        },
+        { new: true }
+      );
+
+      if (!updatedBooking) {
+        throw new Error(`Booking not found with ID: ${bookingId}`);
+      }
+
+      // Update user's serviceTaken count only for full payments
+      if (!isDeposit) {
+        await User.updateOne(
+          { email: customerEmail },
+          { 
+            $inc: { serviceTaken: 1 },
+            $set: { lastServiceDate: new Date() }
+          }
+        );
       }
     }
 
-    await storeNotification(bookingId, customerEmail, serviceName, totalAmount);
+    // Send appropriate email based on payment type
+    await sendPaymentConfirmationEmail(session, paymentHistory);
 
-    // ✅ Create payment history with all new fields
-    const paymentHistory = new PaymentHistory({
-      bookingId: bookingId,
-      customerEmail: customerEmail,
-      serviceName: serviceName,
-      totalAmount: totalAmount,
-      amountPaid: session.amount_total ? (session.amount_total / 100) : parseFloat(totalAmount),
-      currency: session.currency || 'usd',
-      paymentType: "card",
-      paymentMethod: "credit_card",
-      paymentStatus: session.payment_status || "paid",
-      stripeSessionId: session.id,
-      stripePaymentIntentId: session.payment_intent,
-      stripeChargeId: stripeChargeId,
-      receiptUrl: receiptUrl,
-      receiptNumber: receiptNumber,
-      paidAt: new Date(),
-      paymentConfirmedAt: new Date(),
-      customerName: `${firstName} ${lastName}`,
-      customerPhone: phone,
-      serviceTime: startTime,
-      serviceDuration: `${durationHours}h ${durationMinutes}m`,
-      serviceLocation: location,
-      numberOfStaff: parseInt(numberOfStaff) || 1,
-      taxAmount: 0, // You can calculate this if needed
-      discountAmount: 0, // You can add discount logic
-      serviceFee: 0, // You can add service fee logic
-      notes: "Payment processed successfully via Stripe",
-      isActive: true,
-      adminVerified: false
-    });
-
-    await paymentHistory.save();
-
-    console.log(`💰 Processing successful payment for booking: ${bookingId}`);
-    console.log(`💳 Amount: $${session.amount_total ? (session.amount_total / 100) : totalAmount}`);
-    console.log(`📄 Receipt: ${receiptUrl}`);
-    console.log(`🔗 Payment History ID: ${paymentHistory._id}`);
-
-    // ✅ Update booking status with comprehensive information
-    const updatedBooking = await Booking.findOneAndUpdate(
-      { _id: bookingId },
-      {
-        $set: {
-          paid: 'paid',
-          paymentStatus: 'paid',
-          stripeSessionId: session.id,
-          stripePaymentIntentId: session.payment_intent,
-          receiptUrl: receiptUrl,
-          receiptNumber: receiptNumber,
-          paidAt: new Date(),
-          amountPaid: session.amount_total ? (session.amount_total / 100) : parseFloat(totalAmount),
-          currency: session.currency || 'usd',
-          paymentMethod: 'card',
-          // Additional booking updates if needed
-          status: 'confirmed',
-          updatedAt: new Date()
-        }
-      },
-      { new: true } // Return updated document
-    );
-
-    if (!updatedBooking) {
-      throw new Error(`Booking not found with ID: ${bookingId}`);
-    }
-
-    console.log(`✅ Booking updated: ${updatedBooking._id}`);
-
-    // ✅ Update user's serviceTaken count
-    const userUpdate = await User.updateOne(
-      { email: customerEmail },
-      { 
-        $inc: { serviceTaken: 1 },
-        $set: { lastServiceDate: new Date() }
-      }
-    );
-
-    console.log(`👤 User service count updated for: ${customerEmail}`);
-
-    // ✅ Send confirmation email to customer WITH RECEIPT LINK
-    const customerEmailHtml = `
-      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
-        <h1 style="color: #4CAF50;">Payment Successful - Booking Confirmed! 🎉</h1>
-        <p style="font-size:16px; margin:20px 0;">
-          Thank you for your payment! Your booking for <strong>${serviceName}</strong> has been confirmed.
-        </p>
-        
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
-          <h3 style="color: #333; margin-bottom: 15px;">Payment & Receipt Details</h3>
-          <p><strong>Amount Paid:</strong> $${session.amount_total ? (session.amount_total / 100) : totalAmount} ${session.currency ? session.currency.toUpperCase() : 'USD'}</p>
-          <p><strong>Transaction ID:</strong> ${session.payment_intent}</p>
-          <p><strong>Payment Date:</strong> ${new Date().toLocaleDateString()}</p>
-          <p><strong>Payment Method:</strong> Credit Card</p>
-          ${receiptUrl ? `
-            <p><strong>Receipt:</strong> <a href="${receiptUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">View Your Receipt</a></p>
-          ` : ''}
-          ${receiptNumber ? `
-            <p><strong>Receipt Number:</strong> ${receiptNumber}</p>
-          ` : ''}
-        </div>
-
-        <div style="background: #e6f7ff; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
-          <h3 style="color: #333; margin-bottom: 15px;">Booking Details</h3>
-          <p><strong>Booking ID:</strong> ${bookingId}</p>
-          <p><strong>Service:</strong> ${serviceName}</p>
-          <p><strong>Date:</strong> ${new Date(dateOfEvent).toLocaleDateString()}</p>
-          <p><strong>Time:</strong> ${startTime}</p>
-          <p><strong>Duration:</strong> ${durationHours}h ${durationMinutes}m</p>
-          <p><strong>Staff:</strong> ${numberOfStaff} butlers</p>
-          <p><strong>Location:</strong> ${location}</p>
-        </div>
-
-        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
-          <p style="margin: 0; color: #2e7d32; font-weight: bold;">
-            ✅ Payment successfully processed - Your booking is confirmed!
-          </p>
-        </div>
-        
-        <div style="margin-top: 25px; padding: 15px; background: #fff3cd; border-radius: 8px;">
-          <p style="margin: 0; color: #856404;">
-            <strong>Note:</strong> Your receipt is also available in your Stripe customer portal. 
-            We'll contact you shortly with more details about your booking.
-          </p>
-        </div>
-        
-        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
-          <p style="margin: 0; font-size: 14px; color: #666;">
-            Need help? Contact us at bannah76769@gmail.com or call +1-XXX-XXX-XXXX
-          </p>
-        </div>
-      </div>
-    `;
-
-    await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
-      to: customerEmail,
-      subject: `Payment Successful - ${serviceName} Booking Confirmed!`,
-      html: customerEmailHtml,
-    });
-
-    console.log(`📧 Confirmation email sent to: ${customerEmail}`);
-
-    // ✅ Send notification to admin WITH COMPLETE INFO
-    const adminEmailHtml = `
-      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
-        <h2 style="color: #4CAF50; margin-bottom: 20px;">💰 Payment Received - Booking Confirmed</h2>
-        
-        <div style="background: #f0f8ff; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: left;">
-          <h3 style="color: #333; margin-bottom: 10px;">Payment Information</h3>
-          <p><strong>Amount:</strong> $${session.amount_total ? (session.amount_total / 100) : totalAmount} ${session.currency ? session.currency.toUpperCase() : 'USD'}</p>
-          <p><strong>Payment Intent:</strong> ${session.payment_intent}</p>
-          <p><strong>Session ID:</strong> ${session.id}</p>
-          <p><strong>Charge ID:</strong> ${stripeChargeId || 'N/A'}</p>
-          ${receiptUrl ? `<p><strong>Receipt URL:</strong> <a href="${receiptUrl}" target="_blank">View Receipt</a></p>` : ''}
-          ${receiptNumber ? `<p><strong>Receipt Number:</strong> ${receiptNumber}</p>` : ''}
-        </div>
-
-        <div style="background: #f0f0f0; padding: 15px; border-radius: 8px; margin: 15px 0; text-align: left;">
-          <h3 style="color: #333; margin-bottom: 10px;">Customer & Booking Details</h3>
-          <p><strong>Booking ID:</strong> ${bookingId}</p>
-          <p><strong>Service:</strong> ${serviceName}</p>
-          <p><strong>Customer:</strong> ${firstName} ${lastName}</p>
-          <p><strong>Email:</strong> ${customerEmail}</p>
-          <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
-          <p><strong>Event Date:</strong> ${new Date(dateOfEvent).toLocaleDateString()}</p>
-          <p><strong>Time:</strong> ${startTime}</p>
-          <p><strong>Duration:</strong> ${durationHours}h ${durationMinutes}m</p>
-          <p><strong>Location:</strong> ${location}</p>
-          <p><strong>Staff Required:</strong> ${numberOfStaff}</p>
-        </div>
-
-        <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; margin: 15px 0;">
-          <p style="margin: 0; color: #2e7d32; font-weight: bold;">
-            ✅ Payment successfully processed - Ready for butler assignment
-          </p>
-        </div>
-      </div>
-    `;
-
-    await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
-      to: "rakib.fbinternational@gmail.com",
-      subject: `💰 Payment Received - $${session.amount_total ? (session.amount_total / 100) : totalAmount} for ${serviceName}`,
-      html: adminEmailHtml,
-    });
-
-    console.log(`📧 Admin notification sent`);
-
-    // ✅ Log successful processing
-    console.log(`🎉 Successfully processed payment for booking ${bookingId}`);
-    console.log(`📄 Receipt URL: ${receiptUrl}`);
-    console.log(`💳 Payment History ID: ${paymentHistory._id}`);
-
+    console.log(`🎉 Successfully processed ${isBalancePayment ? 'balance' : paymentType} payment`);
     return {
       success: true,
       bookingId: bookingId,
       paymentHistoryId: paymentHistory._id,
-      receiptUrl: receiptUrl,
-      amount: session.amount_total ? (session.amount_total / 100) : totalAmount
+      receiptUrl: paymentHistory.receiptUrl,
+      amount: paymentHistory.amountPaid,
+      paymentType: paymentType,
+      isDeposit: isDeposit
     };
 
   } catch (error) {
     console.error('❌ Error handling successful payment:', error);
     
-    // Send error notification
     await transporter.sendMail({
       from: '"Hunky Butler Service" <bannah76769@gmail.com>',
       to: "rakib.fbinternational@gmail.com",
@@ -511,6 +461,102 @@ const handleSuccessfulPayment = async (session) => {
     throw error;
   }
 };
+
+// Send appropriate confirmation email
+const sendPaymentConfirmationEmail = async (session, paymentHistory) => {
+  const isDeposit = paymentHistory.paymentType === 'deposit';
+  const isBalancePayment = session.metadata.paymentType === 'balance';
+  
+  let subject, html;
+
+  if (isBalancePayment) {
+    subject = `Balance Paid - ${paymentHistory.serviceName} Booking Complete!`;
+    html = `
+      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
+        <h1 style="color: #4CAF50;">Balance Payment Successful! 🎉</h1>
+        <p style="font-size:16px; margin:20px 0;">
+          Thank you for completing your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> is now fully confirmed.
+        </p>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
+          <h3 style="color: #333; margin-bottom: 15px;">Payment Details</h3>
+          <p><strong>Amount Paid:</strong> $${paymentHistory.amountPaid} ${paymentHistory.currency}</p>
+          <p><strong>Total Service Cost:</strong> $${paymentHistory.totalAmount}</p>
+          <p><strong>Payment Status:</strong> Fully Paid ✅</p>
+          ${paymentHistory.receiptUrl ? `
+            <p><strong>Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">View Your Receipt</a></p>
+          ` : ''}
+        </div>
+
+        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <p style="margin: 0; color: #2e7d32; font-weight: bold;">
+            ✅ Your booking is now fully confirmed and ready!
+          </p>
+        </div>
+      </div>
+    `;
+  } else if (isDeposit) {
+    subject = `Deposit Received - ${paymentHistory.serviceName} Booking`;
+    html = `
+      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #FF9800; border-radius: 12px;">
+        <h1 style="color: #FF9800;">Deposit Received! 🎉</h1>
+        <p style="font-size:16px; margin:20px 0;">
+          Thank you for your deposit! Your booking for <strong>${paymentHistory.serviceName}</strong> is temporarily confirmed.
+        </p>
+        
+        <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
+          <h3 style="color: #856404; margin-bottom: 15px;">Payment Details</h3>
+          <p><strong>Deposit Paid:</strong> $${paymentHistory.depositAmount}</p>
+          <p><strong>Total Service Cost:</strong> $${paymentHistory.totalAmount}</p>
+          <p><strong>Balance Due:</strong> $${paymentHistory.amountDue}</p>
+          <p><strong>Payment Status:</strong> Deposit Paid ⚠️</p>
+          <p style="color: #856404; font-weight: bold;">
+            Please pay the remaining balance before your event date.
+          </p>
+          ${paymentHistory.receiptUrl ? `
+            <p><strong>Deposit Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #FF9800; text-decoration: none; font-weight: bold;">View Deposit Receipt</a></p>
+          ` : ''}
+        </div>
+
+        <div style="background: #e6f7ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+          <p style="margin: 0; color: #0066cc; font-weight: bold;">
+            ℹ️ Your booking will be fully confirmed once the balance is paid.
+          </p>
+        </div>
+      </div>
+    `;
+  } else {
+    subject = `Payment Successful - ${paymentHistory.serviceName} Booking Confirmed!`;
+    html = `
+      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
+        <h1 style="color: #4CAF50;">Payment Successful - Booking Confirmed! 🎉</h1>
+        <p style="font-size:16px; margin:20px 0;">
+          Thank you for your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> has been confirmed.
+        </p>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
+          <h3 style="color: #333; margin-bottom: 15px;">Payment Details</h3>
+          <p><strong>Amount Paid:</strong> $${paymentHistory.amountPaid} ${paymentHistory.currency}</p>
+          <p><strong>Payment Status:</strong> Fully Paid ✅</p>
+          ${paymentHistory.receiptUrl ? `
+            <p><strong>Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">View Your Receipt</a></p>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  await transporter.sendMail({
+    from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+    to: paymentHistory.customerEmail,
+    subject: subject,
+    html: html,
+  });
+
+  console.log(`📧 ${isBalancePayment ? 'Balance' : isDeposit ? 'Deposit' : 'Payment'} confirmation email sent to: ${paymentHistory.customerEmail}`);
+};
+// Handle successful payment
+
 
 // Handle expired session
 const handleExpiredSession = async (session) => {
