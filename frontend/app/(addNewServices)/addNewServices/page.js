@@ -59,7 +59,7 @@ export default function Page() {
           bannerFile: file,
           bannerPreview: data.data.url,
         }));
-        console.log("Image uploaded to ImgBB:", data.data.url);
+
       } else {
         alert("Image upload failed!");
       }
@@ -78,8 +78,7 @@ export default function Page() {
   const saveService = async (e) => {
     e.preventDefault();
 
-    console.log("Submitting Form Data:");
-    console.log(form);
+
 
     const payload = {
       name: form.name,

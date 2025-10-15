@@ -68,7 +68,7 @@ const DashNav = ({ tab }) => {
 
     // Listen for new notifications
     newSocket.on('new-notification', (newNotification) => {
-      console.log('🔔 New notification received:', newNotification);
+
       
       // Show toast notification
       toast.success(" New notification received", {
@@ -83,7 +83,7 @@ const DashNav = ({ tab }) => {
 
     // Listen for notification updates
     newSocket.on('notification-updated', () => {
-      console.log('🔄 Notifications updated, refetching...');
+ 
       notificationRefetch();
     });
 
@@ -192,7 +192,7 @@ const DashNav = ({ tab }) => {
   const handleMarkSeen = async (id) => {
     try {
       const result = await markSeen(id).unwrap();
-      console.log(result, "Notification marked as seen");
+ 
       
       // Emit socket event for real-time update
       if (socket) {

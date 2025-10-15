@@ -181,57 +181,60 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
 const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButler, refetch }) => {
   const [selectedButler, setSelectedButler] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [assignToButler, {isLoading:loader, error: isError}] = useAssignToButlerMutation();
+  const [assignToButler, { isLoading: loader, error: isError }] = useAssignToButlerMutation();
 
   if (!isOpen) return null;
 
-  // Sort butlers by rating (highest first)
-  const sortedButlers = [...(butlers || [])].sort((a, b) => {
-    const ratingA = a.averageRating || 0;
-    const ratingB = b.averageRating || 0;
-    return ratingB - ratingA;
-  });
+  // Utility: Display Name
+  const getButlerDisplayName = (butler) =>
+    butler.name ||
+    `${butler.firstName || ""} ${butler.lastName || ""}`.trim() ||
+    "--";
 
-  // Filter butlers based on search
-  const filteredButlers = sortedButlers.filter(butler =>
-    butler.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    butler.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    `${butler.firstName || ''} ${butler.lastName || ''}`.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // === Filtering & Sorting Logic ===
+  const filteredButlers = (butlers || [])
+    // Step 1: Apply search
+    .filter((butler) =>
+      butler.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      butler.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${butler.firstName || ""} ${butler.lastName || ""}`.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    // Step 2: Sort by postcode, location, then rating
+    .sort((a, b) => {
+      const ratingA = a.averageRating || 0;
+      const ratingB = b.averageRating || 0;
 
-  const handleSubmit = async(e) => {
+      const postcodeMatchA = a.postcode?.trim().toLowerCase() === booking?.postCode?.trim().toLowerCase();
+      const postcodeMatchB = b.postcode?.trim().toLowerCase() === booking?.postCode?.trim().toLowerCase();
+
+      const locationMatchA = a.location?.trim().toLowerCase() === booking?.postCode?.trim().toLowerCase();
+      const locationMatchB = b.location?.trim().toLowerCase() === booking?.postCode?.trim().toLowerCase();
+
+      // Priority logic:
+      if (postcodeMatchA && !postcodeMatchB) return -1;
+      if (!postcodeMatchA && postcodeMatchB) return 1;
+
+      if (locationMatchA && !locationMatchB) return -1;
+      if (!locationMatchA && locationMatchB) return 1;
+
+      return ratingB - ratingA; // Finally, sort by rating
+    });
+
+  // === Handle Submit ===
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (selectedButler) {
-      console.log("Assigning butler:", {
-        bookingId: booking?._id,
-        butlerId: selectedButler
-      });
-      onAssignButler(booking?._id, selectedButler);
-     
-    }
+    if (!selectedButler) return;
 
     try {
-      const data = {
-          bookingId: booking?._id,
-        butlerId: selectedButler
-      }
-
+      const data = { bookingId: booking?._id, butlerId: selectedButler };
       const response = await assignToButler(data).unwrap();
-      console.log(response)
-      toast.success("Assigned Success")
-      refetch()
-       onClose();
-      
+      toast.success("Assigned successfully!");
+      refetch();
+      onClose();
     } catch (error) {
-      console.log(error)
-      toast.error(error?.message || "Something went Wrong!")
+      console.log(error);
+      toast.error(error?.message || "Something went wrong!");
     }
-  };
-
-  const getButlerDisplayName = (butler) => {
-    return butler.name || 
-           `${butler.firstName || ''} ${butler.lastName || ''}`.trim() || 
-           '--';
   };
 
   return (
@@ -282,7 +285,7 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
             {/* Butler Selection */}
             <div>
               <h4 className="text-lg font-medium text-gray-800 mb-4">Select Butler</h4>
-              
+
               {/* Search Input */}
               <div className="mb-4">
                 <input
@@ -296,43 +299,70 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
 
               {/* Butlers List */}
               <div className="space-y-3 max-h-64 overflow-y-auto">
+
+                
                 {filteredButlers.length > 0 ? (
-                  filteredButlers.map((butler) => (
-                    <div
-                      key={butler._id}
-                      className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                        selectedButler === butler._id
-                          ? "border-[#FF006A] bg-pink-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                      onClick={() => setSelectedButler(butler._id)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-r from-[#FF006A] to-pink-400 rounded-full flex items-center justify-center text-white font-semibold">
-                              {getButlerDisplayName(butler).charAt(0).toUpperCase()}
+                  filteredButlers.map((butler) => {
+                    const postcodeMatch =
+                      butler.postcode?.trim().toLowerCase() === booking?.postCode?.trim().toLowerCase();
+                    const locationMatch =
+                      butler.location?.trim().toLowerCase() === booking?.location?.trim().toLowerCase();
+
+                    return (
+                      <div
+                        key={butler._id}
+                        className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                          selectedButler === butler._id
+                            ? "border-[#FF006A] bg-pink-50"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                        onClick={() => setSelectedButler(butler._id)}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-r from-[#FF006A] to-pink-400 rounded-full flex items-center justify-center text-white font-semibold">
+                                {getButlerDisplayName(butler).charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-gray-900">
+                                  {getButlerDisplayName(butler)}
+                                </h4>
+                                <p className="text-sm text-gray-600">{butler.email}</p>
+                              </div>
                             </div>
-                            <div>
-                              <h4 className="font-medium text-gray-900">
-                                {getButlerDisplayName(butler)}
-                              </h4>
-                              <p className="text-sm text-gray-600">{butler.email}</p>
+
+                            <div className="ml-[52px] mt-2">
+                              <p className="text-sm text-gray-700">
+                                Location: <strong>{butler?.location || "N/A"}</strong>
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                Postcode: {butler?.postcode || "N/A"}
+                              </p>
                             </div>
+
+                            {(postcodeMatch || locationMatch) && (
+                              <p className="ml-[52px] mt-1 text-xs font-medium text-green-600">
+                                ✅ {postcodeMatch ? "Postcode match" : "Location match"}
+                              </p>
+                            )}
+
+                          
                           </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="flex items-center gap-1 text-sm text-gray-600">
-                            <MdStar className="text-yellow-400" />
-                            <span>{butler.averageRating || "No ratings"}</span>
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            {butler.totalReviews || 0} reviews
+
+                          <div className="text-right">
+                            <div className="flex items-center gap-1 text-sm text-gray-600">
+                              <MdStar className="text-yellow-400" />
+                              <span>{butler.averageRating || "No ratings"}</span>
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {butler.totalReviews || 0} reviews
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
                   <div className="text-center py-8 text-gray-500">
                     No butlers found matching your search.
@@ -343,7 +373,10 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
               {selectedButler && (
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                   <p className="text-sm text-blue-700">
-                    Selected: <strong>{filteredButlers.find(b => b._id === selectedButler)?.email}</strong>
+                    Selected:{" "}
+                    <strong>
+                      {filteredButlers.find((b) => b._id === selectedButler)?.email}
+                    </strong>
                   </p>
                 </div>
               )}
@@ -368,7 +401,7 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-           {   loader ? "loading..." : 'Assign Butler'}
+              {loader ? "Loading..." : "Assign Butler"}
             </button>
           </div>
         </form>
@@ -376,6 +409,7 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
     </div>
   );
 };
+
 
 // Status Change Modal Component
 const StatusChangeModal = ({ booking, isOpen, onClose, onStatusChange, updateLoading  }) => {
@@ -633,10 +667,7 @@ const Booking = () => {
   };
 
   const handleButlerAssignment = async(bookingId, butlerId) => {
-    console.log("Assigning butler:", {
-      bookingId: bookingId,
-      butlerId: butlerId
-    });
+   
 
     try {
 
@@ -667,6 +698,7 @@ const Booking = () => {
       // console.log(response, "update booking");
       refetch()
       summuryRefetch();
+       setStatusModalOpen(false);
       
     } catch (error) {
       toast.error(error?.message || "Something went wrong")

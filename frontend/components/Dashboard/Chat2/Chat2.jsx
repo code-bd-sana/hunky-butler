@@ -144,7 +144,7 @@ const Chat2 = () => {
 
   // when user clicks a chat partner
   const handleUserClick = (user) => {
-    console.log(user);
+
     setSelectedUser(user);
     setIsSidebarOpen(false);
 
@@ -192,8 +192,7 @@ const Chat2 = () => {
       return;
     }
     
-    console.log('sender',myUser._id);
-    console.log('select',selectedUser._id);
+ 
     const newMsg = {
       senderId: myUser._id,
       receiverId: selectedUser._id,

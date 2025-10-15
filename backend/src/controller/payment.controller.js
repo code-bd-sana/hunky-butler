@@ -773,7 +773,7 @@ export const paymentHistoryForButler = async(req, res) => {
     ]);
 
     const totalAmount = totalEarningsResult.length > 0 ? totalEarningsResult[0].totalAmount : 0;
-    const totalEarnings = totalAmount * 0.20; // 20% commission
+    const totalEarnings = totalEarningsResult.length > 0 ? totalEarningsResult[0].totalAmount : 0;
 
     // ✅ Calculate weekly earnings (current week)
     const startOfWeek = new Date();
@@ -798,7 +798,7 @@ export const paymentHistoryForButler = async(req, res) => {
     ]);
 
     const weeklyAmount = weeklyEarningsResult.length > 0 ? weeklyEarningsResult[0].weeklyAmount : 0;
-    const weeklyEarnings = weeklyAmount * 0.20; // 20% commission
+    const weeklyEarnings = weeklyEarningsResult.length > 0 ? weeklyEarningsResult[0].weeklyAmount : 0;
 
     // ✅ Calculate monthly earnings (current month)
     const startOfMonth = new Date();
@@ -823,7 +823,7 @@ export const paymentHistoryForButler = async(req, res) => {
     ]);
 
     const monthlyAmount = monthlyEarningsResult.length > 0 ? monthlyEarningsResult[0].monthlyAmount : 0;
-    const monthlyEarnings = monthlyAmount * 0.20; // 20% commission
+    const monthlyEarnings = monthlyEarningsResult.length > 0 ? monthlyEarningsResult[0].monthlyAmount : 0;
 
     res.status(200).json({
       message: "Success",

@@ -9,7 +9,7 @@ const ButlerPaymentCard = () => {
   const id = data?.user?.id;
   const {data:earning, isLoading, error} = useGetButlerPaymentHistoryQuery({id});
 
-  console.log(earning?.earnings?.monthly?.amount, "Eta tomar earning")
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-8">
       <div className="bg-[#2439A0] text-white p-6 pt-8 rounded-[24px] shadow-md space-y-4">

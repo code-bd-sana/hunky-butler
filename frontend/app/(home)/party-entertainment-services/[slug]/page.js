@@ -20,11 +20,11 @@ import { useParams } from "next/navigation";
 import React from "react";
 
 export default function ServiceDetailspage() {
-  console.log("tomi sodo amar");
+
   const { slug } = useParams();
-  console.log(slug, "tomi amar personal slug");
+
   const { data } = useGetServiceJoyBanglaQuery(slug);
-  console.log(data, "please allah");
+
 
   // if(loadiing){
   //   return <p>Loading...</p>
