@@ -7,8 +7,12 @@ import User from '../models/user.model.js';
 import { storeNotification } from '../utils/utils.js';
 import PaymentHistory from '../models/payment.model.js';
 import mongoose from 'mongoose';
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
+
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
