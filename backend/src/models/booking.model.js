@@ -46,7 +46,7 @@ const bookingSchema = mongoose.Schema(
     },
     durationMinutes: {
       type: Number,
-      required: [true, "Duration Minutes Is Required"],
+   
     },
     serviceName: {
       type: String,
