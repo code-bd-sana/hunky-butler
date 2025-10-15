@@ -81,7 +81,7 @@ const UpdateService = ({ params }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("hit up");
+  
     try {
       let uploadedImageUrl = form.bannerPreview; // default existing banner
 
@@ -114,7 +114,6 @@ const UpdateService = ({ params }) => {
 
       console.log(updated);
 
-      console.log("Updated service:", updated);
     } catch (err) {
       console.error("Update failed:", err);
     }

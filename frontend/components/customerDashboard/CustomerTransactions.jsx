@@ -99,7 +99,7 @@ export default function CustomerTransactions() {
   // Handle view details
   const handleViewDetails = (payment) => {
     // You can implement a modal or navigate to details page
-    console.log('View payment details:', payment);
+   
     // Example: open modal with payment details
     alert(`Payment Details:\n
 Booking ID: ${payment.bookingId}

@@ -61,21 +61,47 @@ export const allCustomer = async (req, res) => {
   }
 };
 
-export const allButler = async(req, res)=>{
+export const allButler = async (req, res) => {
+  
   try {
-    const butler = await User.find({role:"butler"});
-    res.status(200).json({
-      message:"Success",
-      data:butler
+    const { page = 1, limit = 10, search = '' } = req.query;
 
-    })
-    
+    // Search condition
+    const searchCondition = {
+      role: 'butler',
+      ...(search && {
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } }
+        ]
+      })
+    };
+
+    // Fetch butlers with pagination and sorting
+    const butlers = await User.find(searchCondition)
+      .sort({ createdAt: -1 })
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+
+    // Total count for pagination
+    const total = await User.countDocuments(searchCondition);
+
+    // Response
+    res.status(200).json({
+      message: "Success",
+      data: butlers,
+      totalPages: Math.ceil(total / limit),
+      currentPage: parseInt(page),
+      total
+    });
+
   } catch (error) {
+    console.error(error);
     res.status(500).json({
-      message:"Something went wrong",
-    })
+      message: "Something went wrong"
+    });
   }
-}
+};
 
 
 

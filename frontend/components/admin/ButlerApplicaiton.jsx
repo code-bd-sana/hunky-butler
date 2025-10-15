@@ -317,7 +317,7 @@ export default function ButlerApplication() {
   };
 
   const handleAcceptConfirm = async (id, email) => {
-    console.log("Accepting application:", { id, email });
+
 
     try {
       await activeButler(email).unwrap();

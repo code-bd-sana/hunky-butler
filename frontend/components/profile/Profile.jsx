@@ -21,14 +21,14 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
 
 
 
-  console.log(data?.user, "user is here")
+
   const user = data?.user;
-  console.log(user, "Joy Bangla Joy Bangabandhu");
+
 
   const { data:profile, refetch} = useMyProfileQuery(user?.id);
-  console.log(profile, "Eta tomar profile")
+
   const [changePassword, {isLoading:changeLoading, error:changePasswordError}] = useChangePasswordMutation()
-  console.log(profile, "mama barir abdar");
+
   const [up] = useUpdateMyProfileMutation()
   
   // Mock user data - in real app this would come from your backend
@@ -38,7 +38,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
     email: profile?.data?.email,
     phone: profile?.data?.phone,
     createdAt: profile?.data?.createdAt ,
-    profileImage: "/default-avatar.png",
+    profileImage: "",
     role: "butler",
     location: profile?.data?.location ,
     postcode: profile?.data?.postcode,
@@ -99,7 +99,6 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
     e.preventDefault();
    
     const image = await uploadToImgBB(formData?.image);
-    console.log(image, "Image upload hoise ni re???")
 
 
     if(!image){
@@ -114,7 +113,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
 
     formData.email = user?.email
 
-     console.log("Profile data submitted:", formData);
+
    
     setUserData(formData);
     // setIsEditModalOpen(false);
@@ -122,18 +121,19 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
     toast.success('Profile update sucessfully');
       setImgbbLoader(false)
     refetch();
-    console.log(resp, "kire hoisto")
+    setIsEditModalOpen(false)
+   
       
     } catch (error) {
       setImgbbLoader(false)
       toast.error(error?.message || 'Something went wrong!');
-      console.log(error, "Tor ki somossa???")
+      console.log(error)
     }
   };
 
   const handlePasswordSubmit = async(e) => {
     e.preventDefault();
-    console.log("Password change submitted:", passwordData);
+
     setPasswordData({ oldPassword: "", newPassword: "", confirmPassword: "" });
     try {
 
@@ -150,10 +150,10 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
 
   const handleApplicationSubmit = async(e) => {
     e.preventDefault();
-    console.log("Application submitted:", applicationData);
+ 
     applicationData.email = user?.email
     const resp = await updateMyProfile(applicationData);
-    console.log(resp, 'Response is done hea hea hea hea hea hea ')
+  
     refetch();
     toast.success('Applicaiton submitted')
     setIsApplicationModalOpen(false);
@@ -629,7 +629,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                 <div>
                   <label className="block text-sm font-medium text-[#424242] mb-2">Postcode</label>
                   <input
-                    type="number"
+                    type="text"
                     name="postcode"
                      defaultValue={profile?.data?.postcode}
                     onChange={handleFormChange}
