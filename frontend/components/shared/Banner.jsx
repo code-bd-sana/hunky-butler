@@ -2,16 +2,12 @@ import Image from "next/image";
 import React from "react";
 import arrow from "@/public/icons/greaterthan.png";
 
-export default function Banner({
-  service,
-  title,
-  description,
-  image,
-}) {
+export default function Banner({ service, title, description, image, banner }) {
+  console.log(image);
   return (
     <div
       style={{
-        backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 13%, rgba(0,0,0,1) 95%), url(${image.src})`,
+        backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 13%, rgba(0,0,0,1) 95%), url(${banner})`,
       }}
       className="relative h-[500px] w-full overflow-hidden bg-cover bg-center"
     >
