@@ -88,7 +88,7 @@ export default function WhyBookSection() {
         {" "}
         <Image alt="img" src={bg} className="min-w-screen" />{" "}
       </div>
-      <Extra/>
+      {/* <Extra/> */}
     </div>
   );
 }

@@ -10,8 +10,7 @@ import { butlerApi } from "@/features/butler";
 import { summuryApi } from "@/features/summury";
 import { customerApi } from "@/features/customer";
 import { notificationApi } from "@/features/notificationApi";
-
-
+import { locationApi } from "@/features/location";
 
 export const store = configureStore({
   reducer: {
@@ -22,8 +21,9 @@ export const store = configureStore({
     [bookingApi.reducerPath]: bookingApi.reducer,
     [butlerApi.reducerPath]: butlerApi.reducer,
     [summuryApi.reducerPath]: summuryApi.reducer,
-    [customerApi.reducerPath]:customerApi.reducer,
+    [customerApi.reducerPath]: customerApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
+    [locationApi.reducerPath]: locationApi.reducer,
 
     // UI slices
     usersTab: usersTabReducer,
@@ -39,7 +39,7 @@ export const store = configureStore({
       butlerApi.middleware,
       summuryApi.middleware,
       customerApi.middleware,
-      notificationApi.middleware
-
+      notificationApi.middleware,
+      locationApi.middleware
     ),
 });

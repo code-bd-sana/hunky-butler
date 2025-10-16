@@ -74,9 +74,9 @@ export default function ServiceDetailspage() {
       <Frequently /> */}
       <WhyBookSection />
 
-      <KeepTheFun />
+      {/* <KeepTheFun /> */}
       <Cocktail />
-      <BuffLocation name={data?.name} />
+      {/* <BuffLocation name={data?.name} /> */}
       <ReviewSection />
       <Frequently />
       <Nationwide name={data?.name} />
