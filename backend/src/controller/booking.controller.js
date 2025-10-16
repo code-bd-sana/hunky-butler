@@ -4,6 +4,7 @@ import User from "../models/user.model.js";
 import Notificaton from "../models/notification.model.js";
 import { adminGmail, storeNotification } from "../utils/utils.js";
 import PaymentHistory from "../models/payment.model.js";
+import mongoose from "mongoose";
 
 export const getAllBooking = async (req, res) => {
   try {
@@ -25,7 +26,7 @@ export const getAllBooking = async (req, res) => {
       .sort({createdAt: -1})
       .skip(skip)
       .limit(limit)
-      .populate("butler");
+      .populate("butler.id");
 
     const total = await Booking.countDocuments(filter).sort({createdAt: -1});
 
@@ -52,7 +53,7 @@ export const getBookingButler = async (req, res) => {
     console.log(limit, "limit");
     console.log(status, "status");
 
-    let filter = {butler: id};
+let filter = {"butler.id": id};
     if (status && status !== "all") {
       filter.status = status.toLowerCase();
     }
@@ -62,7 +63,7 @@ export const getBookingButler = async (req, res) => {
     .sort({createdAt: -1})
       .skip(skip)
       .limit(limit)
-      .populate("butler");
+      .populate("butler.id");
 
     const total = await Booking.countDocuments(filter);
 
@@ -286,28 +287,53 @@ export const deleteBooking = async (req, res) => {
 
 export const updateStatus = async (req, res) => {
   try {
-    const { id, status } = req.body;
+    const { id, status, butlerid} = req.body;
 
-    // Update booking status
-    const updated = await Booking.updateOne(
-      { _id: id },
-      { $set: { status: status } }
-    );
+
+
+ const updateData = { status: status };
 
     // If completed, mark as paid
-    // if (status === "completed") {
-    //   await Booking.updateOne(
-    //     { _id: id },
-    //     { $set: { paid: "Paid" } }
-    //   );
-    // }
+   
+
+    // Update booking status and paid status
+    const updatedBooking = await Booking.updateOne(
+      { _id: id },
+      { $set: updateData }
+    );
+
+    // If butlerid is provided, update the accepted status in butler array
+    if (butlerid) {
+      await Booking.updateOne(
+        { 
+          _id: id,
+          "butler.id": butlerid  // Find the specific butler in the array
+        },
+        { 
+          $set: { 
+            "butler.$.accepted": true  // Update only the matched butler's accepted status
+          } 
+        }
+      );
+      
+      console.log(`Butler ${butlerid} accepted the booking ${id}`);
+    }
+
+    res.status(200).json({
+      message: "Booking status updated successfully",
+      data: {
+        bookingId: id,
+        status: status,
+        butlerAccepted: butlerid ? true : false
+      }
+    });
 
     // Fetch booking info for email
     const booking = await Booking.findById(id);
-    const { email, firstName, serviceName, butler } = booking;
+    const { email, firstName, serviceName } = booking;
 
     // Find butler info (if assigned)
-    const butlerId = butler ? butler.toString() : null;
+    
 
     // Nodemailer transporter
     const transporter = nodemailer.createTransport({
@@ -387,32 +413,39 @@ export const updateStatus = async (req, res) => {
   }
 };
 
+
+
 export const assginToButler = async (req, res) => {
+  console.log("Hit");
   try {
     const { butlerId, bookingId } = req.body;
 
-    // Butler assign
-    const updatedBooking = await Booking.updateOne(
-      { _id: bookingId },
-      { $set: { butler: butlerId } }
-    );
-
-    // Find butler info
-    const butler = await User.findById(butlerId);
-    const butlerEmail = butler.email;
-    const butlerName = butler.firstName || "Butler";
+    console.log(butlerId, bookingId, "salar bacca madari");
 
     // Find booking info
     const booking = await Booking.findById(bookingId);
     const { firstName, lastName, email, serviceName, dateOfEvent } = booking;
-   await PaymentHistory.updateOne(
-  { bookingId: bookingId },
-  {
-    $set: {
-      butlerId: butlerId
-    }
-  }
-);
+
+    // Format butlers array
+    const formattedButlers = butlerId.map(id => ({
+      id: new mongoose.Types.ObjectId(id),
+      accepted: false,
+    }));
+
+    console.log(formattedButlers, "ha ha kore haste icca korsa");
+
+    // Push multiple butlers safely
+    const updatedBooking = await Booking.updateOne(
+      { _id: bookingId },
+      { $push: { butler: { $each: formattedButlers } } }
+    );
+
+    // Find all butlers info for email and notification
+    const butlers = await User.find({ 
+      _id: { $in: butlerId } 
+    });
+
+    console.log(butlers, "Found butlers");
 
     // Nodemailer transporter
     const transporter = nodemailer.createTransport({
@@ -425,106 +458,112 @@ export const assginToButler = async (req, res) => {
       },
     });
 
+    // Send email to each butler individually
+    const emailPromises = butlers.map(async (butler) => {
+      const butlerEmailHtml = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background:#fff; text-align:center; border:2px solid #ff1673; border-radius:12px;">
+          <h2 style="color:#ff1673;">New Booking Assigned</h2>
+          <p>Hello ${butler.firstName} ${butler.lastName},</p>
+          <p>You have been assigned a new booking:</p>
+          <p><strong>Client:</strong> ${firstName} ${lastName}</p>
+          <p><strong>Service:</strong> ${serviceName}</p>
+          <p><strong>Date:</strong> ${new Date(dateOfEvent).toLocaleDateString()}</p>
+          <p>Please accept the booking within 15 minutes.</p>
+        </div>
+      `;
 
-        res.status(200).json({
-      message: "Butler assigned and email sent successfully",
-      data: updatedBooking,
+      // Send email
+      await transporter.sendMail({
+        from: '"Hunky Butler Service"',
+        to: butler.email,
+        subject: "New Booking Assigned",
+        html: butlerEmailHtml,
+      });
+
+      // Store notification for each butler
+      await storeNotification(
+        butler.email, 
+        `A New ${serviceName} Service assign to you`, 
+        '', 
+        `/dashboard`
+      );
+
+      console.log(`Email and notification sent to ${butler.email}`);
     });
 
-        await storeNotification(butlerEmail, `A New ${serviceName} Service assign to you`, '', `/dashboard`)
+    // Wait for all emails and notifications to be sent
+    await Promise.all(emailPromises);
 
-    // Email to Butler (assigned)
-    const butlerEmailHtml = `
-      <div style="font-family: Arial, sans-serif; padding: 20px; background:#fff; text-align:center; border:2px solid #ff1673; border-radius:12px;">
-        <h2 style="color:#ff1673;">New Booking Assigned</h2>
-        <p>Hello ${butlerName},</p>
-        <p>You have been assigned a new booking:</p>
-        <p><strong>Client:</strong> ${firstName} ${lastName}</p>
-        <p><strong>Service:</strong> ${serviceName}</p>
-        <p><strong>Date:</strong> ${new Date(dateOfEvent).toLocaleDateString()}</p>
-        <p>Please accept the booking within 15 minutes.</p>
-      </div>
-    `;
+    // Set up 15 min timeout for each butler individually
+    butlers.forEach(async (butler) => {
+      setTimeout(async () => {
+        try {
+          const checkBooking = await Booking.findById(bookingId);
 
-   transporter.sendMail({
-      from: '"Hunky Butler Service"',
-      to: butlerEmail,
-      subject: "New Booking Assigned",
-      html: butlerEmailHtml,
-    });
+          if (checkBooking) {
+            // Find the specific butler in the booking
+            const butlerAssignment = checkBooking.butler.find(
+              b => b.id.toString() === butler._id.toString() && b.accepted === false
+            );
 
+            // If this specific butler hasn't accepted, remove them
+            if (butlerAssignment) {
+              await Booking.updateOne(
+                { _id: bookingId },
+                { $pull: { butler: { id: butler._id, accepted: false } } }
+              );
 
+              // Update payment history if this was the only butler
+              const remainingButlers = checkBooking.butler.filter(
+                b => b.id.toString() !== butler._id.toString() || b.accepted === true
+              );
 
-    // 15 min timeout
-    setTimeout(async () => {
-      try {
-        const checkBooking = await Booking.findById(bookingId);
+              if (remainingButlers.length === 0) {
+                await PaymentHistory.updateOne(
+                  { bookingId: bookingId },
+                  { $set: { butlerId: null } }
+                );
+              }
 
-        if (checkBooking && checkBooking.status !== "accepted") {
-          // Butler remove
-          await Booking.updateOne(
-            { _id: bookingId },
-            { $set: { butler: null } }
+              // Store notification for admin
+              await storeNotification(
+                adminGmail,
+                `Booking Needs Reassignment - The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(
+                  dateOfEvent
+                ).toLocaleDateString()}) was not accepted by butler ${butler.firstName} ${butler.lastName}.`,
+                "",
+                "/dashboard"
+              );
 
-          
-          );
- await PaymentHistory.updateOne(
-  { bookingId: bookingId },
-  {
-    $set: {
-      butlerId: null
-    }
-  }
-);
+              // Store notification for the butler
+              await storeNotification(
+                butler.email,
+                "Booking Not Accepted In Time and has been removed from your assignments",
+                "",
+                ""
+              );
 
-               storeNotification(adminGmail, `Booking Needs Reassignmen - The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(dateOfEvent).toLocaleDateString()}) was not accepted by the assigned butler.`, '', '/dashboard')
-               
-          await storeNotification(butlerEmail, 'Booking Not Accepted In Time and has been removed from your assignments', '', '')
-
-          // Email to Butler (late acceptance)
-          const lateEmailHtml = `
-            <div style="font-family: Arial, sans-serif; padding: 20px; background:#fff; text-align:center; border:2px solid #ff1673; border-radius:12px;">
-              <h2 style="color:#ff1673;">Booking Not Accepted in Time</h2>
-              <p>Hello ${butlerName},</p>
-              <p>The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(dateOfEvent).toLocaleDateString()}) was not accepted in time and has been removed from your assignments.</p>
-            </div>
-          `;
-
-          await transporter.sendMail({
-            from: '"Hunky Butler Service"',
-            to: butlerEmail,
-            subject: "Booking Removed Due to Late Acceptance",
-            html: lateEmailHtml,
-          });
-
-
-          // Email to Admin
-          const adminEmailHtml = `
-            <div style="font-family: Arial, sans-serif; padding: 20px; background:#fff; text-align:center; border:2px solid #ff1673; border-radius:12px;">
-              <h2 style="color:#ff1673;">Booking Needs Reassignment</h2>
-              <p>The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(dateOfEvent).toLocaleDateString()}) was not accepted by the assigned butler.</p>
-              <p>Kindly check the dashboard and reassign.</p>
-            </div>
-          `;
-
-          await transporter.sendMail({
-            from: '"Hunky Butler Service"',
-            to: adminGmail, // admin
-            subject: "Booking Requires Reassignment",
-            html: adminEmailHtml,
-          });
-
-     
-
-
-          console.log(`Butler removed from booking ${bookingId} due to no acceptance`);
+              console.log(`❌ Butler ${butler.firstName} removed from booking ${bookingId} due to no acceptance`);
+            }
+          }
+        } catch (err) {
+          console.error("Error inside timeout for butler:", butler._id, err.message);
         }
-      } catch (err) {
-        console.error("Error inside timeout:", err.message);
-      }
-    }, 15 * 60 * 1000); // 15 min
+      }, 2 * 60 * 1000); // 15 minutes
+    });
+
+    res.status(200).json({
+      message: "Butlers assigned and emails sent successfully",
+      data: updatedBooking,
+      butlersAssigned: butlers.map(b => ({
+        id: b._id,
+        name: `${b.firstName} ${b.lastName}`,
+        email: b.email
+      }))
+    });
 
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: "Something went wrong!",
       error: error.message,
@@ -576,11 +615,12 @@ export const getBookingOverviewCustomer = async (req, res) => {
 
 
 export const getBookingOverviewButler = async (req, res) => {
+  
   try {
     const id = req.params.id;
 
     // Get all bookings for this butler
-    const bookings = await Booking.find({ butler: id });
+    const bookings = await Booking.find({ "butler.id": id });
 
     // Calculate totalSpent and totalServiceProvided
     const totalSpent = bookings.reduce((sum, booking) => sum + (booking.price || 0), 0);
@@ -615,7 +655,7 @@ export const getButlerOverview = async (req, res) => {
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
     const totalBookingCompleted = await Booking.countDocuments({
-      butler: id,
+      "butler.id": id,
       status: "completed", 
     });
 
@@ -623,7 +663,7 @@ export const getButlerOverview = async (req, res) => {
     const totalEarningThisMonth = await Booking.aggregate([
       {
         $match: {
-          butler: id,
+          "butler.id": id,
           status: "completed",
           createdAt: { $gte: startOfMonth, $lte: endOfMonth },
         },
@@ -635,6 +675,7 @@ export const getButlerOverview = async (req, res) => {
         },
       },
     ]);
+   
 
     res.status(200).json({
       totalBookingCompleted,
