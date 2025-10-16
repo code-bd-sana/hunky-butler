@@ -141,7 +141,7 @@ export const createCheckoutSession = async (req, res) => {
     });
 
     const savedBooking = await newBooking.save();
-    console.log('Booking created with ID:', savedBooking._id, 'Payment type:', paymentType, 'Amount Due:', amountDue);
+    console.log('Booking created with ID:', savedBooking._id, savedBooking.paymentStatus, 'Payment type:', paymentType, 'Amount Due:', amountDue, );
 
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -222,17 +222,25 @@ export const handleStripeWebhook = async (req, res) => {
       process.env.STRIPE_WEBHOOK_SECRET || 'whsec_your_webhook_secret_here'
     );
     
-    console.log('Webhook received:', event.type);
+    console.log('🔔 Webhook received:', event.type);
 
   } catch (err) {
-    console.log(`Webhook signature verification failed.`, err.message);
+    console.log(`❌ Webhook signature verification failed.`, err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
   try {
     switch (event.type) {
       case 'checkout.session.completed':
-        await handleSuccessfulPayment(event.data.object);
+        const session = event.data.object;
+        
+        // ✅ DEBUGGING: Check what's coming in metadata
+        console.log('📋 Webhook Session Metadata:', session.metadata);
+        console.log('💰 Payment Type from Metadata:', session.metadata?.paymentType);
+        console.log('🔍 Session ID:', session.id);
+        console.log('📝 Amount Total:', session.amount_total);
+        
+        await handleSuccessfulPayment(session);
         break;
         
       case 'checkout.session.expired':
@@ -251,10 +259,27 @@ export const handleStripeWebhook = async (req, res) => {
         console.log(`Unhandled event type: ${event.type}`);
     }
 
-    res.json({ received: true, handled: true, data: event.data.object });
+    res.json({ received: true, handled: true, eventType: event.type });
     
   } catch (error) {
-    console.error('Error handling webhook event:', error);
+    console.error('❌ Error handling webhook event:', error);
+    
+    // Send error email
+    await transporter.sendMail({
+      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+      to: "rakib.fbinternational@gmail.com",
+      subject: "❌ Webhook Processing Error",
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff; border: 2px solid #f44336; border-radius: 8px;">
+          <h2 style="color: #f44336;">Webhook Processing Error</h2>
+          <p><strong>Error:</strong> ${error.message}</p>
+          <p><strong>Event Type:</strong> ${event?.type}</p>
+          <p><strong>Session ID:</strong> ${event?.data?.object?.id}</p>
+          <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+        </div>
+      `
+    });
+    
     res.status(500).json({ 
       received: true, 
       handled: false, 
@@ -265,13 +290,16 @@ export const handleStripeWebhook = async (req, res) => {
 
 // Handle successful payment (both full and deposit)
 // Handle successful payment (both full and deposit)
+// Handle successful payment (both full and deposit)
 const handleSuccessfulPayment = async (session) => {
   try {
-    const bookingId = session.metadata.bookingId;
-    const customerEmail = session.metadata.customerEmail;
-    const serviceName = session.metadata.serviceName;
-    const totalAmount = parseFloat(session.metadata.totalAmount);
-    const paymentType = session.metadata.paymentType; // ✅ Eta properly read koro
+    // ✅ IMPORTANT: Properly extract metadata with fallbacks
+    const metadata = session.metadata || {};
+    const bookingId = metadata.bookingId;
+    const customerEmail = metadata.customerEmail;
+    const serviceName = metadata.serviceName;
+    const totalAmount = parseFloat(metadata.totalAmount || '0');
+    const paymentType = metadata.paymentType || 'full'; // ✅ Default to 'full' if missing
     const isDeposit = paymentType === 'deposit';
     const isBalancePayment = paymentType === 'balance';
 
@@ -280,74 +308,94 @@ const handleSuccessfulPayment = async (session) => {
       paymentType, 
       isDeposit, 
       isBalancePayment,
-      metadata: session.metadata 
+      sessionId: session.id
     });
+
+    // ✅ Validate required fields
+    if (!bookingId) {
+      throw new Error('Missing bookingId in session metadata');
+    }
 
     let paymentHistory;
 
     if (isBalancePayment) {
       // Handle balance payment
-      paymentHistory = await PaymentHistory.findById(session.metadata.originalPaymentId);
+      console.log('💵 Processing BALANCE payment');
+      
+      paymentHistory = await PaymentHistory.findById(metadata.originalPaymentId);
       if (!paymentHistory) {
-        throw new Error(`Original payment not found: ${session.metadata.originalPaymentId}`);
+        throw new Error(`Original payment not found: ${metadata.originalPaymentId}`);
       }
 
       // Update payment history for balance payment
       paymentHistory.amountPaid = totalAmount;
       paymentHistory.amountDue = 0;
       paymentHistory.paymentStatus = 'paid';
-      paymentHistory.paymentType = 'full'; // ✅ Balance pay korle full hoye jabe
+      paymentHistory.paymentType = 'full';
       paymentHistory.stripePaymentIntentId = session.payment_intent;
       paymentHistory.paymentConfirmedAt = new Date();
 
       // Update receipt information
       if (session.payment_intent) {
-        const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
-          expand: ['charges.data']
-        });
+        try {
+          const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
+            expand: ['charges.data']
+          });
 
-        if (paymentIntent.charges?.data?.length > 0) {
-          const charge = paymentIntent.charges.data[0];
-          paymentHistory.receiptUrl = charge.receipt_url;
-          paymentHistory.receiptNumber = charge.receipt_number;
-          paymentHistory.stripeChargeId = charge.id;
+          if (paymentIntent.charges?.data?.length > 0) {
+            const charge = paymentIntent.charges.data[0];
+            paymentHistory.receiptUrl = charge.receipt_url;
+            paymentHistory.receiptNumber = charge.receipt_number;
+            paymentHistory.stripeChargeId = charge.id;
+          }
+        } catch (error) {
+          console.log('⚠️ Could not retrieve receipt details for balance payment:', error.message);
         }
       }
 
       await paymentHistory.save();
 
-      // Update booking - IMPORTANT: Set to paid
+      // Update booking
       await Booking.findByIdAndUpdate(bookingId, {
         paid: 'paid',
         paymentStatus: 'paid',
-        paymentType: 'full', // ✅ Balance pay korle full hoye jabe
+        paymentType: 'full',
         amountPaid: totalAmount,
         amountDue: 0,
-        paymentConfirmedAt: new Date()
+        paymentConfirmedAt: new Date(),
+        status: 'confirmed',
+        updatedAt: new Date()
       });
+
+      console.log('✅ Balance payment completed for booking:', bookingId);
 
     } else {
       // Handle new payment (full or deposit)
-      const firstName = session.metadata.firstName;
-      const lastName = session.metadata.lastName;
-      const phone = session.metadata.phone;
-      const dateOfEvent = session.metadata.dateOfEvent;
-      const startTime = session.metadata.startTime;
-      const durationHours = session.metadata.durationHours;
-      const location = session.metadata.location;
-      const numberOfStaff = session.metadata.numberOfStaff;
-      const depositAmount = parseFloat(session.metadata.depositAmount || 0);
-      const amountDue = parseFloat(session.metadata.amountDue || 0);
-
+      console.log(isDeposit ? '💰 Processing DEPOSIT payment' : '💳 Processing FULL payment');
+      
+      const firstName = metadata.firstName;
+      const lastName = metadata.lastName;
+      const phone = metadata.phone;
+      const dateOfEvent = metadata.dateOfEvent;
+      const startTime = metadata.startTime;
+      const durationHours = metadata.durationHours;
+      const location = metadata.location;
+      const numberOfStaff = metadata.numberOfStaff;
+      
+      // ✅ CORRECT AMOUNT CALCULATION
+      const depositAmount = parseFloat(metadata.depositAmount || '0');
+      const amountDue = parseFloat(metadata.amountDue || '0');
+      
       const amountPaid = isDeposit ? depositAmount : totalAmount;
       const paymentStatus = isDeposit ? 'deposit_paid' : 'paid';
 
       console.log('💰 Payment details:', {
         isDeposit,
+        totalAmount,
+        depositAmount,
         amountPaid,
-        paymentStatus,
         amountDue,
-        depositAmount
+        paymentStatus
       });
 
       // Get receipt information
@@ -368,18 +416,18 @@ const handleSuccessfulPayment = async (session) => {
             stripeChargeId = charge.id;
           }
         } catch (error) {
-          console.log('Could not retrieve receipt details:', error.message);
+          console.log('⚠️ Could not retrieve receipt details:', error.message);
         }
       }
 
-      // Create payment history - IMPORTANT: Set paymentType correctly
+      // Create payment history
       paymentHistory = new PaymentHistory({
         bookingId: bookingId,
         customerEmail: customerEmail,
         serviceName: serviceName,
         totalAmount: totalAmount,
-        paymentType: paymentType, // ✅ Eta properly set koro
-        depositAmount: depositAmount,
+        paymentType: paymentType, // ✅ 'deposit' or 'full'
+        depositAmount: isDeposit ? depositAmount : 0,
         amountDue: amountDue,
         amountPaid: amountPaid,
         currency: session.currency || 'usd',
@@ -411,28 +459,28 @@ const handleSuccessfulPayment = async (session) => {
 
       await paymentHistory.save();
 
-      // Update booking status - IMPORTANT: Set paymentType correctly
+      // Update booking status
+      const updateData = {
+        paid: paymentStatus,
+        paymentStatus: paymentStatus,
+        paymentType: paymentType, // ✅ 'deposit' or 'full'
+        stripeSessionId: session.id,
+        stripePaymentIntentId: session.payment_intent,
+        receiptUrl: receiptUrl,
+        receiptNumber: receiptNumber,
+        paidAt: new Date(),
+        amountPaid: amountPaid,
+        amountDue: amountDue,
+        depositAmount: isDeposit ? depositAmount : 0,
+        currency: session.currency || 'usd',
+        paymentMethod: 'card',
+        status: isDeposit ? 'deposit_paid' : 'confirmed',
+        updatedAt: new Date()
+      };
+
       const updatedBooking = await Booking.findOneAndUpdate(
         { _id: bookingId },
-        {
-          $set: {
-            paid: paymentStatus,
-            paymentStatus: paymentStatus,
-            paymentType: paymentType, // ✅ Eta properly set koro
-            stripeSessionId: session.id,
-            stripePaymentIntentId: session.payment_intent,
-            receiptUrl: receiptUrl,
-            receiptNumber: receiptNumber,
-            paidAt: new Date(),
-            amountPaid: amountPaid,
-            amountDue: amountDue,
-            depositAmount: depositAmount,
-            currency: session.currency || 'usd',
-            paymentMethod: 'card',
-            status: isDeposit ? 'deposit_paid' : 'confirmed',
-            updatedAt: new Date()
-          }
-        },
+        { $set: updateData },
         { new: true }
       );
 
@@ -457,13 +505,15 @@ const handleSuccessfulPayment = async (session) => {
             $set: { lastServiceDate: new Date() }
           }
         );
+        console.log('👤 User service count updated');
       }
     }
 
     // Send appropriate email based on payment type
     await sendPaymentConfirmationEmail(session, paymentHistory);
 
-    console.log(`🎉 Successfully processed ${isBalancePayment ? 'balance' : paymentType} payment`);
+    console.log(`🎉 Successfully processed ${isBalancePayment ? 'balance' : paymentType} payment for booking: ${bookingId}`);
+    
     return {
       success: true,
       bookingId: bookingId,
@@ -477,6 +527,7 @@ const handleSuccessfulPayment = async (session) => {
   } catch (error) {
     console.error('❌ Error handling successful payment:', error);
     
+    // Send detailed error email
     await transporter.sendMail({
       from: '"Hunky Butler Service" <bannah76769@gmail.com>',
       to: "rakib.fbinternational@gmail.com",
@@ -488,7 +539,9 @@ const handleSuccessfulPayment = async (session) => {
           <p><strong>Session ID:</strong> ${session?.id}</p>
           <p><strong>Booking ID:</strong> ${session?.metadata?.bookingId}</p>
           <p><strong>Payment Type:</strong> ${session?.metadata?.paymentType}</p>
+          <p><strong>Amount:</strong> ${session?.amount_total ? (session.amount_total / 100) : 'N/A'}</p>
           <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+          <p><strong>Stack:</strong> ${error.stack}</p>
         </div>
       `
     });
@@ -496,7 +549,6 @@ const handleSuccessfulPayment = async (session) => {
     throw error;
   }
 };
-
 // Send appropriate confirmation email
 const sendPaymentConfirmationEmail = async (session, paymentHistory) => {
   const isDeposit = paymentHistory.paymentType === 'deposit';

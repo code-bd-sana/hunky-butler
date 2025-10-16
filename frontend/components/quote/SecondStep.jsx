@@ -391,7 +391,7 @@ export default function SecondStep() {
         ...secondStep,
         slug: params.category,
         serviceName: params.category,
-        price: secondStep.durationHours * secondStep.numberOfStaff,
+        price: secondStep.durationHours * secondStep.numberOfStaff *60,
         paymentMethod,
         paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid'
       };
@@ -440,7 +440,7 @@ export default function SecondStep() {
         ...secondStep,
         slug: params.category,
         serviceName: params.category,
-        price: secondStep.durationHours * secondStep.numberOfStaff,
+        price: secondStep.durationHours * secondStep.numberOfStaff *50,
         paymentMethod,
         paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid',
         paymentType: paymentType
@@ -482,7 +482,7 @@ export default function SecondStep() {
     }
   };
 
-  const totalPrice = secondStep.durationHours * secondStep.numberOfStaff;
+  const totalPrice = secondStep.durationHours * secondStep.numberOfStaff * 50;
   const depositAmount = 20; // $20 deposit
   const balanceDue = totalPrice - depositAmount;
 
