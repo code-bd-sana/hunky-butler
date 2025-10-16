@@ -8,8 +8,73 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { base_url } from '@/utils/utils';
+import { useGetServiceQuery } from '@/features/services/servicesApi';
 
 const stripePromise = loadStripe('pk_test_51RWA5gFVdJBgYBDxRIUNli1dDlicyaiOTCEECLujXMHTyVEujYQJ2pZ9DFlUeNPpaKzy7cPYJ1QlA6cUe7A9m6Eg00nP3ZNUFM');
+
+// Price Calculation Function based on service type, duration, and number of butlers
+const calculatePrice = (serviceSlug, durationHours, numberOfStaff) => {
+  // Fixed price services
+  if (serviceSlug === 'life-drawing') {
+    return 230; // Fixed price for life drawing
+  }
+  
+  if (serviceSlug === 'cocktail-masterclasses') {
+    return 140; // Fixed price for cocktail masterclasses
+  }
+
+  // Buff Butlers pricing matrix
+  if (serviceSlug === 'buff-butlers') {
+    const pricingMatrix = {
+      1: { 1: 110, 2: 150, 3: 170 }, // 1 butler
+      2: { 1: 190, 2: 250, 3: 300 }, // 2 butlers
+      3: { 1: 250, 2: 350, 3: 420 }  // 3 butlers
+    };
+    
+    const duration = Math.ceil(durationHours);
+    const butlerCount = Math.min(Math.max(numberOfStaff, 1), 3); // Limit to 1-3 butlers
+    
+    return pricingMatrix[butlerCount]?.[duration] || pricingMatrix[butlerCount]?.[3] || 420;
+  }
+
+  // Default pricing for other services (strippers, etc.)
+  return 100; // Fallback price
+};
+
+// Butler Fee Calculation Function
+const calculateButlerFee = (serviceName, durationHours, numberOfStaff) => {
+  // Fixed fees for specific services
+  if (serviceName === 'cocktail-masterclasses') {
+    return 140 
+  }
+  if (serviceName === 'strippers') {
+    return 100 
+  }
+  
+  // Hour-based fees for other services
+  const hourlyRates = {
+    1: 60,   // 1 hour: £60 per butler
+    2: 90,   // 2 hours: £90 per butler
+    3: 110   // 3 hours: £110 per butler
+  };
+  
+  // Find the closest duration rate (round up to nearest hour for pricing)
+  const duration = Math.ceil(durationHours);
+  const rate = hourlyRates[duration] || hourlyRates[3]; // Default to 3 hours rate if longer
+  
+  return rate * numberOfStaff;
+};
+
+// Service duration mapping
+const getServiceDuration = (serviceSlug) => {
+  const durations = {
+    'cocktail-masterclasses': 1.5,  // 90 minutes fixed
+    'life-drawing': 2,              // 2 hours fixed
+    'strippers': 0.25,              // 15 minutes fixed
+    'buff-butlers': 2               // Default 2 hours for buff butlers
+  };
+  return durations[serviceSlug] || 2;
+};
 
 // Google Places Autocomplete Component
 const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
@@ -290,16 +355,23 @@ export default function SecondStep() {
   
   const params = useParams();
   const { data: session } = useSession();
+  const { data: serviceData } = useGetServiceQuery(params?.category);
 
-  // Service duration mapping
-  const getServiceDuration = (serviceName) => {
-    const durations = {
-      'cocktail': 2,
-      'life-drawing': 1.5,
-      'strippers': 0.25
-    };
-    return durations[serviceName] || 2;
-  };
+  // Calculate prices based on service type
+  const totalPrice = calculatePrice(
+    params.category, 
+    getServiceDuration(params.category), 
+    secondStep.numberOfStaff || 1
+  );
+  
+  const butlerFee = calculateButlerFee(
+    params.category, 
+    getServiceDuration(params.category), 
+    secondStep.numberOfStaff || 1
+  );
+  
+  const depositAmount = 20; // £20 deposit
+  const balanceDue = totalPrice - depositAmount;
 
   const firstStepHandler = async (e) => {
     try {
@@ -391,7 +463,8 @@ export default function SecondStep() {
         ...secondStep,
         slug: params.category,
         serviceName: params.category,
-        price: secondStep.durationHours * secondStep.numberOfStaff *60,
+        price: totalPrice,
+        butlerFee: butlerFee, // Add butler fee to the booking data
         paymentMethod,
         paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid'
       };
@@ -440,7 +513,8 @@ export default function SecondStep() {
         ...secondStep,
         slug: params.category,
         serviceName: params.category,
-        price: secondStep.durationHours * secondStep.numberOfStaff *50,
+        price: totalPrice,
+        butlerFee: butlerFee, // Add butler fee to the booking data
         paymentMethod,
         paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid',
         paymentType: paymentType
@@ -482,15 +556,51 @@ export default function SecondStep() {
     }
   };
 
-  const totalPrice = secondStep.durationHours * secondStep.numberOfStaff * 50;
-  const depositAmount = 20; // $20 deposit
-  const balanceDue = totalPrice - depositAmount;
-
   const formatDuration = (hours) => {
     if (hours === 2) return "2 hours";
     if (hours === 1.5) return "90 minutes";
     if (hours === 0.25) return "15 minutes";
     return `${hours} hours`;
+  };
+
+  // Get price breakdown for display
+  const getPriceBreakdown = () => {
+    const serviceSlug = params.category;
+    const duration = getServiceDuration(serviceSlug);
+    const staffCount = secondStep.numberOfStaff || 1;
+    
+    if (serviceSlug === 'life-drawing') {
+      return "Fixed price for 2 hours";
+    }
+    
+    if (serviceSlug === 'cocktail-masterclasses') {
+      return "Fixed price for 90 minutes";
+    }
+    
+    if (serviceSlug === 'buff-butlers') {
+      const durationHours = Math.ceil(duration);
+      return `${staffCount} butler${staffCount > 1 ? 's' : ''} for ${durationHours} hour${durationHours > 1 ? 's' : ''}`;
+    }
+    
+    return "Service price";
+  };
+
+  // Get butler fee breakdown for display
+  const getButlerFeeBreakdown = () => {
+    const serviceName = params.category;
+    const duration = getServiceDuration(serviceName);
+    const staffCount = secondStep.numberOfStaff || 1;
+    
+    if (serviceName === 'cocktail-masterclasses') {
+      return `£140 × ${staffCount} butler${staffCount > 1 ? 's' : ''}`;
+    }
+    if (serviceName === 'strippers') {
+      return `£100 × ${staffCount} butler${staffCount > 1 ? 's' : ''}`;
+    }
+    
+    const hourlyRates = { 1: 60, 2: 90, 3: 110 };
+    const rate = hourlyRates[Math.ceil(duration)] || hourlyRates[3];
+    return `£${rate} × ${staffCount} butler${staffCount > 1 ? 's' : ''} (${formatDuration(duration)})`;
   };
 
   return (
@@ -725,6 +835,14 @@ export default function SecondStep() {
                         <span className="font-medium">Total Amount:</span>
                         <span className="font-bold">£{totalPrice}</span>
                       </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Price Breakdown:</span>
+                        <span className="text-right text-sm text-gray-300">{getPriceBreakdown()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Butler Fee:</span>
+                        <span className="font-bold text-blue-400">£{butlerFee}</span>
+                      </div>
                       {paymentType === 'deposit' && (
                         <>
                           <div className="flex justify-between">
@@ -808,6 +926,20 @@ export default function SecondStep() {
 
                     {/* Payment Summary */}
                     <div className="py-4 space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-sm md:text-lg">Service Price</span>
+                        <div className="text-right">
+                          <span className="font-bold">£{totalPrice}</span>
+                          <p className="text-xs text-gray-400">{getPriceBreakdown()}</p>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-sm md:text-lg">Butler Fee</span>
+                        <div className="text-right">
+                          <span className="font-bold">£{butlerFee}</span>
+                          <p className="text-xs text-gray-400">{getButlerFeeBreakdown()}</p>
+                        </div>
+                      </div>
                       {paymentType === 'deposit' && (
                         <>
                           <div className="flex justify-between items-center">
