@@ -79,6 +79,7 @@ const paymentSchema = mongoose.Schema({
         type: String,
         sparse: true
     },
+    paid:String,
     stripeChargeId: {
         type: String,
         sparse: true
@@ -138,13 +139,7 @@ const paymentSchema = mongoose.Schema({
     timestamps: true 
 });
 
-// ✅ INDEXES
-paymentSchema.index({ bookingId: 1 });
-paymentSchema.index({ customerEmail: 1 });
-paymentSchema.index({ stripeSessionId: 1 }, { sparse: true });
-paymentSchema.index({ paymentStatus: 1 });
-paymentSchema.index({ paymentType: 1 });
-paymentSchema.index({ createdAt: -1 });
+
 
 
 
