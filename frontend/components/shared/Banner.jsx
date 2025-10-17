@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import arrow from "@/public/icons/greaterthan.png";
 
-export default function Banner({ service, title, description, image, banner }) {
+export default function Banner({serviceName, service, title, description, image, banner }) {
   console.log(image);
   return (
     <div
@@ -26,7 +26,7 @@ export default function Banner({ service, title, description, image, banner }) {
           <p className="tracking-[-1px]">{service}</p>
         </div>
 
-        <h1 className="mb-2 max-w-7xl text-4xl tracking-[-1px] font-medium text-white md:text-5xl lg:text-[60px]">
+        <h1 className="mb-2 max-w-7xl text-4xl capitalize tracking-[-1px] font-medium text-white md:text-5xl lg:text-[60px]">
           {title}
         </h1>
 
