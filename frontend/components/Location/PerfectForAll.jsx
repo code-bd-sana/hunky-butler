@@ -121,7 +121,7 @@ export default function PerfectForAll({ city }) {
           </section>
           <section className="flex-1">
             <h4 className="text-[#141414] text-5xl leading-snug  max-w-4xl mx-auto font-medium ">
-              Perfect For All Occasions
+              What Makes Our Scottish Butlers Special
             </h4>
             <p className="text-lg my-6">
               Our Scottish Hunky Butlers are trained to adapt to any event type,
@@ -140,7 +140,7 @@ export default function PerfectForAll({ city }) {
               </div>
             </div>
             <div className=" my-4 md:my-8">
-              <Link href="#">
+              <Link href={`/quote`}>
                 <button className="cursor-pointer bg-none text-[#FF006A] px-4 md:px-6 py-2 md:py-4 rounded-full font-medium text-base md:text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A]">
                   Try a 30-second quote now
                 </button>

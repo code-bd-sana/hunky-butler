@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { base_url } from "@/utils/utils";
 import { useGetLocationsQuery } from "@/features/location";
 import Link from "next/link";
-const Nationwide = ({ name }) => {
+const Nationwide = ({ name, serviceSlug }) => {
   const { data: nations = [], isLoading, isError } = useGetLocationsQuery();
   console.log(nations);
   // const [nations, setNations] = useState([]);
@@ -42,7 +42,10 @@ const Nationwide = ({ name }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {nations?.slice(0, 6).map((nation, i) => (
-          <Link key={i} href={`/locations/${nation?.slug}`}>
+          <Link
+            key={i}
+            href={`/locations/${nation?.slug}/?serviceSlug=${serviceSlug}`}
+          >
             <div
               key={i}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 border border-gray-100 hover:border-pink-500"
@@ -57,8 +60,11 @@ const Nationwide = ({ name }) => {
                   className="rounded-xl mb-4 object-cover w-full h-[220px] hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              <div className="flex justify-between items-center text-pink-600 font-semibold mt-2">
-                <span>{nation.name}</span>
+              <div className="flex justify-between items-center text-pink-600 font-semibold mt-2 capitalize">
+                <p>
+                  {serviceSlug}
+                  <span> {nation?.city}</span>
+                </p>
                 <FaArrowRight />
               </div>
             </div>
