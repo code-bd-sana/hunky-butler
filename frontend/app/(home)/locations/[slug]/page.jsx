@@ -1,4 +1,5 @@
 "use client";
+import React, { Suspense } from "react";
 import Footer from "@/components/homepage/Footer";
 import Frequently from "@/components/homepage/Frequently";
 import HomeMarque from "@/components/homepage/HomeMarque";
@@ -12,32 +13,53 @@ import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import Banner from "@/components/shared/Banner";
 import MainTitle from "@/components/shared/typography/MainTitle";
 import SubTitle from "@/components/shared/typography/SubTitle";
-import React from "react";
 import img from "@/public/location/scotland.png";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useGetLocationBySlugQuery } from "@/features/location";
 
-const locationDetails = () => {
+function LocationDetailsContent() {
   const { slug } = useParams();
-  const { data } = useGetLocationBySlugQuery(slug);
-  console.log(data);
+  const searchParams = useSearchParams();
+  const serviceSlug = searchParams.get("serviceSlug");
+
+  console.log("Service Slug:", serviceSlug);
+
+  const { data, isLoading } = useGetLocationBySlugQuery(slug);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <span className="loading loading-infinity loading-lg"></span>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {/* <LocationBanner></LocationBanner> */}
       <Banner
         banner={data?.image}
         image={img}
         service={"Location"}
-        title={`Hunky Butler Service in ${data?.city}`}
+        title={`${serviceSlug} in ${data?.city}`}
       />
-      {/* <AboutHunky></AboutHunky> */}
       <PerfectForAll city={data?.city} />
-      {/* <Frequently /> */}
-      <FaqLocation location={`${data?.city}`} />
+      <FaqLocation location={data?.city} />
       <ReviewSection />
-      <Footer></Footer>
+      <Footer />
     </div>
   );
-};
+}
 
-export default locationDetails;
+export default function LocationDetails() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center h-[80vh]">
+          <span className="loading loading-infinity loading-lg"></span>
+        </div>
+      }
+    >
+      <LocationDetailsContent />
+    </Suspense>
+  );
+}
