@@ -30,39 +30,39 @@ const StepIndicator = ({ currentStep } ) => {
   ];
 
   return (
-    <div className="flex justify-center items-center space-x-4 mb-12">
-      {steps.map((step, index) => (
-        <React.Fragment key={step.number}>
-          <div className="flex flex-col items-center">
-            <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center border-2 ${
-                step.number === currentStep
-                  ? "bg-[#FF3388] border-[#FF3388] text-white"
-                  : step.number < currentStep
-                  ? "bg-green-500 border-green-500 text-white"
-                  : "border-gray-400 text-gray-400"
-              } font-semibold`}
-            >
-              {step.number < currentStep ? "✓" : step.number}
-            </div>
-            <span
-              className={`text-sm mt-2 ${
-                step.number === currentStep ? "text-[#FF3388]" : "text-gray-400"
-              } font-medium`}
-            >
-              {step.label}
-            </span>
-          </div>
-          {index < steps.length - 1 && (
-            <div
-              className={`w-16 h-1 ${
-                step.number < currentStep ? "bg-green-500" : "bg-gray-400"
-              }`}
-            />
-          )}
-        </React.Fragment>
-      ))}
-    </div>
+<div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-8 sm:mb-12">
+  {steps.map((step, index) => (
+    <React.Fragment key={step.number}>
+      <div className="flex flex-col items-center">
+        <div
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 ${
+            step.number === currentStep
+              ? "bg-[#FF3388] border-[#FF3388] text-white"
+              : step.number < currentStep
+              ? "bg-green-500 border-green-500 text-white"
+              : "border-gray-400 text-gray-400"
+          } font-semibold text-sm sm:text-base`}
+        >
+          {step.number < currentStep ? "✓" : step.number}
+        </div>
+        <span
+          className={`text-xs sm:text-sm mt-1 sm:mt-2 ${
+            step.number === currentStep ? "text-[#FF3388]" : "text-gray-400"
+          } font-medium text-center px-2`}
+        >
+          {step.label}
+        </span>
+      </div>
+      {index < steps.length - 1 && (
+        <div
+          className={`hidden sm:block w-8 sm:w-16 h-1 ${
+            step.number < currentStep ? "bg-green-500" : "bg-gray-400"
+          }`}
+        />
+      )}
+    </React.Fragment>
+  ))}
+</div>
   );
 };
 

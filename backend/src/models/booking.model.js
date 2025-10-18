@@ -83,6 +83,12 @@ butler: [
      stripePaymentIntentId: String,
      stripePaymentIntentId: String,
      butlerFee: Number,
+     loadFactor:Number,
+     travelFee:Number,
+     profit:{
+      type:Number,
+      required:true
+     },
     //  paidAt:Date
      
 

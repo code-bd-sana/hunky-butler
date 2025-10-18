@@ -12,247 +12,41 @@ import { useGetServiceQuery } from '@/features/services/servicesApi';
 
 const stripePromise = loadStripe('pk_test_51RWA5gFVdJBgYBDxRIUNli1dDlicyaiOTCEECLujXMHTyVEujYQJ2pZ9DFlUeNPpaKzy7cPYJ1QlA6cUe7A9m6Eg00nP3ZNUFM');
 
-// Postcode Zones Data
-const POSTCODE_ZONES = {
-  'AB': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'AL': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'B': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'BA': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'BB': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'BD': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'BH': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'BL': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'BN': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'BR': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'BS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'BT': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'CA': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'CB': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'CF': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'CH': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'CM': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'CO': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'CR': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'CT': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'CV': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'CW': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'DA': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'DD': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'DE': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'DG': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'DH': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'DL': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'DN': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'DT': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'DY': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'E': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'EC': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'EH': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'EN': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'EX': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
-  'FK': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'FY': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'G': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'GL': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'GU': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'GY': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' },
-  'HA': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'HD': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'HG': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'HP': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'HR': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'HS': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' },
-  'HU': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'HX': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'IG': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'IM': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' },
-  'IP': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'IV': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'JE': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' },
-  'KA': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
-  'KT': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'KW': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'KY': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
-  'L': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'LA': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'LD': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
-  'LE': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'LL': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'LN': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
-  'LS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'LU': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'M': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'ME': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'MK': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'ML': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'N': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'NE': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'NG': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'NN': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'NP': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'NR': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'NW': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'OL': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'OX': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'PA': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'PE': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'PH': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'PL': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
-  'PO': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'PR': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'RG': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'RH': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'RM': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'S': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'SA': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'SE': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'SG': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'SK': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'SL': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'SM': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'SN': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'SO': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'SP': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'SR': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'SS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'ST': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'SW': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'SY': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
-  'TA': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'TD': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'TF': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'TN': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'TQ': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'TR': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
-  'TS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'TW': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'UB': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'W': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'WA': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'WC': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'WD': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'WF': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'WN': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'WR': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'WS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
-  'WV': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
-  'YO': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
-  'ZE': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' }
-};
-
-// Special handling for Isle of Wight (PO30-PO41)
-const ISLE_OF_WIGHT_POSTCODES = ['PO30', 'PO31', 'PO32', 'PO33', 'PO34', 'PO35', 'PO36', 'PO37', 'PO38', 'PO39', 'PO40', 'PO41'];
-
-// Utility Functions
-const extractPostcodeArea = (postcode) => {
-  if (!postcode) return null;
-  
-  const cleanPostcode = postcode.replace(/\s/g, '').toUpperCase();
-  
-  // Check for Isle of Wight postcodes first
-  const iowPostcode = ISLE_OF_WIGHT_POSTCODES.find(prefix => 
-    cleanPostcode.startsWith(prefix)
-  );
-  if (iowPostcode) {
-    return iowPostcode;
-  }
-  
-  const match = cleanPostcode.match(/^([A-Z]{1,2}[A-Z]?[A-Z]?)/);
-  return match ? match[1] : null;
-};
-
-const getZoneInfo = (postcode) => {
-  const area = extractPostcodeArea(postcode);
-  if (!area) return null;
-  
-  if (ISLE_OF_WIGHT_POSTCODES.includes(area)) {
-    return {
-      zone: 'E',
-      loadFactor: 1.5,
-      minDuration: 2,
-      description: 'Islands or ferry/flight areas',
-      area: area
-    };
-  }
-  
-  const zoneInfo = POSTCODE_ZONES[area];
-  if (zoneInfo) {
-    return {
-      ...zoneInfo,
-      area: area
-    };
-  }
-  
-  return {
-    zone: 'B',
-    loadFactor: 1.1,
-    minDuration: 1,
-    description: 'Unknown area - default urban fringe',
-    area: area
-  };
-};
-
-const getLoadFactor = (postcode) => {
-  const zoneInfo = getZoneInfo(postcode);
-  return zoneInfo ? zoneInfo.loadFactor : 1.1;
-};
-
-const getMinDuration = (postcode) => {
-  const zoneInfo = getZoneInfo(postcode);
-  return zoneInfo ? zoneInfo.minDuration : 1;
-};
-
-const getZoneDisplayInfo = (postcode) => {
-  const zoneInfo = getZoneInfo(postcode);
-  if (!zoneInfo) return null;
-  
-  return {
-    zone: zoneInfo.zone,
-    loadFactor: zoneInfo.loadFactor,
-    description: zoneInfo.description,
-    area: zoneInfo.area
-  };
-};
-
-// Base Price Calculation (without load factor)
-const calculateBasePrice = (serviceSlug, durationHours, numberOfStaff) => {
+// Price Calculation Function based on service type, duration, and number of butlers
+const calculatePrice = (serviceSlug, durationHours, numberOfStaff) => {
+  // Fixed price services
   if (serviceSlug === 'life-drawing') {
-    return 230;
+    return 230; // Fixed price for life drawing
   }
   
   if (serviceSlug === 'cocktail-masterclasses') {
-    return 140;
+    return 140; // Fixed price for cocktail masterclasses
   }
 
+  // Buff Butlers pricing matrix for 1-5 butlers and 1-3 hours
   if (serviceSlug === 'buff-butlers') {
     const pricingMatrix = {
-      1: { 1: 110, 2: 150, 3: 170 },
-      2: { 1: 190, 2: 250, 3: 300 },
-      3: { 1: 250, 2: 350, 3: 420 },
-      4: { 1: 440, 2: 600, 3: 680 },
-      5: { 1: 550, 2: 750, 3: 850 }
+      1: { 1: 110, 2: 150, 3: 170 }, // 1 butler
+      2: { 1: 190, 2: 250, 3: 300 }, // 2 butlers
+      3: { 1: 250, 2: 350, 3: 420 } , 
+     4: { 1: 440, 2: 600, 3: 680 } , // 3 butlers
+      5: { 1: 550, 2: 750, 3: 850 }  // 3 butlers
     };
     const duration = Math.ceil(durationHours);
-    const butlerCount = Math.min(Math.max(numberOfStaff, 1), 5);
+    const butlerCount = Math.min(Math.max(numberOfStaff, 1), 5); // Limit to 1-5 butlers
     const availableDurations = [1, 2, 3];
     const selectedDuration = availableDurations.includes(duration) ? duration : 3;
     
     return pricingMatrix[butlerCount]?.[selectedDuration] || pricingMatrix[butlerCount]?.[3] || 420;
   }
 
-  return 100;
-};
-
-// Price Calculation Function with load factor
-const calculatePrice = (serviceSlug, durationHours, numberOfStaff, postcode) => {
-  const basePrice = calculateBasePrice(serviceSlug, durationHours, numberOfStaff);
-  const loadFactor = getLoadFactor(postcode);
-  const adjustedPrice = basePrice * loadFactor;
-  return Math.round(adjustedPrice);
+  // Default pricing for other services (strippers, etc.)
+  return 100; // Fallback price
 };
 
 // Butler Fee Calculation Function
 const calculateButlerFee = (serviceName, durationHours, numberOfStaff) => {
+  // Fixed fees for specific services
   if (serviceName === 'cocktail-masterclasses') {
     return 140;
   }
@@ -260,41 +54,45 @@ const calculateButlerFee = (serviceName, durationHours, numberOfStaff) => {
     return 100;
   }
   
+  // Hour-based fees for other services
   const hourlyRates = {
-    1: 60,
-    2: 90,
-    3: 110
+    1: 60,   // 1 hour: £60 per butler
+    2: 90,   // 2 hours: £90 per butler
+    3: 110   // 3 hours: £110 per butler
   };
   
+  // Find the closest duration rate (round up to nearest hour for pricing)
   const duration = Math.ceil(durationHours);
-  const rate = hourlyRates[duration] || hourlyRates[3];
+  const rate = hourlyRates[duration] || hourlyRates[3]; // Default to 3 hours rate if longer
+  
   return rate * numberOfStaff;
 };
 
 // Service duration options mapping
 const getServiceDurationOptions = (serviceSlug) => {
   if (serviceSlug === 'strippers') {
-    return [0.25];
+    return [0.25]; // Only 15 minutes for strippers
   }
   
   if (serviceSlug === 'cocktail-masterclasses') {
-    return [1.5];
+    return [1.5]; // Only 90 minutes for cocktail masterclasses
   }
   
   if (serviceSlug === 'life-drawing') {
-    return [2];
+    return [2]; // Only 2 hours for life drawing
   }
   
+  // For buff butlers and other services, allow 1-3 hours
   return [1, 2, 3];
 };
 
 // Default duration for each service
 const getDefaultDuration = (serviceSlug) => {
   const durations = {
-    'cocktail-masterclasses': 1.5,
-    'life-drawing': 2,
-    'strippers': 0.25,
-    'buff-butlers': 2
+    'cocktail-masterclasses': 1.5,  // 90 minutes fixed
+    'life-drawing': 2,              // 2 hours fixed
+    'strippers': 0.25,              // 15 minutes fixed
+    'buff-butlers': 2               // Default 2 hours for buff butlers
   };
   return durations[serviceSlug] || 2;
 };
@@ -317,6 +115,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
   const placesService = useRef(null);
 
   useEffect(() => {
+    // Load Google Maps script
     if (!window.google) {
       const script = document.createElement('script');
       script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA&libraries=places`;
@@ -353,13 +152,13 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
     autocompleteService.current.getPlacePredictions(
       {
         input: input,
-        componentRestrictions: { country: 'gb' },
-        types: ['geocode']
+        componentRestrictions: { country: 'gb' }, // UK only
+        types: ['geocode'] // addresses only
       },
       (predictions, status) => {
         setIsLoading(false);
         if (status === window.google.maps.places.PlacesServiceStatus.OK && predictions) {
-          setSuggestions(predictions.slice(0, 8));
+          setSuggestions(predictions.slice(0, 8)); // Show top 8 results
           setShowSuggestions(true);
         } else {
           setSuggestions([]);
@@ -417,6 +216,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
     const value = e.target.value;
     setQuery(value);
     
+    // If user is typing manually, update the location
     if (onLocationSelect) {
       onLocationSelect({ fullAddress: value });
     }
@@ -429,11 +229,13 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
   };
 
   const handleInputBlur = () => {
+    // Delay hiding suggestions to allow for click
     setTimeout(() => {
       setShowSuggestions(false);
     }, 200);
   };
 
+  // Alternative: Simple UK cities list as fallback
   const ukCities = [
     "London, UK", "Manchester, UK", "Birmingham, UK", "Liverpool, UK", 
     "Leeds, UK", "Sheffield, UK", "Bristol, UK", "Glasgow, UK",
@@ -529,43 +331,43 @@ const StepIndicator = ({ currentStep, bookingSuccess }) => {
   const currentIndex = getStepIndex(currentStep);
 
   return (
-    <div className="block sm:flex justify-center items-center space-x-4 space-y-4 md:space-y-0 mb-8 sm:mb-12">
-      {steps.map((step, index) => (
-        <React.Fragment key={step.id}>
-          <div className="flex items-center sm:flex-col sm:items-center">
-            <div
-              className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 ${
-                step.id === currentStep && !bookingSuccess
-                  ? "bg-[#FF3388] border-[#FF3388] text-white"
-                  : index < currentIndex || bookingSuccess
-                  ? "bg-green-500 border-green-500 text-white"
-                  : "border-gray-400 text-gray-400"
-              } font-semibold transition-all duration-300 text-sm sm:text-base flex-shrink-0`}
-            >
-              {(index < currentIndex || bookingSuccess) ? "✓" : step.number}
-            </div>
-            <span
-              className={`text-xs sm:text-sm ml-2 sm:ml-0 sm:mt-2 ${
-                step.id === currentStep && !bookingSuccess 
-                  ? "text-[#FF3388]" : 
-                (index < currentIndex || bookingSuccess)
-                  ? "text-green-500" 
-                  : "text-gray-400"
-              } font-medium`}
-            >
-              {step.label}
-            </span>
-          </div>
-          {index < steps.length - 1 && (
-            <div
-              className={`hidden sm:block w-8 sm:w-16 h-1 ${
-                (index < currentIndex || bookingSuccess) ? "bg-green-500" : "bg-gray-400"
-              } transition-all duration-300`}
-            />
-          )}
-        </React.Fragment>
-      ))}
-    </div>
+ <div className="block sm:flex justify-center items-center space-x-4 space-y-4 md:space-y-0 mb-8 sm:mb-12">
+  {steps.map((step, index) => (
+    <React.Fragment key={step.id}>
+      <div className="flex items-center sm:flex-col sm:items-center">
+        <div
+          className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border-2 ${
+            step.id === currentStep && !bookingSuccess
+              ? "bg-[#FF3388] border-[#FF3388] text-white"
+              : index < currentIndex || bookingSuccess
+              ? "bg-green-500 border-green-500 text-white"
+              : "border-gray-400 text-gray-400"
+          } font-semibold transition-all duration-300 text-sm sm:text-base flex-shrink-0`}
+        >
+          {(index < currentIndex || bookingSuccess) ? "✓" : step.number}
+        </div>
+        <span
+          className={`text-xs sm:text-sm ml-2 sm:ml-0 sm:mt-2 ${
+            step.id === currentStep && !bookingSuccess 
+              ? "text-[#FF3388]" : 
+            (index < currentIndex || bookingSuccess)
+              ? "text-green-500" 
+              : "text-gray-400"
+          } font-medium`}
+        >
+          {step.label}
+        </span>
+      </div>
+      {index < steps.length - 1 && (
+        <div
+          className={`hidden sm:block w-8 sm:w-16 h-1 ${
+            (index < currentIndex || bookingSuccess) ? "bg-green-500" : "bg-gray-400"
+          } transition-all duration-300`}
+        />
+      )}
+    </React.Fragment>
+  ))}
+</div>
   );
 };
 
@@ -577,17 +379,18 @@ export default function SecondStep() {
   const [booking, { isLoading, error }] = useBookingMutation();
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('pay_now');
-  const [paymentType, setPaymentType] = useState('full');
+  const [paymentType, setPaymentType] = useState('full'); // 'full' or 'deposit'
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [zoneInfo, setZoneInfo] = useState(null);
   
   const params = useParams();
   const { data: session } = useSession();
   const { data: serviceData } = useGetServiceQuery(params?.category);
 
+  // Get duration options for current service
   const durationOptions = getServiceDurationOptions(params.category);
   const defaultDuration = getDefaultDuration(params.category);
 
+  // Initialize secondStep with default duration
   useEffect(() => {
     if (params.category && !secondStep.durationHours) {
       setSecondStep(prev => ({
@@ -597,22 +400,8 @@ export default function SecondStep() {
     }
   }, [params.category, defaultDuration]);
 
-  // Update zone info when postcode changes
-  useEffect(() => {
-    if (firstStep.postCode) {
-      const zoneData = getZoneDisplayInfo(firstStep.postCode);
-      setZoneInfo(zoneData);
-    }
-  }, [firstStep.postCode]);
-
+  // Calculate prices based on service type
   const totalPrice = calculatePrice(
-    params.category, 
-    secondStep.durationHours || defaultDuration, 
-    secondStep.numberOfStaff || 1,
-    firstStep.postCode
-  );
-  
-  const basePrice = calculateBasePrice(
     params.category, 
     secondStep.durationHours || defaultDuration, 
     secondStep.numberOfStaff || 1
@@ -624,7 +413,7 @@ export default function SecondStep() {
     secondStep.numberOfStaff || 1
   );
   
-  const depositAmount = 20;
+  const depositAmount = 20; // £20 deposit
   const balanceDue = totalPrice - depositAmount;
 
   const firstStepHandler = async (e) => {
@@ -638,18 +427,21 @@ export default function SecondStep() {
       const postCode = form.postCode.value;
       const location = form.location.value;
 
+      // Phone number validation
       const phoneRegex = /^[0-9+\-\s()]{10,}$/;
       if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
         toast.error("Please enter a valid phone number");
         return;
       }
 
+      // Post code validation
       const postCodeRegex = /^[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}$/i;
       if (!postCodeRegex.test(postCode)) {
         toast.error("Please enter a valid UK postcode");
         return;
       }
 
+      // Location validation
       if (!location.trim()) {
         toast.error("Please enter your location");
         return;
@@ -681,6 +473,7 @@ export default function SecondStep() {
       const startTime = form.startTime.value;
       const durationHours = form.durationHours ? parseFloat(form.durationHours.value) : defaultDuration;
 
+      // Validate date is not in the past
       const selectedDate = new Date(dateOfEvent);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -689,13 +482,6 @@ export default function SecondStep() {
         toast.error("Please select a future date");
         return;
       }
-
-      // Validate minimum duration based on postcode zone
-      const minDuration = getMinDuration(firstStep.postCode);
-      // if (durationHours < minDuration) {
-      //   toast.error(`Minimum booking duration for your location is ${minDuration} hour${minDuration > 1 ? 's' : ''}`);
-      //   return;
-      // }
 
       const secondStepData = {
         dateOfEvent,
@@ -715,7 +501,6 @@ export default function SecondStep() {
   const handlePayment = async () => {
     try {
       setIsProcessingPayment(true);
-      const travelFeeInitial = (basePrice * zoneInfo.loadFactor) - basePrice 
       
       const finalData = {
         ...firstStep,
@@ -723,14 +508,10 @@ export default function SecondStep() {
         slug: params.category,
         serviceName: params.category,
         price: totalPrice,
-        basePrice: basePrice,
-        loadFactor: zoneInfo?.loadFactor || 1,
-        zone: zoneInfo?.zone || 'B',
-        butlerFee: butlerFee,
+        butlerFee: butlerFee, // Add butler fee to the booking data
         paymentMethod,
         paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid',
-        profit: totalPrice - (butlerFee + travelFeeInitial),
-        travelFee: (basePrice * zoneInfo.loadFactor) - basePrice 
+        profit: totalPrice - butlerFee
       };
 
       if (paymentMethod === 'pay_now') {
@@ -778,14 +559,11 @@ export default function SecondStep() {
         slug: params.category,
         serviceName: params.category,
         price: totalPrice,
-        basePrice: basePrice,
-        loadFactor: zoneInfo?.loadFactor || 1,
-        zone: zoneInfo?.zone || 'B',
-        butlerFee: butlerFee,
+        butlerFee: butlerFee, // Add butler fee to the booking data
         paymentMethod,
         paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid',
         paymentType: paymentType,
-        profit: totalPrice - butlerFee
+        profit: price - butlerFee
       };
 
       const data = await booking(dataToSend).unwrap();
@@ -824,6 +602,7 @@ export default function SecondStep() {
     }
   };
 
+  // Get price breakdown for display
   const getPriceBreakdown = () => {
     const serviceSlug = params.category;
     const duration = secondStep.durationHours || defaultDuration;
@@ -845,6 +624,7 @@ export default function SecondStep() {
     return "Service price";
   };
 
+  // Get butler fee breakdown for display
   const getButlerFeeBreakdown = () => {
     const serviceName = params.category;
     const duration = secondStep.durationHours || defaultDuration;
@@ -949,11 +729,6 @@ export default function SecondStep() {
                       className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669] uppercase"
                     />
                     <p className="text-xs text-gray-400 mt-1">Enter a valid UK postcode</p>
-                    {firstStep.postCode && zoneInfo && (
-                      <p className="text-xs text-[#FF3388] mt-1">
-                        Zone {zoneInfo.zone} - {zoneInfo.description} (Load Factor: {zoneInfo.loadFactor}x)
-                      </p>
-                    )}
                   </div>
                   <GooglePlacesAutocomplete 
                     onLocationSelect={handleLocationSelect}
@@ -990,6 +765,7 @@ export default function SecondStep() {
                         min={new Date().toISOString().split('T')[0]}
                         className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669] appearance-none cursor-pointer"
                       />
+                      {/* Custom calendar icon */}
                       <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -1026,6 +802,7 @@ export default function SecondStep() {
                         name="startTime"
                         className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669] appearance-none cursor-pointer"
                       />
+                      {/* Custom clock icon */}
                       <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -1037,10 +814,12 @@ export default function SecondStep() {
                   <div className="text-left w-full mt-6 md:mt-0">
                     <label className="text-white text-left block">Duration *</label>
                     {durationOptions.length === 1 ? (
+                      // Fixed duration for services with only one option
                       <div className="bg-[#00000066] text-white mt-1 outline-0 w-full border py-3.5 px-4 rounded-lg border-[#6D6669]">
                         {formatDuration(defaultDuration)}
                       </div>
                     ) : (
+                      // Selectable duration for services with multiple options
                       <select
                         required
                         name="durationHours"
@@ -1059,11 +838,6 @@ export default function SecondStep() {
                         ? `Fixed duration for ${params.category} service`
                         : 'Select duration for your event'
                       }
-                      {zoneInfo && zoneInfo.minDuration > 1 && (
-                        <span className="text-[#FF3388] block">
-                          Minimum {zoneInfo.minDuration} hours for Zone {zoneInfo.zone}
-                        </span>
-                      )}
                     </p>
                   </div>
                 </section>
@@ -1116,29 +890,6 @@ export default function SecondStep() {
                         <span className="font-medium">Location:</span>
                         <span className="text-right max-w-[200px] break-words">{firstStep.location}</span>
                       </div>
-                      {zoneInfo && (
-                        <div className="flex justify-between">
-                          <span className="font-medium">Location Zone:</span>
-                          <div className="text-right">
-                            <span className="font-bold">Zone {zoneInfo.zone}</span>
-                            <p className="text-xs text-gray-400">
-                              {zoneInfo.description} (Load Factor: {zoneInfo.loadFactor}x)
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                      <div className="flex justify-between">
-                        <span className="font-medium">Base Price:</span>
-                        <span className="font-bold">£{basePrice}</span>
-                      </div>
-                      {zoneInfo && zoneInfo.loadFactor > 1 && (
-                        <div className="flex justify-between">
-                          <span className="font-medium">Travel Fee:</span>
-                          <span className="font-bold text-yellow-400">
-                            {(basePrice * zoneInfo.loadFactor) }
-                          </span>
-                        </div>
-                      )}
                       <div className="flex justify-between">
                         <span className="font-medium">Total Amount:</span>
                         <span className="font-bold">£{totalPrice}</span>
@@ -1235,25 +986,12 @@ export default function SecondStep() {
                     {/* Payment Summary */}
                     <div className="py-4 space-y-4">
                       <div className="flex justify-between items-center">
-                        <span className="font-medium text-sm md:text-lg">Base Service Price</span>
+                        <span className="font-medium text-sm md:text-lg">Service Price</span>
                         <div className="text-right">
-                          <span className="font-bold">£{basePrice}</span>
+                          <span className="font-bold">£{totalPrice}</span>
                           <p className="text-xs text-gray-400">{getPriceBreakdown()}</p>
                         </div>
                       </div>
-                      
-                      {zoneInfo && zoneInfo.loadFactor > 1 && (
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-sm md:text-lg">Travel Fee</span>
-                          <div className="text-right">
-                            <span className="font-bold text-yellow-400">  ${(basePrice * zoneInfo.loadFactor) - basePrice }</span>
-                            <p className="text-xs text-gray-400">
-                              Zone {zoneInfo.zone} - {zoneInfo.description}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                      
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Butler Fee</span>
                         <div className="text-right">
@@ -1261,7 +999,6 @@ export default function SecondStep() {
                           <p className="text-xs text-gray-400">{getButlerFeeBreakdown()}</p>
                         </div>
                       </div>
-                      
                       {paymentType === 'deposit' && (
                         <>
                           <div className="flex justify-between items-center">
@@ -1275,12 +1012,10 @@ export default function SecondStep() {
                           <div className="border-t border-white/20 pt-2"></div>
                         </>
                       )}
-                      
-                      <div className="flex justify-between items-center border-t border-white/20 pt-2">
+                      <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Total Amount</span>
-                        <span className="text-right font-bold text-lg">£{totalPrice}</span>
+                        <span className="text-right font-bold">£{totalPrice}</span>
                       </div>
-                      
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Event starts on</span>
                         <span className="text-right">
@@ -1301,17 +1036,6 @@ export default function SecondStep() {
                         <span className="font-medium text-sm md:text-lg">Location</span>
                         <span className="text-right max-w-[200px] break-words">{firstStep.location}</span>
                       </div>
-                      {zoneInfo && (
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-sm md:text-lg">Location Zone</span>
-                          <div className="text-right">
-                            <span className="font-bold">Zone {zoneInfo.zone}</span>
-                            <p className="text-xs text-gray-400">
-                              {zoneInfo.description} (Load Factor: {zoneInfo.loadFactor}x)
-                            </p>
-                          </div>
-                        </div>
-                      )}
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Service Type</span>
                         <span className="text-right capitalize">{params?.category}</span>
