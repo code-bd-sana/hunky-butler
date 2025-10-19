@@ -29,8 +29,6 @@ const transporter = nodemailer.createTransport({
 // controllers/paymentController.js - এটা update করুন
 
 export const createCheckoutSessionExistngBooking = async (req, res) => {
-
-  console.log("first")
   try {
     const { id, successUrl, cancelUrl } = req.body;
 
@@ -39,8 +37,13 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
 
 
 
+
     const savedBooking = await Booking.findOne({_id:id});
     console.log(savedBooking, "ami tomar saved booking")
+
+    const price = savedBooking?.paymentStatus === 'deposit_paid' ? savedBooking.price - 20 : savedBooking?.price;
+  
+
 
 
     // Create Stripe Checkout Session
@@ -54,7 +57,7 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
               name: `${savedBooking.serviceName} Service Booking`,
               description: `Butler service for ${savedBooking.durationHours} hours with ${savedBooking.numberOfStaff} staff members`,
             },
-            unit_amount: Math.round(savedBooking.price * 100), // Convert to cents
+            unit_amount: Math.round(price * 100), // Convert to cents
           },
           quantity: 1,
         },
@@ -66,13 +69,15 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
         bookingId: savedBooking._id.toString(),
         customerEmail: savedBooking.email,
         firstName: savedBooking?.firstName,
-        lastName: save?.lastName,
+    
+        lastName: savedBooking?.lastName,
         serviceName: savedBooking.serviceName,
-        totalAmount: savedBooking.price.toString()
+        totalAmount: price,
       },
       customer_email: savedBooking.email,
     });
 
+console.log(session, "aysa")
 
 
     // Send response with both sessionId and url
@@ -84,7 +89,7 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
       message: 'Checkout session created successfully'
     });
 
-    // ... rest of your email sending code
+
 
   } catch (error) {
     console.error('Error creating checkout session:', error);
@@ -95,7 +100,6 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
     });
   }
 };
-
 
 
 
@@ -823,7 +827,7 @@ export const allPaymentHistory = async(req, res)=>{
 
      const skip = req.query.skip;
     const limit = req.query.limit;
-    const payments = await PaymentHistory.find().skip(skip).limit(limit).populate('butler');
+    const payments = await PaymentHistory.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('butler');
     const paymentsCount = await PaymentHistory.countDocuments();
     res.status(200).json({
         message:"Success",

@@ -164,6 +164,8 @@ const Payouts = () => {
             <tr className="text-[#333333] text-base">
               <th className="p-3">Performer</th>
               <th className="p-3">Total</th>
+              <th className="p-3">Deposit</th>
+              <th className="p-3">Amount Due</th>
               <th className="p-3">Ref</th>
               <th className="p-3">Due Date</th>
               <th className="p-3">Status</th>
@@ -187,6 +189,13 @@ const Payouts = () => {
                 </td>
                 <td className="px-2 align-middle text-zinc-600 whitespace-nowrap">
                   £{payment.totalAmount}
+                </td>
+                <td className="px-2 align-middle  text-zinc-600 whitespace-nowrap">
+                  £{  
+payment?.paymentStatus === 'deposit_paid' ?  payment?.depositAmount : 0}
+                </td>
+                <td className="px-2 align-middle text-zinc-600 whitespace-nowrap">
+                  £{payment?.amountDue || 0}
                 </td>
                 <td className="px-2 align-middle whitespace-nowrap">
                   {payment.bookingId}

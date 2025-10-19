@@ -61,10 +61,14 @@ const bookingSchema = mongoose.Schema(
       enum: ["completed", "ongoing", "cancel", "cancelled", "accepted"],
       default: "ongoing",
     },
-    butler: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: User,
-    },
+butler: [
+  {
+    id: { type: mongoose.Schema.Types.ObjectId, ref: User },
+    accepted: { type: Boolean, default: false },
+  },
+],
+
+
     location: {
       type: String,
       required: [true, "location is required"],
@@ -78,11 +82,21 @@ const bookingSchema = mongoose.Schema(
     paymentStatus:String,
      stripePaymentIntentId: String,
      stripePaymentIntentId: String,
+     butlerFee: Number,
+     loadFactor:Number,
+     travelFee:Number,
+     profit:{
+      type:Number,
+      required:true
+     },
     //  paidAt:Date
      
 
              
   },
+
+
+ 
   
   { timestamps: true }
 );
@@ -90,3 +104,11 @@ const bookingSchema = mongoose.Schema(
 const Booking = mongoose.model("Booking", bookingSchema);
 
 export default Booking;
+
+
+//    butlers: [
+//   {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "User", 
+//   }
+// ],
