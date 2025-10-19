@@ -884,83 +884,87 @@ export const paymentHistoryForButler = async(req, res) => {
     const skip = parseInt(req.query.skip) || 0;
     const limit = parseInt(req.query.limit) || 5;
 
-    // Get paginated history
-    const history = await PaymentHistory.find({ butler: id })
+    // Get paginated history - Fixed the query for butler array
+    const history = await PaymentHistory.find({ 
+      "butler.id": new mongoose.Types.ObjectId(id) 
+    })
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
     
-    const historyCount = await PaymentHistory.countDocuments({ butler: id });
+    const historyCount = await PaymentHistory.countDocuments({ 
+      "butler.id": new mongoose.Types.ObjectId(id) 
+    });
 
-    // ✅ Calculate total earnings (20% of amountPaid)
-    const totalEarningsResult = await PaymentHistory.aggregate([
+    // ✅ Calculate total earnings (sum of butlerFee from Booking where butler.id matches)
+    const totalEarningsResult = await Booking.aggregate([
       { 
         $match: { 
-          butler: new mongoose.Types.ObjectId(id),
-          paymentStatus: 'paid' // Only consider paid payments
+          "butler.id": new mongoose.Types.ObjectId(id),
+          status: 'completed' // Using status completed instead of paymentStatus
         } 
       },
       {
         $group: {
           _id: null,
-          totalAmount: { $sum: "$amountPaid" },
+          totalAmount: { $sum: "$butlerFee" },
           totalTransactions: { $sum: 1 }
         }
       }
     ]);
 
-    const totalAmount = totalEarningsResult.length > 0 ? totalEarningsResult[0].totalAmount : 0;
     const totalEarnings = totalEarningsResult.length > 0 ? totalEarningsResult[0].totalAmount : 0;
+    const totalTransactions = totalEarningsResult.length > 0 ? totalEarningsResult[0].totalTransactions : 0;
 
     // ✅ Calculate weekly earnings (current week)
     const startOfWeek = new Date();
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Sunday
     startOfWeek.setHours(0, 0, 0, 0);
 
-    const weeklyEarningsResult = await PaymentHistory.aggregate([
+    const weeklyEarningsResult = await Booking.aggregate([
       { 
         $match: { 
-          butler: new mongoose.Types.ObjectId(id),
-          paymentStatus: 'paid',
-          paidAt: { $gte: startOfWeek }
+          "butler.id": new mongoose.Types.ObjectId(id),
+          status: 'completed',
+          updatedAt: { $gte: startOfWeek } // Using updatedAt instead of paidAt
         } 
       },
       {
         $group: {
           _id: null,
-          weeklyAmount: { $sum: "$amountPaid" },
+          weeklyAmount: { $sum: "$butlerFee" },
           weeklyTransactions: { $sum: 1 }
         }
       }
     ]);
 
-    const weeklyAmount = weeklyEarningsResult.length > 0 ? weeklyEarningsResult[0].weeklyAmount : 0;
     const weeklyEarnings = weeklyEarningsResult.length > 0 ? weeklyEarningsResult[0].weeklyAmount : 0;
+    const weeklyTransactions = weeklyEarningsResult.length > 0 ? weeklyEarningsResult[0].weeklyTransactions : 0;
 
     // ✅ Calculate monthly earnings (current month)
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
 
-    const monthlyEarningsResult = await PaymentHistory.aggregate([
+    const monthlyEarningsResult = await Booking.aggregate([
       { 
         $match: { 
-          butler: new mongoose.Types.ObjectId(id),
-          paymentStatus: 'paid',
-          paidAt: { $gte: startOfMonth }
+          "butler.id": new mongoose.Types.ObjectId(id),
+          status: 'completed',
+          updatedAt: { $gte: startOfMonth }
         } 
       },
       {
         $group: {
           _id: null,
-          monthlyAmount: { $sum: "$amountPaid" },
+          monthlyAmount: { $sum: "$butlerFee" },
           monthlyTransactions: { $sum: 1 }
         }
       }
     ]);
 
-    const monthlyAmount = monthlyEarningsResult.length > 0 ? monthlyEarningsResult[0].monthlyAmount : 0;
     const monthlyEarnings = monthlyEarningsResult.length > 0 ? monthlyEarningsResult[0].monthlyAmount : 0;
+    const monthlyTransactions = monthlyEarningsResult.length > 0 ? monthlyEarningsResult[0].monthlyTransactions : 0;
 
     res.status(200).json({
       message: "Success",
@@ -969,15 +973,15 @@ export const paymentHistoryForButler = async(req, res) => {
       earnings: {
         total: {
           amount: totalEarnings,
-          transactions: totalEarningsResult.length > 0 ? totalEarningsResult[0].totalTransactions : 0
+          transactions: totalTransactions
         },
         weekly: {
           amount: weeklyEarnings,
-          transactions: weeklyEarningsResult.length > 0 ? weeklyEarningsResult[0].weeklyTransactions : 0
+          transactions: weeklyTransactions
         },
         monthly: {
           amount: monthlyEarnings,
-          transactions: monthlyEarningsResult.length > 0 ? monthlyEarningsResult[0].monthlyTransactions : 0
+          transactions: monthlyTransactions
         }
       },
       currentPage: Math.floor(skip / limit) + 1,

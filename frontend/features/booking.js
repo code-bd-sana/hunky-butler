@@ -83,4 +83,4 @@ getButlerPaymentHistory: builder.query({
     })
 });
 
-export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery, useGetBookingButlerQuery, useGetBookingCustomerQuery , useSubmitReviewMutation , useGetButlerPersonalOverviewQuery, useGetPaymentHistoryQuery, useGetCustomerPaymentHistoryQuery, useGetButlerPaymentHistoryQuery  } = bookingApi;
+export const { useGetBookingQuery, useBookingMutation, useUpdaterStatusMutation, useAssignToButlerMutation , useGetCustomerOverviwQuery, useGetButlerOverviwQuery, useGetBookingButlerQuery, useGetBookingCustomerQuery , useSubmitReviewMutation , useGetButlerPersonalOverviewQuery, useGetPaymentHistoryQuery, useGetCustomerPaymentHistoryQuery,     useGetButlerPaymentHistoryQuery  } = bookingApi;

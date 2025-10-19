@@ -272,7 +272,7 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
       onClose();
     } catch (error) {
       console.log(error);
-      toast.error(error?.message || "Something went wrong!");
+      toast.error(error?.data?.message || "Something went wrong!");
     }
   };
 
@@ -798,6 +798,7 @@ const Booking = () => {
        setStatusModalOpen(false);
       
     } catch (error) {
+      console.log(error)
       toast.error(error?.message || "Something went wrong")
       // console.log(error)
     }

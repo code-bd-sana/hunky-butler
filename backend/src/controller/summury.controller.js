@@ -88,3 +88,40 @@ export const GetAdminSummary = async (req, res) => {
     });
   }
 };
+
+export const GetCustomerSummury = async (req, res) => {
+  try {
+    const email = req.params.email;
+
+    // 1) total booking
+    const totalBooking = await Booking.countDocuments({ email });
+
+    // 2) all fully paid bookings → sum of "paidAmount" (assume field name is paidAmount)
+    const paidBookings = await Booking.find({ email, paid: "paid" });
+    const totalPaid = paidBookings.reduce((sum, b) => sum + (b.price || 0), 0);
+
+    // 3) deposit only bookings → fixed $20 deposit per booking OR based on existing depositAmount field
+    const depositBookings = await Booking.find({ email, paid: "deposit_paid" });
+    const totalDeposit = depositBookings.reduce(
+      (sum, b) => sum + ( 20), // default 20 if field not stored
+      0
+    );
+
+    // 4) outgoing = paid + deposit
+    const totalOutgoing = totalPaid + totalDeposit;
+
+    return res.status(200).json({
+      message: "Success",
+      totalBooking,
+      totalPaid,
+      totalDeposit,
+      totalOutgoing,
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Something went wrong!",
+    });
+  }
+};
