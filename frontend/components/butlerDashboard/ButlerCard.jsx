@@ -15,6 +15,8 @@ const ButlerCard = () => {
       const id = user?.user?.id;
         const {data, loading, error} = useGetButlerPersonalOverviewQuery(id);
 
+        console.log(data, "kere toi vai hagnama")
+
  
 
 

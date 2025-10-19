@@ -573,6 +573,7 @@ const CustomerBooking = () => {
   const [butlerModalOpen, setButlerModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [paymentLoading, setPaymentLoadng] = useState(false)
     const {data:user, status} = useSession();
  
   
@@ -601,6 +602,7 @@ const CustomerBooking = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+
 
   const { data: butlerData } = useGetAllButlerQuery();
   const [updaterStatus, {isLoading:updateLoading, error:updateError}] = useUpdaterStatusMutation();
@@ -634,6 +636,59 @@ const CustomerBooking = () => {
     setSelectedBooking(booking);
     setDetailsModalOpen(true);
   };
+
+
+  // components/PaymentProcessingModal.jsx
+
+
+const PaymentProcessingModal = ({ isOpen }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+      {/* Blur overlay */}
+      <div className="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
+      
+      {/* Loading modal */}
+      <div className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-auto border border-gray-200">
+        {/* Loading animation */}
+        <div className="flex flex-col items-center justify-center space-y-6">
+          {/* Spinner */}
+          <div className="relative">
+            <div className="w-20 h-20 border-4 border-pink-100 rounded-full"></div>
+            <div className="w-20 h-20 border-4 border-transparent border-t-[#FF006A] rounded-full absolute top-0 left-0 animate-spin"></div>
+            <div className="w-20 h-20 border-4 border-transparent border-b-[#FF006A] rounded-full absolute top-0 left-0 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '2s' }}></div>
+          </div>
+
+          {/* Text content */}
+          <div className="text-center space-y-3">
+            <h3 className="text-2xl font-bold text-gray-800">Processing Payment</h3>
+            <p className="text-gray-600 text-lg">
+              Please wait while we process your payment...
+            </p>
+            <div className="flex justify-center space-x-1 pt-2">
+              <div className="w-2 h-2 bg-[#FF006A] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+              <div className="w-2 h-2 bg-[#FF006A] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+              <div className="w-2 h-2 bg-[#FF006A] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            </div>
+          </div>
+
+          {/* Progress bar */}
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="bg-gradient-to-r from-[#FF006A] to-pink-500 h-2 rounded-full animate-pulse"></div>
+          </div>
+
+          {/* Additional info */}
+          <div className="text-center">
+            <p className="text-sm text-gray-500">
+              Do not close this window or refresh the page
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
   const handleStatusChange = (booking) => {
     setSelectedBooking(booking);
@@ -801,7 +856,10 @@ const CustomerBooking = () => {
 
 
   const  PaymentsHandaler  = async (id) => {
+    setPaymentLoadng(true)
     try {
+
+
 
       
       const response = await fetch(`${base_url}/payment/create-checkout-session-exist`, {
@@ -820,22 +878,28 @@ const CustomerBooking = () => {
         
         if (!success) {
           throw new Error(error || 'Failed to create checkout session');
+          setPaymentLoadng(false)
         }
         
         // Method 2: Use the checkout URL directly from backend
         if (checkoutUrl) {
           window.location.href = checkoutUrl;
+          setPaymentLoadng(false)
         } else {
           // Method 3: Construct the URL manually
+
           window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
+          setPaymentLoadng(false)
         }
         
     
     } catch (error) {
       console.log(error);
       toast.error(error?.message || "Payment processing failed");
+      setPaymentLoadng(false)
     } finally {
       setIsProcessingPayment(false);
+      setPaymentLoadng(false)
     }
   };
 
@@ -844,6 +908,8 @@ const CustomerBooking = () => {
     <div className="bg-white rounded-xl shadow-md p-6">
 
       <Toaster/>
+
+       <PaymentProcessingModal isOpen={paymentLoading} />
       {/* Header */}
       <div className="flex flex-col md:flex-row items-center justify-between pb-4 md:pb-6">
         <h2 className="text-lg md:text-xl font-medium text-gray-800 mb-4 md:mb-0">
@@ -941,6 +1007,8 @@ const CustomerBooking = () => {
      
               <th className="p-3 font-medium">Location</th>
               <th className="p-3 font-medium">Status</th>
+              <th className="p-3 font-medium">Deposit</th>
+              <th className="p-3 font-medium">Payment Due</th>
               <th className="p-3 font-medium">Payment</th>
               <th className="p-3 font-medium">Total</th>
          
@@ -991,6 +1059,20 @@ const CustomerBooking = () => {
                   >
                     {b.status?.charAt(0).toUpperCase() + b.status?.slice(1)}
                   </span>
+                </td>
+                <td className="p-3">
+                  <span
+                    className={`px-3 py-2 rounded-full text-sm font-medium `}
+                  >
+                  {   b?.status ==="deposit_paid"  && '$20' || '-'} 
+                    </span>
+                </td>
+                <td className="p-3">
+                  <span
+                    className={`px-3 py-2 rounded-full text-sm font-medium `}
+                  >
+                  {   b?.status ==="deposit_paid"  &&  b?.price - 20 || '-'} 
+                    </span>
                 </td>
                 <td className="p-3">
                   <span

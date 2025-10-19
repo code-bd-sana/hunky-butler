@@ -19,7 +19,7 @@ export default function Paymentpage() {
 : <p></p>   }
         
         {
-          role === "butler" ? <ButlerUpcomingBooking/> : <p></p>
+          role === "butler" ? <ButlerUpcomingBooking/> : <CustomerTransactions/>
         }
     </div>
   )

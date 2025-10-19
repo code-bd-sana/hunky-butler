@@ -178,12 +178,22 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
 };
 
 // Butler Assignment Modal Component
+// Butler Assignment Modal Component
 const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButler, refetch }) => {
-  const [selectedButler, setSelectedButler] = useState("");
+  const [selectedButler, setSelectedButler] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [assignToButler, { isLoading: loader, error: isError }] = useAssignToButlerMutation();
 
   if (!isOpen) return null;
+
+  // Calculate maximum allowed butlers
+  const maxAllowedButlers = booking?.numberOfStaff || 0;
+  const currentAssignedButlers = booking?.butler?.length || 0;
+  const availableSlots = maxAllowedButlers - currentAssignedButlers;
+  
+  // Check if user can select more butlers
+  const canSelectMore = selectedButler.length < availableSlots;
+  const isAtMaxLimit = selectedButler.length === availableSlots;
 
   // Utility: Display Name
   const getButlerDisplayName = (butler) =>
@@ -191,15 +201,37 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
     `${butler.firstName || ""} ${butler.lastName || ""}`.trim() ||
     "--";
 
+  // Handle butler selection
+  const handleButlerSelect = (butlerId) => {
+    if (selectedButler.includes(butlerId)) {
+      // Remove if already selected
+      setSelectedButler(selectedButler.filter(id => id !== butlerId));
+    } else {
+      // Add if not selected and within limit
+      if (canSelectMore) {
+        setSelectedButler([...selectedButler, butlerId]);
+      } else {
+        toast.error(`You can only select up to ${availableSlots} butlers`);
+      }
+    }
+  };
+
+  // Check if butler is already assigned to this booking
+  const isButlerAlreadyAssigned = (butlerId) => {
+    return booking?.butler?.some(b => b.id.toString() === butlerId.toString());
+  };
+
   // === Filtering & Sorting Logic ===
   const filteredButlers = (butlers || [])
-    // Step 1: Apply search
+    // Step 1: Filter out already assigned butlers
+    .filter(butler => !isButlerAlreadyAssigned(butler._id))
+    // Step 2: Apply search
     .filter((butler) =>
       butler.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       butler.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       `${butler.firstName || ""} ${butler.lastName || ""}`.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    // Step 2: Sort by postcode, location, then rating
+    // Step 3: Sort by postcode, location, then rating
     .sort((a, b) => {
       const ratingA = a.averageRating || 0;
       const ratingB = b.averageRating || 0;
@@ -223,12 +255,19 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
   // === Handle Submit ===
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedButler) return;
+    if (selectedButler.length === 0) {
+      toast.error("Please select at least one butler");
+      return;
+    }
 
     try {
-      const data = { bookingId: booking?._id, butlerId: selectedButler };
+      const data = { 
+        bookingId: booking?._id, 
+        butlerId: selectedButler 
+      };
+      console.log(data, "Assigning butlers data");
       const response = await assignToButler(data).unwrap();
-      toast.success("Assigned successfully!");
+      toast.success("Butlers assigned successfully!");
       refetch();
       onClose();
     } catch (error) {
@@ -279,108 +318,165 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
                     {booking?.dateOfEvent ? new Date(booking.dateOfEvent).toLocaleDateString() : "N/A"}
                   </p>
                 </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Number of Staff Required</label>
+                  <p className="text-gray-900 font-semibold">{maxAllowedButlers}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Currently Assigned</label>
+                  <p className="text-gray-900">{currentAssignedButlers}</p>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="text-sm font-medium text-gray-600">Available Slots</label>
+                  <p className={`text-lg font-semibold ${
+                    availableSlots > 0 ? "text-green-600" : "text-red-600"
+                  }`}>
+                    {availableSlots} butler(s) can be assigned
+                  </p>
+                  {availableSlots === 0 && (
+                    <p className="text-sm text-red-500 mt-1">
+                      No available slots. All required butlers are already assigned.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Butler Selection */}
-            <div>
-              <h4 className="text-lg font-medium text-gray-800 mb-4">Select Butler</h4>
+            {availableSlots > 0 && (
+              <div>
+                <h4 className="text-lg font-medium text-gray-800 mb-4">
+                  Select Butler {selectedButler.length > 0 && `(${selectedButler.length}/${availableSlots} selected)`}
+                </h4>
 
-              {/* Search Input */}
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Search butlers by email or name..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF006A] focus:border-transparent"
-                />
-              </div>
+                {/* Selection Info */}
+                {isAtMaxLimit && (
+                  <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p className="text-sm text-yellow-700">
+                      <strong>Maximum limit reached:</strong> You have selected all available butlers.
+                    </p>
+                  </div>
+                )}
 
-              {/* Butlers List */}
-              <div className="space-y-3 max-h-64 overflow-y-auto">
+                {/* Search Input */}
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    placeholder="Search butlers by email or name..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF006A] focus:border-transparent"
+                  />
+                </div>
 
-                
-                {filteredButlers.length > 0 ? (
-                  filteredButlers.map((butler) => {
-                    const postcodeMatch =
-                      butler.postcode?.trim().toLowerCase() === booking?.postCode?.trim().toLowerCase();
-                    const locationMatch =
-                      butler.location?.trim().toLowerCase() === booking?.location?.trim().toLowerCase();
+                {/* Butlers List */}
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {filteredButlers.length > 0 ? (
+                    filteredButlers.map((butler) => {
+                      const isSelected = selectedButler.includes(butler._id);
+                      const postcodeMatch =
+                        butler.postcode?.trim().toLowerCase() === booking?.postCode?.trim().toLowerCase();
+                      const locationMatch =
+                        butler.location?.trim().toLowerCase() === booking?.location?.trim().toLowerCase();
 
-                    return (
-                      <div
-                        key={butler._id}
-                        className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                          selectedButler === butler._id
-                            ? "border-[#FF006A] bg-pink-50"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
-                        onClick={() => setSelectedButler(butler._id)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-gradient-to-r from-[#FF006A] to-pink-400 rounded-full flex items-center justify-center text-white font-semibold">
-                                {getButlerDisplayName(butler).charAt(0).toUpperCase()}
+                      return (
+                        <div
+                          key={butler._id}
+                          className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                            isSelected
+                              ? "border-[#FF006A] bg-pink-50"
+                              : "border-gray-200 hover:border-gray-300"
+                          } ${!canSelectMore && !isSelected ? "opacity-50 cursor-not-allowed" : ""}`}
+                          onClick={() => handleButlerSelect(butler._id)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-r from-[#FF006A] to-pink-400 rounded-full flex items-center justify-center text-white font-semibold">
+                                  {getButlerDisplayName(butler).charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                  <h4 className="font-medium text-gray-900">
+                                    {getButlerDisplayName(butler)}
+                                    {isSelected && (
+                                      <span className="ml-2 text-xs bg-[#FF006A] text-white px-2 py-1 rounded-full">
+                                        Selected
+                                      </span>
+                                    )}
+                                  </h4>
+                                  <p className="text-sm text-gray-600">{butler.email}</p>
+                                </div>
                               </div>
-                              <div>
-                                <h4 className="font-medium text-gray-900">
-                                  {getButlerDisplayName(butler)}
-                                </h4>
-                                <p className="text-sm text-gray-600">{butler.email}</p>
+
+                              <div className="ml-[52px] mt-2">
+                                <p className="text-sm text-gray-700">
+                                  Location: <strong>{butler?.location || "N/A"}</strong>
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                  Postcode: {butler?.postcode || "N/A"}
+                                </p>
                               </div>
+
+                              {(postcodeMatch || locationMatch) && (
+                                <p className="ml-[52px] mt-1 text-xs font-medium text-green-600">
+                                  ✅ {postcodeMatch ? "Postcode match" : "Location match"}
+                                </p>
+                              )}
                             </div>
 
-                            <div className="ml-[52px] mt-2">
-                              <p className="text-sm text-gray-700">
-                                Location: <strong>{butler?.location || "N/A"}</strong>
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                Postcode: {butler?.postcode || "N/A"}
-                              </p>
-                            </div>
-
-                            {(postcodeMatch || locationMatch) && (
-                              <p className="ml-[52px] mt-1 text-xs font-medium text-green-600">
-                                ✅ {postcodeMatch ? "Postcode match" : "Location match"}
-                              </p>
-                            )}
-
-                          
-                          </div>
-
-                          <div className="text-right">
-                            <div className="flex items-center gap-1 text-sm text-gray-600">
-                              <MdStar className="text-yellow-400" />
-                              <span>{butler.averageRating || "No ratings"}</span>
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {butler.totalReviews || 0} reviews
+                            <div className="text-right">
+                              <div className="flex items-center gap-1 text-sm text-gray-600">
+                                <MdStar className="text-yellow-400" />
+                                <span>{butler.averageRating || "No ratings"}</span>
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {butler.totalReviews || 0} reviews
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No butlers found matching your search.
+                      );
+                    })
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      {searchTerm ? "No butlers found matching your search." : "No available butlers found."}
+                    </div>
+                  )}
+                </div>
+
+                {/* Selected Butlers Summary */}
+                {selectedButler.length > 0 && (
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-700 font-medium mb-2">
+                      Selected Butlers ({selectedButler.length}/{availableSlots}):
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedButler.map(butlerId => {
+                        const butler = filteredButlers.find(b => b._id === butlerId);
+                        return butler ? (
+                          <span
+                            key={butlerId}
+                            className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                          >
+                            {getButlerDisplayName(butler)}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleButlerSelect(butlerId);
+                              }}
+                              className="ml-1 text-blue-500 hover:text-blue-700"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ) : null;
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
-
-              {selectedButler && (
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-blue-700">
-                    Selected:{" "}
-                    <strong>
-                      {filteredButlers.find((b) => b._id === selectedButler)?.email}
-                    </strong>
-                  </p>
-                </div>
-              )}
-            </div>
+            )}
           </div>
 
           {/* Footer */}
@@ -394,14 +490,14 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
             </button>
             <button
               type="submit"
-              disabled={!selectedButler}
+              disabled={selectedButler.length === 0 || availableSlots === 0}
               className={`px-6 py-2 rounded-full font-medium transition-colors ${
-                selectedButler
+                selectedButler.length > 0 && availableSlots > 0
                   ? "bg-[#FF006A] text-white hover:bg-[#e5005f]"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-              {loader ? "Loading..." : "Assign Butler"}
+              {loader ? "Assigning..." : `Assign Butler${selectedButler.length > 1 ? 's' : ''}`}
             </button>
           </div>
         </form>
@@ -689,7 +785,8 @@ const Booking = () => {
 
       const data = {
         id: bookingId,
-        status: newStatus
+        status: newStatus,
+      
       }
 
 
@@ -949,20 +1046,26 @@ const Booking = () => {
                     <span>{b.firstName + " " + b.lastName}</span>
                   </div>
                 </td>
-                <td className="p-3">
-                  <div className="flex items-center gap-2">
-                    {b?.butler?.email ? (
-                      <span className="text-green-600 font-medium">{b.butler.firstName}</span>
-                    ) : (
-                      <button
-                        onClick={() => handleAssignButler(b)}
-                        className="px-3 py-1 bg-[#FF006A] text-white rounded-full text-sm font-medium hover:bg-[#e5005f] transition-colors"
-                      >
-                        Assign Butler
-                      </button>
-                    )}
-                  </div>
-                </td>
+              <td className="p-3">
+  <div className="flex items-center gap-2">
+    {b?.butler && b.butler.length > 0 ? (
+      <div className="flex flex-wrap gap-1">
+        {b.butler.map((data, idx) => (
+          <span key={idx} className="text-green-600 font-medium">
+            {data?.id?.firstName || "Butler"}
+          </span>
+        ))}
+      </div>
+    ) : (
+      <button
+        onClick={() => handleAssignButler(b)}
+        className="px-3 py-1 bg-[#FF006A] text-white rounded-full text-sm font-medium hover:bg-[#e5005f] transition-colors"
+      >
+        Assign Butler
+      </button>
+    )}
+  </div>
+</td>
                 <td className="p-3 text-center">{b.location || "--"}</td>
                 <td className="p-3">
                   <span
@@ -975,7 +1078,7 @@ const Booking = () => {
                 </td>
                 <td className="p-3">${b.price}</td>
                  
-                <td className="p-3">${(b.price * 0.2).toFixed(2)}</td>
+                <td className="p-3">${(b.price).toFixed(2)}</td>
                   <td className="p-3">{b.paid}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
@@ -1049,3 +1152,5 @@ const Booking = () => {
 };
 
 export default Booking;
+
+

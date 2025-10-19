@@ -667,7 +667,8 @@ const ButlerBooking = () => {
 
       const data = {
         id: bookingId,
-        status: newStatus
+        status: newStatus,
+        butlerid: id
       }
 
 
@@ -947,7 +948,7 @@ const ButlerBooking = () => {
                     {b.status?.charAt(0).toUpperCase() + b.status?.slice(1)}
                   </span>
                 </td>
-                <td className="p-3">${b.price}</td>
+                <td className="p-3">${b?.butlerFee}</td>
                  
              
                 <td className="p-3">
