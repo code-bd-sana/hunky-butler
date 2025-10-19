@@ -1,3 +1,4 @@
+
 import Booking from "../models/booking.model.js";
 import nodemailer from "nodemailer";
 import User from "../models/user.model.js";
@@ -108,7 +109,7 @@ export const getBookingCustomer = async (req, res) => {
     .sort({createdAt: -1})
       .skip(skip)
       .limit(limit)
-      .populate("butler");
+      .populate("butler.id");
 
     const total = await Booking.countDocuments(filter);
 
@@ -650,9 +651,13 @@ export const getButlerOverview = async (req, res) => {
     const id = req.params.id;
 
 
+
+
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+
 
     const totalBookingCompleted = await Booking.countDocuments({
       "butler.id": id,
@@ -679,7 +684,7 @@ export const getButlerOverview = async (req, res) => {
 
     res.status(200).json({
       totalBookingCompleted,
-      totalEarningThisMonth: totalEarningThisMonth.length > 0 ? totalEarningThisMonth[0].total : 0,
+      totalEarningThisMonth,
     });
   } catch (error) {
     res.status(500).json({

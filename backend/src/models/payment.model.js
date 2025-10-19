@@ -46,10 +46,12 @@ const paymentSchema = mongoose.Schema({
         default: 'usd',
         uppercase: true
     },
-    butler: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: User
-    },
+  butler: [
+  {
+    id: { type: mongoose.Schema.Types.ObjectId, ref: User },
+    accepted: { type: Boolean, default: false },
+  },
+],
     butlerAssignedAt: Date,
     butlerAssignmentStatus: {
         type: String,
