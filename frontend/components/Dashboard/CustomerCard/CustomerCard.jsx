@@ -1,3 +1,4 @@
+'use client'
 import { useGetCustomerSummuryQuery } from "@/features/summury";
 import { useSession } from "next-auth/react";
 import React from "react";

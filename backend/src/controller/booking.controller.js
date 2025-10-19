@@ -1,3 +1,4 @@
+
 import Booking from "../models/booking.model.js";
 import nodemailer from "nodemailer";
 import User from "../models/user.model.js";
