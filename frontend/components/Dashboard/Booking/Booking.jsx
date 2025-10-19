@@ -272,7 +272,7 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
       onClose();
     } catch (error) {
       console.log(error);
-      toast.error(error?.message || "Something went wrong!");
+      toast.error(error?.data?.message || "Something went wrong!");
     }
   };
 
@@ -798,6 +798,7 @@ const Booking = () => {
        setStatusModalOpen(false);
       
     } catch (error) {
+      console.log(error)
       toast.error(error?.message || "Something went wrong")
       // console.log(error)
     }
@@ -1048,7 +1049,8 @@ const Booking = () => {
                 </td>
               <td className="p-3">
   <div className="flex items-center gap-2">
-    {b?.butler && b.butler.length > 0 ? (
+    {b?.butler && b.butler.length === b.numberOfStaff
+ ? (
       <div className="flex flex-wrap gap-1">
         {b.butler.map((data, idx) => (
           <span key={idx} className="text-green-600 font-medium">

@@ -462,7 +462,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
 
   return (
     <div className="text-left w-full mt-6 md:mt-0 relative">
-      <label htmlFor="location" className="text-white text-left block">Location *</label>
+      <label htmlFor="location" className="text-white text-left block">Adress *</label>
       <div className="relative">
         <input
           required
@@ -1005,8 +1005,13 @@ export default function SecondStep() {
                       name="numberOfStaff"
                       className="bg-[#00000066] text-white mt-1 outline-0 w-full border py-3.5 px-4 rounded-lg border-[#6D6669] cursor-pointer"
                     >
-                      <option value="">Select number of staff</option>
-                      {[1, 2, 3, 4, 5].map(num => (
+                  {  durationOptions.length !== 1 &&   <option value="">Select number of staff</option>}
+                 
+                      { durationOptions.length === 1 ? [1].map(num => (
+                        <option key={num} value={num}>
+                          {num} {num === 1 ? 'Butler' : 'Butlers'}
+                        </option>
+                      )) : [1, 2, 3,].map(num => (
                         <option key={num} value={num}>
                           {num} {num === 1 ? 'Butler' : 'Butlers'}
                         </option>

@@ -20,11 +20,9 @@ import { useParams } from "next/navigation";
 import React from "react";
 
 export default function ServiceDetailspage() {
-
   const { slug } = useParams();
 
   const { data } = useGetServiceJoyBanglaQuery(slug);
-
 
   // if(loadiing){
   //   return <p>Loading...</p>
@@ -74,12 +72,12 @@ export default function ServiceDetailspage() {
       <Frequently /> */}
       <WhyBookSection />
 
-      <KeepTheFun />
+      {/* <KeepTheFun /> */}
       <Cocktail />
-      <BuffLocation name={data?.name} />
+      {/* <BuffLocation name={data?.name} /> */}
       <ReviewSection />
       <Frequently />
-      <Nationwide name={data?.name} />
+      <Nationwide name={data?.name} serviceSlug={slug} />
       <ImageGallery />
       <Footer />
     </div>

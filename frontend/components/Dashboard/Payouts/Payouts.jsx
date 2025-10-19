@@ -40,12 +40,22 @@ const Payouts = () => {
   };
 
   // Get performer name from butler data
-  const getPerformerName = (payment) => {
-    if (payment.butler?.firstName || payment.butler?.lastName) {
-      return `${payment.butler?.firstName || ''} ${payment.butler?.lastName || ''}`.trim();
+const getPerformerName = (payment) => {
+  if (payment.butler && payment.butler.length > 0) {
+    // Map kore butler der name gulo ber korbo
+    const butlerNames = payment.butler.map(butler => {
+      const firstName = butler.id?.firstName || butler.id?.firstName || '';
+      const lastName = butler.id?.lastName || butler.id?.lastName || '';
+      return `${firstName} ${lastName}`.trim();
+    }).filter(name => name !== ''); // Empty names remove korbo
+    
+    // Jodi kono name thake, comma separated return korbo
+    if (butlerNames.length > 0) {
+      return butlerNames.join(', ');
     }
-    return "Not assign";
-  };
+  }
+  return "Not assign";
+};
 
   // Get performer image
   const getPerformerImage = (payment) => {
