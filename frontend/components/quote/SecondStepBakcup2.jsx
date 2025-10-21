@@ -12,134 +12,209 @@ import { useGetServiceQuery } from '@/features/services/servicesApi';
 
 const stripePromise = loadStripe('pk_test_51RWA5gFVdJBgYBDxRIUNli1dDlicyaiOTCEECLujXMHTyVEujYQJ2pZ9DFlUeNPpaKzy7cPYJ1QlA6cUe7A9m6Eg00nP3ZNUFM');
 
-// Hub Network Configuration
-const HUB_NETWORK = [
-  { name: 'London', postcode: 'EC1A 1BB', lat: 51.5155, lng: -0.0922, region: 'South-East England' },
-  { name: 'Brighton', postcode: 'BN1 1AA', lat: 50.8225, lng: -0.1372, region: 'South Coast' },
-  { name: 'Bournemouth', postcode: 'BH2 5AA', lat: 50.7192, lng: -1.8801, region: 'Dorset' },
-  { name: 'Portsmouth', postcode: 'PO1 1AA', lat: 50.7989, lng: -1.0913, region: 'Hampshire' },
-  { name: 'Bristol', postcode: 'BS1 4ST', lat: 51.4545, lng: -2.5879, region: 'South-West' },
-  { name: 'Cardiff', postcode: 'CF10 1AA', lat: 51.4816, lng: -3.1791, region: 'South Wales' },
-  { name: 'Birmingham', postcode: 'B1 1AA', lat: 52.4786, lng: -1.9081, region: 'Midlands' },
-  { name: 'Nottingham', postcode: 'NG1 1AA', lat: 52.9538, lng: -1.1505, region: 'East Midlands' },
-  { name: 'Leicester', postcode: 'LE1 1AA', lat: 52.6343, lng: -1.1319, region: 'Midlands' },
-  { name: 'Leeds', postcode: 'LS1 4DY', lat: 53.7974, lng: -1.5438, region: 'Yorkshire' },
-  { name: 'Manchester', postcode: 'M1 1AA', lat: 53.4781, lng: -2.2446, region: 'North-West' },
-  { name: 'Liverpool', postcode: 'L1 4EF', lat: 53.4055, lng: -2.9805, region: 'Merseyside' },
-  { name: 'Chester', postcode: 'CH1 1AA', lat: 53.1934, lng: -2.8931, region: 'NW Border' },
-  { name: 'Newcastle', postcode: 'NE1 4LP', lat: 54.9783, lng: -1.6178, region: 'North-East' },
-  { name: 'Middlesbrough', postcode: 'TS1 1AA', lat: 54.5742, lng: -1.2350, region: 'Teesside' },
-  { name: 'Glasgow', postcode: 'G1 1XX', lat: 55.8609, lng: -4.2514, region: 'Scotland West' },
-  { name: 'Edinburgh', postcode: 'EH1 1YZ', lat: 55.9533, lng: -3.1883, region: 'Scotland East' },
-  { name: 'Aberdeen', postcode: 'AB10 1AA', lat: 57.1497, lng: -2.0943, region: 'North Scotland' },
-  { name: 'Cambridge', postcode: 'CB2 1AA', lat: 52.2053, lng: 0.1218, region: 'East Anglia' },
-  { name: 'Plymouth', postcode: 'PL1 1AA', lat: 50.3704, lng: -4.1427, region: 'Devon / Cornwall' }
-];
-
-// Pricing Configuration
-const PRICING_CONFIG = {
-  localCoverageRadiusMiles: 15,
-  distanceSensitivityKm: 250,
-  distanceCap: 2.00,
-  longDistanceThresholdMiles: 60
+// Postcode Zones Data
+const POSTCODE_ZONES = {
+  'AB': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'AL': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'B': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'BA': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'BB': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'BD': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'BH': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'BL': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'BN': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'BR': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'BS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'BT': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'CA': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'CB': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'CF': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'CH': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'CM': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'CO': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'CR': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'CT': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'CV': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'CW': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'DA': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'DD': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'DE': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'DG': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'DH': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'DL': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'DN': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'DT': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'DY': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'E': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'EC': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'EH': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'EN': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'EX': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
+  'FK': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'FY': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'G': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'GL': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'GU': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'GY': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' },
+  'HA': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'HD': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'HG': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'HP': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'HR': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'HS': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' },
+  'HU': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'HX': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'IG': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'IM': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' },
+  'IP': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'IV': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'JE': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' },
+  'KA': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
+  'KT': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'KW': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'KY': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
+  'L': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'LA': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'LD': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
+  'LE': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'LL': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'LN': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
+  'LS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'LU': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'M': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'ME': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'MK': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'ML': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'N': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'NE': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'NG': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'NN': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'NP': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'NR': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'NW': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'OL': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'OX': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'PA': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'PE': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'PH': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'PL': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
+  'PO': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'PR': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'RG': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'RH': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'RM': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'S': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'SA': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'SE': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'SG': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'SK': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'SL': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'SM': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'SN': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'SO': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'SP': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'SR': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'SS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'ST': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'SW': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'SY': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
+  'TA': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'TD': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'TF': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'TN': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'TQ': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'TR': { zone: 'D', loadFactor: 1.4, minDuration: 2, description: 'Remote mainland; long travel' },
+  'TS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'TW': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'UB': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'W': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'WA': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'WC': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'WD': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'WF': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'WN': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'WR': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'WS': { zone: 'A', loadFactor: 1, minDuration: 1, description: 'Major city centres; dense coverage' },
+  'WV': { zone: 'B', loadFactor: 1.1, minDuration: 1, description: 'Medium cities/suburbs near Metro' },
+  'YO': { zone: 'C', loadFactor: 1.2, minDuration: 1, description: 'Smaller towns; moderate travel' },
+  'ZE': { zone: 'E', loadFactor: 1.5, minDuration: 2, description: 'Islands or ferry/flight areas' }
 };
+
+// Special handling for Isle of Wight (PO30-PO41)
+const ISLE_OF_WIGHT_POSTCODES = ['PO30', 'PO31', 'PO32', 'PO33', 'PO34', 'PO35', 'PO36', 'PO37', 'PO38', 'PO39', 'PO40', 'PO41'];
 
 // Utility Functions
-const haversineDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Earth's radius in kilometers
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
+const extractPostcodeArea = (postcode) => {
+  if (!postcode) return null;
+  
+  const cleanPostcode = postcode.replace(/\s/g, '').toUpperCase();
+  
+  // Check for Isle of Wight postcodes first
+  const iowPostcode = ISLE_OF_WIGHT_POSTCODES.find(prefix => 
+    cleanPostcode.startsWith(prefix)
+  );
+  if (iowPostcode) {
+    return iowPostcode;
+  }
+  
+  const match = cleanPostcode.match(/^([A-Z]{1,2}[A-Z]?[A-Z]?)/);
+  return match ? match[1] : null;
 };
 
-const findNearestHub = (lat, lng) => {
-  let nearestHub = null;
-  let minDistance = Infinity;
-
-  HUB_NETWORK.forEach(hub => {
-    const distance = haversineDistance(lat, lng, hub.lat, hub.lng);
-    if (distance < minDistance) {
-      minDistance = distance;
-      nearestHub = { ...hub, distanceKm: distance };
-    }
-  });
-
-  return nearestHub;
-};
-
-const calculateDistanceMultiplier = (distanceKm) => {
-  const { localCoverageRadiusMiles, distanceSensitivityKm, distanceCap } = PRICING_CONFIG;
+const getZoneInfo = (postcode) => {
+  const area = extractPostcodeArea(postcode);
+  if (!area) return null;
   
-  const distanceMiles = distanceKm / 1.609344;
-  
-  // Check if within local coverage radius
-  if (distanceMiles <= localCoverageRadiusMiles) {
+  if (ISLE_OF_WIGHT_POSTCODES.includes(area)) {
     return {
-      multiplier: 1.00,
-      reason: 'local_coverage',
-      capped: false,
-      distanceMiles: parseFloat(distanceMiles.toFixed(2))
+      zone: 'E',
+      loadFactor: 1.5,
+      minDuration: 2,
+      description: 'Islands or ferry/flight areas',
+      area: area
     };
   }
   
-  // Calculate continuous multiplier
-  const rawMultiplier = 1.0 + (distanceKm / distanceSensitivityKm);
-  const multiplier = Math.min(rawMultiplier, distanceCap);
-  
-  return {
-    multiplier: parseFloat(multiplier.toFixed(2)),
-    reason: multiplier >= distanceCap ? 'capped' : 'continuous',
-    capped: multiplier >= distanceCap,
-    distanceMiles: parseFloat(distanceMiles.toFixed(2))
-  };
-};
-
-const applyLongDistanceMinimum = (selectedDuration, distanceMiles) => {
-  const { longDistanceThresholdMiles } = PRICING_CONFIG;
-  
-  if (distanceMiles > longDistanceThresholdMiles && selectedDuration < 2) {
+  const zoneInfo = POSTCODE_ZONES[area];
+  if (zoneInfo) {
     return {
-      billableDuration: 2,
-      minimumApplied: true
+      ...zoneInfo,
+      area: area
     };
   }
   
   return {
-    billableDuration: selectedDuration,
-    minimumApplied: false
+    zone: 'B',
+    loadFactor: 1.1,
+    minDuration: 1,
+    description: 'Unknown area - default urban fringe',
+    area: area
   };
 };
 
-// Postcode to coordinates lookup
-const lookupPostcodeCoordinates = async (postcode) => {
-  try {
-    const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}`);
-    const data = await response.json();
-    
-    if (data.status === 200) {
-      return {
-        lat: data.result.latitude,
-        lng: data.result.longitude,
-        success: true
-      };
-    } else {
-      throw new Error('Postcode not found');
-    }
-  } catch (error) {
-    console.error('Postcode lookup failed:', error);
-    return {
-      success: false,
-      error: 'Unable to lookup postcode coordinates'
-    };
-  }
+const getLoadFactor = (postcode) => {
+  const zoneInfo = getZoneInfo(postcode);
+  return zoneInfo ? zoneInfo.loadFactor : 1.1;
 };
 
-// Base Price Calculation (without distance multiplier)
+const getMinDuration = (postcode) => {
+  const zoneInfo = getZoneInfo(postcode);
+  return zoneInfo ? zoneInfo.minDuration : 1;
+};
+
+const getZoneDisplayInfo = (postcode) => {
+  const zoneInfo = getZoneInfo(postcode);
+  if (!zoneInfo) return null;
+  
+  return {
+    zone: zoneInfo.zone,
+    loadFactor: zoneInfo.loadFactor,
+    description: zoneInfo.description,
+    area: zoneInfo.area
+  };
+};
+
+// Base Price Calculation (without load factor)
 const calculateBasePrice = (serviceSlug, durationHours, numberOfStaff) => {
   if (serviceSlug === 'life-drawing') {
     return 230;
@@ -168,67 +243,12 @@ const calculateBasePrice = (serviceSlug, durationHours, numberOfStaff) => {
   return 100;
 };
 
-// Main Price Calculation Function
-const calculatePrice = async (serviceSlug, durationHours, numberOfStaff, postcode) => {
-  try {
-    // Lookup postcode coordinates
-    const coordinates = await lookupPostcodeCoordinates(postcode);
-    if (!coordinates.success) {
-      throw new Error(coordinates.error);
-    }
-
-    // Find nearest hub
-    const nearestHub = findNearestHub(coordinates.lat, coordinates.lng);
-    
-    // Calculate distance multiplier
-    const distanceInfo = calculateDistanceMultiplier(nearestHub.distanceKm);
-    
-    // Apply long distance minimum duration
-    const durationInfo = applyLongDistanceMinimum(durationHours, distanceInfo.distanceMiles);
-    
-    // Calculate base price
-    const basePrice = calculateBasePrice(serviceSlug, durationInfo.billableDuration, numberOfStaff);
-    
-    // Apply distance multiplier
-    const totalPrice = Math.round(basePrice * distanceInfo.multiplier);
-    
-    return {
-      totalPrice,
-      basePrice,
-      distanceInfo: {
-        ...distanceInfo,
-        nearestHub: nearestHub.name,
-        hubDistanceKm: parseFloat(nearestHub.distanceKm.toFixed(2))
-      },
-      durationInfo,
-      coordinates: {
-        lat: coordinates.lat,
-        lng: coordinates.lng
-      }
-    };
-  } catch (error) {
-    console.error('Price calculation failed:', error);
-    // Fallback to basic calculation
-    const basePrice = calculateBasePrice(serviceSlug, durationHours, numberOfStaff);
-    return {
-      totalPrice: basePrice,
-      basePrice,
-      distanceInfo: {
-        multiplier: 1.15,
-        reason: 'fallback',
-        capped: false,
-        distanceMiles: 0,
-        nearestHub: 'Unknown',
-        hubDistanceKm: 0
-      },
-      durationInfo: {
-        billableDuration: durationHours,
-        minimumApplied: false
-      },
-      coordinates: null,
-      error: error.message
-    };
-  }
+// Price Calculation Function with load factor
+const calculatePrice = (serviceSlug, durationHours, numberOfStaff, postcode) => {
+  const basePrice = calculateBasePrice(serviceSlug, durationHours, numberOfStaff);
+  const loadFactor = getLoadFactor(postcode);
+  const adjustedPrice = basePrice * loadFactor;
+  return Math.round(adjustedPrice);
 };
 
 // Butler Fee Calculation Function
@@ -442,7 +462,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
 
   return (
     <div className="text-left w-full mt-6 md:mt-0 relative">
-      <label htmlFor="location" className="text-white text-left block">Address *</label>
+      <label htmlFor="location" className="text-white text-left block">Adress *</label>
       <div className="relative">
         <input
           required
@@ -559,9 +579,7 @@ export default function SecondStep() {
   const [paymentMethod, setPaymentMethod] = useState('pay_now');
   const [paymentType, setPaymentType] = useState('full');
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [distanceInfo, setDistanceInfo] = useState(null);
-  const [isCalculatingPrice, setIsCalculatingPrice] = useState(false);
-  const [priceCalculation, setPriceCalculation] = useState(null);
+  const [zoneInfo, setZoneInfo] = useState(null);
   
   const params = useParams();
   const { data: session } = useSession();
@@ -579,34 +597,26 @@ export default function SecondStep() {
     }
   }, [params.category, defaultDuration]);
 
-  // Calculate price when relevant data changes
+  // Update zone info when postcode changes
   useEffect(() => {
-    const calculatePricing = async () => {
-      if (firstStep.postCode && secondStep.durationHours && secondStep.numberOfStaff) {
-        setIsCalculatingPrice(true);
-        try {
-          const result = await calculatePrice(
-            params.category,
-            secondStep.durationHours,
-            secondStep.numberOfStaff,
-            firstStep.postCode
-          );
-          setPriceCalculation(result);
-          setDistanceInfo(result.distanceInfo);
-        } catch (error) {
-          console.error('Price calculation error:', error);
-          toast.error('Failed to calculate price');
-        } finally {
-          setIsCalculatingPrice(false);
-        }
-      }
-    };
+    if (firstStep.postCode) {
+      const zoneData = getZoneDisplayInfo(firstStep.postCode);
+      setZoneInfo(zoneData);
+    }
+  }, [firstStep.postCode]);
 
-    calculatePricing();
-  }, [firstStep.postCode, secondStep.durationHours, secondStep.numberOfStaff, params.category]);
-
-  const totalPrice = priceCalculation?.totalPrice || 0;
-  const basePrice = priceCalculation?.basePrice || 0;
+  const totalPrice = calculatePrice(
+    params.category, 
+    secondStep.durationHours || defaultDuration, 
+    secondStep.numberOfStaff || 1,
+    firstStep.postCode
+  );
+  
+  const basePrice = calculateBasePrice(
+    params.category, 
+    secondStep.durationHours || defaultDuration, 
+    secondStep.numberOfStaff || 1
+  );
   
   const butlerFee = calculateButlerFee(
     params.category, 
@@ -680,6 +690,13 @@ export default function SecondStep() {
         return;
       }
 
+      // Validate minimum duration based on postcode zone
+      const minDuration = getMinDuration(firstStep.postCode);
+      // if (durationHours < minDuration) {
+      //   toast.error(`Minimum booking duration for your location is ${minDuration} hour${minDuration > 1 ? 's' : ''}`);
+      //   return;
+      // }
+
       const secondStepData = {
         dateOfEvent,
         numberOfStaff: Number(numberOfStaff),
@@ -698,8 +715,7 @@ export default function SecondStep() {
   const handlePayment = async () => {
     try {
       setIsProcessingPayment(true);
-      
-      const travelFee = totalPrice - basePrice;
+      const travelFeeInitial = (basePrice * zoneInfo.loadFactor) - basePrice 
       
       const finalData = {
         ...firstStep,
@@ -708,14 +724,13 @@ export default function SecondStep() {
         serviceName: params.category,
         price: totalPrice,
         basePrice: basePrice,
-        distanceInfo: distanceInfo,
-        durationInfo: priceCalculation?.durationInfo,
+        loadFactor: zoneInfo?.loadFactor || 1,
+        zone: zoneInfo?.zone || 'B',
         butlerFee: butlerFee,
         paymentMethod,
         paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid',
-        profit: totalPrice - (butlerFee + travelFee),
-        travelFee: travelFee,
-        coordinates: priceCalculation?.coordinates
+        profit: totalPrice - (butlerFee + travelFeeInitial),
+        travelFee: (basePrice * zoneInfo.loadFactor) - basePrice 
       };
 
       if (paymentMethod === 'pay_now') {
@@ -757,8 +772,6 @@ export default function SecondStep() {
 
   const bookNowHandler = async (finalData = null) => {
     try {
-      const travelFee = totalPrice - basePrice;
-      
       const dataToSend = finalData || {
         ...firstStep,
         ...secondStep,
@@ -766,15 +779,13 @@ export default function SecondStep() {
         serviceName: params.category,
         price: totalPrice,
         basePrice: basePrice,
-        distanceInfo: distanceInfo,
-        durationInfo: priceCalculation?.durationInfo,
+        loadFactor: zoneInfo?.loadFactor || 1,
+        zone: zoneInfo?.zone || 'B',
         butlerFee: butlerFee,
         paymentMethod,
         paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid',
         paymentType: paymentType,
-        profit: totalPrice - (butlerFee + travelFee),
-        travelFee: travelFee,
-        coordinates: priceCalculation?.coordinates
+        profit: totalPrice - butlerFee
       };
 
       const data = await booking(dataToSend).unwrap();
@@ -849,34 +860,6 @@ export default function SecondStep() {
     const hourlyRates = { 1: 60, 2: 90, 3: 110 };
     const rate = hourlyRates[Math.ceil(duration)] || hourlyRates[3];
     return `£${rate} × ${staffCount} butler${staffCount > 1 ? 's' : ''} (${formatDuration(duration)})`;
-  };
-
-  const getDistanceDisplayInfo = () => {
-    if (!distanceInfo) return null;
-    
-    const { multiplier, reason, distanceMiles, nearestHub, hubDistanceKm } = distanceInfo;
-    
-    if (reason === 'local_coverage') {
-      return {
-        title: "Local Coverage Area",
-        description: `Within ${PRICING_CONFIG.localCoverageRadiusMiles} miles of our ${nearestHub} hub — no travel uplift`,
-        color: "text-green-400"
-      };
-    }
-    
-    if (reason === 'capped') {
-      return {
-        title: "Maximum Travel Fee Applied",
-        description: `Long distance from ${nearestHub} (${distanceMiles} miles) — maximum multiplier applied`,
-        color: "text-yellow-400"
-      };
-    }
-    
-    return {
-      title: "Distance-Based Pricing",
-      description: `${distanceMiles} miles from ${nearestHub} hub — continuous distance multiplier applied`,
-      color: "text-blue-400"
-    };
   };
 
   return (
@@ -966,20 +949,10 @@ export default function SecondStep() {
                       className="bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669] uppercase"
                     />
                     <p className="text-xs text-gray-400 mt-1">Enter a valid UK postcode</p>
-                    {firstStep.postCode && distanceInfo && (
-                      <div className="text-xs mt-1">
-                        <p className={`${getDistanceDisplayInfo()?.color || 'text-[#FF3388]'}`}>
-                          {getDistanceDisplayInfo()?.title}
-                        </p>
-                        <p className="text-gray-400">
-                          {getDistanceDisplayInfo()?.description}
-                        </p>
-                        {distanceInfo.multiplier > 1 && (
-                          <p className="text-[#FF3388]">
-                            Distance Multiplier: ×{distanceInfo.multiplier}
-                          </p>
-                        )}
-                      </div>
+                    {firstStep.postCode && zoneInfo && (
+                      <p className="text-xs text-[#FF3388] mt-1">
+                        Zone {zoneInfo.zone} - {zoneInfo.description} (Load Factor: {zoneInfo.loadFactor}x)
+                      </p>
                     )}
                   </div>
                   <GooglePlacesAutocomplete 
@@ -1032,11 +1005,13 @@ export default function SecondStep() {
                       name="numberOfStaff"
                       className="bg-[#00000066] text-white mt-1 outline-0 w-full border py-3.5 px-4 rounded-lg border-[#6D6669] cursor-pointer"
                     >
-                      {durationOptions.length === 1 ? [1].map(num => (
+                  {  durationOptions.length !== 1 &&   <option value="">Select number of staff</option>}
+                 
+                      { durationOptions.length === 1 ? [1].map(num => (
                         <option key={num} value={num}>
                           {num} {num === 1 ? 'Butler' : 'Butlers'}
                         </option>
-                      )) : [1, 2, 3].map(num => (
+                      )) : [1, 2, 3,].map(num => (
                         <option key={num} value={num}>
                           {num} {num === 1 ? 'Butler' : 'Butlers'}
                         </option>
@@ -1069,11 +1044,6 @@ export default function SecondStep() {
                     {durationOptions.length === 1 ? (
                       <div className="bg-[#00000066] text-white mt-1 outline-0 w-full border py-3.5 px-4 rounded-lg border-[#6D6669]">
                         {formatDuration(defaultDuration)}
-                        {priceCalculation?.durationInfo?.minimumApplied && (
-                          <p className="text-xs text-yellow-400 mt-1">
-                            2-hour minimum applied for long distance
-                          </p>
-                        )}
                       </div>
                     ) : (
                       <select
@@ -1094,45 +1064,14 @@ export default function SecondStep() {
                         ? `Fixed duration for ${params.category} service`
                         : 'Select duration for your event'
                       }
-                      {priceCalculation?.durationInfo?.minimumApplied && (
-                        <span className="text-yellow-400 block">
-                          2-hour minimum applied for long distance travel
+                      {zoneInfo && zoneInfo.minDuration > 1 && (
+                        <span className="text-[#FF3388] block">
+                          Minimum {zoneInfo.minDuration} hours for Zone {zoneInfo.zone}
                         </span>
                       )}
                     </p>
                   </div>
                 </section>
-
-                {/* Distance Information Display */}
-                {distanceInfo && (
-                  <div className="mt-6 p-4 bg-black/30 rounded-lg border border-white/20">
-                    <h4 className="text-white font-semibold mb-2">Location & Distance Information</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-400">Nearest Hub:</span>
-                        <span className="text-white ml-2">{distanceInfo.nearestHub}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">Distance:</span>
-                        <span className="text-white ml-2">{distanceInfo.distanceMiles} miles ({distanceInfo.hubDistanceKm} km)</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">Multiplier:</span>
-                        <span className="text-[#FF3388] ml-2">×{distanceInfo.multiplier}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-400">Pricing Type:</span>
-                        <span className={`ml-2 ${
-                          distanceInfo.reason === 'local_coverage' ? 'text-green-400' :
-                          distanceInfo.reason === 'capped' ? 'text-yellow-400' : 'text-blue-400'
-                        }`}>
-                          {distanceInfo.reason === 'local_coverage' ? 'Local Coverage' :
-                           distanceInfo.reason === 'capped' ? 'Maximum Fee' : 'Continuous Pricing'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 <button
                   type="submit"
@@ -1182,13 +1121,13 @@ export default function SecondStep() {
                         <span className="font-medium">Location:</span>
                         <span className="text-right max-w-[200px] break-words">{firstStep.location}</span>
                       </div>
-                      {distanceInfo && (
+                      {zoneInfo && (
                         <div className="flex justify-between">
-                          <span className="font-medium">Nearest Hub:</span>
+                          <span className="font-medium">Location Zone:</span>
                           <div className="text-right">
-                            <span className="font-bold">{distanceInfo.nearestHub}</span>
+                            <span className="font-bold">Zone {zoneInfo.zone}</span>
                             <p className="text-xs text-gray-400">
-                              {distanceInfo.distanceMiles} miles away
+                              {zoneInfo.description} (Load Factor: {zoneInfo.loadFactor}x)
                             </p>
                           </div>
                         </div>
@@ -1197,11 +1136,11 @@ export default function SecondStep() {
                         <span className="font-medium">Base Price:</span>
                         <span className="font-bold">£{basePrice}</span>
                       </div>
-                      {distanceInfo && distanceInfo.multiplier > 1 && (
+                      {zoneInfo && zoneInfo.loadFactor > 1 && (
                         <div className="flex justify-between">
                           <span className="font-medium">Travel Fee:</span>
                           <span className="font-bold text-yellow-400">
-                            +£{totalPrice - basePrice}
+                            {(basePrice * zoneInfo.loadFactor) }
                           </span>
                         </div>
                       )}
@@ -1308,14 +1247,13 @@ export default function SecondStep() {
                         </div>
                       </div>
                       
-                      {distanceInfo && distanceInfo.multiplier > 1 && (
+                      {zoneInfo && zoneInfo.loadFactor > 1 && (
                         <div className="flex justify-between items-center">
                           <span className="font-medium text-sm md:text-lg">Travel Fee</span>
                           <div className="text-right">
-                            <span className="font-bold text-yellow-400">+£{totalPrice - basePrice}</span>
+                            <span className="font-bold text-yellow-400">  ${(basePrice * zoneInfo.loadFactor) - basePrice }</span>
                             <p className="text-xs text-gray-400">
-                              {distanceInfo.distanceMiles} miles from {distanceInfo.nearestHub}
-                              {distanceInfo.reason === 'capped' && ' (Maximum fee applied)'}
+                              Zone {zoneInfo.zone} - {zoneInfo.description}
                             </p>
                           </div>
                         </div>
@@ -1328,17 +1266,6 @@ export default function SecondStep() {
                           <p className="text-xs text-gray-400">{getButlerFeeBreakdown()}</p>
                         </div>
                       </div>
-                      
-                      {priceCalculation?.durationInfo?.minimumApplied && (
-                        <div className="flex justify-between items-center bg-yellow-400/20 p-3 rounded-lg">
-                          <span className="font-medium text-sm md:text-lg text-yellow-400">2-Hour Minimum Applied</span>
-                          <div className="text-right">
-                            <p className="text-xs text-yellow-400">
-                              Long distance travel requires minimum 2-hour booking
-                            </p>
-                          </div>
-                        </div>
-                      )}
                       
                       {paymentType === 'deposit' && (
                         <>
@@ -1369,7 +1296,6 @@ export default function SecondStep() {
                         <span className="font-medium text-sm md:text-lg">Event Duration</span>
                         <span className="text-right">
                           {formatDuration(secondStep.durationHours || defaultDuration)}
-                          {priceCalculation?.durationInfo?.minimumApplied && ' (2-hour minimum)'}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
@@ -1380,13 +1306,13 @@ export default function SecondStep() {
                         <span className="font-medium text-sm md:text-lg">Location</span>
                         <span className="text-right max-w-[200px] break-words">{firstStep.location}</span>
                       </div>
-                      {distanceInfo && (
+                      {zoneInfo && (
                         <div className="flex justify-between items-center">
-                          <span className="font-medium text-sm md:text-lg">Nearest Hub</span>
+                          <span className="font-medium text-sm md:text-lg">Location Zone</span>
                           <div className="text-right">
-                            <span className="font-bold">{distanceInfo.nearestHub}</span>
+                            <span className="font-bold">Zone {zoneInfo.zone}</span>
                             <p className="text-xs text-gray-400">
-                              {distanceInfo.distanceMiles} miles away • Multiplier: ×{distanceInfo.multiplier}
+                              {zoneInfo.description} (Load Factor: {zoneInfo.loadFactor}x)
                             </p>
                           </div>
                         </div>
@@ -1401,12 +1327,10 @@ export default function SecondStep() {
                       onClick={handlePayment}
                       style={{ color: "rgba(255,0,106,1)" }}
                       className="px-[16px] py-[8px] w-[164px] mt-8 md:mt-12 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap disabled:opacity-50"
-                      disabled={isProcessingPayment || isLoading || isCalculatingPrice}
+                      disabled={isProcessingPayment || isLoading}
                     >
                       {isProcessingPayment 
                         ? "Processing..." 
-                        : isCalculatingPrice
-                        ? "Calculating..."
                         : paymentType === 'deposit' 
                           ? `Pay £${depositAmount} Deposit` 
                           : `Pay £${totalPrice}`

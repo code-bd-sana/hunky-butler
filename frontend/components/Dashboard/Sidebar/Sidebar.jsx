@@ -114,7 +114,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div
         className={`fixed lg:sticky top-0 left-0 z-50 bg-white
-          h-screen lg:h-[calc(100vh-5rem)] w-72 border rounded-2xl pt-10 p-6
+          h-screen lg:h-[calc(100vh-5rem)]   pt-10 p-6
           flex flex-col overflow-hidden transition-transform duration-300
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0`}
