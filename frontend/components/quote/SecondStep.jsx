@@ -462,7 +462,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
 
   return (
     <div className="text-left w-full mt-6 md:mt-0 relative">
-      <label htmlFor="location" className="text-white text-left block">Adress *</label>
+      <label htmlFor="location" className="text-white text-left block">Address *</label>
       <div className="relative">
         <input
           required
