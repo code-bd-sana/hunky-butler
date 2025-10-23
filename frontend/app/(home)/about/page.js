@@ -26,8 +26,8 @@ export default function About() {
           "Founded in 2013, Hunky Butler Service has grown into the UK’s most trusted name for hen party entertainment. Whether you’re looking to hire buff butlers, book a cheeky cocktail masterclass, or host a life drawing class, our mission is simple — to make your celebration unforgettable. With 12,000+ bookings, verified staff, and five-star reviews, we’re here to bring the fun."
         }
       ></ServAndAboutBanner>
-      <div className="max-w-7xl mx-auto py-28 text-center">
-        <h1 className="text-xl md:text-2xl lg:text-5xl  font-semibold">
+      <div className="max-w-7xl mx-auto py-24 text-center">
+        <h1 className="text-xl md:text-2xl lg:text-5xl">
           Our Story and What We Do
         </h1>
         <p className="text-center font-medium pt-6 text-xl w-11/12 mx-auto">
@@ -49,7 +49,7 @@ export default function About() {
       <HowItWorkSection />
       <OurMission />
       <div>
-        <div className="max-w-7xl mx-auto text-center pb-6 pt-28">
+        <div className="max-w-7xl mx-auto text-center pb-6 pt-26">
           <MainTitle text={"Looking Ahead: Expanding Beyond the UK"} />
           <p className="text-center capitalize mt-4 text-[#292929]">
             Since 2024, Hunky Butler Service has started branching into Europe,
