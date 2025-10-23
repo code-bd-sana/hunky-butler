@@ -996,4 +996,3 @@ export const paymentHistoryForButler = async(req, res) => {
     });
   }
 }
-
