@@ -12,6 +12,7 @@ import ImageGallery from "@/components/about/ImageGallery";
 import { store } from "@/store/store";
 import { Provider } from "react-redux";
 import Frequently from "@/components/homepage/Frequently";
+import HowItWorkSection2 from "@/components/ServiceHeroSection/HowItWorkSection2";
 
 export default function page() {
   return (
@@ -28,9 +29,8 @@ export default function page() {
         <ALLServices />
       </Provider>
       <WhyBookSection />
-      <HowItWorkSection />
+      <HowItWorkSection2/>
       <HomeMarque />
-      <Frequently />
       <ReviewSection />
       <ImageGallery />
       <Footer />

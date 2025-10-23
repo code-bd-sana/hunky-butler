@@ -1,6 +1,8 @@
 "use client";
 import Banner from "@/components/shared/Banner";
-import img from "@/public/Blog/BlogSection/BlogSection9.jpeg";
+import img from "@/public/Contact/contact-banner.jpeg";
+import img2 from "@/public/Contact/why-contact-us2.jpeg";
+import img3 from "@/public/Contact/why-contact-us3.jpeg";
 import ContactForm from "@/components/contact/ContactForm";
 import Footer from "@/components/homepage/Footer";
 import MainTitle from "@/components/shared/typography/MainTitle";
@@ -11,7 +13,7 @@ const contact = () => {
   return (
     <div className="bg-[#f6f4f5] min-h-screen">
       <Banner image={img} service={"contact us"} title={"Contact"} />
-      <div className="text-center mb-12 pt-16">
+      <div className="text-center pt-16">
         <MainTitle text={"Have Any Questions? Get in Touch With Our Team?"} />
         <div className=" max-w-7xl mx-auto mt-4">
           <SubTitle
@@ -20,14 +22,14 @@ const contact = () => {
             }
           />
         </div>
-      </div>
+      </div>    
       {/* <Card /> */}
       <ContactForm />
             <WhyContactUsSection></WhyContactUsSection>
       <JoinBlog/>
       <Footer />
     </div>
-  );
+  ); 
 };
 
 export default contact;
