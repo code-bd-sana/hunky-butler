@@ -827,7 +827,7 @@ export const allPaymentHistory = async(req, res)=>{
 
      const skip = req.query.skip;
     const limit = req.query.limit;
-    const payments = await PaymentHistory.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('butler');
+    const payments = await PaymentHistory.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('butler.id');
     const paymentsCount = await PaymentHistory.countDocuments();
     res.status(200).json({
         message:"Success",
@@ -996,4 +996,3 @@ export const paymentHistoryForButler = async(req, res) => {
     });
   }
 }
-
