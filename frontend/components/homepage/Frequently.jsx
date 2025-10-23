@@ -110,7 +110,7 @@ const Frequently = () => {
             >
               <button
                 onClick={() => toggle(index)}
-                className="w-full flex justify-between items-start px-5 h-[100px] text-left font-semibold hover:bg-gray-50 transition-colors cursor-pointer"
+                className="w-full flex justify-between items-center px-5 h-[100px] text-left font-semibold hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <span className="text-xl md:text-3xl">{faq.question}</span>
                 <span className="text-xl md:text-3xl">

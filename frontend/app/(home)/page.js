@@ -12,8 +12,8 @@ import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
 import ServiceBanner from "@/components/shared/ServiceBanner";
 import Entertainment from "@/components/homepage/Entertainment";
-
-
+import HowItWorkSection2 from "@/components/ServiceHeroSection/HowItWorkSection2";
+             
 export default function page() {
   return (
     <div className="min-h-screen overfh bg-white">
@@ -23,7 +23,7 @@ export default function page() {
       <MostPopulerParty />
       <HomeMarque />
       <AboutSection />
-      <HowItWorkSection />
+      <HowItWorkSection2 />
       <WhyBookSection />
       <ReviewSection />
       <Entertainment />
