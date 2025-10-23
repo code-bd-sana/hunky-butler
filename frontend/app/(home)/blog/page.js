@@ -29,7 +29,6 @@ export default function About() {
         }
       ></ServAndAboutBanner>
 
-<<<<<<< HEAD
       <div className="text-center mb-12 pt-16">
         <MainTitle text={"Planning the Perfect Hen Party or Event"} />
         <div className=" max-w-7xl mx-auto mt-4">
@@ -40,18 +39,6 @@ export default function About() {
           />
         </div>
       </div>
-=======
-
-      <div className='text-center mb-12 pt-16'>
-              <MainTitle
-                text={"Planning the Perfect Hen Party or Event"}
-              
-              />
-              <div className=' max-w-7xl mx-auto mt-4'>
-                <SubTitle text={"Organising a hen do can feel overwhelming, but it doesn’t have to be. Here, you’ll find hen party entertainment ideas, fun games, and step-by-step guides to planning your night. Whether you’re hosting in Liverpool, Manchester, London, or anywhere else in the UK, our blog is designed to give you inspiration that’s practical and easy to follow.From stylish cocktail classes to cheeky life drawing sessions, we cover it all — so you can focus on making memories with your group."} />
-              </div>
-            </div>
->>>>>>> 9b54b3d9847d3d547a967c4c33340d1821fa2412
       <Provider store={store}>
         <BlogSection />
       </Provider>
