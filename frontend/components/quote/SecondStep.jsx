@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { base_url } from '@/utils/utils';
 import { useGetServiceQuery } from '@/features/services/servicesApi';
-import haversine from 'haversine-distance'
+
 
 const stripePromise = loadStripe('pk_test_51RWA5gFVdJBgYBDxRIUNli1dDlicyaiOTCEECLujXMHTyVEujYQJ2pZ9DFlUeNPpaKzy7cPYJ1QlA6cUe7A9m6Eg00nP3ZNUFM');
 
@@ -173,7 +173,7 @@ const calculateBasePrice = (serviceSlug, durationHours, numberOfStaff) => {
   return 100;
 };
 
-async function getRoadDistanceInMiles(lat1, lon1, lat2, lon2) {
+const  getRoadDistanceInMiles = async (lat1, lon1, lat2, lon2) => {
   const url = `http://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`;
   
   try {
@@ -220,7 +220,7 @@ const calculatePrice = async (serviceSlug, durationHours, numberOfStaff, postcod
     const a = { latitude: customerLat, longitude: customerLng }
 const b = { latitude: hubLat, longitude: hubLng }
 
-console.log(haversine(a, b) * 0.000621371, "Km meetter")
+
 
 const miles = await getRoadDistanceInMiles(customerLat, customerLng, hubLat, hubLng);
 console.log(miles, "Tihs is the final")
@@ -358,7 +358,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
       initializeServices();
     }
 
-    function initializeServices() {
+ const  initializeServices = ()=> {
       autocompleteService.current = new window.google.maps.places.AutocompleteService();
       placesService.current = new window.google.maps.places.PlacesService(document.createElement('div'));
     }
@@ -1050,7 +1050,7 @@ export default function SecondStep() {
 
         {/* Step 2: Event Information */}
         {nextStep === "secondstep" && (
-          <section className="mt-8 md:mt-28 w-full max-w-4xl px-6">
+          <section className="mt-8 md:mt-0 w-full max-w-4xl px-6">
             <div className="rounded-2xl bg-[#46434362] bg-gradient-to-b from-[#00000066] to-[#380D1F] backdrop-blur-md backdrop-saturate-15 border border-white/20 shadow-lg">
               <form onSubmit={secondStepHandler} className="p-6 md:p-8">
                 <section className="md:flex items-center gap-4">
