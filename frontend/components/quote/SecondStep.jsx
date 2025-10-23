@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { base_url } from '@/utils/utils';
 import { useGetServiceQuery } from '@/features/services/servicesApi';
+import haversine from 'haversine-distance'
 
 const stripePromise = loadStripe('pk_test_51RWA5gFVdJBgYBDxRIUNli1dDlicyaiOTCEECLujXMHTyVEujYQJ2pZ9DFlUeNPpaKzy7cPYJ1QlA6cUe7A9m6Eg00nP3ZNUFM');
 
@@ -74,8 +75,11 @@ const findNearestHub = (lat, lng) => {
 
 const calculateDistanceMultiplier = (distanceKm) => {
   const { localCoverageRadiusMiles, distanceSensitivityKm, distanceCap } = PRICING_CONFIG;
+
+  console.log(distanceKm, "distane km")
   
-  const distanceMiles = distanceKm / 1.609344;
+  const distanceMiles = distanceKm 
+  console.log(distanceMiles, "distancemile")
   
   // Check if within local coverage radius
   if (distanceMiles <= localCoverageRadiusMiles) {
@@ -99,10 +103,10 @@ const calculateDistanceMultiplier = (distanceKm) => {
   };
 };
 
-const applyLongDistanceMinimum = (selectedDuration, distanceMiles) => {
+const applyLongDistanceMinimum = (selectedDuration, distanceMiles, serviceSlug) => {
   const { longDistanceThresholdMiles } = PRICING_CONFIG;
   
-  if (distanceMiles > longDistanceThresholdMiles && selectedDuration < 2) {
+  if (distanceMiles > longDistanceThresholdMiles && selectedDuration < 2 && serviceSlug === "buff-butlers") {
     return {
       billableDuration: 2,
       minimumApplied: true
@@ -120,6 +124,7 @@ const lookupPostcodeCoordinates = async (postcode) => {
   try {
     const response = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}`);
     const data = await response.json();
+    console.log(data, "KM ")
     
     if (data.status === 200) {
       return {
@@ -168,23 +173,65 @@ const calculateBasePrice = (serviceSlug, durationHours, numberOfStaff) => {
   return 100;
 };
 
+async function getRoadDistanceInMiles(lat1, lon1, lat2, lon2) {
+  const url = `http://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`;
+  
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    
+    if (data.routes && data.routes.length > 0) {
+      const meters = data.routes[0].distance;
+      const miles = meters * 0.000621371;
+      return miles;
+    }
+    return null;
+  } catch (err) {
+    console.error("OSRM error:", err);
+    return null;
+  }
+}
 // Main Price Calculation Function
 const calculatePrice = async (serviceSlug, durationHours, numberOfStaff, postcode) => {
   try {
     // Lookup postcode coordinates
     const coordinates = await lookupPostcodeCoordinates(postcode);
+
+
+    const customerLat = coordinates.lat;
+    const customerLng = coordinates.lng;
+
+    
+
+
+    console.log(coordinates, "coordinates")
     if (!coordinates.success) {
       throw new Error(coordinates.error);
     }
 
     // Find nearest hub
     const nearestHub = findNearestHub(coordinates.lat, coordinates.lng);
+
+    const hubLat = nearestHub.lat
+    const hubLng = nearestHub.lng
+
+    console.log(nearestHub, "Near Hub")
+
+    const a = { latitude: customerLat, longitude: customerLng }
+const b = { latitude: hubLat, longitude: hubLng }
+
+console.log(haversine(a, b) * 0.000621371, "Km meetter")
+
+const miles = await getRoadDistanceInMiles(customerLat, customerLng, hubLat, hubLng);
+console.log(miles, "Tihs is the final")
     
     // Calculate distance multiplier
-    const distanceInfo = calculateDistanceMultiplier(nearestHub.distanceKm);
+
+    console.log(nearestHub.distanceKm, "eta holo ager")
+    const distanceInfo = calculateDistanceMultiplier(miles);
     
     // Apply long distance minimum duration
-    const durationInfo = applyLongDistanceMinimum(durationHours, distanceInfo.distanceMiles);
+    const durationInfo = applyLongDistanceMinimum(durationHours, distanceInfo.distanceMiles, serviceSlug);
     
     // Calculate base price
     const basePrice = calculateBasePrice(serviceSlug, durationInfo.billableDuration, numberOfStaff);
@@ -589,7 +636,8 @@ export default function SecondStep() {
             params.category,
             secondStep.durationHours,
             secondStep.numberOfStaff,
-            firstStep.postCode
+            firstStep.postCode,
+            
           );
           setPriceCalculation(result);
           setDistanceInfo(result.distanceInfo);
