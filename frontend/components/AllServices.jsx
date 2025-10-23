@@ -11,6 +11,7 @@ import background from "@/public/images/services/bg4.png";
 import MainTitle from "./shared/typography/MainTitle";
 import Link from "next/link";
 import { useGetServicesQuery } from "@/features/services/servicesApi";
+import { RiArrowDropRightLine } from "react-icons/ri";
 
 export default function ALLServices() {
   const { data: services = [], isLoading, error } = useGetServicesQuery();
@@ -20,12 +21,20 @@ export default function ALLServices() {
   return (
     <section className="pb-12 md:pb-24">
       <div style={{ backgroundImage: `url(${background.src})` }}>
-        <div className="max-w-7xl mx-auto pt-10">
-          <h1 className="text-center font-medium pt-6 text-[32px]">
-            Our Entertainment Services Planning the perfect party can be
-            stressful — that’s where we come in. At Hunky Butler Service, we’ve
-            curated a range of entertainment options to keep your guests
-            laughing, sipping, and celebrating in style.
+        <div className="max-w-7xl mx-auto mt-10 pt-10">
+          <h1 className="text-center text-[#141414] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-snug  max-w-7xl mx-auto  ">
+            What Party Entertainment Services Do We Offer?
+          </h1>
+          <h1 className="text-center font-medium pt-6 text-base md:text-lg  lg:text-xl">
+            Planning a hen party, birthday, or ladies night? At Hunky Butler
+            Service, we’ve got you covered with a choice of entertainment
+            packages to suit every group. Whether you’re after cheeky charm,
+            creative fun, or all-out excitement, our Party Entertainment
+            services are designed to make your celebration unforgettable. <br />
+            <span>
+              Explore our options below and click through to learn more about
+              each service.
+            </span>
           </h1>
         </div>
 
@@ -40,8 +49,13 @@ export default function ALLServices() {
               {/* Text */}
               <div className="flex-1">
                 <MainTitle text={service.name} />
-                <p className="text-[#3D3D3D] py-4 leading-[1.4] tracking-[-0.01em] text-lg">
-                  {service.description}
+                <p className="text-[#3D3D3D] py-4 leading-[1.4] capitalize tracking-[-0.01em] text-lg">
+                  {service.description} <br />
+                  <Link href={`/party-entertainment-services/${service.slug}`}>
+                    <span class="flex items-center text-[#FF006A] hover:underline">
+                      Learn More <RiArrowDropRightLine className="text-3xl" />
+                    </span>
+                  </Link>
                 </p>
 
                 {service.included?.length > 0 && (
