@@ -131,6 +131,14 @@ export const sendEmail = async (to, sub, text, otp = null, link = null) => {
 
 
 
+export const safeStringify = (obj, space = 2) => {
+  return JSON.stringify(obj, (key, value) => {
+    if (typeof value === 'bigint') {
+      return value.toString();
+    }
+    return value;
+  }, space);
+};
 
 
 
