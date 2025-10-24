@@ -14,15 +14,15 @@ import connectDB from "./src/config/db.js";
 import http from "http";
 import { Server } from "socket.io";
 import Message from "./src/models/Message.js";
-import { handleStripeWebhook } from "./src/controller/payment.controller.js";
+// import { handleStripeWebhook } from "./src/controller/payment.controller.js";
 
 dotenv.config();
 
-app.post(
-  "/api/webhook",
-  express.raw({ type: "application/json" }),
- handleStripeWebhook
-);
+// app.post(
+//   "/api/webhook",
+//   express.raw({ type: "application/json" }),
+//  handleStripeWebhook
+// );
 
 // Socket.IO setup
 const server = http.createServer(app);
