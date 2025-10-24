@@ -1049,8 +1049,7 @@ const Booking = () => {
                 </td>
               <td className="p-3">
   <div className="flex items-center gap-2">
-    {b?.butler && b.butler.length === b.numberOfStaff
- ? (
+    {b?.butler && b.butler.length > 0 ? (
       <div className="flex flex-wrap gap-1">
         {b.butler.map((data, idx) => (
           <span key={idx} className="text-green-600 font-medium">

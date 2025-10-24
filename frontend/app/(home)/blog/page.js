@@ -36,7 +36,7 @@ export default function About() {
               
               />
               <div className=' max-w-7xl mx-auto mt-4'>
-                <SubTitle text={"Organising a hen do can feel overwhelming, but it doesn’t have to be. Here, you’ll find hen party entertainment ideas, fun games, and step-by-step guides to planning your night. Whether you’re hosting in Liverpool, Manchester, London, or anywhere else in the UK, our blog is designed to give you inspiration that’s practical and easy to follow. From stylish cocktail classes to cheeky life drawing sessions, we cover it all — so you can focus on making memories with your group."} />
+                <SubTitle text={"Organising a hen do can feel overwhelming, but it doesn’t have to be. Here, you’ll find hen party entertainment ideas, fun games, and step-by-step guides to planning your night. Whether you’re hosting in Liverpool, Manchester, London, or anywhere else in the UK, our blog is designed to give you inspiration that’s practical and easy to follow.From stylish cocktail classes to cheeky life drawing sessions, we cover it all — so you can focus on making memories with your group."} />
               </div>
             </div>
       <Provider store={store}>
