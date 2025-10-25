@@ -18,17 +18,15 @@ import bg4 from "@/public/images/home/aboutbg2.png";
 export default function OurMission() {
   return (
     <div className="bg-[#FFF0F6]  py-8 md:py-24   relative">
-
-      <div className="max-w-7xl mx-auto lg:flex px-8 items-center gap-4 mt-16">
+      <div className="max-w-7xl mx-auto lg:flex px-8 items-start gap-4 mt-16">
         <section className="flex-1 z-50 relative">
-            
           <MainTitle text={"Our Mission: Making Events Effortless"} />
           <SubTitle
             text={
               "Our mission is simple: take the stress out of planning, so you can focus on enjoying the party. We connect you with trusted professionals who bring energy, fun, and reliability to every booking. With transparent pricing, secure payments, and flexible cancellation, it’s never been easier to book your perfect event."
             }
           />
-          <div className=" mt-10 ">
+          <div className=" mt-8 ">
             <SubTitle
               text={
                 "Whether it’s a cocktail masterclass in Birmingham, a life drawing hen do in London, or a group looking to hire buff butlers in Manchester, our team delivers nationwide coverage with the same high standards every time. We make it simple to:"
@@ -40,11 +38,15 @@ export default function OurMission() {
             <div className="flex gap-4 items-center">
               <Image alt="icon" src={icon} />
               <div className="text-[#333333]">
-                <SubTitle
+                {/* <SubTitle
                   text={
                     "Discover exciting services like Buff Butlers, Cocktail Masterclasses, and Life Drawing."
                   }
-                />
+                /> */}
+                <p>
+                  Discover exciting services like Buff Butlers, Cocktail
+                  Masterclasses, and Life Drawing.
+                </p>
               </div>
             </div>
             <div className="flex gap-4 items-center">
@@ -76,11 +78,15 @@ export default function OurMission() {
           </div>
         </section>
         <section className="flex-1 mx-auto z-50 relative">
-          <Image alt="Cheeky buff butler entertainer with party guests" src={aboutImg} className="mx-auto"/>
+          <Image
+            alt="Cheeky buff butler entertainer with party guests"
+            src={aboutImg}
+            className="mx-auto"
+          />
 
           {/* star */}
 
-          <div className="flex lg:absolute bottom-12  left-1/4 lg:left-1/3 gap-4 items-center bg-white p-4 max-w-sm rounded-2xl mx-auto mt-4 lg:mt-0  justify-center">
+          <div className="flex lg:absolute bottom-18 left-1/2 transform -translate-x-1/2 gap-4 items-center w-2/3 bg-white p-4 rounded-2xl mx-auto mt-4 lg:mt-0  justify-center">
             <FaStar className="text-[#FFAF1B] text-5xl" />
             <MainTitle text={"4.9"} />
             <SubTitle text={"Satisfied Client Review"} />

@@ -47,13 +47,20 @@ export default function MostPopulerParty() {
   return (
     <div className="max-w-7xl overflow-hidden mx-auto px-4 md:px-6 py-12">
       <div className="text-center mb-12">
-        <SecondaryTitle text1={"Our Most Popular Party Services"} />
+        <SecondaryTitle text1={"Our Most Popular Party Entertainment"} />
         <div className="max-w-2xl mx-auto mt-4">
-          <SubTitle
+          {/* <SubTitle
             text={
               "From unforgettable buff butlers in Liverpool to fun and creative life drawing classes in Manchester, our entertainment packages are designed to bring energy, laughter, and a touch of cheekiness to every event. With nationwide coverage, it’s easy to book the perfect experience no matter where you’re celebrating.."
             }
-          />
+          /> */}
+          <p className="text-justify md:text-center capitalize">
+            From unforgettable buff butlers in Liverpool to fun and creative
+            life drawing classes in Manchester, our entertainment packages are
+            designed to bring energy, laughter, and a touch of cheekiness to
+            every event. With nationwide coverage, it’s easy to book the perfect
+            experience no matter where you’re celebrating.
+          </p>
         </div>
       </div>
 
@@ -69,14 +76,14 @@ export default function MostPopulerParty() {
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/20 lg:via-transparent lg:to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/20 lg:via-transparent lg:to-transparent"></div>
             </div>
 
-            <div className="absolute left-0 bottom-0 w-full p-5 text-white">
-              <h4 className="text-2xl md:text-3xl font-medium mb-2">
+            <div className="absolute left-0 bottom-0 w-full p-2 md:p-6 text-white">
+              <h4 className="text-2xl md:text-3xl font-medium mb-1 md:mb-2">
                 {data.heading}
               </h4>
-              <p className="text-sm md:text-base opacity-90 leading-relaxed">
+              <p className="text-xs md:text-base opacity-90 leading-relaxed">
                 {data.title}
               </p>
             </div>

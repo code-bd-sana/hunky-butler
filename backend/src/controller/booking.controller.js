@@ -318,19 +318,6 @@ export const updateStatus = async (req, res) => {
           } 
         }
       );
-      await PaymentHistory.updateOne(
-        { 
-          bookingId: id
-        },
-        { 
-          $push: { 
-            butler: {
-              id: butlerid,
-              accepted: true
-            }
-          } 
-        }
-      );
       
       console.log(`Butler ${butlerid} accepted the booking ${id}`);
     }
@@ -442,28 +429,6 @@ export const assginToButler = async (req, res) => {
     const booking = await Booking.findById(bookingId);
     const { firstName, lastName, email, serviceName, dateOfEvent } = booking;
 
-     const existingButlers = booking.butler || [];
-    const alreadyAssignedButlers = [];
-
-    butlerId.forEach(id => {
-      const isAlreadyAssigned = existingButlers.some(
-        butler => butler.id.toString() === id.toString()
-      );
-      if (isAlreadyAssigned) {
-        alreadyAssignedButlers.push(id);
-      }
-    });
-
-    // If any butler is already assigned, return error
-    if (alreadyAssignedButlers.length > 0) {
-      return res.status(400).json({
-        message: "Some butlers are already assigned to this booking",
-        alreadyAssignedButlers: alreadyAssignedButlers,
-        error: "BUTLER_ALREADY_ASSIGNED"
-      });
-    }
-
-
     // Format butlers array
     const formattedButlers = butlerId.map(id => ({
       id: new mongoose.Types.ObjectId(id),
@@ -533,65 +498,62 @@ export const assginToButler = async (req, res) => {
     await Promise.all(emailPromises);
 
     // Set up 15 min timeout for each butler individually
-  // Set up 15 min timeout for each butler individually
-butlers.forEach(async (butler) => {
-  setTimeout(async () => {
-    try {
-      const checkBooking = await Booking.findById(bookingId);
+    butlers.forEach(async (butler) => {
+      setTimeout(async () => {
+        try {
+          const checkBooking = await Booking.findById(bookingId);
 
-      if (checkBooking) {
-        // Find the specific butler in the booking
-        const butlerAssignment = checkBooking.butler.find(
-          b => b.id.toString() === butler._id.toString()
-        );
-
-        // If this specific butler hasn't accepted, remove only them
-        if (butlerAssignment && butlerAssignment.accepted === false) {
-          await Booking.updateOne(
-            { _id: bookingId },
-            { $pull: { butler: { id: butler._id, accepted: false } } }
-          );
-
-          // Update payment history if this was the only butler and all are removed
-          const updatedBooking = await Booking.findById(bookingId);
-          const hasAcceptedButler = updatedBooking.butler.some(b => b.accepted === true);
-          
-          // If no butler has accepted after removal, clear payment history
-          if (!hasAcceptedButler) {
-            await PaymentHistory.updateOne(
-              { bookingId: bookingId },
-              { $set: { butlerId: null } }
+          if (checkBooking) {
+            // Find the specific butler in the booking
+            const butlerAssignment = checkBooking.butler.find(
+              b => b.id.toString() === butler._id.toString() && b.accepted === false
             );
+
+            // If this specific butler hasn't accepted, remove them
+            if (butlerAssignment) {
+              await Booking.updateOne(
+                { _id: bookingId },
+                { $pull: { butler: { id: butler._id, accepted: false } } }
+              );
+
+              // Update payment history if this was the only butler
+              const remainingButlers = checkBooking.butler.filter(
+                b => b.id.toString() !== butler._id.toString() || b.accepted === true
+              );
+
+              if (remainingButlers.length === 0) {
+                await PaymentHistory.updateOne(
+                  { bookingId: bookingId },
+                  { $set: { butlerId: null } }
+                );
+              }
+
+              // Store notification for admin
+              await storeNotification(
+                adminGmail,
+                `Booking Needs Reassignment - The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(
+                  dateOfEvent
+                ).toLocaleDateString()}) was not accepted by butler ${butler.firstName} ${butler.lastName}.`,
+                "",
+                "/dashboard"
+              );
+
+              // Store notification for the butler
+              await storeNotification(
+                butler.email,
+                "Booking Not Accepted In Time and has been removed from your assignments",
+                "",
+                ""
+              );
+
+              console.log(`❌ Butler ${butler.firstName} removed from booking ${bookingId} due to no acceptance`);
+            }
           }
-
-          // Store notification for admin
-          await storeNotification(
-            adminGmail,
-            `Booking Needs Reassignment - The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(
-              dateOfEvent
-            ).toLocaleDateString()}) was not accepted by butler ${butler.firstName} ${butler.lastName}.`,
-            "",
-            "/dashboard"
-          );
-
-          // Store notification for the butler
-          await storeNotification(
-            butler.email,
-            "Booking Not Accepted In Time and has been removed from your assignments",
-            "",
-            ""
-          );
-
-          console.log(`❌ Butler ${butler.firstName} removed from booking ${bookingId} due to no acceptance`);
-        } else {
-          console.log(`✅ Butler ${butler.firstName} accepted the booking, no removal needed`);
+        } catch (err) {
+          console.error("Error inside timeout for butler:", butler._id, err.message);
         }
-      }
-    } catch (err) {
-      console.error("Error inside timeout for butler:", butler._id, err.message);
-    }
-  }, 2 * 60 * 1000); // 15 minutes
-});
+      }, 2 * 60 * 1000); // 15 minutes
+    });
 
     res.status(200).json({
       message: "Butlers assigned and emails sent successfully",
@@ -705,17 +667,21 @@ export const getButlerOverview = async (req, res) => {
     });
 
     
- const bookings = await Booking.find({
-  "butler.id": id,
-  status: "completed",
-  createdAt: { $gte: startOfMonth, $lte: endOfMonth },
-});
-
-const totalEarningThisMonth = bookings.reduce((sum, booking) => {
-  return sum + (booking.butlerFee || 0);
-}, 0);
-
-console.log(totalEarningThisMonth, 'total earning this months')
+    const totalEarningThisMonth = await Booking.aggregate([
+      {
+        $match: {
+          "butler.id": id,
+          status: "completed",
+          createdAt: { $gte: startOfMonth, $lte: endOfMonth },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$price" },
+        },
+      },
+    ]);
    
 
     res.status(200).json({

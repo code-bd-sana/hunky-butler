@@ -4,8 +4,7 @@ import Image from "next/image";
 import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
 
 const ContactForm = () => {
-
-  const data = useGetServiceJoyBanglaQuery('cocktail-masterclasses');
+  const data = useGetServiceJoyBanglaQuery("cocktail-masterclasses");
 
   return (
     <div
@@ -36,15 +35,14 @@ const ContactForm = () => {
               alt="Buff butler entertainer with party guests"
               fill
               className="rounded-lg shadow-lg object-cover"
-              c
             />
           </div>
 
           {/* Right Form */}
           <div>
             <h2 className="text-pink-600 font-semibold text-[32px] mb-8 capitalize">
-              Have any questions? fill out the form below to get in touch with
-              our team
+              fill out the form below to get in touch with our team and we will
+              Reply
             </h2>
             <form className="space-y-6">
               {/* Name Fields */}
@@ -133,7 +131,7 @@ const ContactForm = () => {
               <div className="px-2">
                 <button
                   type="submit"
-                  className="w-full bg-[#FF006A] text-white py-4 text-lg rounded-full hover:bg-white hover:text-[#FF006A] hover:border-3  transition mt-6"
+                  className="w-full bg-[#FF006A] text-white py-4 text-lg rounded-full hover:bg-white hover:text-[#FF006A] hover:border-3  transition"
                 >
                   Send
                 </button>
@@ -152,8 +150,12 @@ const ContactForm = () => {
               </span>
             </div>
             <h3 className="font-medium text-[#6B6B6B] text-lg">Email Us</h3>
-            <p className="text-2xl font-medium">Info@Hunkybutlerservice.Com</p>
-            <p className="text-2xl font-medium">Help@Hunkybutlerservice.Com</p>
+            <p className="text-2xl font-medium">
+              info@hunkybutlerservice.co.uk
+            </p>
+            <p className="text-2xl font-medium">
+              Bookings@hunkybutlerservice.co.uk
+            </p>
           </div>
 
           {/* Call Us */}
@@ -164,8 +166,8 @@ const ContactForm = () => {
               </span>
             </div>
             <h3 className="font-medium text-[#6B6B6B] text-lg">Call Us</h3>
-            <p className="text-2xl font-medium">+(807) 555-0101</p>
-            <p className="text-2xl font-medium">+(252) 555-0126</p>
+            <p className="text-2xl font-medium">+44 7745 865352</p>
+            <p className="text-2xl font-medium">0800 046 2832</p>
           </div>
 
           {/* Location */}
@@ -175,9 +177,14 @@ const ContactForm = () => {
                 <MdLocationOn size={30} />
               </span>
             </div>
-            <h3 className="font-medium text-[#6B6B6B] text-lg">Drop in Us</h3>
+            {/* <h3 className="font-medium text-[#6B6B6B] text-lg">Drop in Us</h3>
             <p className="text-2xl font-medium">2464 Royal Ln. Mesa,</p>
-            <p className="text-2xl font-medium">New Jersey 45463</p>
+            <p className="text-2xl font-medium">New Jersey 45463</p> */}
+            <h3 className="font-medium text-[#6B6B6B] text-lg">Address</h3>
+            <p className="text-2xl font-medium">
+              36A Renshaw Street <br /> Liverpool l1
+              <br /> 4EF United Kingdom
+            </p>
           </div>
         </div>
       </div>

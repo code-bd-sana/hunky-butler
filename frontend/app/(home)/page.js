@@ -25,7 +25,7 @@ export default function page() {
       <MostPopulerParty />
       <HomeMarque />
       <AboutSection />
-      <HowItWorkSection />
+      <HowItWorkSection2 />
       <WhyBookSection />
       <ReviewSection />
       <Entertainment />
