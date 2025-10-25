@@ -88,11 +88,14 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-3">Quick Links</h4>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li>Blog</li>
-              <li>About Us</li>
-              <li>Contact</li>
-              <li>Review</li>
-              <li>Services</li>
+              <li><Link href={'/dashboard'}>Dashboard</Link></li>
+              <li><Link href={'/login'}>Login</Link></li>
+              <li><Link href={'/about'}>About Us</Link></li>
+              <li><Link href={'/contact'}>Contact</Link></li>
+              <li><Link href={'/contact'}>Services</Link></li>
+                   
+            
+          
             </ul>
           </div>
 
@@ -100,9 +103,11 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-3">Legal</h4>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li>Privacy Policy</li>
-              <li>Terms Of Services</li>
-              <li>Cancellation Policy</li>
+          
+              <li>  <a href="https://www.hunkybutlerservice.co.uk/privacy-policy2/" target="_blank">Privacy Policy</a> </li>
+              <li>  <a href="https://www.hunkybutlerservice.co.uk/terms-and-conditions-2/" target="_blank">Terms Of Services</a> </li>
+              <li>  <a href="https://www.hunkybutlerservice.co.uk/refund-cancellation-policy/" target="_blank">Refund Policy</a> </li>
+          
             </ul>
           </div>
 

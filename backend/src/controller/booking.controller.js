@@ -6,6 +6,8 @@ import Notificaton from "../models/notification.model.js";
 import { adminGmail, storeNotification } from "../utils/utils.js";
 import PaymentHistory from "../models/payment.model.js";
 import mongoose from "mongoose";
+import cron from 'node-cron';
+
 
 export const getAllBooking = async (req, res) => {
   try {
@@ -695,3 +697,173 @@ export const getButlerOverview = async (req, res) => {
 };
 
 
+
+
+
+
+
+
+export const sendEmail = async (req, res) => {
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, 
+    auth: {
+      user: "bannah76769@gmail.com",
+      pass: "noqq kzxv olzf clzz",
+    },})
+  
+  try {
+    // Get all pending payments
+    const allEmail = await Booking.find({ paid: "pending" });
+    
+    // Limit to 5 emails per day
+    const emailsToSend = allEmail.slice(0, 5);
+    
+    // Send email to each recipient
+    for (const booking of emailsToSend) {
+      const userEmail = booking.email; // assuming email field exists in Booking
+      
+      const htmlTemplate = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Payment Reminder</title>
+            <style>
+                body {
+                    font-family: 'Arial', sans-serif;
+                    line-height: 1.6;
+                    color: #333333;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+                .header {
+                    background-color: #e60459;
+                    color: white;
+                    padding: 20px;
+                    text-align: center;
+                    border-radius: 5px 5px 0 0;
+                }
+                .content {
+                    padding: 20px;
+                    background-color: #f9f9f9;
+                    border-radius: 0 0 5px 5px;
+                    border: 1px solid #e0e0e0;
+                    border-top: none;
+                }
+                .footer {
+                    margin-top: 20px;
+                    text-align: center;
+                    font-size: 12px;
+                    color: #777777;
+                }
+                .button {
+                    display: inline-block;
+                    padding: 12px 25px;
+                    background-color: #e60459;
+                    color: white !important;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                    font-weight: bold;
+                    font-size: 16px;
+                }
+                .logo {
+                    max-width: 150px;
+                    margin-bottom: 15px;
+                }
+                .payment-reminder {
+                  background: #fff3f7;
+                  padding: 15px;
+                  border-radius: 5px;
+                  border-left: 4px solid #e60459;
+                  margin: 15px 0;
+                }
+                .urgent {
+                  color: #e60459;
+                  font-weight: bold;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>Payment Reminder</h1>
+            </div>
+            <div class="content">
+                <p>Dear Customer,</p>
+                
+                <div class="payment-reminder">
+                    <p class="urgent">Your payment is still <strong>pending</strong>!</p>
+                    <p>We noticed that you haven't completed the payment for your booking yet.</p>
+                </div>
+                
+                <p>You want to payment but it's still not paid. Please complete your payment to confirm your booking.</p>
+                
+                <p style="text-align: center;">
+                    <a href="https://hunky-butler.vercel.app/dashboard" class="button">
+                        Complete Your Payment Now
+                    </a>
+                </p>
+                
+                <p>This link will take you directly to your dashboard where you can complete the payment process.</p>
+                
+                <p>If you have already made the payment, please ignore this email.</p>
+                
+                <p>Best regards,<br>Our Team</p>
+            </div>
+            <div class="footer">
+                <p>© ${new Date().getFullYear()} Our Company. All rights reserved.</p>
+                <p>
+                    <a href="#" style="color: #e60459;">Privacy Policy</a> | 
+                    <a href="#" style="color: #e60459;">Terms of Service</a>
+                </p>
+            </div>
+        </body>
+        </html>
+      `;
+
+      // Email configuration
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: userEmail,
+        subject: 'Payment Reminder - Your Payment is Still Pending',
+        html: htmlTemplate
+      };
+
+      // Send email
+      await transporter.sendMail(mailOptions);
+      console.log(`Payment reminder sent to: ${userEmail}`);
+      
+      // Optional: Add delay between emails to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    console.log(`Successfully sent ${emailsToSend.length} payment reminder emails`);
+    
+    // Send response
+    res.status(200).json({
+      success: true,
+      message: `Payment reminders sent to ${emailsToSend.length} users`,
+      data: emailsToSend.length
+    });
+
+  } catch (error) {
+    console.log('Error sending emails:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send payment reminder emails',
+      error: error.message
+    });
+  }
+};
+
+
+
+
+// Run every day at 5 AM
+cron.schedule('0 5 * * *', () => {
+  sendEmail();
+});
