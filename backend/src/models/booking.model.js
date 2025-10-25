@@ -61,6 +61,10 @@ const bookingSchema = mongoose.Schema(
       enum: ["completed", "ongoing", "cancel", "cancelled", "accepted"],
       default: "ongoing",
     },
+    paymentType: String,
+    squarePaymentId:String,
+    squareOrderId:String,
+    receiptUrl:String,
 butler: [
   {
     id: { type: mongoose.Schema.Types.ObjectId, ref: User },
@@ -78,6 +82,7 @@ butler: [
       type: String,
       default: "unpaid",
     },
+    amountPaid:Number,
 
     paymentStatus:String,
      stripePaymentIntentId: String,
@@ -85,6 +90,8 @@ butler: [
      butlerFee: Number,
      loadFactor:Number,
      travelFee:Number,
+     amountDue:Number,
+     depositAmount:Number,
      profit:{
       type:Number,
       required:true

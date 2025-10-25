@@ -63,7 +63,7 @@ export default function Page() {
         if (user.role === 'admin') {
           window.location.href = "/dashboard";
         } else {
-          window.location.href = "/";
+          window.location.href = "/dashboard";
         }
       }
 

@@ -66,12 +66,13 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
     const simpleLineItems = [
       {
         name: `${savedBooking.serviceName} Service - Balance Payment`,
+        
         quantity: '1',
         basePriceMoney: {
           amount: Math.round(price * 100),
           currency: 'USD',
         },
-        note: `Balance payment for ${savedBooking.durationHours} hours with ${savedBooking.numberOfStaff} staff`,
+        note: `${savedBooking._id}`,
       }
     ];
 
@@ -192,21 +193,21 @@ export const createCheckoutSession = async (req, res) => {
     console.log('✅ Booking created with ID:', savedBooking._id.toString());
 
     // Simple line items
-    const simpleLineItems = [
-      {
-        name: isDeposit 
-          ? `${bookingData.serviceName} Service - Deposit` 
-          : `${bookingData.serviceName} Service Booking`,
-        quantity: '1',
-        basePriceMoney: {
-          amount: Math.round(amountToCharge * 100),
-          currency: 'USD',
-        },
-        note: isDeposit
-          ? `Deposit for ${bookingData.durationHours} hours`
-          : `Service for ${bookingData.durationHours} hours`,
-      }
-    ];
+ // In the line items section:
+const simpleLineItems = [
+  {
+    name: isDeposit 
+      ? `${bookingData.serviceName} Service - Deposit` 
+      : `${bookingData.serviceName} Service Booking`,
+    quantity: '1',
+    basePriceMoney: {
+      amount: Math.round(amountToCharge * 100),
+      currency: 'USD',
+    },
+    note: `${savedBooking._id}`,
+     reference_id: savedBooking._id.toString()
+  }
+];
 
     // SIMPLE metadata - ONLY bookingId
     const metadata = {
@@ -359,7 +360,7 @@ export const handleSquareWebhook = async (req, res) => {
 // ==================== HANDLE SUCCESSFUL PAYMENT ====================
 const handleSuccessfulPayment = async (payment) => {
   try {
-    console.log('🔄🔄🔄 STARTING PAYMENT PROCESSING');
+
     
     const orderId = payment.orderId || payment.order_id;
     console.log('🔍 Order ID:', orderId);
@@ -372,60 +373,20 @@ const handleSuccessfulPayment = async (payment) => {
     console.log('🔍 Retrieving order from Square...');
     const orderResponse = await ordersApi.retrieveOrder(orderId);
     const order = orderResponse.result.order;
-    const metadata = order.metadata || {};
 
-    console.log('📋 Order metadata received:', metadata);
+
+
+    console.log('📋 Order lineItems received:', order.lineItems[0]);
 
     let bookingId;
 
-    // METHOD 1: Try to get bookingId from metadata
-    if (metadata.bid) {
-      bookingId = metadata.bid;
+    // METHOD 1: Try to getfrom metadata
+    if (order.lineItems) {
+      bookingId = order.lineItems[0].note;
       console.log('✅ Found bookingId in metadata:', bookingId);
     } 
     // METHOD 2: Emergency fallback - check database mapping
-    else {
-      console.log('❌ No metadata found, using database fallback');
-      const mapping = await OrderMapping.findOne({ squareOrderId: orderId });
-      if (mapping) {
-        bookingId = mapping.bookingId.toString();
-        console.log('✅ Found bookingId in fallback mapping:', bookingId);
-      } else {
-        // METHOD 3: Last resort - find by customer email from payment
-        try {
-          const paymentDetails = await paymentsApi.getPayment(payment.id);
-          const buyerEmail = paymentDetails.result.payment?.buyer_email_address;
-          
-          if (buyerEmail) {
-            const recentBooking = await Booking.findOne({
-              email: buyerEmail,
-              $or: [
-                { paymentStatus: 'pending' },
-                { paymentStatus: 'deposit_paid' }
-              ]
-            }).sort({ createdAt: -1 });
-            
-            if (recentBooking) {
-              bookingId = recentBooking._id.toString();
-              console.log('✅ Found bookingId by email:', bookingId);
-              
-              // Store this mapping for future
-              await OrderMapping.findOneAndUpdate(
-                { squareOrderId: orderId },
-                {
-                  squareOrderId: orderId,
-                  bookingId: recentBooking._id,
-                  customerEmail: buyerEmail
-                },
-                { upsert: true, new: true }
-              );
-            }
-          }
-        } catch (emailError) {
-          console.error('❌ Error finding by email:', emailError.message);
-        }
-      }
-    }
+   
 
     if (!bookingId) {
       console.error('❌ CRITICAL: COULD NOT FIND BOOKING ID AFTER ALL ATTEMPTS');
@@ -453,8 +414,8 @@ const handleSuccessfulPayment = async (payment) => {
     });
 
     // Determine payment type and update logic
-    const isBalancePayment = booking.paymentStatus === 'deposit_paid';
-    const isDeposit = booking.paymentType === 'deposit' && booking.paymentStatus === 'pending';
+    const isBalancePayment = booking.paymentStatus === 'pending';
+    const isDeposit = booking.paymentStatus === 'deposit_paid' && booking.paid === 'pending';
     
     let amountPaid = 0;
     let paymentStatus = '';
@@ -519,8 +480,8 @@ const handleSuccessfulPayment = async (payment) => {
       adminVerified: false,
     });
 
-    await paymentHistory.save();
-    console.log('✅ Payment history created');
+    const paymentHistorys = await paymentHistory.save();
+    console.log( paymentHistorys, '✅ Payment history created');
 
     // Update booking
     const updateData = {
@@ -529,12 +490,12 @@ const handleSuccessfulPayment = async (payment) => {
       squarePaymentId: payment.id,
       squareOrderId: orderId,
       receiptUrl: payment.receipt_url || null,
-      paidAt: new Date(),
       amountPaid: amountPaid,
       amountDue: isDeposit ? booking.price - 20 : 0,
       depositAmount: isDeposit ? 20 : 0,
-      status: paymentStatus === 'paid' ? 'confirmed' : 'deposit_paid',
-      updatedAt: new Date(),
+        paid: paymentStatus,
+   
+    
     };
 
     const updatedBooking = await Booking.findByIdAndUpdate(
@@ -547,7 +508,7 @@ const handleSuccessfulPayment = async (payment) => {
       throw new Error(`Booking update failed for ID: ${bookingId}`);
     }
 
-    console.log('✅✅✅ BOOKING UPDATED SUCCESSFULLY');
+    console.log(updatedBooking, '✅✅✅ BOOKING UPDATED SUCCESSFULLY');
 
     // Update user service count for full payments
     if (paymentStatus === 'paid') {
@@ -690,16 +651,10 @@ const handleFailedPayment = async (payment) => {
       try {
         const orderResponse = await ordersApi.retrieveOrder(orderId);
         const metadata = orderResponse.result.order.metadata || {};
-        let bookingId = metadata.bid;
+        let bookingId = orderResponse.result.order.lineItems[0].note;
 
         // If no metadata, try database mapping
-        if (!bookingId) {
-          const mapping = await OrderMapping.findOne({ squareOrderId: orderId });
-          if (mapping) {
-            bookingId = mapping.bookingId.toString();
-          }
-        }
-
+      
         if (bookingId) {
           console.log(`❌ Processing failed payment for booking: ${bookingId}`);
           await Booking.findByIdAndUpdate(bookingId, {
@@ -748,8 +703,8 @@ export const verifyPayment = async (req, res) => {
     }
 
     const orderResponse = await ordersApi.retrieveOrder(payment.orderId);
-    const metadata = orderResponse.result.order.metadata || {};
-    const booking = await Booking.findById(metadata.bid);
+    const metadata = orderResponse.result.order || {};
+    const booking = await Booking.findById(metadata.lineItems.note);
 
     res.status(200).json({
       success: true,
