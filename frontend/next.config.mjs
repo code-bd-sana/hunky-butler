@@ -4,15 +4,12 @@ const nextConfig = {
     globalNotFound: true,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "i.ibb.co",
-      },
-      {
-        protocol: "https",
-        hostname: "cdn.pixabay.com",
-      },
+    domains: [
+      "i.ibb.co",
+      "i.ibb.com",
+      "i.ibb.co.com",
+      "cdn.pixabay.com",
+      "lh3.googleusercontent.com",
     ],
   },
 };
