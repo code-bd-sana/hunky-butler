@@ -1064,14 +1064,14 @@ const PaymentProcessingModal = ({ isOpen }) => {
                   <span
                     className={`px-3 py-2 rounded-full text-sm font-medium `}
                   >
-                  {   b?.status ==="deposit_paid"  && '$20' || '-'} 
+                  {  b?.paymentStatus === "deposit_paid" && "$20" || '--'} 
                     </span>
                 </td>
                 <td className="p-3">
                   <span
                     className={`px-3 py-2 rounded-full text-sm font-medium `}
                   >
-                  {   b?.status ==="deposit_paid"  &&  b?.price - 20 || '-'} 
+                  {   b?.amountDue} 
                     </span>
                 </td>
                 <td className="p-3">
