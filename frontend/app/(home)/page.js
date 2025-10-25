@@ -1,3 +1,4 @@
+'use client'
 import HomeBanner from "@/components/homepage/HomeBanner";
 import TrustStrip from "@/components/homepage/TrustStrip";
 import Navbar from "@/components/shared/Navbar";
@@ -12,8 +13,9 @@ import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
 import ServiceBanner from "@/components/shared/ServiceBanner";
 import Entertainment from "@/components/homepage/Entertainment";
-import HowItWorkSection2 from "@/components/ServiceHeroSection/HowItWorkSection2";
-             
+import { SessionProvider } from "next-auth/react";
+
+
 export default function page() {
   return (
     <div className="min-h-screen overfh bg-white">
@@ -32,7 +34,9 @@ export default function page() {
         title="Hen Party Planning Inspirations & Tips"
         description="Not sure where to start? Our blog is full of ideas to make your hen party unique. From cocktail recipes to creative party games, we share expert tips to help you plan the perfect night."
       />
-      <Footer />
+    <SessionProvider>
+      <Footer/>
+    </SessionProvider>
     </div>
   );
 }

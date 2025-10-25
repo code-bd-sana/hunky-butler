@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { IoCallSharp } from "react-icons/io5";
 import { IoMdMail } from "react-icons/io";
@@ -10,8 +11,13 @@ import {
   FaTumblr,
 } from "react-icons/fa";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const Footer = () => {
+
+  const data = useSession();
+
+
   return (
     <div className="bg-[#F2EDEF] w-full relative md:mt-[550px]">
       <div
@@ -88,8 +94,12 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-3">Quick Links</h4>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li><Link href={'/dashboard'}>Dashboard</Link></li>
-              <li><Link href={'/login'}>Login</Link></li>
+        {
+              data?.status === "authenticated" &&  <li><Link href={'/dashboard'}>Dashboard</Link></li>
+        }
+       {
+        data?.status !== "authenticated" &&        <li><Link href={'/login'}>Login</Link></li>
+       }
               <li><Link href={'/about'}>About Us</Link></li>
               <li><Link href={'/contact'}>Contact</Link></li>
               <li><Link href={'/contact'}>Services</Link></li>
