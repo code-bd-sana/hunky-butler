@@ -173,22 +173,38 @@ const calculateBasePrice = (serviceSlug, durationHours, numberOfStaff) => {
   return 100;
 };
 
-const  getRoadDistanceInMiles = async (lat1, lon1, lat2, lon2) => {
-  const url = `http://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`;
-  
+const getRoadDistanceInMiles = async (lat1, lon1, lat2, lon2) => {
   try {
+    // First try HTTPS OSRM if available
+    const url = `https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`;
     const res = await fetch(url);
+    
+    if (!res.ok) throw new Error('OSRM API failed');
+    
     const data = await res.json();
     
     if (data.routes && data.routes.length > 0) {
       const meters = data.routes[0].distance;
       const miles = meters * 0.000621371;
+      console.log('✅ OSRM distance calculated:', miles);
       return miles;
     }
-    return null;
+    throw new Error('No route found');
   } catch (err) {
-    console.error("OSRM error:", err);
-    return null;
+    console.error("OSRM failed, using fallback:", err);
+    
+    // Fallback: Haversine with road factor
+    const haversineKm = haversineDistance(lat1, lon1, lat2, lon2);
+    const roadFactor = 1.3; // Realistic road distance multiplier
+    const estimatedMiles = (haversineKm * roadFactor) * 0.621371;
+    
+    console.log('📍 Fallback distance calculated:', {
+      straightLineKm: haversineKm.toFixed(2),
+      estimatedRoadMiles: estimatedMiles.toFixed(2),
+      factor: roadFactor
+    });
+    
+    return estimatedMiles;
   }
 }
 // Main Price Calculation Function
