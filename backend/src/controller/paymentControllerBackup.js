@@ -1,5 +1,6 @@
-import { Client, Environment } from 'square';
-import crypto from 'crypto';
+import stripePackage from 'stripe';
+
+
 import nodemailer from 'nodemailer';
 import Booking from '../models/booking.model.js';
 import User from '../models/user.model.js';
@@ -10,11 +11,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// Square client setup
-const squareClient = new Client({
-  environment: Environment.Sandbox, 
-  accessToken: process.env.SQUARE_ACCESS_TOKEN,
-});
+const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
+
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
@@ -27,59 +25,74 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Create Square Checkout Session for Existing Booking
+// Create Stripe Checkout Session
+// controllers/paymentController.js - এটা update করুন
+
 export const createCheckoutSessionExistngBooking = async (req, res) => {
   try {
     const { id, successUrl, cancelUrl } = req.body;
 
-    const savedBooking = await Booking.findOne({_id: id});
-    console.log(savedBooking, "ami tomar saved booking");
+
+
+
+
+
+
+    const savedBooking = await Booking.findOne({_id:id});
+    console.log(savedBooking, "ami tomar saved booking")
 
     const price = savedBooking?.paymentStatus === 'deposit_paid' ? savedBooking.price - 20 : savedBooking?.price;
+  
 
-    // Create Square Checkout
-    const { result } = await squareClient.checkoutApi.createPaymentLink({
-      idempotencyKey: crypto.randomUUID(),
-      quickPay: {
-        name: `${savedBooking.serviceName} Service Booking`,
-        priceMoney: {
-          amount: Math.round(price * 100), // Convert to cents
-          currency: 'USD'
+
+
+    // Create Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `${savedBooking.serviceName} Service Booking`,
+              description: `Butler service for ${savedBooking.durationHours} hours with ${savedBooking.numberOfStaff} staff members`,
+            },
+            unit_amount: Math.round(price * 100), // Convert to cents
+          },
+          quantity: 1,
         },
-        locationId: process.env.SQUARE_LOCATION_ID
-      },
-      checkoutOptions: {
-        redirectUrl: successUrl,
-        // cancelUrl: cancelUrl // Square-এ cancelUrl directly support করে না
-      },
-      prePopulatedData: {
-        buyerEmail: savedBooking.email,
-        buyerPhoneNumber: savedBooking.phone
-      },
-      description: `Butler service for ${savedBooking.durationHours} hours with ${savedBooking.numberOfStaff} staff members`,
+      ],
+      mode: 'payment',
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: {
         bookingId: savedBooking._id.toString(),
         customerEmail: savedBooking.email,
         firstName: savedBooking?.firstName,
+    
         lastName: savedBooking?.lastName,
         serviceName: savedBooking.serviceName,
-        totalAmount: price.toString()
-      }
+        totalAmount: price,
+      },
+      customer_email: savedBooking.email,
     });
 
-    console.log(result, "Square Checkout Result");
+console.log(session, "aysa")
 
-    // Send response with both url and orderId
+
+    // Send response with both sessionId and url
     res.status(200).json({
       success: true,
-      checkoutUrl: result.paymentLink.url,
-      orderId: result.paymentLink.orderId,
+      sessionId: session.id,
+      checkoutUrl: session.url, // This is important for manual redirect
       bookingId: savedBooking._id,
-      message: 'Square checkout session created successfully'
+      message: 'Checkout session created successfully'
     });
 
+
+
   } catch (error) {
-    console.error('Error creating Square checkout session:', error);
+    console.error('Error creating checkout session:', error);
     res.status(500).json({
       success: false,
       message: 'Error creating checkout session',
@@ -88,18 +101,25 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
   }
 };
 
-// Create Square Checkout Session for New Booking
+
+
+
+
+
+
+
+
 export const createCheckoutSession = async (req, res) => {
   try {
     const { bookingData, successUrl, cancelUrl, paymentType = 'full' } = req.body;
 
-    console.log('Creating Square checkout session for:', bookingData, 'Payment type:', paymentType);
+    console.log('Creating checkout session for:', bookingData, 'Payment type:', paymentType);
 
     // Validate required fields
-    if (!bookingData || !successUrl) {
+    if (!bookingData || !successUrl || !cancelUrl) {
       return res.status(400).json({
         success: false,
-        message: 'Missing required fields: bookingData, successUrl'
+        message: 'Missing required fields: bookingData, successUrl, cancelUrl'
       });
     }
 
@@ -110,13 +130,13 @@ export const createCheckoutSession = async (req, res) => {
     const amountToCharge = isDeposit ? depositAmount : totalAmount;
     const amountDue = isDeposit ? totalAmount - depositAmount : 0;
 
-    // Create booking first with pending status
+    // Create booking first with pending status - IMPORTANT: Include paymentType
     const newBooking = new Booking({
       ...bookingData,
-      paymentType: paymentType,
-      depositAmount: isDeposit ? depositAmount : 0,
-      amountDue: amountDue,
-      amountPaid: isDeposit ? depositAmount : 0,
+      paymentType: paymentType, // ✅ Eta add koro
+      depositAmount: isDeposit ? depositAmount : 0, // ✅ Eta add koro
+      amountDue: amountDue, // ✅ Eta add koro
+      amountPaid: isDeposit ? depositAmount : 0, // ✅ Eta add koro
       paid: isDeposit ? 'deposit_paid' : 'pending',
       paymentMethod: 'pay_now',
       paymentStatus: isDeposit ? 'deposit_paid' : 'pending',
@@ -125,31 +145,31 @@ export const createCheckoutSession = async (req, res) => {
     });
 
     const savedBooking = await newBooking.save();
-    console.log('Booking created with ID:', savedBooking._id, 'Payment type:', paymentType);
+    console.log('Booking created with ID:', savedBooking._id, savedBooking.paymentStatus, 'Payment type:', paymentType, 'Amount Due:', amountDue, );
 
-    // Create Square Checkout
-    const { result } = await squareClient.checkoutApi.createPaymentLink({
-      idempotencyKey: crypto.randomUUID(),
-      quickPay: {
-        name: isDeposit 
-          ? `${bookingData.serviceName} Service - Deposit` 
-          : `${bookingData.serviceName} Service Booking`,
-        priceMoney: {
-          amount: Math.round(amountToCharge * 100), // Convert to cents
-          currency: 'USD'
+    // Create Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: isDeposit 
+                ? `${bookingData.serviceName} Service - Deposit` 
+                : `${bookingData.serviceName} Service Booking`,
+              description: isDeposit
+                ? `Deposit for ${bookingData.durationHours} hours with ${bookingData.numberOfStaff} staff members (Balance: $${amountDue})`
+                : `Butler service for ${bookingData.durationHours} hours with ${bookingData.numberOfStaff} staff members`,
+            },
+            unit_amount: Math.round(amountToCharge * 100), // Convert to cents
+          },
+          quantity: 1,
         },
-        locationId: process.env.SQUARE_LOCATION_ID
-      },
-      checkoutOptions: {
-        redirectUrl: successUrl,
-      },
-      prePopulatedData: {
-        buyerEmail: bookingData.email,
-        buyerPhoneNumber: bookingData.phone
-      },
-      description: isDeposit
-        ? `Deposit for ${bookingData.durationHours} hours with ${bookingData.numberOfStaff} staff members (Balance: $${amountDue})`
-        : `Butler service for ${bookingData.durationHours} hours with ${bookingData.numberOfStaff} staff members`,
+      ],
+      mode: 'payment',
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       metadata: {
         bookingId: savedBooking._id.toString(),
         customerEmail: bookingData.email,
@@ -157,34 +177,35 @@ export const createCheckoutSession = async (req, res) => {
         lastName: bookingData?.lastName,
         serviceName: bookingData.serviceName,
         totalAmount: totalAmount.toString(),
-        paymentType: paymentType,
-        depositAmount: depositAmount.toString(),
-        amountDue: amountDue.toString(),
+        paymentType: paymentType, // ✅ Eta must include
+        depositAmount: depositAmount.toString(), // ✅ Eta add koro
+        amountDue: amountDue.toString(), // ✅ Eta add koro
         phone: bookingData.phone,
         dateOfEvent: bookingData.dateOfEvent,
         startTime: bookingData.startTime,
         durationHours: bookingData.durationHours.toString(),
         location: bookingData.location,
         numberOfStaff: bookingData.numberOfStaff.toString()
-      }
+      },
+      customer_email: bookingData.email,
     });
 
-    console.log('Square session created:', result.paymentLink.id, 'for payment type:', paymentType);
+    console.log('Stripe session created:', session.id, 'for payment type:', paymentType);
 
-    // Send response
+    // Send response with both sessionId and url
     res.status(200).json({
       success: true,
-      checkoutUrl: result.paymentLink.url,
-      orderId: result.paymentLink.orderId,
+      sessionId: session.id,
+      checkoutUrl: session.url,
       bookingId: savedBooking._id,
       paymentType: paymentType,
       amountCharged: amountToCharge,
       amountDue: amountDue,
-      message: 'Square checkout session created successfully'
+      message: 'Checkout session created successfully'
     });
 
   } catch (error) {
-    console.error('Error creating Square checkout session:', error);
+    console.error('Error creating checkout session:', error);
     res.status(500).json({
       success: false,
       message: 'Error creating checkout session',
@@ -193,53 +214,71 @@ export const createCheckoutSession = async (req, res) => {
   }
 };
 
-// Handle Square Webhook
-export const handleSquareWebhook = async (req, res) => {
-  const signature = req.headers['x-square-signature'];
-  const body = req.body;
+// Handle Stripe Webhook
+export const handleStripeWebhook = async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
 
   try {
-    // Verify webhook signature (Square-এর documentation অনুযায়ী implement করুন)
-    // const isValid = verifySquareWebhook(signature, body);
-    // if (!isValid) {
-    //   return res.status(400).send('Invalid webhook signature');
-    // }
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET || 'whsec_your_webhook_secret_here'
+    );
+    
+    console.log('🔔 Webhook received:', event.type);
 
-    const eventType = body.type;
-    console.log('🔔 Square Webhook received:', eventType);
+  } catch (err) {
+    console.log(`❌ Webhook signature verification failed.`, err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
 
-    switch (eventType) {
-      case 'payment.created':
-        await handleSquarePaymentCreated(body);
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        
+        // ✅ DEBUGGING: Check what's coming in metadata
+        console.log('📋 Webhook Session Metadata:', session.metadata);
+        console.log('💰 Payment Type from Metadata:', session.metadata?.paymentType);
+        console.log('🔍 Session ID:', session.id);
+        console.log('📝 Amount Total:', session.amount_total);
+        
+        await handleSuccessfulPayment(session);
         break;
         
-      case 'payment.updated':
-        await handleSquarePaymentUpdated(body);
+      case 'checkout.session.expired':
+        await handleExpiredSession(event.data.object);
         break;
         
-      case 'refund.created':
-        await handleSquareRefundCreated(body);
+      case 'checkout.session.async_payment_failed':
+        await handleFailedPayment(event.data.object);
+        break;
+        
+      case 'checkout.session.async_payment_succeeded':
+        await handleSuccessfulPayment(event.data.object);
         break;
         
       default:
-        console.log(`Unhandled Square event type: ${eventType}`);
+        console.log(`Unhandled event type: ${event.type}`);
     }
 
-    res.json({ received: true, handled: true, eventType: eventType });
+    res.json({ received: true, handled: true, eventType: event.type });
     
   } catch (error) {
-    console.error('❌ Error handling Square webhook event:', error);
+    console.error('❌ Error handling webhook event:', error);
     
     // Send error email
     await transporter.sendMail({
       from: '"Hunky Butler Service" <bannah76769@gmail.com>',
       to: "rakib.fbinternational@gmail.com",
-      subject: "❌ Square Webhook Processing Error",
+      subject: "❌ Webhook Processing Error",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff; border: 2px solid #f44336; border-radius: 8px;">
-          <h2 style="color: #f44336;">Square Webhook Processing Error</h2>
+          <h2 style="color: #f44336;">Webhook Processing Error</h2>
           <p><strong>Error:</strong> ${error.message}</p>
-          <p><strong>Event Type:</strong> ${body?.type}</p>
+          <p><strong>Event Type:</strong> ${event?.type}</p>
+          <p><strong>Session ID:</strong> ${event?.data?.object?.id}</p>
           <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
         </div>
       `
@@ -253,114 +292,39 @@ export const handleSquareWebhook = async (req, res) => {
   }
 };
 
-// Handle Square Payment Created Event
-const handleSquarePaymentCreated = async (webhookBody) => {
+// Handle successful payment (both full and deposit)
+// Handle successful payment (both full and deposit)
+// Handle successful payment (both full and deposit)
+const handleSuccessfulPayment = async (session) => {
   try {
-    const payment = webhookBody.data.object.payment;
-    const orderId = payment.orderId;
-
-    console.log('🔄 Processing Square payment created:', payment.id, 'Order:', orderId);
-
-    // Get payment details from Square
-    const { result: { payment: fullPayment } } = await squareClient.paymentsApi.getPayment(payment.id);
-    
-    // Get metadata from payment note or custom fields
-    const metadata = await getPaymentMetadata(fullPayment);
-    
-    await handleSuccessfulSquarePayment(fullPayment, metadata);
-
-  } catch (error) {
-    console.error('❌ Error handling Square payment created:', error);
-    throw error;
-  }
-};
-
-// Handle Square Payment Updated Event
-const handleSquarePaymentUpdated = async (webhookBody) => {
-  try {
-    const payment = webhookBody.data.object.payment;
-    
-    if (payment.status === 'COMPLETED') {
-      console.log('✅ Payment completed:', payment.id);
-      const { result: { payment: fullPayment } } = await squareClient.paymentsApi.getPayment(payment.id);
-      const metadata = await getPaymentMetadata(fullPayment);
-      await handleSuccessfulSquarePayment(fullPayment, metadata);
-    } else if (payment.status === 'FAILED') {
-      console.log('❌ Payment failed:', payment.id);
-      await handleFailedSquarePayment(payment);
-    } else if (payment.status === 'CANCELED') {
-      console.log('🚫 Payment canceled:', payment.id);
-      await handleCanceledSquarePayment(payment);
-    }
-
-  } catch (error) {
-    console.error('❌ Error handling Square payment updated:', error);
-    throw error;
-  }
-};
-
-// Get Payment Metadata from Square
-const getPaymentMetadata = async (payment) => {
-  try {
-    // Square-এ metadata store করার বিভিন্ন way আছে
-    // Option 1: Payment note-এ JSON store করা
-    if (payment.note) {
-      try {
-        return JSON.parse(payment.note);
-      } catch (e) {
-        console.log('Note is not JSON, trying other methods');
-      }
-    }
-
-    // Option 2: Order থেকে metadata fetch করা
-    if (payment.orderId) {
-      const { result: { order } } = await squareClient.ordersApi.retrieveOrder(payment.orderId);
-      if (order.metadata) {
-        return order.metadata;
-      }
-    }
-
-    // Option 3: Custom fields থেকে
-    return {
-      bookingId: payment.metadata?.bookingId,
-      customerEmail: payment.buyerEmailAddress,
-      // অন্যান্য fields...
-    };
-
-  } catch (error) {
-    console.error('Error getting payment metadata:', error);
-    return {};
-  }
-};
-
-// Handle Successful Square Payment
-const handleSuccessfulSquarePayment = async (payment, metadata) => {
-  try {
+    // ✅ IMPORTANT: Properly extract metadata with fallbacks
+    const metadata = session.metadata || {};
     const bookingId = metadata.bookingId;
-    const customerEmail = metadata.customerEmail || payment.buyerEmailAddress;
+    const customerEmail = metadata.customerEmail;
     const serviceName = metadata.serviceName;
     const totalAmount = parseFloat(metadata.totalAmount || '0');
-    const paymentType = metadata.paymentType || 'full';
+    const paymentType = metadata.paymentType || 'full'; // ✅ Default to 'full' if missing
     const isDeposit = paymentType === 'deposit';
     const isBalancePayment = paymentType === 'balance';
 
-    console.log('🔄 Processing Square payment:', { 
+    console.log('🔄 Processing payment:', { 
       bookingId, 
       paymentType, 
       isDeposit, 
       isBalancePayment,
-      paymentId: payment.id
+      sessionId: session.id
     });
 
+    // ✅ Validate required fields
     if (!bookingId) {
-      throw new Error('Missing bookingId in payment metadata');
+      throw new Error('Missing bookingId in session metadata');
     }
 
     let paymentHistory;
 
     if (isBalancePayment) {
       // Handle balance payment
-      console.log('💵 Processing BALANCE payment with Square');
+      console.log('💵 Processing BALANCE payment');
       
       paymentHistory = await PaymentHistory.findById(metadata.originalPaymentId);
       if (!paymentHistory) {
@@ -372,12 +336,26 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
       paymentHistory.amountDue = 0;
       paymentHistory.paymentStatus = 'paid';
       paymentHistory.paymentType = 'full';
-      paymentHistory.squarePaymentId = payment.id;
+      paymentHistory.stripePaymentIntentId = session.payment_intent;
       paymentHistory.paymentConfirmedAt = new Date();
 
-      // Get receipt information
-      paymentHistory.receiptUrl = payment.receiptUrl;
-      paymentHistory.receiptNumber = payment.receiptNumber;
+      // Update receipt information
+      if (session.payment_intent) {
+        try {
+          const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
+            expand: ['charges.data']
+          });
+
+          if (paymentIntent.charges?.data?.length > 0) {
+            const charge = paymentIntent.charges.data[0];
+            paymentHistory.receiptUrl = charge.receipt_url;
+            paymentHistory.receiptNumber = charge.receipt_number;
+            paymentHistory.stripeChargeId = charge.id;
+          }
+        } catch (error) {
+          console.log('⚠️ Could not retrieve receipt details for balance payment:', error.message);
+        }
+      }
 
       await paymentHistory.save();
 
@@ -393,11 +371,11 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
         updatedAt: new Date()
       });
 
-      console.log('✅ Square balance payment completed for booking:', bookingId);
+      console.log('✅ Balance payment completed for booking:', bookingId);
 
     } else {
       // Handle new payment (full or deposit)
-      console.log(isDeposit ? '💰 Processing DEPOSIT payment with Square' : '💳 Processing FULL payment with Square');
+      console.log(isDeposit ? '💰 Processing DEPOSIT payment' : '💳 Processing FULL payment');
       
       const firstName = metadata.firstName;
       const lastName = metadata.lastName;
@@ -408,14 +386,14 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
       const location = metadata.location;
       const numberOfStaff = metadata.numberOfStaff;
       
-      // Amount calculation
+      // ✅ CORRECT AMOUNT CALCULATION
       const depositAmount = parseFloat(metadata.depositAmount || '0');
       const amountDue = parseFloat(metadata.amountDue || '0');
       
       const amountPaid = isDeposit ? depositAmount : totalAmount;
       const paymentStatus = isDeposit ? 'deposit_paid' : 'paid';
 
-      console.log('💰 Square payment details:', {
+      console.log('💰 Payment details:', {
         isDeposit,
         totalAmount,
         depositAmount,
@@ -424,24 +402,47 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
         paymentStatus
       });
 
+      // Get receipt information
+      let receiptUrl = null;
+      let receiptNumber = null;
+      let stripeChargeId = null;
+
+      if (session.payment_intent) {
+        try {
+          const paymentIntent = await stripe.paymentIntents.retrieve(session.payment_intent, {
+            expand: ['charges.data']
+          });
+
+          if (paymentIntent.charges?.data?.length > 0) {
+            const charge = paymentIntent.charges.data[0];
+            receiptUrl = charge.receipt_url;
+            receiptNumber = charge.receipt_number;
+            stripeChargeId = charge.id;
+          }
+        } catch (error) {
+          console.log('⚠️ Could not retrieve receipt details:', error.message);
+        }
+      }
+
       // Create payment history
       paymentHistory = new PaymentHistory({
         bookingId: bookingId,
         customerEmail: customerEmail,
         serviceName: serviceName,
         totalAmount: totalAmount,
-        paymentType: paymentType,
+        paymentType: paymentType, // ✅ 'deposit' or 'full'
         depositAmount: isDeposit ? depositAmount : 0,
         amountDue: amountDue,
         amountPaid: amountPaid,
-        currency: payment.totalMoney.currency || 'USD',
-        paymentMethodType: payment.sourceType || "card",
+        currency: session.currency || 'usd',
+        paymentMethodType: "card",
         paymentMethod: "credit_card",
         paymentStatus: paymentStatus,
-        squarePaymentId: payment.id,
-        squareOrderId: payment.orderId,
-        receiptUrl: payment.receiptUrl,
-        receiptNumber: payment.receiptNumber,
+        stripeSessionId: session.id,
+        stripePaymentIntentId: session.payment_intent,
+        stripeChargeId: stripeChargeId,
+        receiptUrl: receiptUrl,
+        receiptNumber: receiptNumber,
         paidAt: new Date(),
         paymentConfirmedAt: new Date(),
         customerName: `${firstName} ${lastName}`,
@@ -454,8 +455,8 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
         discountAmount: 0,
         serviceFee: 0,
         notes: isDeposit 
-          ? `Deposit payment of $${depositAmount} received via Square. Balance due: $${amountDue}` 
-          : "Full payment processed successfully via Square",
+          ? `Deposit payment of $${depositAmount} received. Balance due: $${amountDue}` 
+          : "Full payment processed successfully via Stripe",
         isActive: true,
         adminVerified: false
       });
@@ -466,16 +467,16 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
       const updateData = {
         paid: paymentStatus,
         paymentStatus: paymentStatus,
-        paymentType: paymentType,
-        squarePaymentId: payment.id,
-        squareOrderId: payment.orderId,
-        receiptUrl: payment.receiptUrl,
-        receiptNumber: payment.receiptNumber,
+        paymentType: paymentType, // ✅ 'deposit' or 'full'
+        stripeSessionId: session.id,
+        stripePaymentIntentId: session.payment_intent,
+        receiptUrl: receiptUrl,
+        receiptNumber: receiptNumber,
         paidAt: new Date(),
         amountPaid: amountPaid,
         amountDue: amountDue,
         depositAmount: isDeposit ? depositAmount : 0,
-        currency: payment.totalMoney.currency || 'USD',
+        currency: session.currency || 'usd',
         paymentMethod: 'card',
         status: isDeposit ? 'deposit_paid' : 'confirmed',
         updatedAt: new Date()
@@ -491,7 +492,7 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
         throw new Error(`Booking not found with ID: ${bookingId}`);
       }
 
-      console.log('✅ Booking updated with Square:', {
+      console.log('✅ Booking updated:', {
         bookingId: updatedBooking._id,
         paymentType: updatedBooking.paymentType,
         paymentStatus: updatedBooking.paymentStatus,
@@ -512,10 +513,10 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
       }
     }
 
-    // Send confirmation email
-    await sendSquarePaymentConfirmationEmail(payment, paymentHistory);
+    // Send appropriate email based on payment type
+    await sendPaymentConfirmationEmail(session, paymentHistory);
 
-    console.log(`🎉 Successfully processed ${isBalancePayment ? 'balance' : paymentType} payment with Square for booking: ${bookingId}`);
+    console.log(`🎉 Successfully processed ${isBalancePayment ? 'balance' : paymentType} payment for booking: ${bookingId}`);
     
     return {
       success: true,
@@ -528,22 +529,23 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
     };
 
   } catch (error) {
-    console.error('❌ Error handling successful Square payment:', error);
+    console.error('❌ Error handling successful payment:', error);
     
     // Send detailed error email
     await transporter.sendMail({
       from: '"Hunky Butler Service" <bannah76769@gmail.com>',
       to: "rakib.fbinternational@gmail.com",
-      subject: "❌ Square Payment Processing Error",
+      subject: "❌ Payment Processing Error",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff; border: 2px solid #f44336; border-radius: 8px;">
-          <h2 style="color: #f44336;">Square Payment Processing Error</h2>
+          <h2 style="color: #f44336;">Payment Processing Error</h2>
           <p><strong>Error:</strong> ${error.message}</p>
-          <p><strong>Payment ID:</strong> ${payment?.id}</p>
-          <p><strong>Booking ID:</strong> ${metadata?.bookingId}</p>
-          <p><strong>Payment Type:</strong> ${metadata?.paymentType}</p>
-          <p><strong>Amount:</strong> ${payment?.totalMoney?.amount ? (payment.totalMoney.amount / 100) : 'N/A'}</p>
+          <p><strong>Session ID:</strong> ${session?.id}</p>
+          <p><strong>Booking ID:</strong> ${session?.metadata?.bookingId}</p>
+          <p><strong>Payment Type:</strong> ${session?.metadata?.paymentType}</p>
+          <p><strong>Amount:</strong> ${session?.amount_total ? (session.amount_total / 100) : 'N/A'}</p>
           <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+          <p><strong>Stack:</strong> ${error.stack}</p>
         </div>
       `
     });
@@ -551,11 +553,10 @@ const handleSuccessfulSquarePayment = async (payment, metadata) => {
     throw error;
   }
 };
-
-// Send Square Payment Confirmation Email
-const sendSquarePaymentConfirmationEmail = async (payment, paymentHistory) => {
+// Send appropriate confirmation email
+const sendPaymentConfirmationEmail = async (session, paymentHistory) => {
   const isDeposit = paymentHistory.paymentType === 'deposit';
-  const isBalancePayment = paymentHistory.paymentType === 'balance';
+  const isBalancePayment = session.metadata.paymentType === 'balance';
   
   let subject, html;
 
@@ -565,7 +566,7 @@ const sendSquarePaymentConfirmationEmail = async (payment, paymentHistory) => {
       <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
         <h1 style="color: #4CAF50;">Balance Payment Successful! 🎉</h1>
         <p style="font-size:16px; margin:20px 0;">
-          Thank you for completing your payment via Square! Your booking for <strong>${paymentHistory.serviceName}</strong> is now fully confirmed.
+          Thank you for completing your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> is now fully confirmed.
         </p>
         
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
@@ -574,7 +575,7 @@ const sendSquarePaymentConfirmationEmail = async (payment, paymentHistory) => {
           <p><strong>Total Service Cost:</strong> $${paymentHistory.totalAmount}</p>
           <p><strong>Payment Status:</strong> Fully Paid ✅</p>
           ${paymentHistory.receiptUrl ? `
-            <p><strong>Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">View Your Square Receipt</a></p>
+            <p><strong>Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">View Your Receipt</a></p>
           ` : ''}
         </div>
 
@@ -591,7 +592,7 @@ const sendSquarePaymentConfirmationEmail = async (payment, paymentHistory) => {
       <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #FF9800; border-radius: 12px;">
         <h1 style="color: #FF9800;">Deposit Received! 🎉</h1>
         <p style="font-size:16px; margin:20px 0;">
-          Thank you for your deposit via Square! Your booking for <strong>${paymentHistory.serviceName}</strong> is temporarily confirmed.
+          Thank you for your deposit! Your booking for <strong>${paymentHistory.serviceName}</strong> is temporarily confirmed.
         </p>
         
         <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
@@ -604,7 +605,7 @@ const sendSquarePaymentConfirmationEmail = async (payment, paymentHistory) => {
             Please pay the remaining balance before your event date.
           </p>
           ${paymentHistory.receiptUrl ? `
-            <p><strong>Deposit Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #FF9800; text-decoration: none; font-weight: bold;">View Square Deposit Receipt</a></p>
+            <p><strong>Deposit Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #FF9800; text-decoration: none; font-weight: bold;">View Deposit Receipt</a></p>
           ` : ''}
         </div>
 
@@ -621,7 +622,7 @@ const sendSquarePaymentConfirmationEmail = async (payment, paymentHistory) => {
       <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
         <h1 style="color: #4CAF50;">Payment Successful - Booking Confirmed! 🎉</h1>
         <p style="font-size:16px; margin:20px 0;">
-          Thank you for your payment via Square! Your booking for <strong>${paymentHistory.serviceName}</strong> has been confirmed.
+          Thank you for your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> has been confirmed.
         </p>
         
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
@@ -629,7 +630,7 @@ const sendSquarePaymentConfirmationEmail = async (payment, paymentHistory) => {
           <p><strong>Amount Paid:</strong> $${paymentHistory.amountPaid} ${paymentHistory.currency}</p>
           <p><strong>Payment Status:</strong> Fully Paid ✅</p>
           ${paymentHistory.receiptUrl ? `
-            <p><strong>Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">View Your Square Receipt</a></p>
+            <p><strong>Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">View Your Receipt</a></p>
           ` : ''}
         </div>
       </div>
@@ -643,16 +644,70 @@ const sendSquarePaymentConfirmationEmail = async (payment, paymentHistory) => {
     html: html,
   });
 
-  console.log(`📧 Square ${isBalancePayment ? 'Balance' : isDeposit ? 'Deposit' : 'Payment'} confirmation email sent to: ${paymentHistory.customerEmail}`);
+  console.log(`📧 ${isBalancePayment ? 'Balance' : isDeposit ? 'Deposit' : 'Payment'} confirmation email sent to: ${paymentHistory.customerEmail}`);
+};
+// Handle successful payment
+
+
+// Handle expired session
+const handleExpiredSession = async (session) => {
+  try {
+    const bookingId = session.metadata.bookingId;
+
+    console.log(`Processing expired session for booking: ${bookingId}`);
+
+    // Update booking status to cancelled
+    await Booking.findByIdAndUpdate(
+      bookingId,
+      {
+        $set: {
+          paid: 'cancelled',
+          paymentStatus: 'expired',
+          cancellationReason: 'Payment session expired',
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    // Send expiration email to customer
+    const customerEmailHtml = `
+      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff9800; border-radius: 12px;">
+        <h1 style="color: #ff9800;">Payment Session Expired</h1>
+        <p style="font-size:16px; margin:20px 0;">
+          Your payment session for <strong>${session.metadata.serviceName}</strong> has expired.
+        </p>
+        <p style="font-size:16px;">
+          The payment link was only valid for 30 minutes. If you still wish to book this service, please visit our website and create a new booking.
+        </p>
+        <div style="margin: 25px 0;">
+          <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}" style="background: #ff9800; color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold; display: inline-block;">
+            Create New Booking
+          </a>
+        </div>
+      </div>
+    `;
+
+    await transporter.sendMail({
+      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+      to: session.metadata.customerEmail,
+      subject: "Payment Session Expired",
+      html: customerEmailHtml,
+    });
+
+    console.log(`Successfully handled expired session for booking ${bookingId}`);
+
+  } catch (error) {
+    console.error('Error handling expired session:', error);
+    throw error;
+  }
 };
 
-// Handle Failed Square Payment
-const handleFailedSquarePayment = async (payment) => {
+// Handle failed payment
+const handleFailedPayment = async (session) => {
   try {
-    const metadata = await getPaymentMetadata(payment);
-    const bookingId = metadata.bookingId;
+    const bookingId = session.metadata.bookingId;
 
-    console.log(`Processing failed Square payment for booking: ${bookingId}`);
+    console.log(`Processing failed payment for booking: ${bookingId}`);
 
     // Update booking status
     await Booking.findByIdAndUpdate(
@@ -665,12 +720,12 @@ const handleFailedSquarePayment = async (payment) => {
       }
     );
 
-    // Send failure email
+    // Send failure email to customer
     const customerEmailHtml = `
       <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #f44336; border-radius: 12px;">
         <h1 style="color: #f44336;">Payment Failed</h1>
         <p style="font-size:16px; margin:20px 0;">
-          We encountered an issue processing your Square payment for <strong>${metadata.serviceName}</strong>.
+          We encountered an issue processing your payment for <strong>${session.metadata.serviceName}</strong>.
         </p>
         <p style="font-size:16px;">
           Please try again or contact your bank if the problem persists. Your booking will be held for 24 hours.
@@ -685,116 +740,63 @@ const handleFailedSquarePayment = async (payment) => {
 
     await transporter.sendMail({
       from: '"Hunky Butler Service" <bannah76769@gmail.com>',
-      to: metadata.customerEmail,
-      subject: "Square Payment Failed",
+      to: session.metadata.customerEmail,
+      subject: "Payment Failed",
       html: customerEmailHtml,
     });
 
-    console.log(`Successfully handled failed Square payment for booking ${bookingId}`);
+    console.log(`Successfully handled failed payment for booking ${bookingId}`);
 
   } catch (error) {
-    console.error('Error handling failed Square payment:', error);
+    console.error('Error handling failed payment:', error);
     throw error;
   }
 };
 
-// Handle Canceled Square Payment
-const handleCanceledSquarePayment = async (payment) => {
-  try {
-    const metadata = await getPaymentMetadata(payment);
-    const bookingId = metadata.bookingId;
-
-    console.log(`Processing canceled Square payment for booking: ${bookingId}`);
-
-    // Update booking status
-    await Booking.findByIdAndUpdate(
-      bookingId,
-      {
-        $set: {
-          paid: 'cancelled',
-          paymentStatus: 'canceled',
-          cancellationReason: 'Payment canceled by user',
-          updatedAt: new Date()
-        }
-      }
-    );
-
-    console.log(`Successfully handled canceled Square payment for booking ${bookingId}`);
-
-  } catch (error) {
-    console.error('Error handling canceled Square payment:', error);
-    throw error;
-  }
-};
-
-// Handle Square Refund Created
-const handleSquareRefundCreated = async (webhookBody) => {
-  try {
-    const refund = webhookBody.data.object.refund;
-    console.log('Refund created:', refund.id);
-    
-    // Handle refund logic here
-    // Update booking and payment history accordingly
-    
-  } catch (error) {
-    console.error('Error handling Square refund:', error);
-    throw error;
-  }
-};
-
-// Verify Payment Status with Square
+// Verify payment status
 export const verifyPayment = async (req, res) => {
   try {
-    const { orderId, bookingId, paymentId } = req.body;
+    const { sessionId, bookingId } = req.body;
 
-    if (!orderId && !bookingId && !paymentId) {
+    if (!sessionId && !bookingId) {
       return res.status(400).json({
         success: false,
-        message: 'Either orderId, bookingId or paymentId is required'
+        message: 'Either sessionId or bookingId is required'
       });
     }
 
-    let payment;
-    if (paymentId) {
-      const { result } = await squareClient.paymentsApi.getPayment(paymentId);
-      payment = result.payment;
-    } else if (orderId) {
-      // Find payment by order ID
-      const { result: { payments } } = await squareClient.paymentsApi.listPayments(
-        undefined,
-        undefined,
-        undefined,
-        orderId
-      );
-      payment = payments[0];
+    let session;
+    if (sessionId) {
+      session = await stripe.checkout.sessions.retrieve(sessionId);
     } else {
-      // Find payment by booking ID (via metadata)
-      const booking = await Booking.findById(bookingId);
-      if (booking && booking.squarePaymentId) {
-        const { result } = await squareClient.paymentsApi.getPayment(booking.squarePaymentId);
-        payment = result.payment;
-      }
+      // Find session by booking ID
+      const sessions = await stripe.checkout.sessions.list({
+        limit: 1,
+        metadata: { bookingId: bookingId }
+      });
+      session = sessions.data[0];
     }
 
-    if (!payment) {
+    if (!session) {
       return res.status(404).json({
         success: false,
-        message: 'Payment not found'
+        message: 'Session not found'
       });
     }
 
     // Get booking details
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(session.metadata.bookingId);
 
     res.status(200).json({
       success: true,
-      payment: {
-        id: payment.id,
-        status: payment.status,
-        amount: payment.totalMoney.amount / 100,
-        currency: payment.totalMoney.currency,
-        buyerEmail: payment.buyerEmailAddress,
-        createdAt: payment.createdAt
+      session: {
+        id: session.id,
+        paid: session.status,
+        payment_status: session.payment_status,
+        amount_total: session.amount_total / 100,
+        currency: session.currency,
+        customer_email: session.customer_email,
+        created: new Date(session.created * 1000)
       },
       booking: booking ? {
         id: booking._id,
@@ -806,7 +808,7 @@ export const verifyPayment = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error verifying Square payment:', error);
+    console.error('Error verifying payment:', error);
     res.status(500).json({
       success: false,
       message: 'Error verifying payment',
@@ -815,38 +817,45 @@ export const verifyPayment = async (req, res) => {
   }
 };
 
-// Existing functions (unchanged)
+
+
+
+
 export const allPaymentHistory = async(req, res)=>{
-  try {
-    const skip = req.query.skip;
+
+   try {
+
+     const skip = req.query.skip;
     const limit = req.query.limit;
-    const payments = await PaymentHistory.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('butler.id');
+    const payments = await PaymentHistory.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('butler');
     const paymentsCount = await PaymentHistory.countDocuments();
     res.status(200).json({
-      message:"Success",
-      data:payments,
-      count:paymentsCount
-    });
-  } catch (error) {
-    console.log(error);
+        message:"Success",
+        data:payments,
+        count:paymentsCount
+    })
+    
+   } catch (error) {
+    console.log(error)
     res.status(500).json({
-      message:'Something went wrong!',
-      error
-    });
-  }
-};
+        
+        message:'Something went wrong!',
+        error
+    })
+   }
+}
 
 export const paymentHistoryForCustomer = async(req, res)=>{
   try {
     const email = req.params.email;
-    const skip = req.query.skip;
+         const skip = req.query.skip;
     const limit = req.query.limit;
     const history = await PaymentHistory.find({ customerEmail: email })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
     const historyCount = await PaymentHistory.countDocuments({customerEmail:email});
-    const paidPayments = await PaymentHistory.find({ 
+     const paidPayments = await PaymentHistory.find({ 
       customerEmail: email, 
       paymentStatus: 'paid' 
     }).select('amountPaid');
@@ -860,13 +869,14 @@ export const paymentHistoryForCustomer = async(req, res)=>{
       data: history,
       count:historyCount,
       totalOutGoing
-    });
+    })
+    
   } catch (error) {
     res.status(500).json({
       message:"Something went wrong!"
-    });
+    })
   }
-};
+}
 
 export const paymentHistoryForButler = async(req, res) => {
   try {
@@ -874,7 +884,7 @@ export const paymentHistoryForButler = async(req, res) => {
     const skip = parseInt(req.query.skip) || 0;
     const limit = parseInt(req.query.limit) || 5;
 
-    // Get paginated history
+    // Get paginated history - Fixed the query for butler array
     const history = await PaymentHistory.find({ 
       "butler.id": new mongoose.Types.ObjectId(id) 
     })
@@ -886,12 +896,12 @@ export const paymentHistoryForButler = async(req, res) => {
       "butler.id": new mongoose.Types.ObjectId(id) 
     });
 
-    // Calculate earnings (same logic as before)
+    // ✅ Calculate total earnings (sum of butlerFee from Booking where butler.id matches)
     const totalEarningsResult = await Booking.aggregate([
       { 
         $match: { 
           "butler.id": new mongoose.Types.ObjectId(id),
-          status: 'completed'
+          status: 'completed' // Using status completed instead of paymentStatus
         } 
       },
       {
@@ -906,9 +916,9 @@ export const paymentHistoryForButler = async(req, res) => {
     const totalEarnings = totalEarningsResult.length > 0 ? totalEarningsResult[0].totalAmount : 0;
     const totalTransactions = totalEarningsResult.length > 0 ? totalEarningsResult[0].totalTransactions : 0;
 
-    // Weekly and monthly calculations (same as before)
+    // ✅ Calculate weekly earnings (current week)
     const startOfWeek = new Date();
-    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Sunday
     startOfWeek.setHours(0, 0, 0, 0);
 
     const weeklyEarningsResult = await Booking.aggregate([
@@ -916,7 +926,7 @@ export const paymentHistoryForButler = async(req, res) => {
         $match: { 
           "butler.id": new mongoose.Types.ObjectId(id),
           status: 'completed',
-          updatedAt: { $gte: startOfWeek }
+          updatedAt: { $gte: startOfWeek } // Using updatedAt instead of paidAt
         } 
       },
       {
@@ -931,6 +941,7 @@ export const paymentHistoryForButler = async(req, res) => {
     const weeklyEarnings = weeklyEarningsResult.length > 0 ? weeklyEarningsResult[0].weeklyAmount : 0;
     const weeklyTransactions = weeklyEarningsResult.length > 0 ? weeklyEarningsResult[0].weeklyTransactions : 0;
 
+    // ✅ Calculate monthly earnings (current month)
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
@@ -984,4 +995,4 @@ export const paymentHistoryForButler = async(req, res) => {
       error: error.message
     });
   }
-};
+}
