@@ -16,6 +16,10 @@ export default async function middleware(req) {
     return NextResponse.redirect(new URL('/login', req.url));
   }
 
+  if(  token && pathname === "/login"){
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+  }
+
   const userRole = token?.role;
 
   if (pathname === "/dashboard/payments") {
@@ -28,6 +32,8 @@ export default async function middleware(req) {
   if (pathname === "/dashboard/messages") {
  
   }
+
+  
 
   if (pathname === "/dashboard/users") {
     console.log(token, "I am your personal user")
@@ -79,6 +85,7 @@ export const config = {
     "/dashboard/services",
     "/dashboard/adminTools",
     "/dashboard/schedule",
-    '/my-shot'
+    '/my-shot',
+    '/login'
   ],
 };
