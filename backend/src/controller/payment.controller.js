@@ -740,11 +740,7 @@ export const allPaymentHistory = async (req, res) => {
   try {
     const skip = req.query.skip;
     const limit = req.query.limit;
-    const payments = await PaymentHistory.find()
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .populate('butler.id');
+    const payments = await PaymentHistory.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('butler');
     const paymentsCount = await PaymentHistory.countDocuments();
     res.status(200).json({
       message: "Success",
