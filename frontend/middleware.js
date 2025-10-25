@@ -74,6 +74,7 @@ export const config = {
     "/dashboard/payments",
     "/dashboard/messages", 
     "/dashboard/users",
+    "/dashboard/profile",
     "/dashboard/financials",
     "/dashboard/services",
     "/dashboard/adminTools",
