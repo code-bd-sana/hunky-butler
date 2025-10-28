@@ -14,6 +14,7 @@ import WhyBookSection from "@/components/ServiceHeroSection/WhyBookSection";
 import ServiceBanner from "@/components/shared/ServiceBanner";
 import Entertainment from "@/components/homepage/Entertainment";
 import { SessionProvider } from "next-auth/react";
+import HowItWorkSection2 from "@/components/ServiceHeroSection/HowItWorkSection2";
 
 
 export default function page() {
