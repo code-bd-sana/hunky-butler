@@ -31,7 +31,7 @@ export default function WritingBlog({ initialData, onClose }) {
   // Prefill fields when editing
 useEffect(() => {
   if (initialData) {
-    console.log("Editing blog, incoming tags:", initialData.tags);
+
 
     setTitle(initialData.title || "");
     setEditorData(initialData.content || "");

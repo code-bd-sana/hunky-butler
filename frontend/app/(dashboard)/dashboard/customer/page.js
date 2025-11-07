@@ -1,3 +1,4 @@
+'use client'
 import CustomerCard from "@/components/Dashboard/CustomerCard/CustomerCard";
 import CustomerUpcomingBooking from "@/components/customerDashboard/CustomerUpcomingBooking";
 import NextBooking from "@/components/customerDashboard/NextBooking";

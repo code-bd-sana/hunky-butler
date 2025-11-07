@@ -6,7 +6,7 @@ export default function UserCustomer({data}) {
 
 
 const {data:summury, isLoading, error} = data;
-console.log(summury, "usr customer data");
+
 
 
 

@@ -24,7 +24,7 @@ const bookingSchema = mongoose.Schema(
       required: [true, "Phone Number is Required"],
     },
     postCode: {
-      type: Number,
+      type: String,
       required: [true, "Post Code is required"],
     },
     dateOfEvent: {
@@ -46,7 +46,7 @@ const bookingSchema = mongoose.Schema(
     },
     durationMinutes: {
       type: Number,
-      required: [true, "Duration Minutes Is Required"],
+   
     },
     serviceName: {
       type: String,
@@ -61,10 +61,18 @@ const bookingSchema = mongoose.Schema(
       enum: ["completed", "ongoing", "cancel", "cancelled", "accepted"],
       default: "ongoing",
     },
-    butler: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: User,
-    },
+    paymentType: String,
+    squarePaymentId:String,
+    squareOrderId:String,
+    receiptUrl:String,
+butler: [
+  {
+    id: { type: mongoose.Schema.Types.ObjectId, ref: User },
+    accepted: { type: Boolean, default: false },
+  },
+],
+
+
     location: {
       type: String,
       required: [true, "location is required"],
@@ -74,7 +82,28 @@ const bookingSchema = mongoose.Schema(
       type: String,
       default: "unpaid",
     },
+    amountPaid:Number,
+
+    paymentStatus:String,
+     stripePaymentIntentId: String,
+     stripePaymentIntentId: String,
+     butlerFee: Number,
+     loadFactor:Number,
+     travelFee:Number,
+     amountDue:Number,
+     depositAmount:Number,
+     profit:{
+      type:Number,
+      required:true
+     },
+    //  paidAt:Date
+     
+
+             
   },
+
+
+ 
   
   { timestamps: true }
 );
@@ -82,3 +111,11 @@ const bookingSchema = mongoose.Schema(
 const Booking = mongoose.model("Booking", bookingSchema);
 
 export default Booking;
+
+
+//    butlers: [
+//   {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "User", 
+//   }
+// ],

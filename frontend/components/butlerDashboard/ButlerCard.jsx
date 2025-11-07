@@ -15,9 +15,11 @@ const ButlerCard = () => {
       const id = user?.user?.id;
         const {data, loading, error} = useGetButlerPersonalOverviewQuery(id);
 
+        console.log(data, "kere toi vai hagnama")
+
  
 
-  console.log(data, "ami to chole asca mama")
+
   return (
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-8">
       <div className="bg-[#A02430] text-white p-6 pt-8 rounded-[24px] shadow-md space-y-4">

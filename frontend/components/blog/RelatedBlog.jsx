@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useGetBlogsQuery } from "@/features/blogApi";
 
-const RelatedBlog = ({ currentBlog }) => {
+const  RelatedBlog = ({ currentBlog }) => {
   const router = useRouter();
   const { data: blogs = [], isLoading, isError } = useGetBlogsQuery();
 

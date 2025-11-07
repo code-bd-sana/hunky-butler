@@ -7,13 +7,18 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "i.ibb.co.com",
+      },
+      {
+        protocol: "https",
         hostname: "i.ibb.co",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.pixabay.com",
       },
     ],
   },
 };
 
-
 export default nextConfig;
-
-

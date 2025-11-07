@@ -75,10 +75,10 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
                   {booking?.firstName} {booking?.lastName}
                 </p>
               </div>
-              <div>
+              {/* <div>
                 <label className="text-sm font-medium text-gray-600">Email</label>
                 <p className="text-gray-900">{booking?.email}</p>
-              </div>
+              </div> */}
               <div>
                 <label className="text-sm font-medium text-gray-600">Phone</label>
                 <p className="text-gray-900">{booking?.phone}</p>
@@ -117,7 +117,7 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
           </div>
 
           {/* Financial Information */}
-          <div>
+          {/* <div>
             <h4 className="text-lg font-medium text-gray-800 mb-4">Financial Information</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -129,10 +129,10 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
                 <p className="text-gray-900">${(booking?.price * 0.2).toFixed(2)}</p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Butler Information */}
-          {booking?.butler && (
+          {/* {booking?.butler && (
             <div>
               <h4 className="text-lg font-medium text-gray-800 mb-4">Butler Information</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -160,7 +160,7 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Footer */}
@@ -217,7 +217,7 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
       }
 
       const response = await assignToButler(data).unwrap();
-      console.log(response)
+  
       toast.success("Assigned Success")
       refetch()
        onClose();
@@ -645,10 +645,7 @@ const ButlerBooking = () => {
   };
 
   const handleButlerAssignment = async(bookingId, butlerId) => {
-    console.log("Assigning butler:", {
-      bookingId: bookingId,
-      butlerId: butlerId
-    });
+  
 
     try {
 
@@ -670,7 +667,8 @@ const ButlerBooking = () => {
 
       const data = {
         id: bookingId,
-        status: newStatus
+        status: newStatus,
+        butlerid: id
       }
 
 
@@ -950,7 +948,7 @@ const ButlerBooking = () => {
                     {b.status?.charAt(0).toUpperCase() + b.status?.slice(1)}
                   </span>
                 </td>
-                <td className="p-3">${b.price}</td>
+                <td className="p-3">${b?.butlerFee}</td>
                  
              
                 <td className="p-3">

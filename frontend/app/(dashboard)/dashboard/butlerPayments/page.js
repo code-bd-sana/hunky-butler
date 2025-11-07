@@ -3,7 +3,7 @@ import ButlerPaymentUpcomingBooking from '@/components/butlerDashboard/ButlerPay
 import NextPayout from '@/components/butlerDashboard/NextPayout';
 import React from 'react';
 
-const page = () => {
+const ButlerPaymentpage = () => {
     return (
         <>
             <ButlerPaymentCard></ButlerPaymentCard>
@@ -15,4 +15,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default ButlerPaymentpage;

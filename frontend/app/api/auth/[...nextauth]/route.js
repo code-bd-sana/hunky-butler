@@ -64,7 +64,7 @@ const handler = NextAuth({
           if (response.ok) {
             const userData = await response.json();
             user.id = userData._id;
-            console.log("OAuth user saved:", userData);
+           
           } else {
             console.error("Failed to save OAuth user");
           }

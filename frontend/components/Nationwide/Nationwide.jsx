@@ -2,37 +2,33 @@
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 import nation1 from "../../public/Nationwide/nation1.png";
-// import nations from "../../public/locations.json";
 
 import path from "path";
 import SubTitle from "../shared/typography/SubTitle";
 import SecondaryTitle from "../shared/typography/SecondaryTitle";
 import { useEffect, useState } from "react";
 import { base_url } from "@/utils/utils";
-const Nationwide = ({ name }) => {
-  const [nations, setNations] = useState([]);
+import { useGetLocationsQuery } from "@/features/location";
+import Link from "next/link";
+const Nationwide = ({ name, serviceSlug }) => {
+  const { data: nations = [], isLoading, isError } = useGetLocationsQuery();
+  console.log(nations);
+  // const [nations, setNations] = useState([]);
 
-  useEffect(() => {
-    // Example: fetch from API or JSON file
-    const fetchNations = async () => {
-      try {
-        const res = await fetch(`${base_url}/locations`); // JSON file in public folder
-        const data = await res.json();
-        setNations(data);
-      } catch (err) {
-        console.error("Error fetching nations:", err);
-      }
-    };
+  // useEffect(() => {
+  //   // Example: fetch from API or JSON file
+  //   const fetchNations = async () => {
+  //     try {
+  //       const res = await fetch(`${base_url}/locations`); // JSON file in public folder
+  //       const data = await res.json();
+  //       setNations(data);
+  //     } catch (err) {
+  //       console.error("Error fetching nations:", err);
+  //     }
+  //   };
 
-    fetchNations();
-  }, []);
-  // const res = await fetch("http://localhost:5000/api/locations");
-  // const nations = await res.json();
-  // console.log(nations);
-
-  // const filePath = path.join(process.cwd(), "public", "locations.json");
-  // const data = fs.readFileSync(filePath, "utf-8");
-  // const nations = JSON.parse(data);
+  //   fetchNations();
+  // }, []);
   return (
     <section className="max-w-7xl mx-auto px-4 py-14 text-center">
       <SecondaryTitle text1={`${name ? name : "Loading"} Locations We Cover`} />
@@ -46,25 +42,33 @@ const Nationwide = ({ name }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {nations?.slice(0, 6).map((nation, i) => (
-          <div
+          <Link
             key={i}
-            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 border border-gray-100 hover:border-pink-500"
+            href={`/locations/${nation?.slug}/?serviceSlug=${serviceSlug}`}
           >
-            <div className="overflow-hidden rounded-xl">
-              <h1>{nation?.title}</h1>
-              <Image
-                src={nation1}
-                alt={nation?.name}
-                width={400}
-                height={250}
-                className="rounded-xl mb-4 object-cover w-full h-[220px] hover:scale-105 transition-transform duration-300"
-              />
+            <div
+              key={i}
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 border border-gray-100 hover:border-pink-500"
+            >
+              <div className="overflow-hidden rounded-xl">
+                <h1>{nation?.title}</h1>
+                <Image
+                  src={nation?.image}
+                  alt={nation?.name}
+                  width={400}
+                  height={250}
+                  className="rounded-xl mb-4 object-cover w-full h-[220px] hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="flex justify-between items-center text-pink-600 font-semibold mt-2 capitalize">
+                <p>
+                  {serviceSlug}
+                  <span> {nation?.city}</span>
+                </p>
+                <FaArrowRight />
+              </div>
             </div>
-            <div className="flex justify-between items-center text-pink-600 font-semibold mt-2">
-              <span>{nation.name}</span>
-              <FaArrowRight />
-            </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

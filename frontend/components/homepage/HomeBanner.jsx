@@ -15,7 +15,7 @@ export default function HomeBanner() {
         title="Buff Butlers Hen Party Entertainment UK"
         aria-label="Buff butlers and hen party entertainment across the UK"
       >
-        <source src="/videos/BannerVid.mp4" type="video/mp4" />
+        <source src="/videos/HeroBannerVid.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 

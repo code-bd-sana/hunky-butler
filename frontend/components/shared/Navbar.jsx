@@ -39,7 +39,7 @@ const Navbar = () => {
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
     { name: "Join The Team", href: "/joinTheTeam" },
-    { name: "Location", href: "/party-catering-near-me" },
+    // { name: "Location", href: "/locations" },
   ];
 
   return (

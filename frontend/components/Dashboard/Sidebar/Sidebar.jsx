@@ -89,21 +89,21 @@ const Sidebar = () => {
     },
     { name: "Services", icon: <FaCog />, href: "/dashboard/services" },
     { name: "Admin Tools", icon: <FaCog />, href: "/dashboard/adminTools" },
-    { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
+    // { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
     { name: "Butler Application", icon: <VscGitStashApply />, href: "/dashboard/application" },
   ];
   
   const customerSidebar = [
     { name: "My Bookings", icon: <BsBook />, href: "/dashboard" },
     { name: "Payments details", icon: <FaUsers />, href: "/dashboard/payments" },
-    { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
+    // { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
   ];
   
   const butlerSidebar = [
     { name: "My Bookings", icon: <BsBook />, href: "/dashboard" },
     { name: "Payments details", icon: <FaUsers />, href: "/dashboard/payments" },
     { name: "Schedule", icon: <FaUsers />, href: "/dashboard/schedule" },
-    { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
+    // { name: "Messages", icon: <FaEnvelope />, href: "/dashboard/messages" },
   ];
 
   let sidebarItems = [];
@@ -114,7 +114,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div
         className={`fixed lg:sticky top-0 left-0 z-50 bg-white
-          h-screen lg:h-[calc(100vh-5rem)] w-72 border rounded-2xl pt-10 p-6
+          h-screen lg:h-[calc(100vh-5rem)]   pt-10 p-6
           flex flex-col overflow-hidden transition-transform duration-300
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0`}

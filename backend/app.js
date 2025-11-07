@@ -1,5 +1,11 @@
 import cookieParser from "cookie-parser";
 import express from "express";
+
+
+
+// router.post('/webhook', express.raw({type: 'application/json'}), handleStripeWebhook);
+
+
 const app = express();
 import routes from "./src/routes/index.js";
 import dotenv from "dotenv";
@@ -8,8 +14,16 @@ import connectDB from "./src/config/db.js";
 import http from "http";
 import { Server } from "socket.io";
 import Message from "./src/models/Message.js";
+import { handleSquareWebhook } from "./src/controller/payment.controller.js";
+// import { handleStripeWebhook } from "./src/controller/payment.controller.js";
 
 dotenv.config();
+
+app.post(
+  "/api/webhook",
+  express.raw({ type: "application/json" }),
+handleSquareWebhook
+);
 
 // Socket.IO setup
 const server = http.createServer(app);
@@ -19,9 +33,10 @@ const io = new Server(server, {
     origin: "*",
     credentials: true,
   },
-  // transports: ["websocket", "polling"],
+   transports: ["websocket", "polling"],
 });
 
+app.set('io', io);
 // io.on("connection", (socket) => {
 //   console.log("🟢 A user connected:", socket.id);
 //   socket.on("disconnect", () => {
@@ -36,6 +51,27 @@ io.on("connection", (socket) => {
     socket.join(userId);
     console.log("👤 User joined room:", userId);
   });
+
+  
+  //   // Join user to their personal room based on email
+  socket.on("join-user", (userEmail) => {
+    socket.join(userEmail);
+    console.log(`👤 User ${userEmail} joined room`);
+  });
+
+//   // Handle notification seen event
+  socket.on("notification-seen", (data) => {
+    console.log("📭 Notification seen:", data);
+    // Broadcast to other clients if needed
+    socket.to(data.userEmail).emit("notification-updated");
+  });
+
+//   // Handle all notifications seen
+  socket.on("all-notifications-seen", (data) => {
+    console.log("📭 All notifications seen for:", data.userEmail);
+    socket.to(data.userEmail).emit("notification-updated");
+  });
+
 
   // Get chat history between two users
   socket.on("getMessages", async ({ senderId, receiverId }) => {
@@ -97,6 +133,9 @@ app.use(
     credentials: true,
   })
 );
+
+
+
 
 app.use("/api", routes);
 app.get("/", (req, res) => {

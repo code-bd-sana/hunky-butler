@@ -46,14 +46,14 @@ const WhyContactUsSection = () => {
           <div className="flex flex-wrap w-full gap-1 md:gap-3">
             <div className="flex-[2] sm:flex-[2] md:flex-[2] lg:flex-[12]">
               <img
-                src="/ImageGalary/pic1.jpeg"
+                src="/location/Scottish.jpeg"
                 alt="pic1"
                 className="w-full h-28 md:h-40 lg:h-[200px] object-cover rounded-lg md:rounded-xl"
               />
             </div>
             <div className="flex-[4] sm:flex-[4] md:flex-[4] lg:flex-[4]">
               <img
-                src="/ImageGalary/pic2.jpeg"
+                src="/contact/why-contact-us2.jpeg"
                 alt="pic2"
                 className="w-full h-28 md:h-40 lg:h-[200px] object-cover rounded-lg md:rounded-xl"
               />
@@ -64,14 +64,14 @@ const WhyContactUsSection = () => {
           <div className="flex flex-wrap w-full  gap-1 md:gap-3">
             <div className="flex-[2.5] sm:flex-[3] md:flex-[2.5] lg:flex-[4] ">
               <img
-                src="/ImageGalary/pic5.jpeg"
+                src="/contact/why-contact-us3.jpeg"
                 alt="pic5"
                 className="w-full h-28 md:h-40 lg:h-[200px] object-cover rounded-lg md:rounded-xl"
               />
             </div>
             <div className="flex-[4] sm:flex-[4] md:flex-[4] lg:flex-[12] ">
               <img
-                src="/ImageGalary/pic6.jpeg"
+                src="/contact/contact-banner.jpeg"
                 alt="pic6"
                 className="w-full h-28 md:h-40 lg:h-[200px] object-cover rounded-lg md:rounded-xl"
               />

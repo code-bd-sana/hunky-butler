@@ -42,11 +42,7 @@ const [createNotification, {isLoading, error}] = useCreateNotificationMutation()
       e.preventDefault();
       
       // Console e data gulo dekha
-      console.log("📤 Notification Data to be sent:");
-      console.log("Title:", notificationData.title);
-      console.log("Message:", notificationData.message);
-      console.log("Recipients:", notificationData.recipients);
-      console.log("Full Data Object:", notificationData);
+    
       await createNotification(notificationData).unwrap();
       toast.success("Notification sent Successfully.")
       

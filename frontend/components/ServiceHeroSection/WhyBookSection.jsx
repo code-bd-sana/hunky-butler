@@ -26,18 +26,26 @@ export default function WhyBookSection() {
 
         <section className="flex-1">
           <SecondaryTitle
-            text1={
-              "Why Choose Hunky Butler Service for Hen Party Entertainment"
-            }
+            text1={"Why Hire Buff Butlers With Hunky Butler Service?"}
           />
-          <SubTitle
-            text={
-              "With thousands of happy customers and verified entertainers, Hunky Butler Service is trusted nationwide. Our team combines cheeky fun with professionalism, making us the go-to choice for buff butlers, topless waiters, male strippers, cocktail masterclasses, and life drawing parties."
-            }
-          />
+          <p className="mt-1">
+            Thousands of happy customers choose us each year because we combine
+            playful charm with professionalism. Our entertainers are fully
+            verified, insured, and experienced, so you can relax knowing you’re
+            in safe hands. We’ve even partnered with brands like Ann Summers,
+            appeared on ITV News, and worked with charities including Cancer
+            Research UK and the Harrogate Baby Care Unit.
+          </p>
+          <p className="my-3">
+            When you hire through us, you’re not just booking eye-candy — you’re
+            securing trusted hosts who serve drinks, run games, and keep your
+            guests entertained from start to finish.
+          </p>
+          <p>Book Now with confidence and enjoy:</p>
 
           {/* Benefits section with icons and text */}
-          <div className="mt-8 md:mt-12 space-y-4 md:space-y-6">
+          <div className="mt-6 space-y-4 md:space-y-5">
+            
             <div className="flex items-start gap-3 md:gap-4">
               <div className="min-w-[24px] md:min-w-[32px] mt-1">
                 <Image
@@ -76,8 +84,8 @@ export default function WhyBookSection() {
             </div>
           </div>
 
-          <Link href={'/quote'}>
-            <button className='btn-secondary mt-8 md:mt-12 text-sm md:text-base px-6 py-3 md:px-8 md:py-4 cursor-pointer'>
+          <Link href={"/quote"}>
+            <button className="btn-secondary mt-4 text-sm md:text-base px-6 py-3 md:px-8 md:py-4 cursor-pointer">
               Try a 30-second quote now
             </button>
           </Link>
@@ -88,7 +96,7 @@ export default function WhyBookSection() {
         {" "}
         <Image alt="img" src={bg} className="min-w-screen" />{" "}
       </div>
-      <Extra/>
+      {/* <Extra/> */}
     </div>
   );
 }
