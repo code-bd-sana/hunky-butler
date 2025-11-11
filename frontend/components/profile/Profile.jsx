@@ -16,14 +16,8 @@ export default function Profile() {
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const [imgbbLoader, setImgbbLoader ] = useState(false)
 
-
-const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
-
-
-
-
+  const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
   const user = data?.user;
-
 
   const { data:profile, refetch} = useMyProfileQuery(user?.id);
 
@@ -58,14 +52,13 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
   const [applicationData, setApplicationData] = useState({
     firstName: profile?.data?.firstName,
     lastName: profile?.data?.lastName,
-    email:profile?.data?.email,
+    email: profile?.data?.email,
+    phone: profile?.data?.phone,
+    postcode: profile?.data?.postcode,
+    bankInfo: profile?.data?.bankInfo || "",
     bio: profile?.data?.bio,
     isButler: 'pending',
-    email: user?.email
-
-
-   
-   
+    agreeTerms: false
   });
 
   const handleFormChange = (e) => {
@@ -85,44 +78,35 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
   };
 
   const handleApplicationChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setApplicationData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
   const handleProfileSubmit = async(e) => {
     try {
-
       setImgbbLoader(true)
-    e.preventDefault();
-   
-    const image = await uploadToImgBB(formData?.image);
+      e.preventDefault();
+     
+      const image = await uploadToImgBB(formData?.image);
 
+      if(!image){
+        formData.image = profile?.data?.image
+      }
+      else{
+        formData.image = image
+      }
 
-    if(!image){
-      formData.image = profile?.data?.image
-    }
-    else{
-    formData.image = image
-    }
+      formData.email = user?.email
 
-
-
-
-    formData.email = user?.email
-
-
-   
-    setUserData(formData);
-    // setIsEditModalOpen(false);
-    const resp = await updateMyProfile(formData).unwrap();
-    toast.success('Profile update sucessfully');
+      setUserData(formData);
+      const resp = await updateMyProfile(formData).unwrap();
+      toast.success('Profile update sucessfully');
       setImgbbLoader(false)
-    refetch();
-    setIsEditModalOpen(false)
-   
+      refetch();
+      setIsEditModalOpen(false)
       
     } catch (error) {
       setImgbbLoader(false)
@@ -136,11 +120,9 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
 
     setPasswordData({ oldPassword: "", newPassword: "", confirmPassword: "" });
     try {
-
-    passwordData.email = user?.email
-
-       await  changePassword(passwordData).unwrap();
-       toast.success('Password change successfully')
+      passwordData.email = user?.email
+      await changePassword(passwordData).unwrap();
+      toast.success('Password change successfully')
       
     } catch (error) {
       toast.error(error?.data?.message || "Something went wrong!")
@@ -150,15 +132,19 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
 
   const handleApplicationSubmit = async(e) => {
     e.preventDefault();
- 
-    applicationData.email = user?.email
-    const resp = await updateMyProfile(applicationData);
-  
-    refetch();
-    toast.success('Applicaiton submitted')
-    setIsApplicationModalOpen(false);
+    
+    // Check if terms are accepted
+    if (!applicationData.agreeTerms) {
+      toast.error('Please accept the Terms & Conditions to submit your application');
+      return;
+    }
+
     try {
-      
+      applicationData.email = user?.email
+      const resp = await updateMyProfile(applicationData);
+      refetch();
+      toast.success('Application submitted')
+      setIsApplicationModalOpen(false);
     } catch (error) {
       toast.error(error?.data?.message || 'Something went wrong please try again later!')
     }
@@ -172,7 +158,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
         setFormData(prev => ({
           ...prev,
           profileImage: e.target.result,
-          image:file
+          image: file
         }));
       };
       reader.readAsDataURL(file);
@@ -405,121 +391,112 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
             )}
 
             {/* Professional Information (Butler only) */}
-{activeTab === "professional" && user?.role === "butler" && profile?.data?.isButler !== "active" && (
-  <div className="bg-white rounded-3xl shadow-sm p-6">
-    <div className="flex items-center justify-between mb-6">
-      <div>
-        <h2 className="text-xl font-bold text-[#424242]">Professional Information</h2>
-        <p className="text-sm text-[#777] mt-1">Your Butler profile details and application status.</p>
-      </div>
+            {activeTab === "professional" && user?.role === "butler" && profile?.data?.isButler !== "active" && (
+              <div className="bg-white rounded-3xl shadow-sm p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-xl font-bold text-[#424242]">Professional Information</h2>
+                    <p className="text-sm text-[#777] mt-1">Your Butler profile details and application status.</p>
+                  </div>
 
-      <button
-        onClick={() => setIsApplicationModalOpen(true)}
-        className="bg-[#FF006A] text-white px-6 py-3 rounded-full font-medium hover:bg-[#e5005f] transition-colors"
-      >
-        {profile?.data?.isButler === "none" ? "Apply Now" : "Update Details"}
-      </button>
-    </div>
+                  <button
+                    onClick={() => setIsApplicationModalOpen(true)}
+                    className="bg-[#FF006A] text-white px-6 py-3 rounded-full font-medium hover:bg-[#e5005f] transition-colors"
+                  >
+                    {profile?.data?.isButler === "none" ? "Apply Now" : "Update Details"}
+                  </button>
+                </div>
 
-    {/* Application Status */}
-    <div className="p-4 bg-gray-50 rounded-xl mb-6 flex items-center justify-between">
-      <div>
-        <p className="text-sm text-[#666]">Application Status</p>
-        <p
-          className={`inline-flex items-center gap-2 mt-1 px-3 py-1 rounded-full text-sm font-medium
-            ${
-              profile?.data?.isButler === "active"
-                ? "bg-green-100 text-green-700"
-                : profile?.data?.isButler === "pending"
-                ? "bg-yellow-100 text-yellow-700"
-                : "bg-gray-100 text-gray-600"
-            }`}
-        >
-          {profile?.data?.isButler === "active"
-            ? "Active"
-            : profile?.data?.isButler === "pending"
-            ? "Pending Approval"
-            : "Not Applied"}
-        </p>
-      </div>
+                {/* Application Status */}
+                <div className="p-4 bg-gray-50 rounded-xl mb-6 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[#666]">Application Status</p>
+                    <p
+                      className={`inline-flex items-center gap-2 mt-1 px-3 py-1 rounded-full text-sm font-medium
+                        ${
+                          profile?.data?.isButler === "active"
+                            ? "bg-green-100 text-green-700"
+                            : profile?.data?.isButler === "pending"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-gray-100 text-gray-600"
+                        }`}
+                    >
+                      {profile?.data?.isButler === "active"
+                        ? "Active"
+                        : profile?.data?.isButler === "pending"
+                        ? "Pending Approval"
+                        : "Not Applied"}
+                    </p>
+                  </div>
 
-      {/* Optional small icon */}
-      {profile?.data?.isButler === "active" && (
-        <span className="text-green-600 text-lg font-semibold">●</span>
-      )}
-      {profile?.data?.isButler === "pending" && (
-        <span className="text-yellow-600 text-lg font-semibold animate-pulse">●</span>
-      )}
-    </div>
+                  {/* Optional small icon */}
+                  {profile?.data?.isButler === "active" && (
+                    <span className="text-green-600 text-lg font-semibold">●</span>
+                  )}
+                  {profile?.data?.isButler === "pending" && (
+                    <span className="text-yellow-600 text-lg font-semibold animate-pulse">●</span>
+                  )}
+                </div>
 
-    {/* Only show professional details if application exists */}
-    {profile?.data?.isButler !== "none" && (
-      <>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-gray-50 rounded-xl">
-            <p className="text-sm text-[#666]">Full Name</p>
-            <p className="font-medium text-[#424242]">{profile?.data?.firstName + " " + profile?.data?.lastName || "N/A"}</p>
-          </div>
+                {/* Only show professional details if application exists */}
+                {profile?.data?.isButler !== "none" && (
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-gray-50 rounded-xl">
+                        <p className="text-sm text-[#666]">Full Name</p>
+                        <p className="font-medium text-[#424242]">{profile?.data?.firstName + " " + profile?.data?.lastName || "N/A"}</p>
+                      </div>
 
-          <div className="p-4 bg-gray-50 rounded-xl">
-            <p className="text-sm text-[#666]">Postcode</p>
-            <p className="font-medium text-[#424242]">{profile?.data?.postcode || "N/A"}</p>
-          </div>
-{/* 
-          <div className="p-4 bg-gray-50 rounded-xl">
-            <p className="text-sm text-[#666]">Services</p>
-            <p className="font-medium text-[#424242]">
-              {userData.services || "Not specified"}
-            </p>
-          </div> */}
+                      <div className="p-4 bg-gray-50 rounded-xl">
+                        <p className="text-sm text-[#666]">Postcode</p>
+                        <p className="font-medium text-[#424242]">{profile?.data?.postcode || "N/A"}</p>
+                      </div>
 
-          <div className="p-4 bg-gray-50 rounded-xl">
-            <p className="text-sm text-[#666]">Bank Info</p>
-            <p className="font-medium text-[#424242]">
-              {profile?.data?.bankInfo ? "•••• •••• ••••" : "Not provided"}
-            </p>
-          </div>
-        </div>
+                      <div className="p-4 bg-gray-50 rounded-xl">
+                        <p className="text-sm text-[#666]">Bank Info</p>
+                        <p className="font-medium text-[#424242]">
+                          {profile?.data?.bankInfo ? "•••• •••• ••••" : "Not provided"}
+                        </p>
+                      </div>
+                    </div>
 
-        <div className="p-4 bg-gray-50 rounded-xl mt-4">
-          <p className="text-sm text-[#666]">Bio</p>
-          <p className="font-medium text-[#424242] whitespace-pre-line">
-            {userData.bio || "N/A"}
-          </p>
-        </div>
+                    <div className="p-4 bg-gray-50 rounded-xl mt-4">
+                      <p className="text-sm text-[#666]">Bio</p>
+                      <p className="font-medium text-[#424242] whitespace-pre-line">
+                        {userData.bio || "N/A"}
+                      </p>
+                    </div>
 
-        {userData.photo && (
-          <div className="p-4 bg-gray-50 rounded-xl mt-4 flex items-center gap-4">
-            <img
-              src={userData.photo}
-              alt="Profile"
-              className="w-20 h-20 rounded-full object-cover border"
-            />
-            <div>
-              <p className="text-sm text-[#666]">Profile Photo</p>
-              <p className="text-[#424242] text-sm">Uploaded</p>
-            </div>
-          </div>
-        )}
-      </>
-    )}
+                    {userData.photo && (
+                      <div className="p-4 bg-gray-50 rounded-xl mt-4 flex items-center gap-4">
+                        <img
+                          src={userData.photo}
+                          alt="Profile"
+                          className="w-20 h-20 rounded-full object-cover border"
+                        />
+                        <div>
+                          <p className="text-sm text-[#666]">Profile Photo</p>
+                          <p className="text-[#424242] text-sm">Uploaded</p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
 
-    {/* If not yet applied */}
-    {profile?.data?.isButler === "none" && (
-      <div className="p-6 bg-gray-50 rounded-2xl text-center mt-6">
-        <p className="text-[#555] text-sm mb-2">You haven’t applied as a Butler yet.</p>
-        <button
-          onClick={() => setIsApplicationModalOpen(true)}
-          className="px-6 py-3 bg-[#FF006A] text-white rounded-full hover:bg-[#e5005f] transition-colors font-medium"
-        >
-          Submit Application
-        </button>
-      </div>
-    )}
-  </div>
-)}
-
-
+                {/* If not yet applied */}
+                {profile?.data?.isButler === "none" && (
+                  <div className="p-6 bg-gray-50 rounded-2xl text-center mt-6">
+                    <p className="text-[#555] text-sm mb-2">You haven't applied as a Butler yet.</p>
+                    <button
+                      onClick={() => setIsApplicationModalOpen(true)}
+                      className="px-6 py-3 bg-[#FF006A] text-white rounded-full hover:bg-[#e5005f] transition-colors font-medium"
+                    >
+                      Submit Application
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -564,7 +541,6 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                   <input
                     type="text"
                     name="firstName"
-                
                     defaultValue={profile?.data?.firstName}
                     onChange={handleFormChange}
                     className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none transition-colors focus:border-[#FF006A]"
@@ -578,7 +554,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                   <input
                     type="text"
                     name="lastName"
-                     defaultValue={profile?.data?.lastName}
+                    defaultValue={profile?.data?.lastName}
                     onChange={handleFormChange}
                     className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none transition-colors focus:border-[#FF006A]"
                     placeholder="Enter your last name"
@@ -591,7 +567,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                   <input
                     type="email"
                     name="email"
-                      defaultValue={profile?.data?.email}
+                    defaultValue={profile?.data?.email}
                     onChange={handleFormChange}
                     className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none transition-colors focus:border-[#FF006A]"
                     placeholder="Enter your email address"
@@ -605,7 +581,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                   <input
                     type="tel"
                     name="phone"
-                      defaultValue={profile?.data?.phone}
+                    defaultValue={profile?.data?.phone}
                     onChange={handleFormChange}
                     className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none transition-colors focus:border-[#FF006A]"
                     placeholder="Enter your phone number"
@@ -631,7 +607,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                   <input
                     type="text"
                     name="postcode"
-                     defaultValue={profile?.data?.postcode}
+                    defaultValue={profile?.data?.postcode}
                     onChange={handleFormChange}
                     className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none transition-colors focus:border-[#FF006A]"
                     placeholder="Enter your postcode"
@@ -641,9 +617,6 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
 
               {/* Full Width Fields */}
               <div className="space-y-6">
-                {/* Address */}
-             
-
                 {/* Date of Birth */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -651,7 +624,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                     <input
                       type="date"
                       name="dateOfBirth"
-                       defaultValue={profile?.data?.dob}
+                      defaultValue={profile?.data?.dob}
                       onChange={handleFormChange}
                       className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none transition-colors focus:border-[#FF006A]"
                     />
@@ -661,7 +634,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                     <label className="block text-sm font-medium text-[#424242] mb-2">Gender</label>
                     <select
                       name="gender"
-                       defaultValue={profile?.data?.gender}
+                      defaultValue={profile?.data?.gender}
                       onChange={handleFormChange}
                       className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none transition-colors focus:border-[#FF006A]"
                     >
@@ -679,7 +652,7 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
                   <label className="block text-sm font-medium text-[#424242] mb-2">Bio</label>
                   <textarea
                     name="bio"
-                     defaultValue={profile?.data?.bio}
+                    defaultValue={profile?.data?.bio}
                     onChange={handleFormChange}
                     className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none transition-colors focus:border-[#FF006A] min-h-[100px]"
                     placeholder="Tell us about yourself"
@@ -711,172 +684,158 @@ const [updateMyProfile, {isLoading, error}] = useUpdateMyProfileMutation();
       )}
 
       {/* Application Modal */}
-  {isApplicationModalOpen && (
-  <div className="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-3xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-      <h3 className="text-xl font-bold text-[#424242] mb-6">Butler Application Form</h3>
-      <form onSubmit={handleApplicationSubmit} className="space-y-6">
+      {isApplicationModalOpen && (
+        <div className="fixed inset-0 backdrop-blur-sm bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold text-[#424242] mb-6">Butler Application Form</h3>
+            <form onSubmit={handleApplicationSubmit} className="space-y-6">
 
-        {/* Personal Details */}
-        <div>
-          <label className="block text-sm font-medium text-[#424242] mb-2">First Name</label>
-          <input
-            type="text"
-            name="firstName"
-            value={applicationData.firstName}
-            onChange={handleApplicationChange}
-            defaultValue={profile?.data?.firstName}
-            placeholder="Enter your full name"
-            className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
-          />
+              {/* Personal Details */}
+              <div>
+                <label className="block text-sm font-medium text-[#424242] mb-2">First Name</label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={applicationData.firstName}
+                  onChange={handleApplicationChange}
+                  defaultValue={profile?.data?.firstName}
+                  placeholder="Enter your first name"
+                  className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-[#424242] mb-2">Last Name</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={applicationData.lastName}
+                  defaultValue={profile?.data?.lastName}
+                  onChange={handleApplicationChange}
+                  placeholder="Enter your last name"
+                  className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#424242] mb-2">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={applicationData.email}
+                  readOnly
+                  defaultValue={profile?.data?.email}
+                  onChange={handleApplicationChange}
+                  placeholder="Enter your email address"
+                  className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A] bg-gray-100"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#424242] mb-2">Phone Number</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={applicationData.phone}
+                  defaultValue={profile?.data?.phone}
+                  onChange={handleApplicationChange}
+                  placeholder="e.g., +44 7123 456789"
+                  className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
+                  required
+                />
+              </div>
+
+              {/* Postcode */}
+              <div>
+                <label className="block text-sm font-medium text-[#424242] mb-2">Postcode</label>
+                <input
+                  type="text"
+                  name="postcode"
+                  value={applicationData.postcode}
+                  defaultValue={profile?.data?.postcode}
+                  onChange={handleApplicationChange}
+                  placeholder="Enter your postcode"
+                  className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
+                  required
+                />
+              </div>
+
+              {/* Bank Info */}
+              <div>
+                <label className="block text-sm font-medium text-[#424242] mb-2">Bank Account Info</label>
+                <input
+                  type="text"
+                  name="bankInfo"
+                  value={applicationData.bankInfo}
+                  onChange={handleApplicationChange}
+                  placeholder="Account Number / IBAN"
+                  className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
+                  required
+                />
+              </div>
+
+              {/* Bio */}
+              <div>
+                <label className="block text-sm font-medium text-[#424242] mb-2">Short Bio</label>
+                <textarea
+                  name="bio"
+                  value={applicationData.bio}
+                  onChange={handleApplicationChange}
+                  placeholder="Tell us a bit about yourself and why you want to become a Butler..."
+                  className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A] min-h-[100px]"
+                  required
+                />
+              </div>
+
+              {/* Terms & Conditions */}
+              <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+                <input
+                  type="checkbox"
+                  id="agreeTerms"
+                  name="agreeTerms"
+                  checked={applicationData.agreeTerms}
+                  onChange={handleApplicationChange}
+                  className="mt-1 w-4 h-4 text-[#FF006A] bg-gray-100 border-gray-300 rounded focus:ring-[#FF006A] focus:ring-2"
+                  required
+                />
+                <label htmlFor="agreeTerms" className="text-sm text-[#424242] cursor-pointer">
+                  I agree to the{" "}
+                  <a 
+                    href="/terms" 
+                    className="text-[#FF006A] hover:underline font-medium"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Terms & Conditions
+                  </a>
+                  . I understand that my application will be reviewed and I must accept the terms to proceed.
+                </label>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsApplicationModalOpen(false)}
+                  className="flex-1 px-4 py-3 border border-[#e5eaf2] text-[#424242] rounded-xl hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-3 bg-[#FF006A] text-white rounded-xl hover:bg-[#e5005f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!applicationData.agreeTerms}
+                >
+                  {isLoading ? "Loading..." : "Submit Application"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-[#424242] mb-2">Last Name</label>
-          <input
-            type="text"
-            name="lastName"
-            value={applicationData.lastName}
-                       defaultValue={profile?.data?.lastName}
-            onChange={handleApplicationChange}
-            placeholder="Enter your full name"
-            className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-[#424242] mb-2">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={profile?.data?.email}
-            readOnly
-            defaultValue={profile?.data?.email}
-            onChange={handleApplicationChange}
-            placeholder="Enter your email address"
-            className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-[#424242] mb-2">Phone Number</label>
-          <input
-            type="tel"
-            name="phone"
-            value={applicationData.phone}
-            defaultValue={profile?.data?.phone}
-            onChange={handleApplicationChange}
-            placeholder="e.g., +44 7123 456789"
-            className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
-          />
-        </div>
-
-        {/* Postcode */}
-        <div>
-          <label className="block text-sm font-medium text-[#424242] mb-2">Postcode</label>
-          <input
-            type="number"
-            name="postcode"
-            value={applicationData.postcode}
-            defaultValue={profile?.data?.postcode}
-            onChange={handleApplicationChange}
-            placeholder="Enter your postcode"
-            className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
-          />
-        </div>
-
-        {/* Services */}
-        {/* <div>
-          <label className="block text-sm font-medium text-[#424242] mb-2">Services You Offer</label>
-          <select
-            name="services"
-            value={applicationData.services}
-            onChange={handleApplicationChange}
-            className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
-          >
-            <option value="">Select services</option>
-            <option value="buff-butlers">Buff Butlers</option>
-            <option value="cleaning">Cleaning</option>
-            <option value="hospitality">Hospitality</option>
-            <option value="event-staff">Event Staff</option>
-          </select>
-        </div> */}
-
-        {/* Bank Info */}
-        <div>
-          <label className="block text-sm font-medium text-[#424242] mb-2">Bank Account Info</label>
-          <input
-            type="text"
-            name="bankInfo"
-            value={profile?.data?.bankInfo}
-            onChange={handleApplicationChange}
-            placeholder="Account Number / IBAN"
-            className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A]"
-          />
-        </div>
-
-        {/* Bio & Photo */}
-        <div>
-          <label className="block text-sm font-medium text-[#424242] mb-2">Short Bio</label>
-          <textarea
-            name="bio"
-            value={profile?.data?.bio}
-            onChange={handleApplicationChange}
-            placeholder="Tell us a bit about yourself..."
-            className="w-full px-4 py-3 border border-[#e5eaf2] rounded-xl outline-none focus:border-[#FF006A] min-h-[100px]"
-          />
-        </div>
-
-        {/* <div>
-          <label className="block text-sm font-medium text-[#424242] mb-2">Profile Photo</label>
-          <input
-            type="file"
-            name="photo"
-            accept="image/*"
-            // onChange={handlePhotoUpload}
-            className="w-full text-sm text-[#424242]"
-          />
-        </div> */}
-
-        {/* Terms & Conditions */}
-        <div className="flex items-start gap-2">
-          <input
-            type="checkbox"
-            name="agreeTerms"
-            checked={applicationData.agreeTerms}
-            onChange={handleApplicationChange}
-            className="mt-1"
-          />
-          <label className="text-sm text-[#424242]">
-            I agree to the{" "}
-            <a href="/terms" className="text-[#FF006A] hover:underline">
-              Terms & Conditions
-            </a>
-            .
-          </label>
-        </div>
-
-        {/* Buttons */}
-        <div className="flex gap-3 pt-4">
-          <button
-            type="button"
-            onClick={() => setIsApplicationModalOpen(false)}
-            className="flex-1 px-4 py-3 border border-[#e5eaf2] text-[#424242] rounded-xl hover:bg-gray-50 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="flex-1 px-4 py-3 bg-[#FF006A] text-white rounded-xl hover:bg-[#e5005f] transition-colors"
-          >
-          {isLoading ? "Loading..." :   "Submit Application"}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
-
+      )}
     </div>
   )
 }
-

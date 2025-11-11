@@ -114,9 +114,9 @@ const Footer = () => {
             <h4 className="font-semibold mb-3">Legal</h4>
             <ul className="space-y-2 text-sm text-gray-600">
           
-              <li>  <a href="https://www.hunkybutlerservice.co.uk/privacy-policy2/" target="_blank">Privacy Policy</a> </li>
-              <li>  <a href="https://www.hunkybutlerservice.co.uk/terms-and-conditions-2/" target="_blank">Terms Of Services</a> </li>
-              <li>  <a href="https://www.hunkybutlerservice.co.uk/refund-cancellation-policy/" target="_blank">Refund Policy</a> </li>
+              <li>  <a href="/privacy-policy" target="_blank">Privacy Policy</a> </li>
+              <li>  <a href="/terms-and-conditon" target="_blank">Terms Of Conditons</a> </li>
+              <li>  <a href="refund-policy" target="_blank">Refund Policy</a> </li>
           
             </ul>
           </div>
