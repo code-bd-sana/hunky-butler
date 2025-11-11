@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { MdKeyboardArrowDown, MdChevronLeft, MdChevronRight, MdStar } from "react-icons/md";
+import { MdKeyboardArrowDown, MdChevronLeft, MdChevronRight, MdStar, MdLocationOn } from "react-icons/md";
 import { LuArrowUpRight } from "react-icons/lu";
 import { FiEye } from "react-icons/fi";
 import { MdOutlineEdit } from "react-icons/md";
@@ -11,10 +11,87 @@ import toast, { Toaster } from "react-hot-toast";
 import { useGetAdminSummuryQuery } from "@/features/summury";
 import { useSession } from "next-auth/react";
 
-// Details Modal Component
-const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
+// Map Modal Component
+const MapModal = ({ location, postCode, isOpen, onClose }) => {
+  if (!isOpen || !postCode) return null;
 
+  // Construct the Google Maps embed URL
+  const getMapUrl = () => {
+    const query = postCode || location;
+    return `https://www.google.com/maps/embed/v1/place?key=AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA&q=${encodeURIComponent(query)}`;
+  };
 
+  // Construct the Google Maps direct link
+  const getDirectMapUrl = () => {
+    const query = postCode || location;
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  };
+
+  return (
+    <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-lg max-w-4xl w-full h-[80vh]">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b">
+          <h3 className="text-xl font-semibold text-gray-800">Location Map</h3>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Map Content */}
+        <div className="p-6 h-[calc(100%-80px)] flex flex-col">
+          {/* Location Information */}
+          <div className="mb-4 space-y-2">
+            <p className="text-gray-600">
+              <strong>Post Code:</strong> {postCode || "N/A"}
+            </p>
+            {location && (
+              <p className="text-gray-600">
+                <strong>Full Address:</strong> {location}
+              </p>
+            )}
+          </div>
+
+          {/* Map Container */}
+          <div className="flex-1 bg-gray-100 rounded-lg overflow-hidden mb-4">
+            <iframe
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              style={{ border: 0 }}
+              src={getMapUrl()}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-gray-500">
+              📍 Location based on post code: {postCode}
+            </div>
+            <a
+              href={getDirectMapUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 bg-[#FF006A] text-white rounded-full hover:bg-[#e5005f] transition-colors"
+            >
+              Open in Google Maps
+              <LuArrowUpRight />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Updated BookingDetailsModal with Map
+const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
   if (!isOpen) return null;
 
   return (
@@ -33,6 +110,42 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
 
         {/* Content */}
         <div className="p-6 space-y-6">
+          {/* Map Section - Show at the top if postcode exists */}
+          {booking?.postCode && (
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-lg font-medium text-gray-800 flex items-center gap-2">
+                  <MdLocationOn className="text-[#FF006A]" />
+                  Location Map
+                </h4>
+                <button
+                  onClick={() => onOpenMap(booking.location, booking.postCode)}
+                  className="flex items-center gap-1 px-3 py-1 bg-[#FF006A] text-white rounded-full text-sm hover:bg-[#e5005f] transition-colors"
+                >
+                  View Full Map
+                  <LuArrowUpRight className="text-xs" />
+                </button>
+              </div>
+              <div className="h-48 bg-gray-200 rounded-lg overflow-hidden">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  style={{ border: 0 }}
+                  src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA&q=${encodeURIComponent(booking.postCode)}`}
+                  allowFullScreen
+                  loading="lazy"
+                />
+              </div>
+              <div className="mt-2 text-sm text-gray-600">
+                <p><strong>Post Code:</strong> {booking.postCode}</p>
+                {booking.location && (
+                  <p><strong>Address:</strong> {booking.location}</p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -75,17 +188,28 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
                   {booking?.firstName} {booking?.lastName}
                 </p>
               </div>
-              {/* <div>
-                <label className="text-sm font-medium text-gray-600">Email</label>
-                <p className="text-gray-900">{booking?.email}</p>
-              </div> */}
               <div>
                 <label className="text-sm font-medium text-gray-600">Phone</label>
                 <p className="text-gray-900">{booking?.phone}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-600">Post Code</label>
-                <p className="text-gray-900">{booking?.postCode}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-gray-900">{booking?.postCode}</p>
+                  {booking?.postCode && (
+                    <button
+                      onClick={() => onOpenMap(booking.location, booking.postCode)}
+                      className="p-1 text-[#FF006A] hover:text-[#e5005f] transition-colors"
+                      title="View on Map"
+                    >
+                      <MdLocationOn className="text-lg" />
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Location</label>
+                <p className="text-gray-900">{booking?.location || "N/A"}</p>
               </div>
             </div>
           </div>
@@ -110,57 +234,18 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
                 <p className="text-gray-900">{booking?.numberOfStaff}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-600">Location</label>
-                <p className="text-gray-900">{booking?.location || "N/A"}</p>
+                <label className="text-sm font-medium text-gray-600">Event Date</label>
+                <p className="text-gray-900">
+                  {booking?.dateOfEvent ? new Date(booking.dateOfEvent).toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  }) : "N/A"}
+                </p>
               </div>
             </div>
           </div>
-
-          {/* Financial Information */}
-          {/* <div>
-            <h4 className="text-lg font-medium text-gray-800 mb-4">Financial Information</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-gray-600">Total Price</label>
-                <p className="text-gray-900 font-semibold">${booking?.price}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-600">Platform Fee (20%)</label>
-                <p className="text-gray-900">${(booking?.price * 0.2).toFixed(2)}</p>
-              </div>
-            </div>
-          </div> */}
-
-          {/* Butler Information */}
-          {/* {booking?.butler && (
-            <div>
-              <h4 className="text-lg font-medium text-gray-800 mb-4">Butler Information</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Butler Name</label>
-                  <p className="text-gray-900">
-                    {booking.butler.name || 
-                     `${booking.butler.firstName || ''} ${booking.butler.lastName || ''}`.trim() || 
-                     'N/A'}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Email</label>
-                  <p className="text-gray-900">{booking.butler.email}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Rating</label>
-                  <p className="text-gray-900">
-                    {booking.butler.averageRating || "No ratings yet"}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Total Reviews</label>
-                  <p className="text-gray-900">{booking.butler.totalReviews || 0}</p>
-                </div>
-              </div>
-            </div>
-          )} */}
         </div>
 
         {/* Footer */}
@@ -207,7 +292,6 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
         butlerId: selectedButler
       });
       onAssignButler(booking?._id, selectedButler);
-     
     }
 
     try {
@@ -217,7 +301,6 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
       }
 
       const response = await assignToButler(data).unwrap();
-  
       toast.success("Assigned Success")
       refetch()
        onClose();
@@ -368,7 +451,7 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-           {   loader ? "loading..." : 'Assign Butler'}
+              {loader ? "loading..." : 'Assign Butler'}
             </button>
           </div>
         </form>
@@ -380,19 +463,11 @@ const ButlerAssignmentModal = ({ booking, isOpen, onClose, butlers, onAssignButl
 // Status Change Modal Component
 const StatusChangeModal = ({ booking, isOpen, onClose, onStatusChange, updateLoading  }) => {
   const [selectedStatus, setSelectedStatus] = useState(booking?.status || "");
-    const {isLoading} = useUpdaterStatusMutation();
+  const {isLoading} = useUpdaterStatusMutation();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // console.log("Changing status to:", selectedStatus);
     onStatusChange(booking?._id, selectedStatus);
-
-
-
-
-
-    
-    // onClose();
   };
 
   if (!isOpen) return null;
@@ -428,7 +503,6 @@ const StatusChangeModal = ({ booking, isOpen, onClose, onStatusChange, updateLoa
                 <option value="">Choose status</option>
                 <option value="completed">Completed</option>
                 <option value="accepted">Accepted</option>
-         
               </select>
             </div>
             <div className="text-sm text-gray-600">
@@ -449,9 +523,7 @@ const StatusChangeModal = ({ booking, isOpen, onClose, onStatusChange, updateLoa
               type="submit"
               className="px-6 py-2 bg-[#FF006A] text-white rounded-full font-medium hover:bg-[#e5005f] transition-colors"
             >
-             
-              {updateLoading ? "Loading..." :  " Update Status"}
-             
+              {updateLoading ? "Loading..." : "Update Status"}
             </button>
           </div>
         </form>
@@ -460,7 +532,7 @@ const StatusChangeModal = ({ booking, isOpen, onClose, onStatusChange, updateLoa
   );
 };
 
-// Pagination Component
+// Pagination Component (same as before)
 const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPerPage }) => {
   const getPageNumbers = () => {
     const pages = [];
@@ -501,65 +573,60 @@ const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPe
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-   <div className="flex flex-col gap-4 mt-6 pt-6 border-t border-gray-200">
-  {/* Items count */}
-  <div className="text-sm text-gray-600 text-center sm:text-left">
-    Showing {startItem} to {endItem} of {totalItems} entries
-  </div>
+    <div className="flex flex-col gap-4 mt-6 pt-6 border-t border-gray-200">
+      <div className="text-sm text-gray-600 text-center sm:text-left">
+        Showing {startItem} to {endItem} of {totalItems} entries
+      </div>
 
-  {/* Pagination controls */}
-  <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-    {/* Previous button - Top left on mobile */}
-    <button
-      onClick={() => onPageChange(currentPage - 1)}
-      disabled={currentPage === 1}
-      className={`flex items-center justify-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors sm:w-auto ${
-        currentPage === 1
-          ? "text-gray-400 cursor-not-allowed bg-gray-100"
-          : "text-gray-700 hover:bg-gray-100 border border-gray-300"
-      }`}
-    >
-      <MdChevronLeft className="text-lg" />
-      <span className="sm:block hidden">Previous</span>
-      <span className="sm:hidden block">Prev</span>
-    </button>
-
-    {/* Page numbers - Centered and compact */}
-    <div className="flex items-center gap-1 overflow-x-auto max-w-full py-2">
-      {getPageNumbers().map((page, index) => (
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         <button
-          key={index}
-          onClick={() => typeof page === 'number' && onPageChange(page)}
-          className={`min-w-[36px] h-9 flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-colors flex-shrink-0 ${
-            page === currentPage
-              ? "bg-[#FF006A] text-white shadow-sm"
-              : typeof page === 'number'
-              ? "text-gray-700 hover:bg-gray-100 border border-gray-200"
-              : "text-gray-400 cursor-default"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`flex items-center justify-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors sm:w-auto ${
+            currentPage === 1
+              ? "text-gray-400 cursor-not-allowed bg-gray-100"
+              : "text-gray-700 hover:bg-gray-100 border border-gray-300"
           }`}
-          disabled={page === '...'}
         >
-          {page}
+          <MdChevronLeft className="text-lg" />
+          <span className="sm:block hidden">Previous</span>
+          <span className="sm:hidden block">Prev</span>
         </button>
-      ))}
-    </div>
 
-    {/* Next button - Top right on mobile */}
-    <button
-      onClick={() => onPageChange(currentPage + 1)}
-      disabled={currentPage === totalPages}
-      className={`flex items-center justify-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors sm:w-auto ${
-        currentPage === totalPages
-          ? "text-gray-400 cursor-not-allowed bg-gray-100"
-          : "text-gray-700 hover:bg-gray-100 border border-gray-300"
-      }`}
-    >
-      <span className="sm:block hidden">Next</span>
-      <span className="sm:hidden block">Next</span>
-      <MdChevronRight className="text-lg" />
-    </button>
-  </div>
-</div>
+        <div className="flex items-center gap-1 overflow-x-auto max-w-full py-2">
+          {getPageNumbers().map((page, index) => (
+            <button
+              key={index}
+              onClick={() => typeof page === 'number' && onPageChange(page)}
+              className={`min-w-[36px] h-9 flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-colors flex-shrink-0 ${
+                page === currentPage
+                  ? "bg-[#FF006A] text-white shadow-sm"
+                  : typeof page === 'number'
+                  ? "text-gray-700 hover:bg-gray-100 border border-gray-200"
+                  : "text-gray-400 cursor-default"
+              }`}
+              disabled={page === '...'}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`flex items-center justify-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors sm:w-auto ${
+            currentPage === totalPages
+              ? "text-gray-400 cursor-not-allowed bg-gray-100"
+              : "text-gray-700 hover:bg-gray-100 border border-gray-300"
+          }`}
+        >
+          <span className="sm:block hidden">Next</span>
+          <span className="sm:hidden block">Next</span>
+          <MdChevronRight className="text-lg" />
+        </button>
+      </div>
+    </div>
   );
 };
 
@@ -570,30 +637,27 @@ const ButlerBooking = () => {
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [statusModalOpen, setStatusModalOpen] = useState(false);
   const [butlerModalOpen, setButlerModalOpen] = useState(false);
+  const [mapModalOpen, setMapModalOpen] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedPostCode, setSelectedPostCode] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-    const {data:user, status} = useSession();
- 
-  
-    const id = user?.user?.id;
-       console.log(status, 'user information id')
+  const {data:user, status} = useSession();
 
-       if(status === 'loading...'){
-        return <p>loading....</p>
-       }
+  const id = user?.user?.id;
+
+  if(status === 'loading...'){
+    return <p>loading....</p>
+  }
 
   // Calculate skip based on current page
   const skip = (currentPage - 1) * itemsPerPage;
-  
-  // Use the hook with object parameters
-  
-
 
   const { data, isLoading, error, refetch } = useGetBookingButlerQuery(
     { 
       limit: itemsPerPage, 
       skip: skip,
-      status: activeButton ,
+      status: activeButton,
       id:id
     },
     {
@@ -604,12 +668,6 @@ const ButlerBooking = () => {
   const { data: butlerData } = useGetAllButlerQuery();
   const [updaterStatus, {isLoading:updateLoading, error:updateError}] = useUpdaterStatusMutation();
   const {refetch:summuryRefetch} = useGetAdminSummuryQuery();
-  
-  // console.log("Butler Data:", butlerData?.data);
-  // console.log("API Data:", data);
-  // console.log("Current Page:", currentPage);
-  // console.log("Skip:", skip);
-  // console.log("Items Per Page:", itemsPerPage);
 
   const buttons = [
     { name: "All", status: "all" },
@@ -634,6 +692,12 @@ const ButlerBooking = () => {
     setDetailsModalOpen(true);
   };
 
+  const handleOpenMap = (location, postCode) => {
+    setSelectedLocation(location);
+    setSelectedPostCode(postCode);
+    setMapModalOpen(true);
+  };
+
   const handleStatusChange = (booking) => {
     setSelectedBooking(booking);
     setStatusModalOpen(true);
@@ -645,50 +709,34 @@ const ButlerBooking = () => {
   };
 
   const handleButlerAssignment = async(bookingId, butlerId) => {
-  
-
     try {
-
-
-      
+      // Implementation here
     } catch (error) {
       console.log(error)
       toast.error(error?.message || "Something went wrong!")
     }
-
-
-    // Here you would typically make an API call to assign the butler
   };
 
   const handleStatusUpdate = async(bookingId, newStatus) => {
-    // console.log(`Updating booking ${bookingId} to status: ${newStatus}`);
-
     try {
-
       const data = {
         id: bookingId,
         status: newStatus,
         butlerid: id
       }
 
-
       const response= await updaterStatus(data).unwrap();
       toast.success("Status Updated");
-      // console.log(response, "update booking");
       refetch()
       summuryRefetch();
       
     } catch (error) {
       toast.error(error?.message || "Something went wrong")
-      // console.log(error)
     }
-
-    // Here you would typically make an API call to update the status
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // Scroll to top when page changes
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -701,26 +749,27 @@ const ButlerBooking = () => {
     setDetailsModalOpen(false);
     setStatusModalOpen(false);
     setButlerModalOpen(false);
+    setMapModalOpen(false);
     setSelectedBooking(null);
+    setSelectedLocation("");
+    setSelectedPostCode("");
   };
 
   // Loading state
   if (isLoading) {
     return (
       <div className="bg-white rounded-xl shadow-md p-6">
-        {/* Header Skeleton */}
+        {/* Loading skeleton */}
         <div className="flex flex-col md:flex-row items-center justify-between pb-4 md:pb-6">
           <div className="h-7 w-32 bg-gray-200 rounded-lg animate-pulse mb-4 md:mb-0"></div>
           
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-            {/* Tabs Skeleton */}
             <div className="flex items-center gap-1 rounded-full bg-[#F6F4F5] p-1 h-[48px]">
               {[1, 2, 3, 4].map((item) => (
                 <div key={item} className="h-8 w-16 bg-gray-200 rounded-full animate-pulse"></div>
               ))}
             </div>
 
-            {/* Right controls Skeleton */}
             <div className="flex justify-center items-center gap-1.5 sm:ml-auto">
               <div className="h-10 w-24 bg-gray-200 rounded-full animate-pulse"></div>
               <div className="h-10 w-20 bg-gray-200 rounded-lg animate-pulse"></div>
@@ -728,12 +777,11 @@ const ButlerBooking = () => {
           </div>
         </div>
 
-        {/* Table Skeleton */}
         <div className="max-h-[370px] max-w-[76vw] overflow-scroll scrollbar-hide overflow-y-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="text-[#333333] border-b text-base">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((header) => (
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((header) => (
                   <th key={header} className="p-3">
                     <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
                   </th>
@@ -744,7 +792,7 @@ const ButlerBooking = () => {
             <tbody>
               {[1, 2, 3, 4, 5, 6, 7, 8].map((row) => (
                 <tr key={row} className="border-b border-gray-100">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((cell) => (
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((cell) => (
                     <td key={cell} className="p-3 py-4">
                       <div className="flex items-center gap-2">
                         {cell === 4 && (
@@ -759,7 +807,6 @@ const ButlerBooking = () => {
                           cell === 6 ? "w-16" : 
                           cell === 7 ? "w-12" : 
                           cell === 8 ? "w-16" : 
-                          cell === 9 ? "w-20" : 
                           "w-16"
                         }`}></div>
                       </div>
@@ -771,7 +818,6 @@ const ButlerBooking = () => {
           </table>
         </div>
 
-        {/* Pagination Skeleton */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 pt-6 border-t border-gray-200">
           <div className="h-4 w-40 bg-gray-200 rounded animate-pulse"></div>
           <div className="flex items-center gap-2">
@@ -801,8 +847,8 @@ const ButlerBooking = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6">
-
       <Toaster/>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row items-center justify-between pb-4 md:pb-6">
         <h2 className="text-lg md:text-xl font-medium text-gray-800 mb-4 md:mb-0">
@@ -811,7 +857,7 @@ const ButlerBooking = () => {
 
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
           {/* Tabs */}
-          <div className="flex flex-wrap items-center gap-1 rounded-full bg-[#F6F4F5] md:p-1 justify-center  p-4 mx-auto sm:h-[44px] lg:h-[48px] overflow-x-auto whitespace-nowrap lg:overflow-visible lg:whitespace-normal [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+          <div className="flex flex-wrap items-center gap-1 rounded-full bg-[#F6F4F5] md:p-1 justify-center p-4 mx-auto sm:h-[44px] lg:h-[48px] overflow-x-auto whitespace-nowrap lg:overflow-visible lg:whitespace-normal [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
             {buttons.map((btn) => {
               const isActive = activeButton === btn.status;
               return (
@@ -838,35 +884,6 @@ const ButlerBooking = () => {
 
           {/* Right controls */}
           <div className="flex justify-center items-center gap-1.5 sm:ml-auto relative">
-            {/* <button
-              onClick={() => setOpen((s) => !s)}
-              className="flex items-center gap-1 rounded-full font-medium bg-[#F6F4F5] text-[#292929] px-4 py-1.5 h-[40px] text-[12px] sm:px-5 sm:py-2 sm:h-[48px] sm:text-[13px]"
-            >
-              30 Days
-              <MdKeyboardArrowDown
-                className={`transition-transform ${
-                  open ? "rotate-180" : ""
-                } text-base sm:text-xl`}
-              />
-            </button> */}
-
-            {open && (
-              <div className="absolute right-0 top-[calc(100%+8px)] w-40 rounded-lg bg-white shadow-lg z-10">
-                <ul className="py-2 text-sm text-[#374151]">
-                  {["7 Days", "15 Days", "30 Days", "90 Days"].map((v) => (
-                    <li key={v}>
-                      <button
-                        className="w-full text-left px-4 py-2 hover:bg-pink-50"
-                        onClick={() => setOpen(false)}
-                      >
-                        {v}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
             {/* Items per page selector */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Show:</span>
@@ -897,11 +914,9 @@ const ButlerBooking = () => {
               <th className="p-3 font-medium">Date/Time</th>
               <th className="p-3 font-medium">Service</th>
               <th className="p-3 font-medium">Client</th>
-     
               <th className="p-3 font-medium">Location</th>
               <th className="p-3 font-medium">Status</th>
               <th className="p-3 font-medium">Earning</th>
-         
               <th className="p-3 font-medium">Action</th>
             </tr>
           </thead>
@@ -916,29 +931,40 @@ const ButlerBooking = () => {
                 <td className="p-3">{b.serviceName}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
-                      {
-                                       b?.image &&  <Image
-                                         src={b?.image}
-                                         alt={b.customer || 'img'}
-                                         width={32}
-                                         height={32}
-                                         className="rounded-full object-cover"
-                                       />
-                                      }
-                                      {
-                                      !b?.image &&   <Image
-                                           src="/Dashboard/customer.png"
-                                           alt={b.customer || 'img'}
-                                           width={32}
-                                           height={32}
-                                           className="rounded-full object-cover"
-                                         />
-                                      }
+                    {b?.image ? (
+                      <Image
+                        src={b?.image}
+                        alt={b.customer || 'img'}
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover"
+                      />
+                    ) : (
+                      <Image
+                        src="/Dashboard/customer.png"
+                        alt={b.customer || 'img'}
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover"
+                      />
+                    )}
                     <span>{b.firstName + " " + b.lastName}</span>
                   </div>
                 </td>
-             
-                <td className="p-3 text-center">{b.location || "--"}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-2">
+                    <span>{b.location || "--"}</span>
+                    {b.postCode && (
+                      <button
+                        onClick={() => handleOpenMap(b.location, b.postCode)}
+                        className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
+                        title="View on Map"
+                      >
+                        <MdLocationOn className="text-lg" />
+                      </button>
+                    )}
+                  </div>
+                </td>
                 <td className="p-3">
                   <span
                     className={`px-3 py-2 rounded-full text-sm font-medium ${
@@ -949,8 +975,6 @@ const ButlerBooking = () => {
                   </span>
                 </td>
                 <td className="p-3">${b?.butlerFee}</td>
-                 
-             
                 <td className="p-3">
                   <div className="flex items-center gap-2">
                     {/* View Details Button */}
@@ -961,6 +985,17 @@ const ButlerBooking = () => {
                     >
                       <FiEye className="text-lg" />
                     </button>
+                    
+                    {/* Map Button */}
+                    {b.postCode && (
+                      <button
+                        onClick={() => handleOpenMap(b.location, b.postCode)}
+                        className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
+                        title="View on Map"
+                      >
+                        <MdLocationOn className="text-lg" />
+                      </button>
+                    )}
                     
                     {/* Change Status Button */}
                     <button
@@ -975,28 +1010,25 @@ const ButlerBooking = () => {
               </tr>
             ))}
           </tbody>
-         
-
         </table>
-             {totalPages > 1 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-          totalItems={totalItems}
-          itemsPerPage={itemsPerPage}
-        />
-      )}
-
+        
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+          />
+        )}
       </div>
 
-      {/* Pagination */}
-  
       {/* Modals */}
       <BookingDetailsModal
         booking={selectedBooking}
         isOpen={detailsModalOpen}
         onClose={closeModals}
+        onOpenMap={handleOpenMap}
       />
 
       <StatusChangeModal
@@ -1005,7 +1037,6 @@ const ButlerBooking = () => {
         onClose={closeModals}
         onStatusChange={handleStatusUpdate}
         updateLoading={updateLoading}
-        
       />
 
       <ButlerAssignmentModal
@@ -1014,10 +1045,14 @@ const ButlerBooking = () => {
         onClose={closeModals}
         butlers={butlerData?.data}
         onAssignButler={handleButlerAssignment}
-        refetch ={refetch}
-      
+        refetch={refetch}
+      />
 
- 
+      <MapModal
+        location={selectedLocation}
+        postCode={selectedPostCode}
+        isOpen={mapModalOpen}
+        onClose={closeModals}
       />
     </div>
   );

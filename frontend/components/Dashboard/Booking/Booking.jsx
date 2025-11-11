@@ -124,10 +124,7 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
                 <label className="text-sm font-medium text-gray-600">Total Price</label>
                 <p className="text-gray-900 font-semibold">${booking?.price}</p>
               </div>
-              <div>
-                <label className="text-sm font-medium text-gray-600">Platform Fee (20%)</label>
-                <p className="text-gray-900">${(booking?.price * 0.2).toFixed(2)}</p>
-              </div>
+           
             </div>
           </div>
 
