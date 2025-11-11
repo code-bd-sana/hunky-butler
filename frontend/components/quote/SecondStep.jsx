@@ -359,6 +359,11 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
   const autocompleteService = useRef(null);
   const placesService = useRef(null);
 
+   const  initializeServices = ()=> {
+      autocompleteService.current = new window.google.maps.places.AutocompleteService();
+      placesService.current = new window.google.maps.places.PlacesService(document.createElement('div'));
+    }
+
   useEffect(() => {
     if (!window.google) {
       const script = document.createElement('script');
@@ -374,10 +379,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
       initializeServices();
     }
 
- const  initializeServices = ()=> {
-      autocompleteService.current = new window.google.maps.places.AutocompleteService();
-      placesService.current = new window.google.maps.places.PlacesService(document.createElement('div'));
-    }
+
   }, []);
 
   useEffect(() => {
