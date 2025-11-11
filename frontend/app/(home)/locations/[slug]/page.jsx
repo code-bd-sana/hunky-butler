@@ -16,6 +16,7 @@ import SubTitle from "@/components/shared/typography/SubTitle";
 import img from "@/public/location/scotland.png";
 import { useParams, useSearchParams } from "next/navigation";
 import { useGetLocationBySlugQuery } from "@/features/location";
+import Map from "@/components/Location/Map";
 
 function LocationDetailsContent() {
   const { slug } = useParams();
@@ -47,7 +48,8 @@ function LocationDetailsContent() {
       />
       <PerfectForAll city={data?.city} slug={serviceSlug} serviceName={serviceName}/>
       <FaqLocation location={data?.city} />
-      <ReviewSection />
+      <ReviewSection city={data?.city}/>
+      <Map latitude={data?.latitude} longitude={data?.longitude} city={data?.city}/>
       <div className="pt-40 md:pt-0 mt-[300px]">
         <Footer />
       </div>

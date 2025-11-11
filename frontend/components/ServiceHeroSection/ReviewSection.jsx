@@ -8,7 +8,7 @@ import bg1 from "@/public/images/services/bg.png";
 import bg2 from "@/public/images/services/bg2.png";
 import Image from "next/image";
 
-export default function ReviewSection() {
+export default function ReviewSection({city}) {
   const reviews = [
     {
       name: "Jack",
@@ -56,7 +56,7 @@ export default function ReviewSection() {
       <div className="py-16  max-w-7xl mx-auto container md:px-8 lg:px-0">
         <div className="text-center">
           <SecondaryTitle
-            text1={"Trusted by Thousands of Party Planners Across the UK"}
+            text1={`Trusted by Thousands of Party Planners in ${city || "UK"}`}
           />
         </div>
         <div className="text-center max-w-2xl  mx-auto">
