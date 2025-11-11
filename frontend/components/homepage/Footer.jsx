@@ -39,10 +39,10 @@ const Footer = () => {
           className="w-[680px] absolute -top-[40px] -right-[440px]  blur"
         />
 
-        <h2 className="text-xl md:text-5xl font-semibold leading-tight">
+        <h2 className="text-xl md:text-3xl lg:text-5xl font-semibold leading-tight">
           Ready to Book Your <br /> Buff Butlers or <br /> Entertainers?
         </h2>
-        <p className="my-5 text-sm md:text-base capitalize w-1/2">
+        <p className="my-5 text-xs md:text-base capitalize w-2/5 md:w-2/6 lg:w-1/2">
           From Buff Butlers and Cocktail Classes to Life Drawing and Strippers,
           Hunky Butler Service has everything you need for an unforgettable
           night. Get your instant quote now and secure your entertainers today.
@@ -57,7 +57,7 @@ const Footer = () => {
           src="/Footer/twoBoy.png"
           alt="Book buff butlers and hen party entertainment UK"
           title="Book Buff Butlers UK"
-          className="w-[280px] md:w-[640px] absolute -top-[25px] md:-top-[185px] -right-[59px] md:-right-[100px] brightness-125"
+          className="w-[280px] md:w-[540px] lg:w-[640px] absolute -top-[25px] md:-top-[150px] -right-[59px] md:-right-[100px] brightness-125"
         />
       </div>
 
