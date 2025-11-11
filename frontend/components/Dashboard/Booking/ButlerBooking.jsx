@@ -94,6 +94,27 @@ const MapModal = ({ location, postCode, isOpen, onClose }) => {
 const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
   if (!isOpen) return null;
 
+  // Function to calculate days remaining until event
+  const getDaysRemaining = (dateOfEvent) => {
+    if (!dateOfEvent) return null;
+    
+    const eventDate = new Date(dateOfEvent);
+    const today = new Date();
+    const timeDiff = eventDate.getTime() - today.getTime();
+    const daysRemaining = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    
+    return daysRemaining;
+  };
+
+  // Check if sensitive info should be shown (within 3 days)
+  const shouldShowSensitiveInfo = () => {
+    const daysRemaining = getDaysRemaining(booking?.dateOfEvent);
+    return daysRemaining !== null && daysRemaining <= 3 && daysRemaining >= 0;
+  };
+
+  const daysRemaining = getDaysRemaining(booking?.dateOfEvent);
+  const showSensitiveInfo = shouldShowSensitiveInfo();
+
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -110,8 +131,11 @@ const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
 
         {/* Content */}
         <div className="p-6 space-y-6">
-          {/* Map Section - Show at the top if postcode exists */}
-          {booking?.postCode && (
+          {/* Days Remaining Alert */}
+         
+
+          {/* Map Section - Show only if postcode exists AND within 3 days */}
+          {booking?.postCode && showSensitiveInfo && (
             <div className="bg-gray-50 rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-lg font-medium text-gray-800 flex items-center gap-2">
@@ -146,6 +170,20 @@ const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
             </div>
           )}
 
+          {/* Map Restricted Message - Show when not within 3 days */}
+          {booking?.postCode && !showSensitiveInfo && (
+            <div className="bg-gray-100 rounded-lg p-4 text-center">
+              <MdLocationOn className="text-3xl text-gray-400 mx-auto mb-2" />
+              <p className="text-gray-600 font-medium">Location Map</p>
+              <p className="text-sm text-gray-500 mt-1">
+                {daysRemaining > 3 
+                  ? `Map will be available ${daysRemaining - 3} day${daysRemaining - 3 > 1 ? 's' : ''} before the event`
+                  : 'Event completed - Map access expired'
+                }
+              </p>
+            </div>
+          )}
+
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -171,6 +209,18 @@ const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
               <p className="text-gray-900">
                 {booking?.dateOfEvent ? new Date(booking.dateOfEvent).toLocaleDateString() : "N/A"}
               </p>
+              {daysRemaining !== null && (
+                <p className={`text-xs mt-1 ${
+                  daysRemaining <= 3 ? 'text-red-600 font-medium' : 'text-gray-500'
+                }`}>
+                  {daysRemaining > 0 
+                    ? `${daysRemaining} day${daysRemaining > 1 ? 's' : ''} remaining`
+                    : daysRemaining === 0 
+                      ? 'Today'
+                      : `${Math.abs(daysRemaining)} day${Math.abs(daysRemaining) > 1 ? 's' : ''} ago`
+                  }
+                </p>
+              )}
             </div>
             <div>
               <label className="text-sm font-medium text-gray-600">Start Time</label>
@@ -190,13 +240,35 @@ const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-600">Phone</label>
-                <p className="text-gray-900">{booking?.phone}</p>
+                <p className="text-gray-900">
+                  {showSensitiveInfo ? (
+                    booking?.phone
+                  ) : (
+                    <span className="text-gray-400">
+                      {daysRemaining > 3 
+                        ? `Available in ${daysRemaining - 3} day${daysRemaining - 3 > 1 ? 's' : ''}`
+                        : 'Not available'
+                      }
+                    </span>
+                  )}
+                </p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-600">Post Code</label>
                 <div className="flex items-center gap-2">
-                  <p className="text-gray-900">{booking?.postCode}</p>
-                  {booking?.postCode && (
+                  <p className="text-gray-900">
+                    {showSensitiveInfo ? (
+                      booking?.postCode
+                    ) : (
+                      <span className="text-gray-400">
+                        {daysRemaining > 3 
+                          ? `Available in ${daysRemaining - 3} day${daysRemaining - 3 > 1 ? 's' : ''}`
+                          : 'Not available'
+                        }
+                      </span>
+                    )}
+                  </p>
+                  {booking?.postCode && showSensitiveInfo && (
                     <button
                       onClick={() => onOpenMap(booking.location, booking.postCode)}
                       className="p-1 text-[#FF006A] hover:text-[#e5005f] transition-colors"
@@ -209,7 +281,18 @@ const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-600">Location</label>
-                <p className="text-gray-900">{booking?.location || "N/A"}</p>
+                <p className="text-gray-900">
+                  {showSensitiveInfo ? (
+                    booking?.location || "N/A"
+                  ) : (
+                    <span className="text-gray-400">
+                      {daysRemaining > 3 
+                        ? `Available in ${daysRemaining - 3} day${daysRemaining - 3 > 1 ? 's' : ''}`
+                        : 'Not available'
+                      }
+                    </span>
+                  )}
+                </p>
               </div>
             </div>
           </div>
@@ -246,6 +329,25 @@ const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
               </div>
             </div>
           </div>
+
+          {/* Sensitive Information Notice */}
+          {!showSensitiveInfo && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <div className="bg-blue-100 p-2 rounded-full">
+                  <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h5 className="font-medium text-blue-800">Information Access</h5>
+                  <p className="text-sm text-blue-700 mt-1">
+                    Customer contact details and location information will be available 3 days before the scheduled event for privacy and security reasons.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
@@ -987,15 +1089,7 @@ const ButlerBooking = () => {
                     </button>
                     
                     {/* Map Button */}
-                    {b.postCode && (
-                      <button
-                        onClick={() => handleOpenMap(b.location, b.postCode)}
-                        className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
-                        title="View on Map"
-                      >
-                        <MdLocationOn className="text-lg" />
-                      </button>
-                    )}
+                  
                     
                     {/* Change Status Button */}
                     <button
