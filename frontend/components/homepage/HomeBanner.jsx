@@ -15,7 +15,7 @@ export default function HomeBanner() {
         title="Buff Butlers Hen Party Entertainment UK"
         aria-label="Buff butlers and hen party entertainment across the UK"
       >
-        <source src="/videos/BannerVid.mp4" type="video/mp4" />
+        <source src="/videos/HeroBannerVid.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 
@@ -23,7 +23,7 @@ export default function HomeBanner() {
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80"></div>
 
       {/* Content */}
-      <div className="relative z-10 flex h-full flex-col justify-end px-4 md:px-12 lg:px-24 pb-32 pt-[160px] md:pt-0 text-white">
+      <div className="relative z-10 flex h-full flex-col justify-center lg:justify-end px-4 mt-36 md:mt-40 lg:mt-10 pb-32 text-white md:px-8 lg:px-20 md:pt-0">
         <div className="flex w-full flex-col items-center md:items-start lg:flex-row lg:justify-between lg:items-center gap-10 mx-auto">
           {/* Left Side: Heading + Buttons */}
           <div className="max-w-6xl md:text-left">
@@ -32,7 +32,7 @@ export default function HomeBanner() {
               Entertainment Across the UK
             </h1>
 
-            <p className="mt-4 text-base md:text-xl text-[#F6F4F5] text-justify capitalize lg:w-11/12">
+            <p className="mt-4 text-base md:text-xl text-[#F6F4F5] capitalize lg:w-11/12">
               Looking for the ultimate hen party entertainment? You’ve come to
               the right place. Hunky Butler Service is the UK’s most popular
               buff butler and hen party entertainment company. But the fun

@@ -75,10 +75,10 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
                   {booking?.firstName} {booking?.lastName}
                 </p>
               </div>
-              <div>
+              {/* <div>
                 <label className="text-sm font-medium text-gray-600">Email</label>
                 <p className="text-gray-900">{booking?.email}</p>
-              </div>
+              </div> */}
               <div>
                 <label className="text-sm font-medium text-gray-600">Phone</label>
                 <p className="text-gray-900">{booking?.phone}</p>
@@ -1153,5 +1153,4 @@ const Booking = () => {
 };
 
 export default Booking;
-
 

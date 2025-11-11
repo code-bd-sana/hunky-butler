@@ -90,7 +90,6 @@ export default function Otp() {
           <span className="text-pink-600 font-semibold"> {email} </span>
           Please Enter It Below To Continue.
         </p>
-
         <div className="bg-white rounded-2xl p-8 shadow-[0_25px_40px_rgba(0,0,0,0.04)] border border-white/30 inline-block">
           <form onSubmit={handleSubmit} className="space-y-6">
             <label className="block text-sm font-semibold text-gray-800">

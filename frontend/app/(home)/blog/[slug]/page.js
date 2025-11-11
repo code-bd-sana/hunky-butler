@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { useParams } from "next/navigation";
 import BlogDetails from "@/components/BlogDetails/BlogDetails";
@@ -21,7 +20,7 @@ const BlogDetailsContent = () => {
       <p className="text-center py-10 text-red-500">Failed to load blog.</p>
     );
   if (!blog)
-    return <p className="text-center py-10 text-gray-500">Blog not found.</p>;
+    return <p className="text-center py-10 text-gray-500">Blog not found.</p>
 
   return (
     <div className="min-h-screen bg-white">

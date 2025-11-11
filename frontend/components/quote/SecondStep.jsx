@@ -1277,10 +1277,7 @@ export default function SecondStep() {
                         <span className="font-medium">Price Breakdown:</span>
                         <span className="text-right text-sm text-gray-300">{getPriceBreakdown()}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="font-medium">Butler Fee:</span>
-                        <span className="font-bold text-blue-400">£{butlerFee}</span>
-                      </div>
+                     
                       {paymentType === 'deposit' && (
                         <>
                           <div className="flex justify-between">
@@ -1386,11 +1383,8 @@ export default function SecondStep() {
                       )}
                       
                       <div className="flex justify-between items-center">
-                        <span className="font-medium text-sm md:text-lg">Butler Fee</span>
-                        <div className="text-right">
-                          <span className="font-bold">£{butlerFee}</span>
-                          <p className="text-xs text-gray-400">{getButlerFeeBreakdown()}</p>
-                        </div>
+                        
+                       
                       </div>
                       
                       {priceCalculation?.durationInfo?.minimumApplied && (
@@ -1444,7 +1438,7 @@ export default function SecondStep() {
                         <span className="font-medium text-sm md:text-lg">Location</span>
                         <span className="text-right max-w-[200px] break-words">{firstStep.location}</span>
                       </div>
-                      {distanceInfo && (
+                      {/* {distanceInfo && (
                         <div className="flex justify-between items-center">
                           <span className="font-medium text-sm md:text-lg">Nearest Hub</span>
                           <div className="text-right">
@@ -1454,7 +1448,7 @@ export default function SecondStep() {
                             </p>
                           </div>
                         </div>
-                      )}
+                      )} */}
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Service Type</span>
                         <span className="text-right capitalize">{params?.category}</span>
