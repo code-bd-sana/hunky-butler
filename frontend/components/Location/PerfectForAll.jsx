@@ -13,11 +13,11 @@ import Link from "next/link";
 export default function PerfectForAll({ city, slug, serviceName }) {
   console.log(slug);
   const included = [
-    "Hen Parties: Keep The Laughter Flowing With Flirty Fun And Games.",
-    "Birthday Parties: Add Energy And Excitement To Your Special Day.",
-    "Corporate Events: Keep It Professional Yet Lively With Charming Hosts.",
-    "Private Gatherings: A Personal Touch For Intimate Occasions.",
-    "Holiday Celebrations: From Hogmanay To Christmas — We’ve Got Your Party Covered.",
+    "Keep the laughter flowing with flirty fun, playful games, and cheeky challenges that create unforgettable memories and nonstop enjoyment together.",
+    "Add excitement to your special day with engaging hosts, lively entertainment, and fun-filled activities that make every moment truly special.",
+    "Maintain professionalism with lively charm, engaging hosts, and seamless coordination that ensure every attendee enjoys a polished, memorable experience.",
+    "Bring warmth and personality to your event with tailored entertainment, charming interactions, and elegant touches that delight every invited guest.",
+    "Celebrate in festive style with joyful energy, elegant entertainment, and cheerful hosts who make your seasonal gatherings sparkle with happiness.",
   ];
   return (
     <div className="relative overflow-hidden px-1">
@@ -60,11 +60,11 @@ export default function PerfectForAll({ city, slug, serviceName }) {
         <p className="text-3xl z-50 italic  leading-normal text-center capitalize text-[#292929]">
           {/* {text} */}
         </p>
-        <div className="flex flex-col md:flex-row items-start  px-4 md:px-0 gap-[56px] mt-24">
+        <div className="flex flex-col md:flex-row items-start  md:px-0 gap-[56px] mt-24">
           <section className="flex-1">
-            <h4 className="text-[#141414] text-2xl md:text-3xl lg:text-5xl leading-snug  max-w-4xl mx-auto font-medium ">
-              Perfect For All Occasions
-            </h4>
+            <h2 className="text-[#141414] text-2xl md:text-3xl lg:text-5xl leading-snug  max-w-4xl mx-auto font-medium ">
+              Perfect for Every Celebration in {city}
+            </h2>
             <p className="text-lg my-6">
               Our Scottish Hunky Butlers are trained to adapt to any event type,
               offering both entertainment and hosting services. Here’s where we
@@ -130,23 +130,23 @@ export default function PerfectForAll({ city, slug, serviceName }) {
               src={perfect}
               width={600}
               height={400}
-              className="object-cover rounded-4xl h-[550px]"
+              className="object-cover rounded-4xl h-[500px] md:h-[800px]"
             />
           </section>
         </div>
-        <div className="flex flex-col md:flex-row items-start  px-4 md:px-0 gap-[56px] mt-24">
+        <div className="flex flex-col md:flex-row items-start   md:px-0 gap-[56px] mt-4 md:mt-24">
           <section className="flex-1 mt-4 md:mt-0">
             <Image
               alt="perfect"
               src={scottish}
               width={600}
               height={400}
-              className="object-cover rounded-4xl h-[550px]"
+              className="object-cover rounded-4xl h-[500px] md:h-[800px]"
             />
           </section>
           <section className="flex-1">
             <h4 className="text-[#141414] text-5xl leading-snug  max-w-4xl mx-auto font-medium ">
-              What Makes Our Scottish Butlers Special
+              What Makes Our {city} Butlers Special
             </h4>
             <p className="text-lg my-6">
               Our Scottish Hunky Butlers are trained to adapt to any event type,
