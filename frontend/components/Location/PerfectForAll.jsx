@@ -10,36 +10,61 @@ import MainTitle from "../shared/typography/MainTitle";
 import SubTitle from "../shared/typography/SubTitle";
 import Link from "next/link";
 
-export default function PerfectForAll({ city }) {
+export default function PerfectForAll({ city, slug, serviceName }) {
+  console.log(slug);
   const included = [
-    "Hen Parties: Keep The Laughter Flowing With Flirty Fun And Games.",
-    "Birthday Parties: Add Energy And Excitement To Your Special Day.",
-    "Corporate Events: Keep It Professional Yet Lively With Charming Hosts.",
-    "Private Gatherings: A Personal Touch For Intimate Occasions.",
-    "Holiday Celebrations: From Hogmanay To Christmas — We’ve Got Your Party Covered.",
+    "Keep the laughter flowing with flirty fun, playful games, and cheeky challenges that create unforgettable memories and nonstop enjoyment together.",
+    "Add excitement to your special day with engaging hosts, lively entertainment, and fun-filled activities that make every moment truly special.",
+    "Maintain professionalism with lively charm, engaging hosts, and seamless coordination that ensure every attendee enjoys a polished, memorable experience.",
+    "Bring warmth and personality to your event with tailored entertainment, charming interactions, and elegant touches that delight every invited guest.",
+    "Celebrate in festive style with joyful energy, elegant entertainment, and cheerful hosts who make your seasonal gatherings sparkle with happiness.",
   ];
   return (
-    <div className="relative overflow-hidden">
-      <div className="text-center mb-12 pt-16">
-        <MainTitle text={`Charming Butlers for Every ${city} Celebration`} />
-        <div className=" max-w-7xl mx-auto mt-4">
-          <SubTitle
+    <div className="relative overflow-hidden px-1">
+      <div className="text-center md:mb-12 pt-16">
+        {/* <MainTitle text={`Charming Butlers for Every ${city} Celebration`} /> */}
+        <div>
+          <h2 className="text-[#141414] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-snug  max-w-7xl mx-auto  ">
+            {`Charming Butlers for Every ${city} Celebration`}
+          </h2>
+        </div>
+        <div className=" max-w-7xl mx-auto mt-4 mb-4">
+          {/* <SubTitle
             text={
               "Bring a touch of charm, class, and cheeky fun to your next event with our Hunky Butler Service in Scotland. Whether you’re celebrating a hen party in Edinburgh, a birthday in Glasgow, or a private gathering in Aberdeen, our handsome butlers ensure your event is unforgettable."
             }
-          />
+          /> */}
+          <div className="md:text-lg text-[#333333] text-sm py-4 leading-[1.4] tracking-[-0.01em] capitalize">
+            Make every Nottingham celebration unforgettable with our Charming
+            Butlers, who bring elegance, warmth, and professionalism to every
+            event. Whether it’s a wedding, birthday, corporate gathering, or
+            private dinner, our butlers ensure that every guest feels special
+            and every detail is perfectly managed. With their impeccable
+            manners, polished appearance, and friendly demeanor, they create an
+            atmosphere of sophistication and joy. From welcoming guests and
+            serving drinks to handling personalized requests, our team adds a
+            touch of class and seamless service to your occasion. Let our
+            Charming Butlers turn your Nottingham celebration into a truly
+            memorable and delightful experience.
+          </div>
         </div>
+        <Link
+          href={`/party-entertainment-services/${slug}`}
+          className="cursor-pointer bg-none capitalize text-[#FF006A] px-4 md:px-6 py-2 md:py-4 rounded-full font-medium text-base md:text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A]"
+        >
+          Visit our {serviceName} page
+        </Link>
       </div>
 
-      <div className="max-w-7xl z-50 mx-auto container md:px-8 lg:px-0 py-10">
+      <div className="max-w-7xl z-50 mx-auto container md:px-8 lg:px-0 py-4 md:py-10">
         <p className="text-3xl z-50 italic  leading-normal text-center capitalize text-[#292929]">
           {/* {text} */}
         </p>
-        <div className="flex flex-col md:flex-row items-start  px-4 md:px-0 gap-[56px] mt-24">
+        <div className="flex flex-col md:flex-row items-start  md:px-0 gap-[56px] mt-24">
           <section className="flex-1">
-            <h4 className="text-[#141414] text-5xl leading-snug  max-w-4xl mx-auto font-medium ">
-              Perfect For All Occasions
-            </h4>
+            <h2 className="text-[#141414] text-2xl md:text-3xl lg:text-5xl leading-snug  max-w-4xl mx-auto font-medium ">
+              Perfect for Every Celebration in {city}
+            </h2>
             <p className="text-lg my-6">
               Our Scottish Hunky Butlers are trained to adapt to any event type,
               offering both entertainment and hosting services. Here’s where we
@@ -105,23 +130,23 @@ export default function PerfectForAll({ city }) {
               src={perfect}
               width={600}
               height={400}
-              className="object-cover rounded-4xl h-[550px]"
+              className="object-cover rounded-4xl h-[500px] md:h-[800px]"
             />
           </section>
         </div>
-        <div className="flex flex-col md:flex-row items-start  px-4 md:px-0 gap-[56px] mt-24">
+        <div className="flex flex-col md:flex-row items-start   md:px-0 gap-[56px] mt-4 md:mt-24">
           <section className="flex-1 mt-4 md:mt-0">
             <Image
               alt="perfect"
               src={scottish}
               width={600}
               height={400}
-              className="object-cover rounded-4xl h-[550px]"
+              className="object-cover rounded-4xl h-[500px] md:h-[800px]"
             />
           </section>
           <section className="flex-1">
             <h4 className="text-[#141414] text-5xl leading-snug  max-w-4xl mx-auto font-medium ">
-              What Makes Our Scottish Butlers Special
+              What Makes Our {city} Butlers Special
             </h4>
             <p className="text-lg my-6">
               Our Scottish Hunky Butlers are trained to adapt to any event type,

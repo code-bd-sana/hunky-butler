@@ -21,20 +21,21 @@ import React from "react";
 
 export default function ServiceDetailspage() {
   const { slug } = useParams();
+  console.log(slug);
 
-  const { data } = useGetServiceJoyBanglaQuery(slug);
+  const { data, isLoading } = useGetServiceJoyBanglaQuery(slug);
+  console.log(data);
 
-  // if(loadiing){
-  //   return <p>Loading...</p>
-  // }
-  // if(error){
-  //   console.log(error, "ami tomar error")
-  // }
-
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-40">
+        <span className="loading loading-infinity loading-lg"></span>
+      </div>
+    );
   return (
     <div>
       <ServiceBanner
-        heading={"Buff Butlers for Hire – UK’s Top Hen Party & Event Hosts"}
+        heading={`${data?.name} for Hire – UK’s Top Hen Party & Event Hosts`}
         subTitle={
           "Fun, cheeky and professional butlers to keep your guests entertained, wherever you’re celebrating."
         }
