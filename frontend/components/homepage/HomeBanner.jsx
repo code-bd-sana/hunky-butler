@@ -63,7 +63,7 @@ export default function HomeBanner() {
             {/* Rating (mobile & mid) */}
             <div className="mt-4 md:mt-6 flex flex-col items-center md:items-start text-center md:text-left lg:hidden">
               <div className="flex items-center gap-2">
-                <span className="text-4xl md:text-5xl font-semibold">4.9</span>
+                <span className="text-4xl md:text-5xl font-semibold">5</span>
                 <div className="flex text-yellow-400">
                   {Array(5)
                     .fill(0)
@@ -81,7 +81,7 @@ export default function HomeBanner() {
           {/* Rating (desktop right side) */}
           <div className="hidden lg:flex flex-col items-end text-right">
             <div className="flex items-center gap-2">
-              <span className="text-4xl md:text-5xl font-semibold">4.9</span>
+              <span className="text-4xl md:text-5xl font-semibold">5</span>
               <div className="flex gap-1 text-yellow-400">
                 {Array(5)
                   .fill(0)
