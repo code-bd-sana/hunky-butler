@@ -16,7 +16,7 @@ export default function ServAndAboutBanner({
       className="relative h-[70vh] w-full overflow-hidden bg-cover bg-start flex items-center rounded-b-3xl"
     >
       {/* Content Container */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-10 mt-15 md:mt-0 items-center">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-10 mt-20 md:mt-0 pt-10 items-center">
         {/* Left Column - Breadcrumb + Title */}
         <div>
           {/* Breadcrumb */}
@@ -40,7 +40,7 @@ export default function ServAndAboutBanner({
 
         {/* Right Column - Description Box */}
         <div>
-          <p className="text-sm md:text-lg text-white capitalize leading-relaxed">
+          <p className="text-xs md:text-lg text-white capitalize leading-relaxed">
             {description}
           </p>
         </div>

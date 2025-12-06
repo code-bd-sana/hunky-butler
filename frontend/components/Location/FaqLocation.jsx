@@ -59,7 +59,11 @@ const FaqLocation = ({ location }) => {
   return (
     <div className="w-full max-w-[1240px] mx-auto mt-20 mb-20">
       <div className="text-center w-2/3 mx-auto">
-        <MainTitle text={`FAQs About Hunky Butler Service ${location}`} />
+        <div>
+          <h4 className="text-[#141414] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-snug  max-w-7xl mx-auto  ">
+            FAQs About Hunky Butler Service {location}
+          </h4>
+        </div>
         <p className="text-center capitalize mt-4 text-[#292929]">
           Got a question before booking? Here are answers to some of the most
           common queries about our professional male strippers and what to
