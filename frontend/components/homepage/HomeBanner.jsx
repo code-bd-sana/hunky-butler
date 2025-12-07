@@ -79,7 +79,7 @@ export default function HomeBanner() {
           {/* Rating (desktop right side) */}
           <div className="hidden lg:flex flex-col items-end text-right">
             <div className="flex items-center gap-2">
-              <span className="text-4xl md:text-5xl font-semibold">5</span>
+              <span className="text-4xl md:text-5xl font-semibold">5.00</span>
               <div className="flex gap-1 text-yellow-400">
                 {Array(5)
                   .fill(0)
