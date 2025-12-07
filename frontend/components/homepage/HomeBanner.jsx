@@ -72,9 +72,7 @@ export default function HomeBanner() {
                     ))}
                 </div>
               </div>
-              <p className="mt-4 md:mt-1 text-base md:text-[18px] text-[#E8E8E8]">
-                Over 3,000 Reviews · Nationwide Coverage
-              </p>
+            
             </div>
           </div>
 
@@ -90,9 +88,7 @@ export default function HomeBanner() {
                   ))}
               </div>
             </div>
-            <p className="mt-0 md:mt-1 text-base md:text-[18px] text-[#E8E8E8]">
-              Over 3,000 Reviews · Nationwide Coverage
-            </p>
+       
           </div>
         </div>
       </div>
