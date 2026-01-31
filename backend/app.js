@@ -127,11 +127,12 @@ app.use(
       "http://localhost:3000",
       "https://hnk-test.vercel.app",
       "https://hunky-butler.vercel.app",
+      "https://hunkybutlerservice.co.uk",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
 
     credentials: true,
-  })
+  }),
 );
 
 
