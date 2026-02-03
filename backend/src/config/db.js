@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 // Vercel-optimized database connection
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
 
 if (!MONGODB_URI) {
   throw new Error(
-    'Please define the MONGODB_URI environment variable in Vercel'
+    "Please define the MONGODB_URI environment variable in Vercel",
   );
 }
 
@@ -19,7 +19,7 @@ if (!cached) {
 async function connectDB() {
   // If connection already exists, reuse it
   if (cached.conn) {
-    console.log('✅ Using existing database connection');
+    console.log("✅ Using existing database connection");
     return cached.conn;
   }
 
@@ -34,15 +34,16 @@ async function connectDB() {
       socketTimeoutMS: 45000,
     };
 
-    console.log('🔄 Creating new database connection...');
-    
-    cached.promise = mongoose.connect(MONGODB_URI, opts)
+    console.log("🔄 Creating new database connection...");
+
+    cached.promise = mongoose
+      .connect(MONGODB_URI, opts)
       .then((mongoose) => {
-        console.log('✅ Database connected successfully');
+        console.log("✅ Database connected successfully");
         return mongoose;
       })
       .catch((error) => {
-        console.error('❌ Database connection failed:', error.message);
+        console.error("❌ Database connection failed:", error.message);
         cached.promise = null; // Reset on failure
         throw error;
       });
