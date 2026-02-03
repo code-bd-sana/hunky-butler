@@ -371,6 +371,8 @@ export default function Page() {
                   </div>
                 )}
 
+                {/* riar */}
+
                 <div className='flex mt-6 sm:mt-10 justify-between items-center'>
                   <div>
                     <p className='font-medium text-gray-900 mb-1 capitalize text-sm sm:text-base'>
