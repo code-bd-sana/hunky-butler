@@ -1,19 +1,15 @@
-// export const base_url = `https://hunky-butler-2.onrender.com/api`
+export const base_url = `https://hunky-butler-2.onrender.com/api`;
 // export const base_url = `http://localhost:5000/api`
-export const base_url = `https://hunkey-butler-test.vercel.app/api`
-export const SOCKET_URL = `https://hunky-butler-2.onrender.com`
+// export const base_url = `https://hunkey-butler-test.vercel.app/api`
+export const SOCKET_URL = `https://hunky-butler-2.onrender.com`;
 // export const SOCKET_URL = `http://localhost:5000`
 // export const SOCKET_URL = `https://hunkey-butler-test.vercel.app`
 
-
-  export const uploadToImgBB = async (file) => {
-    try {
-
-      
-
-   if(!file){
-    return null;
-   }
+export const uploadToImgBB = async (file) => {
+  try {
+    if (!file) {
+      return null;
+    }
     const formData = new FormData();
     formData.append("image", file);
 
@@ -22,20 +18,13 @@ export const SOCKET_URL = `https://hunky-butler-2.onrender.com`
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     const data = await res.json();
 
-
     return data.data.url;
-      
-    } catch (error) {
-      return error;
-    }
-  };
-
-
-
- 
-
+  } catch (error) {
+    return error;
+  }
+};
