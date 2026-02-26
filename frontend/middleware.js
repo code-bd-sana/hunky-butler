@@ -7,50 +7,41 @@ export default async function middleware(req) {
   const token = await getToken({
     req,
     secret: "aidfjnvociydfnovfadf",
-    secureCookie: process.env.NODE_ENV === "production",
   });
 
+  // ❗ token null হলে redirect
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  const userRole = token?.role;
+  const userRole = token.role;
 
+  // payments → customer & butler
   if (pathname === "/dashboard/payments") {
     if (userRole !== "customer" && userRole !== "butler") {
       return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
-  if (pathname === "/dashboard/messages") {
-  }
-
+  // users → admin only
   if (pathname === "/dashboard/users") {
-    console.log(token, "I am your personal user");
-
     if (userRole !== "admin") {
       return NextResponse.redirect(new URL("/login", req.url));
     }
   }
 
-  if (pathname === "/dashboard/financials") {
-    if (userRole !== "admin") {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
+  // admin only routes
+  const adminRoutes = [
+    "/dashboard/financials",
+    "/dashboard/services",
+    "/dashboard/adminTools",
+  ];
+
+  if (adminRoutes.includes(pathname) && userRole !== "admin") {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (pathname === "/dashboard/services") {
-    if (userRole !== "admin") {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-  }
-
-  if (pathname === "/dashboard/adminTools") {
-    if (userRole !== "admin") {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-  }
-
+  // schedule → butler only
   if (pathname === "/dashboard/schedule") {
     if (userRole !== "butler") {
       return NextResponse.redirect(new URL("/login", req.url));
@@ -61,16 +52,5 @@ export default async function middleware(req) {
 }
 
 export const config = {
-  matcher: [
-    "/dashboard",
-    "/dashboard/payments",
-    "/dashboard/messages",
-    "/dashboard/users",
-    "/dashboard/profile",
-    "/dashboard/financials",
-    "/dashboard/services",
-    "/dashboard/adminTools",
-    "/dashboard/schedule",
-    "/my-shot",
-  ],
+  matcher: ["/dashboard/:path*", "/my-shot"],
 };
