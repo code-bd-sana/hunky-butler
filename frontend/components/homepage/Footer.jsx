@@ -158,6 +158,7 @@ const Footer = () => {
             <p className='text-sm text-gray-500'>
               By Subscribing You Agree To Our
               <span className='text-[#FF006A] cursor-pointer'>
+                {" "}
                 Privacy Policy
               </span>
             </p>

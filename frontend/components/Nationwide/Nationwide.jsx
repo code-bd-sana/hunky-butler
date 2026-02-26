@@ -12,7 +12,7 @@ import { useGetLocationsQuery } from "@/features/location";
 import Link from "next/link";
 const Nationwide = ({ name, serviceSlug }) => {
   const { data: nations = [], isLoading, isError } = useGetLocationsQuery();
-  console.log(nations);
+  console.log(nations, "all nation is here");
   // const [nations, setNations] = useState([]);
 
   // useEffect(() => {
@@ -30,39 +30,37 @@ const Nationwide = ({ name, serviceSlug }) => {
   //   fetchNations();
   // }, []);
   return (
-    <section className="max-w-7xl mx-auto px-4 py-14 text-center">
+    <section className='max-w-7xl mx-auto px-4 py-14 text-center'>
       <SecondaryTitle text1={`${name ? name : "Loading"} Locations We Cover`} />
-      <SubTitle title="Life Drawing Available Nationwide" />
-      <p className="max-w-3xl mx-auto text-gray-600 mb-12 leading-relaxed">
+      <SubTitle title='Life Drawing Available Nationwide' />
+      <p className='max-w-3xl mx-auto text-gray-600 mb-12 leading-relaxed'>
         Looking for buff butlers in your area? We cover the whole of the UK —
         from Liverpool and Manchester to London, Birmingham, Leeds, Newcastle,
         and beyond. Wherever your event is, our butlers are ready to bring the
         fun.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {nations?.slice(0, 6).map((nation, i) => (
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
+        {nations?.map((nation, i) => (
           <Link
             key={i}
-            href={`/locations/${nation?.slug}/?serviceSlug=${serviceSlug}`}
-          >
+            href={`/locations/${nation?.slug}/?serviceSlug=${serviceSlug}`}>
             <div
               key={i}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 border border-gray-100 hover:border-pink-500"
-            >
-              <div className="overflow-hidden rounded-xl">
+              className='bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 border border-gray-100 hover:border-pink-500'>
+              <div className='overflow-hidden rounded-xl'>
                 <h1>{nation?.title}</h1>
                 <Image
                   src={nation?.image}
                   alt={nation?.name}
                   width={400}
                   height={250}
-                  className="rounded-xl mb-4 object-cover w-full h-[220px] hover:scale-105 transition-transform duration-300"
+                  className='rounded-xl mb-4 object-cover w-full h-[220px] hover:scale-105 transition-transform duration-300'
                 />
               </div>
-              <div className="flex justify-between items-center text-pink-600 font-semibold mt-2 capitalize">
+              <div className='flex justify-between items-center text-pink-600 font-semibold mt-2 capitalize'>
                 <p>
-                  {serviceSlug}
+                  {serviceSlug.split("-").join(" ")}{" "}
                   <span> {nation?.city}</span>
                 </p>
                 <FaArrowRight />
