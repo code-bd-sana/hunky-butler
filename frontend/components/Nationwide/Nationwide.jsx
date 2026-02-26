@@ -12,7 +12,7 @@ import { useGetLocationsQuery } from "@/features/location";
 import Link from "next/link";
 const Nationwide = ({ name, serviceSlug }) => {
   const { data: nations = [], isLoading, isError } = useGetLocationsQuery();
-  console.log(nations);
+  console.log(nations, "all nation is here");
   // const [nations, setNations] = useState([]);
 
   // useEffect(() => {
@@ -41,7 +41,7 @@ const Nationwide = ({ name, serviceSlug }) => {
       </p>
 
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
-        {nations?.slice(0, 6).map((nation, i) => (
+        {nations?.map((nation, i) => (
           <Link
             key={i}
             href={`/locations/${nation?.slug}/?serviceSlug=${serviceSlug}`}>

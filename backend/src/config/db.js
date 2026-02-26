@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
 
 // Vercel-optimized database connection
-const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
+const MONGODB_URI =
+  process.env.MONGODB_URI ||
+  process.env.MONGO_URI ||
+  "mongodb+srv://rental:vcmCdJcpBUyHYA0h@cluster0.5sfxlm2.mongodb.net/hunkeybutler?retryWrites=true&w=majority&appName=Cluster0";
 
 if (!MONGODB_URI) {
   throw new Error(
