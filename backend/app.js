@@ -117,12 +117,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: [
-      "http://localhost:5174",
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "https://hnk-test.vercel.app",
-      "https://hunky-butler.vercel.app",
-      "https://hunkybutlerservice.co.uk",
+    'https://www.hunkybutlerservice.co.uk', 'https://hunkybutlerservice.co.uk'
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
 
