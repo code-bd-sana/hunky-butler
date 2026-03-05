@@ -119,7 +119,7 @@ app.use(
     origin: [
     'https://hunkybutlerservice.co.uk', 'https://hunkybutlerservice.co.uk/', 'https://www.hunkybutlerservice.co.uk', 'https://www.hunkybutlerservice.co.uk/'
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+
 
     credentials: true,
   }),
