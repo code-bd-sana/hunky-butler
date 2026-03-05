@@ -117,7 +117,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: [
-    '*'
+    'https://hunkybutlerservice.co.uk', 'https://hunkybutlerservice.co.uk/', 'https://www.hunkybutlerservice.co.uk', 'https://www.hunkybutlerservice.co.uk/'
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
 
