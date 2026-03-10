@@ -9,38 +9,68 @@ import { handleSquareWebhook } from "./src/controller/payment.controller.js";
 import Message from "./src/models/Message.js";
 import routes from "./src/routes/index.js";
 
-// router.post('/webhook', express.raw({type: 'application/json'}), handleStripeWebhook);
-
-const app = express();
-// import { handleStripeWebhook } from "./src/controller/payment.controller.js";
-
 dotenv.config();
 
+const app = express();
+
+// সরাসরি CORS অরিজিন ডিফাইন করা হলো
+const allowedOrigins = [
+  'https://hunkybutlerservice.co.uk',
+  'https://www.hunkybutlerservice.co.uk',
+  'https://hunkybutlerservice.co.uk/',
+  'https://www.hunkybutlerservice.co.uk/'
+];
+
+// CORS কনফিগারেশন
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc)
+    if (!origin) return callback(null, true);
+    
+    // ট্রেইলিং স্ল্যাশ ছাড়া চেক করা
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    
+    if (allowedOrigins.some(o => o.replace(/\/$/, '') === normalizedOrigin)) {
+      callback(null, true);
+    } else {
+      console.log('Blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+// CORS middleware সবার আগে প্রয়োগ করা হলো
+app.use(cors(corsOptions));
+
+// ওয়েবহুক রুট - এটি express.json() এর আগে থাকতে হবে
 app.post(
   "/api/webhook",
   express.raw({ type: "application/json" }),
-  handleSquareWebhook,
+  handleSquareWebhook
 );
 
-// Socket.IO setup
+// রেগুলার মিডলওয়্যার
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+
+// Socket.IO সেটআপ
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    // origin: ['http://localhost:5174', 'http://localhost:5173', 'http://localhost:3000', 'https://hnk-test.vercel.app', "https://hunky-butler.vercel.app"],
-    origin: ['https://www.hunkybutlerservice.co.uk', 'https://hunkybutlerservice.co.uk', 'https://www.hunkybutlerservice.co.uk/', 'https://hunkybutlerservice.co.uk/'],
+    origin: allowedOrigins,
     credentials: true,
   },
   transports: ["websocket", "polling"],
+  pingTimeout: 60000,
+  pingInterval: 25000
 });
 
 app.set("io", io);
-// io.on("connection", (socket) => {
-//   console.log("🟢 A user connected:", socket.id);
-//   socket.on("disconnect", () => {
-//     console.log("🔴 User disconnected:", socket.id);
-//   });
-// });
 
+// Socket.IO কানেকশন হ্যান্ডলিং
 io.on("connection", (socket) => {
   console.log("🟢 A user connected:", socket.id);
 
@@ -49,26 +79,21 @@ io.on("connection", (socket) => {
     console.log("👤 User joined room:", userId);
   });
 
-  //   // Join user to their personal room based on email
   socket.on("join-user", (userEmail) => {
     socket.join(userEmail);
     console.log(`👤 User ${userEmail} joined room`);
   });
 
-  //   // Handle notification seen event
   socket.on("notification-seen", (data) => {
     console.log("📭 Notification seen:", data);
-    // Broadcast to other clients if needed
     socket.to(data.userEmail).emit("notification-updated");
   });
 
-  //   // Handle all notifications seen
   socket.on("all-notifications-seen", (data) => {
     console.log("📭 All notifications seen for:", data.userEmail);
     socket.to(data.userEmail).emit("notification-updated");
   });
 
-  // Get chat history between two users
   socket.on("getMessages", async ({ senderId, receiverId }) => {
     try {
       const messages = await Message.find({
@@ -81,53 +106,35 @@ io.on("connection", (socket) => {
       socket.emit("messageHistory", { withUserId: receiverId, messages });
     } catch (err) {
       console.error("Error fetching messages:", err);
+      socket.emit("error", { message: "Failed to fetch messages" });
     }
   });
 
-  // Handle sending new message
   socket.on("sendMessage", async (msg) => {
-    console.log(msg);
+    console.log("Sending message:", msg);
     try {
       const newMsg = await Message.create(msg);
-
-      // Send to receiver’s room
       io.to(msg.receiverId).emit("receiveMessage", newMsg);
       io.to(msg.senderId).emit("receiveMessage", newMsg);
     } catch (err) {
       console.error("Error saving message:", err);
+      socket.emit("error", { message: "Failed to send message" });
     }
   });
 
-  socket.on("disconnect", () => {
-    console.log("🔴 User disconnected:", socket.id);
+  socket.on("disconnect", (reason) => {
+    console.log("🔴 User disconnected:", socket.id, "Reason:", reason);
+  });
+
+  socket.on("error", (error) => {
+    console.error("Socket error:", error);
   });
 });
 
-// Make io accessible to routes
-app.set("io", io);
-
-// app.post(
-//   "/api/webhook",
-//   express.raw({ type: "application/json" }),
-//   webhook
-// );
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: [
-    'https://hunkybutlerservice.co.uk', 'https://hunkybutlerservice.co.uk/', 'https://www.hunkybutlerservice.co.uk', 'https://www.hunkybutlerservice.co.uk/'
-    ],
-
-    
-
-
-    credentials: true,
-  }),
-);
-
+// রাউটস
 app.use("/api", routes);
+
+// হেলথ চেক এবং রুট
 app.get("/", (req, res) => {
   res.status(200).type("html").send(`
     <!doctype html>
@@ -173,50 +180,34 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  res.status(200).json({ message: "API is running" });
+  res.status(200).json({ 
+    status: "OK", 
+    message: "API is running",
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Socket.IO connection handling
-// io.on("connection", (socket) => {
-//   // console.log("🔌 User connected:", socket.id);
+// এরর হ্যান্ডলিং মিডলওয়্যার
+app.use((err, req, res, next) => {
+  console.error("Server error:", err);
+  
+  // CORS errors specifically
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ 
+      error: 'CORS error', 
+      message: 'Origin not allowed' 
+    });
+  }
+  
+  res.status(500).json({ 
+    error: 'Internal Server Error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something broke!'
+  });
+});
 
-//   // Join user to their personal room based on email
-//   socket.on("join-user", (userEmail) => {
-//     socket.join(userEmail);
-//     console.log(`👤 User ${userEmail} joined room`);
-//   });
-
-//   // Handle notification seen event
-//   socket.on("notification-seen", (data) => {
-//     console.log("📭 Notification seen:", data);
-//     // Broadcast to other clients if needed
-//     socket.to(data.userEmail).emit("notification-updated");
-//   });
-
-//   // Handle all notifications seen
-//   socket.on("all-notifications-seen", (data) => {
-//     console.log("📭 All notifications seen for:", data.userEmail);
-//     socket.to(data.userEmail).emit("notification-updated");
-//   });
-
-//   // Handle disconnect
-//   // socket.on("disconnect", () => {
-//   //   console.log("🔌 User disconnected:", socket.id);
-//   // });
-
-//   // Handle connection error
-//   socket.on("connect_error", (error) => {
-//     console.error("🔌 Connection error:", error);
-//   });
-// });
-
+// ডাটাবেস কানেক্ট
 await connectDB();
 
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).send("Something Broke!");
-});
-
-// Export both app and server
+// এক্সপোর্ট
 export { app, io };
 export default server;
