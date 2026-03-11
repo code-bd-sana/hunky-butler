@@ -13,7 +13,6 @@ dotenv.config();
 
 const app = express();
 
-// সরাসরি CORS অরিজিন ডিফাইন করা হলো
 const allowedOrigins = [
   'https://hunkybutlerservice.co.uk',
   'https://www.hunkybutlerservice.co.uk',
