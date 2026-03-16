@@ -1,8 +1,7 @@
-import Image from "next/image";
 
 const WhyContactUsSection = () => {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-20">
+    <div className="max-w-7xl mx-auto ">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         {/* Left Side Content */}
         <div className="space-y-6">

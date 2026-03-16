@@ -9,6 +9,7 @@ import { store } from "@/store/store";
 import { useGetBlogBySlugQuery } from "@/features/blogApi";
 import blogBg from "../../../../public/Blog/blog2.jpg";
 import RelatedBlog from "@/components/blog/RelatedBlog";
+import Image from "next/image";
 
 const BlogDetailsContent = () => {
   const { slug } = useParams();
@@ -23,8 +24,9 @@ const BlogDetailsContent = () => {
     return <p className="text-center py-10 text-gray-500">Blog not found.</p>
 
   return (
-    <div className="min-h-screen bg-white">
-      <Banner
+    <div className="min-h-screen mt-28 bg-white">
+
+      {/* <Banner
         image={blogBg}
         service="Blog"
         title={blog.title}
@@ -32,10 +34,13 @@ const BlogDetailsContent = () => {
           "en-US",
           { month: "long", day: "numeric", year: "numeric" }
         )}
-      />
+      /> */}
       <BlogDetails blog={blog} />
       <RelatedBlog currentBlog={blog} />
-      <Footer />
+   <div className="mt-96">
+
+       <Footer />
+   </div>
     </div>
   );
 };

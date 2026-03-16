@@ -21,8 +21,8 @@ const Footer = () => {
         className=' bg-[#FF006A] text-white rounded-xl md:rounded-3xl max-w-[1240px] mx-auto text-start h-[350px] md:h-[497px] pt-8 md:pt-16 pl-6 md:pl-20 absolute -top-[340px] md:-top-[410px] inset-x-0 overflow-hidden '
         style={{
           backgroundImage: "url('/Footer/bg2.png')",
-          backgroundSize: "cover", // not backgroundImage: "cover"
-          backgroundRepeat: "no-repeat", // optional
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
         }}>
         <img
           src='/Footer/loon.png'
@@ -57,7 +57,7 @@ const Footer = () => {
         />
       </div>
 
-      <footer className='p-6  max-w-[1240px] mx-auto py-12 bg-[#F2EDEF] md:h-[511px] pt-32 min-h-screen md:min-h-0'>
+      <footer className='p-6 max-w-[1240px] mx-auto py-12 bg-[#F2EDEF] md:h-[511px] pt-32 min-h-screen md:min-h-0'>
         <div className='flex flex-col md:flex-row md:items-start md:justify-between gap-6 md:gap-15'>
           {/* Brand */}
           <div className='md:w-1/4'>
@@ -76,13 +76,27 @@ const Footer = () => {
               36a Renshaw Street <br /> Liverpool <br /> L1 4EF <br />
               United Kingdom
             </p>
+            
+            {/* ক্লিকযোগ্য ইমেইল */}
             <p className='text-base text-gray-800 flex items-center gap-2 mb-4'>
-              <IoMdMail className=' text-[#FF006A]' />
-              <span className='font-bold'>info@hunkybutlerservice.co.uk</span>
+              <IoMdMail className='text-[#FF006A]' />
+              <a 
+                href="mailto:info@hunkybutlerservice.co.uk" 
+                className='font-bold hover:text-[#FF006A] transition-colors'
+              >
+                info@hunkybutlerservice.co.uk
+              </a>
             </p>
+            
+            {/* ক্লিকযোগ্য ফোন নম্বর */}
             <p className='text-base text-gray-800 flex items-center gap-2'>
-              <IoCallSharp className='text-[#FF006A]' />{" "}
-              <span className='font-bold'>+44 7745 865352</span>
+              <IoCallSharp className='text-[#FF006A]' />
+              <a 
+                href="tel:+447745865352" 
+                className='font-bold hover:text-[#FF006A] transition-colors'
+              >
+                +44 7745 865352
+              </a>
             </p>
           </div>
 
@@ -92,22 +106,22 @@ const Footer = () => {
             <ul className='space-y-2 text-sm text-gray-600'>
               {data?.status === "authenticated" && (
                 <li>
-                  <Link href={"/dashboard"}>Dashboard</Link>
+                  <Link href={"/dashboard"} className="hover:text-[#FF006A] transition-colors">Dashboard</Link>
                 </li>
               )}
               {data?.status !== "authenticated" && (
                 <li>
-                  <Link href={"/login"}>Login</Link>
+                  <Link href={"/login"} className="hover:text-[#FF006A] transition-colors">Login</Link>
                 </li>
               )}
               <li>
-                <Link href={"/about"}>About Us</Link>
+                <Link href={"/about"} className="hover:text-[#FF006A] transition-colors">About Us</Link>
               </li>
               <li>
-                <Link href={"/contact"}>Contact</Link>
+                <Link href={"/contact"} className="hover:text-[#FF006A] transition-colors">Contact</Link>
               </li>
               <li>
-                <Link href={"/contact"}>Services</Link>
+                <Link href={"/contact"} className="hover:text-[#FF006A] transition-colors">Services</Link>
               </li>
             </ul>
           </div>
@@ -117,22 +131,19 @@ const Footer = () => {
             <h4 className='font-semibold mb-3'>Legal</h4>
             <ul className='space-y-2 text-sm text-gray-600'>
               <li>
-                {" "}
-                <a href='/privacy-policy' target='_blank'>
+                <a href='/privacy-policy' target='_blank' rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
                   Privacy Policy
-                </a>{" "}
+                </a>
               </li>
               <li>
-                {" "}
-                <a href='/terms-and-conditon' target='_blank'>
-                  Terms Of Conditons
-                </a>{" "}
+                <a href='/terms-and-conditon' target='_blank' rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+                  Terms Of Conditions
+                </a>
               </li>
               <li>
-                {" "}
-                <a href='refund-policy' target='_blank'>
+                <a href='/refund-policy' target='_blank' rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
                   Refund Policy
-                </a>{" "}
+                </a>
               </li>
             </ul>
           </div>
@@ -151,13 +162,13 @@ const Footer = () => {
                 placeholder='Enter Your Email'
                 className='w-11/12 px-4 py-2 rounded-full focus:outline-none text-sm bg-white'
               />
-              <button className='cursor-pointer bg-none border-[#FF006A] text-[#FF006A] px-10 py-2 rounded-full  font-medium text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A'>
+              <button className='cursor-pointer bg-none border-[#FF006A] text-[#FF006A] px-10 py-2 rounded-full font-medium text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A]'>
                 Subscribe
               </button>
             </div>
             <p className='text-sm text-gray-500'>
               By Subscribing You Agree To Our
-              <span className='text-[#FF006A] cursor-pointer'>
+              <span className='text-[#FF006A] cursor-pointer hover:underline'>
                 {" "}
                 Privacy Policy
               </span>
@@ -171,14 +182,24 @@ const Footer = () => {
               Stay In The Know
             </h1>
             <div className='flex items-center gap-4'>
-              <FaFacebookF className='cursor-pointer hover:text-pink-500' />
-              <FaTwitter className='cursor-pointer hover:text-pink-500' />
-              <FaInstagram className='cursor-pointer hover:text-pink-500' />
-              <FaYoutube className='cursor-pointer hover:text-pink-500' />
-              <FaTumblr className='cursor-pointer hover:text-pink-500' />
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+                <FaFacebookF />
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+                <FaTwitter />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+                <FaInstagram />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+                <FaYoutube />
+              </a>
+              <a href="https://tumblr.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+                <FaTumblr />
+              </a>
             </div>
           </div>
-          <h1>© 2025 Hunky butler serv. All Rights Reserved. </h1>
+          <h1>© 2025 Hunky butler serv. All Rights Reserved.</h1>
         </div>
       </footer>
     </div>
