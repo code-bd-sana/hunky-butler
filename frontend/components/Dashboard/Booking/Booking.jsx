@@ -1109,7 +1109,7 @@ const Booking = () => {
               <th className="p-3 font-medium">Location</th>
               <th className="p-3 font-medium">Status</th>
               <th className="p-3 font-medium">Total</th>
-              <th className="p-3 font-medium">Fee (Platform)</th>
+              {/* <th className="p-3 font-medium">Fee (Platform)</th> */}
               <th className="p-3 font-medium">Payment Status</th>
               <th className="p-3 font-medium">Action</th>
             </tr>
@@ -1178,8 +1178,8 @@ const Booking = () => {
                     {b.status?.charAt(0).toUpperCase() + b.status?.slice(1)}
                   </span>
                 </td>
-                <td className="p-3">${b.price}</td>
-                <td className="p-3">${(b.price * 0.2).toFixed(2)}</td>
+                <td className="p-3">£{b.price}</td>
+                {/* <td className="p-3">${(b.price * 0.2).toFixed(2)}</td> */}
                 <td className="p-3">{b.paid}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">

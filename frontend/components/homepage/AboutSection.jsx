@@ -52,7 +52,7 @@ export default function AboutSection() {
 
   return (
     <div className='bg-[#FFF0F6] py-8 md:py-24 overflow-hidden relative'>
-      <div className='max-w-7xl mx-auto lg:flex px-4 xl:px-0 items-center gap-4 mt-16'>
+        <div className='max-w-7xl mx-auto lg:flex px-4 xl:px-0 items-center gap-4 mt-16'>
         <section className='flex-1 z-50'>
           <MainTitle text={"About Us"} />
           <p className='text-lg my-3 text-[#3D3D3D]'>
@@ -77,7 +77,7 @@ export default function AboutSection() {
 
           <div>
             <div className='flex gap-4 items-center'>
-              <Image alt='icon' src={icon} />
+              <Image alt='icon' src={icon} width={24} height={24} className="w-5 h-5 md:w-6 md:h-6 flex-shrink-0" />
               <div className='text-[#333333]'>
                 <SubTitle
                   text={
@@ -87,7 +87,7 @@ export default function AboutSection() {
               </div>
             </div>
             <div className='flex gap-4 items-center'>
-              <Image alt='icon' src={icon} />
+              <Image alt='icon' src={icon} width={24} height={24} className="w-5 h-5 md:w-6 md:h-6 flex-shrink-0" />
               <div className='text-[#333333]'>
                 <SubTitle
                   text={
@@ -97,13 +97,13 @@ export default function AboutSection() {
               </div>
             </div>
             <div className='flex gap-4 items-center'>
-              <Image alt='icon' src={icon} />
+              <Image alt='icon' src={icon} width={24} height={24} className="w-5 h-5 md:w-6 md:h-6 flex-shrink-0" />
               <div className='text-[#333333]'>
                 <SubTitle text={" Book and pay securely within minutes."} />
               </div>
             </div>
             <div className='flex gap-4 items-center'>
-              <Image alt='icon' src={icon} />
+              <Image alt='icon' src={icon} width={24} height={24} className="w-5 h-5 md:w-6 md:h-6 flex-shrink-0" />
               <div className='text-[#333333]'>
                 <SubTitle
                   text={
@@ -121,33 +121,9 @@ export default function AboutSection() {
               alt='Two buff butlers posing together at a hen party event'
               title='Hunky Butler Service UK'
               src={aboutImg}
+              className="w-full max-w-md md:max-w-full"
             />
           </div>
-
-          {/* Star Rating Section - Same design */}
-          {/* <div className='flex lg:absolute bottom-12 left-1/4 lg:left-1/3 gap-4 items-center bg-white p-4 max-w-sm rounded-2xl mx-auto mt-4 lg:mt-0 justify-center shadow-lg'>
-            <div className='relative'>
-              <FaStar className='text-[#FFAF1B] text-5xl' />
-              {loading && (
-                <div className='absolute inset-0 flex items-center justify-center'>
-                  <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-[#FFAF1B]'></div>
-                </div>
-              )}
-            </div>
-            <div className='flex flex-col'>
-              {loading ? (
-                <div className='animate-pulse'>
-                  <div className='h-8 w-12 bg-gray-200 rounded mb-2'></div>
-                  <div className='h-4 w-32 bg-gray-200 rounded'></div>
-                </div>
-              ) : (
-                <>
-                  <MainTitle text={averageRating} />
-                  <SubTitle text={"Satisfied Client Review"} />
-                </>
-              )}
-            </div>
-          </div> */}
         </section>
       </div>
 
