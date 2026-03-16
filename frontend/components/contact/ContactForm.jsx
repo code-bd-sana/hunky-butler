@@ -1,7 +1,7 @@
 "use client";
 import { useGetServiceJoyBanglaQuery } from "@/features/butler";
 import Image from "next/image";
-import { MdEmail, MdPhone, MdLocationOn } from "react-icons/md";
+import { MdEmail, MdLocationOn, MdPhone } from "react-icons/md";
 
 const ContactForm = () => {
   const data = useGetServiceJoyBanglaQuery("cocktail-masterclasses");
@@ -141,7 +141,7 @@ const ContactForm = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="grid md:grid-cols-3 gap-8 text-center mt-40">
+        <div className="hidden md:grid md:grid-cols-3 gap-8 text-center mt-40">
           {/* Email */}
           <div className="space-y-2">
             <div className="flex justify-center">

@@ -1,14 +1,14 @@
 'use client'
-import React, { useState, useEffect, useRef } from 'react'
-import image from "@/public/quote/bg.png";
-import { IoLocationSharp } from "react-icons/io5";
-import { useParams } from 'next/navigation';
 import { useBookingMutation } from '@/features/booking';
-import toast, { Toaster } from 'react-hot-toast';
-import { useSession } from 'next-auth/react';
-import { loadStripe } from '@stripe/stripe-js';
-import { base_url } from '@/utils/utils';
 import { useGetServiceQuery } from '@/features/services/servicesApi';
+import image from "@/public/quote/bg.png";
+import { base_url } from '@/utils/utils';
+import { loadStripe } from '@stripe/stripe-js';
+import { useSession } from 'next-auth/react';
+import { useParams } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import { IoLocationSharp } from "react-icons/io5";
 
 
 const stripePromise = loadStripe('pk_test_51RWA5gFVdJBgYBDxRIUNli1dDlicyaiOTCEECLujXMHTyVEujYQJ2pZ9DFlUeNPpaKzy7cPYJ1QlA6cUe7A9m6Eg00nP3ZNUFM');
@@ -627,6 +627,8 @@ export default function SecondStep() {
   const [distanceInfo, setDistanceInfo] = useState(null);
   const [isCalculatingPrice, setIsCalculatingPrice] = useState(false);
   const [priceCalculation, setPriceCalculation] = useState(null);
+
+  
   
   const params = useParams();
   const { data: session } = useSession();
@@ -672,6 +674,7 @@ export default function SecondStep() {
   }, [firstStep.postCode, secondStep.durationHours, secondStep.numberOfStaff, params.category]);
 
   const totalPrice = priceCalculation?.totalPrice || 0;
+  
   const basePrice = priceCalculation?.basePrice || 0;
   
   const butlerFee = calculateButlerFee(
@@ -1322,7 +1325,14 @@ export default function SecondStep() {
                   <>
                     <h6 className="text-lg font-semibold">Your total price</h6>
                     <h6 className="text-4xl md:text-5xl font-bold py-4 md:py-6">
-                      £{totalPrice}
+                      {isCalculatingPrice ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Calculating...
+                        </div>
+                      ) : (
+                        `£${totalPrice}`
+                      )}
                     </h6>
 
                     {/* Payment Type Selection */}
