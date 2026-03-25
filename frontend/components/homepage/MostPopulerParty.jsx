@@ -1,5 +1,5 @@
 "use client";
-import image4 from "@/public/images/home/malestippers.webp";
+import image4 from "@/public/images/home/malestrippersfinal.png";
 import image2 from "@/public/images/home/party1.png";
 import image3 from "@/public/images/home/party2.png";
 import image1 from "@/public/images/home/party4.png";
