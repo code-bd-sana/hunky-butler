@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useSaveRegisterMutation } from "@/features/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { useSaveRegisterMutation } from "@/features/auth";
+import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { signIn } from "next-auth/react";
 
 export default function Page() {
   const [showPassword, setShowPassword] = useState(false);
@@ -218,15 +217,15 @@ export default function Page() {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-[#EFE7EA]" />
                   </div>
-                  <div className="relative flex justify-center">
+                  {/* <div className="relative flex justify-center">
                     <span className="bg-white px-3 text-[14px] sm:text-[16px] text-[#292929]">
                       Or
                     </span>
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="space-y-2">
-                  <button
+                  {/* <button
                     type="button"
                     onClick={() =>
                       signIn("google", {
@@ -244,7 +243,7 @@ export default function Page() {
                       className="h-[24px] w-[24px] shrink-0"
                     />
                     Continue With Google
-                  </button>
+                  </button> */}
 
                   {/* Apple button (যদি implement করেন) */}
                   {/* <button

@@ -1,19 +1,17 @@
 'use client'
-import React, { useEffect, useState } from "react";
-import MainTitle from "../shared/typography/MainTitle";
-import SubTitle from "../shared/typography/SubTitle";
 import icon from "@/public/icons/arowright.png";
-import aboutImg from "@/public/images/home/aboutImage16.png";
-import Image from "next/image";
-import { FaStar } from "react-icons/fa";
 import image1 from "@/public/icons/home/about1.png";
 import image2 from "@/public/icons/home/about2.png";
 import image3 from "@/public/icons/home/about3.png";
 import image4 from "@/public/icons/home/about4.png";
-import bg1 from "@/public/images/services/bg.png";
-import bg2 from "@/public/images/services/bg2.png";
 import bg3 from "@/public/images/home/aboutbg.png";
 import bg4 from "@/public/images/home/aboutbg2.png";
+import aboutImg from "@/public/images/home/aboutImage16.png";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { FaStar } from "react-icons/fa";
+import MainTitle from "../shared/typography/MainTitle";
+import SubTitle from "../shared/typography/SubTitle";
 
 export default function OurMission() {
   const [averageRating, setAverageRating] = useState("4.9");
@@ -72,7 +70,7 @@ export default function OurMission() {
 
           <div>
             <div className="flex gap-4 items-center">
-              <Image alt="icon" src={icon} />
+              <Image alt="icon" src={icon} className="size-6"/>
               <div className="text-[#333333]">
                 <p>
                   Discover exciting services like Buff Butlers, Cocktail
@@ -81,7 +79,7 @@ export default function OurMission() {
               </div>
             </div>
             <div className="flex gap-4 items-center">
-              <Image alt="icon" src={icon} />
+              <Image alt="icon" src={icon} className="size-6"/>
               <div className="text-[#333333]">
                 <SubTitle
                   text={
@@ -91,13 +89,13 @@ export default function OurMission() {
               </div>
             </div>
             <div className="flex gap-4 items-center">
-              <Image alt="icon" src={icon} />
+              <Image alt="icon" src={icon} className="size-6"/>
               <div className="text-[#333333]">
                 <SubTitle text={"Book and pay securely within minutes."} />
               </div>
             </div>
             <div className="flex gap-4 items-center">
-              <Image alt="icon" src={icon} />
+              <Image alt="icon" src={icon} className="size-6"/>
               <div className="text-[#333333]">
                 <SubTitle
                   text={
@@ -116,7 +114,7 @@ export default function OurMission() {
           />
 
           {/* Star Rating Section */}
-          <div className="flex lg:absolute bottom-18 left-1/2 transform -translate-x-1/2 gap-4 items-center w-2/3 bg-white p-4 rounded-2xl mx-auto mt-4 lg:mt-0 justify-center shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div className="flex  lg:absolute bottom-18 lg:left-1/2 transform lg:-translate-x-1/2 gap-4 items-center lg:w-2/3 bg-white p-4 rounded-2xl mx-auto mt-4 lg:mt-0 justify-center shadow-lg hover:shadow-xl transition-shadow duration-300">
             <div className="relative">
               <FaStar className="text-[#FFAF1B] text-5xl" />
               {loading && (
