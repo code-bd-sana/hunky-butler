@@ -1,12 +1,11 @@
 
-import Booking from "../models/booking.model.js";
-import nodemailer from "nodemailer";
-import User from "../models/user.model.js";
-import Notificaton from "../models/notification.model.js";
-import { adminGmail, storeNotification } from "../utils/utils.js";
-import PaymentHistory from "../models/payment.model.js";
 import mongoose from "mongoose";
 import cron from 'node-cron';
+import nodemailer from "nodemailer";
+import Booking from "../models/booking.model.js";
+import PaymentHistory from "../models/payment.model.js";
+import User from "../models/user.model.js";
+import { adminGmail, storeNotification } from "../utils/utils.js";
 
 
 export const getAllBooking = async (req, res) => {
@@ -552,7 +551,7 @@ export const assginToButler = async (req, res) => {
         } catch (err) {
           console.error("Error inside timeout for butler:", butler._id, err.message);
         }
-      }, 2 * 60 * 1000); // 15 minutes
+      }, 15 * 60 * 1000); // 15 minutes
     });
 
     res.status(200).json({
