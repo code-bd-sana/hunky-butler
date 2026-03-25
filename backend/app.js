@@ -18,7 +18,8 @@ const allowedOrigins = [
   'https://hunkybutlerservice.co.uk',
   'https://www.hunkybutlerservice.co.uk',
   'https://hunkybutlerservice.co.uk/',
-  'https://www.hunkybutlerservice.co.uk/'
+  'https://www.hunkybutlerservice.co.uk/',
+  'http://localhost:3000'
 ];
 
 // CORS কনফিগারেশন

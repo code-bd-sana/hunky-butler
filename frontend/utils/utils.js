@@ -1,8 +1,8 @@
-export const base_url = `https://api.hunkybutlerservice.co.uk/api`;
-// export const base_url = `http://localhost:5000/api`
-// export const base_url = `https://hunkey-butler-test.vercel.app/api`
-export const SOCKET_URL = `https://api.hunkybutlerservice.co.uk`;
-// export const SOCKET_URL = `http://localhost:5000`
+// export const base_url = `https://api.hunkybutlerservice.co.uk/api`;
+export const base_url = `http://localhost:5000/api`
+// // export const base_url = `https://hunkey-butler-test.vercel.app/api`
+// export const SOCKET_URL = `https://api.hunkybutlerservice.co.uk`;
+export const SOCKET_URL = `http://localhost:5000`
 // export const SOCKET_URL = `https://hunkey-butler-test.vercel.app`
 
 export const uploadToImgBB = async (file) => {
