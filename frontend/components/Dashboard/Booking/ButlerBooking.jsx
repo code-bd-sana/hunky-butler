@@ -11,6 +11,23 @@ import toast, { Toaster } from "react-hot-toast";
 import { useGetAdminSummuryQuery } from "@/features/summury";
 import { useSession } from "next-auth/react";
 
+// Helper functions for sensitive info access
+const getDaysRemaining = (dateOfEvent) => {
+  if (!dateOfEvent) return null;
+  
+  const eventDate = new Date(dateOfEvent);
+  const today = new Date();
+  const timeDiff = eventDate.getTime() - today.getTime();
+  const daysRemaining = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  
+  return daysRemaining;
+};
+
+const shouldShowSensitiveInfo = (dateOfEvent) => {
+  const daysRemaining = getDaysRemaining(dateOfEvent);
+  return daysRemaining !== null && daysRemaining <= 3 && daysRemaining >= 0;
+};
+
 // Map Modal Component
 const MapModal = ({ location, postCode, isOpen, onClose }) => {
   if (!isOpen || !postCode) return null;
@@ -94,26 +111,8 @@ const MapModal = ({ location, postCode, isOpen, onClose }) => {
 const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
   if (!isOpen) return null;
 
-  // Function to calculate days remaining until event
-  const getDaysRemaining = (dateOfEvent) => {
-    if (!dateOfEvent) return null;
-    
-    const eventDate = new Date(dateOfEvent);
-    const today = new Date();
-    const timeDiff = eventDate.getTime() - today.getTime();
-    const daysRemaining = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    
-    return daysRemaining;
-  };
-
-  // Check if sensitive info should be shown (within 3 days)
-  const shouldShowSensitiveInfo = () => {
-    const daysRemaining = getDaysRemaining(booking?.dateOfEvent);
-    return daysRemaining !== null && daysRemaining <= 3 && daysRemaining >= 0;
-  };
-
   const daysRemaining = getDaysRemaining(booking?.dateOfEvent);
-  const showSensitiveInfo = shouldShowSensitiveInfo();
+  const showSensitiveInfo = shouldShowSensitiveInfo(booking?.dateOfEvent);
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -1055,8 +1054,14 @@ const ButlerBooking = () => {
                 </td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
-                    <span>{b.location || "--"}</span>
-                    {b.postCode && (
+                    <span>
+                      {shouldShowSensitiveInfo(b.dateOfEvent) ? (
+                        b.location || "--"
+                      ) : (
+                        <span className="text-gray-400 italic">Hidden until 3 days before</span>
+                      )}
+                    </span>
+                    {b.postCode && shouldShowSensitiveInfo(b.dateOfEvent) && (
                       <button
                         onClick={() => handleOpenMap(b.location, b.postCode)}
                         className="p-1 text-blue-600 hover:text-blue-800 transition-colors"
