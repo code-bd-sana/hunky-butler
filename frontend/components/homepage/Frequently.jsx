@@ -1,8 +1,7 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
-import { GiHeartMinus } from "react-icons/gi";
-import { GiHeartPlus } from "react-icons/gi";
+import { useState } from "react";
+import { GiHeartMinus, GiHeartPlus } from "react-icons/gi";
 const Frequently = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -82,9 +81,10 @@ const Frequently = () => {
                 <span className="text-xl md:text-3xl">{faq.question}</span>
                 <span className="text-xl md:text-3xl">
                   {openIndex === index ? (
-                    <GiHeartPlus className="text-[#FF006A]" />
+     
+                           <GiHeartMinus className="text-[#FF006A]" />
                   ) : (
-                    <GiHeartMinus className="text-[#FF006A]" />
+                             <GiHeartPlus className="text-[#FF006A]" />
                   )}
                 </span>
               </button>
@@ -115,9 +115,10 @@ const Frequently = () => {
                 <span className="text-xl md:text-3xl">{faq.question}</span>
                 <span className="text-xl md:text-3xl">
                   {openIndex === index ? (
-                    <GiHeartPlus className="text-[#FF006A]" />
+                 <GiHeartMinus className="text-[#FF006A]" />
                   ) : (
-                    <GiHeartMinus className="text-[#FF006A]" />
+      
+                      <GiHeartPlus className="text-[#FF006A]" />
                   )}
                 </span>
               </button>

@@ -170,7 +170,7 @@ const Footer = () => {
               By Subscribing You Agree To Our
               <span className='text-[#FF006A] cursor-pointer hover:underline'>
                 {" "}
-                Privacy Policy
+             <a href="/privacy-policy" target="_blank"> Privacy Policy</a>
               </span>
             </p>
           </div>

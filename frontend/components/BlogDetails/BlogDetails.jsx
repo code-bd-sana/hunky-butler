@@ -30,6 +30,20 @@ const BlogDetails = ({ blog }) => {
 
         {/* Blog Content */}
         <div className="p-6 md:p-10 space-y-6 relative z-10">
+          {blog?.title && (
+            <header className="space-y-2 border-b border-gray-100 pb-6">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight text-[#141414] break-words [overflow-wrap:anywhere]">
+                {blog.title}
+              </h1>
+              <p className="text-sm sm:text-base font-medium text-pink-600">
+                {new Date(blog.date || blog.createdAt).toLocaleDateString(
+                  "en-US",
+                  { month: "long", day: "numeric", year: "numeric" }
+                )}
+              </p>
+            </header>
+          )}
+
           {/* Render HTML content */}
           <div
             className="blog-content text-gray-600 text-lg leading-relaxed"
