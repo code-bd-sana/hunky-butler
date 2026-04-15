@@ -79,7 +79,9 @@ const  RelatedBlog = ({ currentBlog }) => {
                   }
                 )}
               </p>
-              <h3 className="text-2xl font-semibold mt-2">{post.title}</h3>
+              <h3 className="text-xl md:text-2xl font-semibold mt-2 leading-snug text-[#141414] break-words [overflow-wrap:anywhere]">
+                {post.title}
+              </h3>
               <p className="text-[#808080] text-base mt-2">
                 {post.content
                   ?.replace(/<[^>]+>/g, "")
