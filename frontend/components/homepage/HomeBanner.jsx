@@ -4,7 +4,7 @@ import { FaStar } from "react-icons/fa";
 
 export default function HomeBanner() {
   return (
-    <section className='relative h-[100vh] w-full overflow-hidden'>
+    <section className='relative h-screen w-full overflow-hidden'>
       {/* Background Video */}
       <video
         autoPlay
@@ -18,7 +18,7 @@ export default function HomeBanner() {
       </video>
 
       {/* Dark Gradient Overlay */}
-      <div className='absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80'></div>
+      <div className='absolute inset-0 bg-linear-to-b from-black/40 via-black/60 to-black/80'></div>
 
       {/* Content */}
       <div className='relative z-10 flex h-full flex-col justify-center lg:justify-end px-4 mt-36 md:mt-40 lg:mt-10 pb-32 text-white md:px-8 lg:px-20 md:pt-0'>
