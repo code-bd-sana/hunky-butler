@@ -4,42 +4,40 @@ import { FaStar } from "react-icons/fa";
 
 export default function HomeBanner() {
   return (
-    <section className="relative h-[100vh] w-full overflow-hidden">
+    <section className='relative h-[100vh] w-full overflow-hidden'>
       {/* Background Video */}
       <video
         autoPlay
         loop
-        muted
         playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-        title="Buff Butlers Hen Party Entertainment UK"
-        aria-label="Buff butlers and hen party entertainment across the UK"
-      >
-        <source src="/videos/HeroBannerVid.mp4" type="video/mp4" />
+        className='absolute inset-0 h-full w-full object-cover'
+        title='Buff Butlers Hen Party Entertainment UK'
+        aria-label='Buff butlers and hen party entertainment across the UK'>
+        <source src='/videos/HeroBannerVid.mp4' type='video/mp4' />
         Your browser does not support the video tag.
       </video>
 
       {/* Dark Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80"></div>
+      <div className='absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80'></div>
 
       {/* Content */}
-      <div className="relative z-10 flex h-full flex-col justify-center lg:justify-end px-4 mt-36 md:mt-40 lg:mt-10 pb-32 text-white md:px-8 lg:px-20 md:pt-0">
-        <div className="flex w-full flex-col items-center md:items-start lg:flex-row lg:justify-between lg:items-center gap-10 mx-auto">
+      <div className='relative z-10 flex h-full flex-col justify-center lg:justify-end px-4 mt-36 md:mt-40 lg:mt-10 pb-32 text-white md:px-8 lg:px-20 md:pt-0'>
+        <div className='flex w-full flex-col items-center md:items-start lg:flex-row lg:justify-between lg:items-center gap-10 mx-auto'>
           {/* Left Side: Heading + Buttons */}
-          <div className="max-w-6xl md:text-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-abhaya-libre">
-              Buff Butlers & Hen Party <br className="hidden sm:block" />
+          <div className='max-w-6xl md:text-left'>
+            <h1 className='text-4xl md:text-5xl lg:text-6xl font-bold leading-tight font-abhaya-libre'>
+              Buff Butlers & Hen Party <br className='hidden sm:block' />
               Entertainment Across the UK
             </h1>
 
-            <p className="mt-4 text-base md:text-xl text-[#F6F4F5] capitalize lg:w-11/12">
+            <p className='mt-4 text-base md:text-xl text-[#F6F4F5] capitalize lg:w-11/12'>
               Looking for the ultimate hen party entertainment? You’ve come to
               the right place. Hunky Butler Service is the UK’s most popular
               buff butler and hen party entertainment company. But the fun
               doesn’t stop there — we also offer topless waiters, life drawing
               classes, cocktail masterclasses, and much more.
             </p>
-            <p className="hidden md:flex mt-3 md:mt-4 text-base md:text-xl text-[#F6F4F5] text-justify capitalize lg:w-11/12">
+            <p className='hidden md:flex mt-3 md:mt-4 text-base md:text-xl text-[#F6F4F5] text-justify capitalize lg:w-11/12'>
               Our cheeky butlers aren’t just for show — they’re professional,
               friendly, and know how to keep your party flowing with games,
               drinks, and laughter. Whether you’re celebrating in Liverpool,
@@ -47,25 +45,24 @@ export default function HomeBanner() {
               ready to make your night unforgettable.
             </p>
 
-            <div className="mt-10 md:mt-12 flex flex-row md:flex-wrap justify-center md:justify-start gap-3">
-              <Link href="/quote">
-                <button className="cursor-pointer rounded-full bg-[#FF006A] px-5 py-3 md:px-6 md:py-3 text-sm md:text-lg font-medium shadow-md transition">
+            <div className='mt-10 md:mt-12 flex flex-row md:flex-wrap justify-center md:justify-start gap-3'>
+              <Link href='/quote'>
+                <button className='cursor-pointer rounded-full bg-[#FF006A] px-5 py-3 md:px-6 md:py-3 text-sm md:text-lg font-medium shadow-md transition'>
                   Get An Instant Quote
                 </button>
               </Link>
-              <Link href="/party-entertainment-services">
-                <button className="cursor-pointer rounded-full bg-white px-5 py-3 md:px-6 md:py-3 text-sm md:text-lg font-medium text-black shadow-md transition">
+              <Link href='/party-entertainment-services'>
+                <button className='cursor-pointer rounded-full bg-white px-5 py-3 md:px-6 md:py-3 text-sm md:text-lg font-medium text-black shadow-md transition'>
                   Explore Services
                 </button>
               </Link>
             </div>
 
             {/* Rating (mobile & mid) */}
-            <div className="mt-4 md:mt-6 flex flex-col items-center md:items-start text-center md:text-left lg:hidden">
-              <div className="flex items-center gap-2">
-          
-                <span className="text-4xl md:text-5xl font-semibold">5.00</span>
-                <div className="flex text-yellow-400">
+            <div className='mt-4 md:mt-6 flex flex-col items-center md:items-start text-center md:text-left lg:hidden'>
+              <div className='flex items-center gap-2'>
+                <span className='text-4xl md:text-5xl font-semibold'>5.00</span>
+                <div className='flex text-yellow-400'>
                   {Array(5)
                     .fill(0)
                     .map((_, i) => (
@@ -73,15 +70,14 @@ export default function HomeBanner() {
                     ))}
                 </div>
               </div>
-            
             </div>
           </div>
 
           {/* Rating (desktop right side) */}
-          <div className="hidden lg:flex flex-col items-end text-right">
-            <div className="flex items-center gap-2">
-              <span className="text-4xl md:text-5xl font-semibold">5.00</span>
-              <div className="flex gap-1 text-yellow-400">
+          <div className='hidden lg:flex flex-col items-end text-right'>
+            <div className='flex items-center gap-2'>
+              <span className='text-4xl md:text-5xl font-semibold'>5.00</span>
+              <div className='flex gap-1 text-yellow-400'>
                 {Array(5)
                   .fill(0)
                   .map((_, i) => (
@@ -89,7 +85,6 @@ export default function HomeBanner() {
                   ))}
               </div>
             </div>
-       
           </div>
         </div>
       </div>
