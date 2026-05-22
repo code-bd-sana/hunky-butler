@@ -1,34 +1,29 @@
 import mongoose from "mongoose";
 import cron from "node-cron";
-import nodemailer from "nodemailer";
 import Booking from "../models/booking.model.js";
 import PaymentHistory from "../models/payment.model.js";
 import User from "../models/user.model.js";
 import { adminGmail, storeNotification } from "../utils/utils.js";
+import { sendNotification } from "../utils/notification.js";
 
 export const getAllBooking = async (req, res) => {
   try {
-    const skip = parseInt(req.query.skip) || 0; // convert string to number
+    const skip = parseInt(req.query.skip) || 0; 
     const limit = parseInt(req.query.limit) || 10;
     const status = req.query.status;
-
-    console.log(skip, "skip");
-    console.log(limit, "limit");
-    console.log(status, "status");
 
     let filter = {};
     if (status && status !== "all") {
       filter.status = status.toLowerCase();
     }
 
-    // Apply filter in both find() and countDocuments()
     const allBooking = await Booking.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate("butler.id");
 
-    const total = await Booking.countDocuments(filter).sort({ createdAt: -1 });
+    const total = await Booking.countDocuments(filter);
 
     res.status(200).json({
       message: "Success",
@@ -42,23 +37,19 @@ export const getAllBooking = async (req, res) => {
     });
   }
 };
+
 export const getBookingButler = async (req, res) => {
   try {
-    const skip = parseInt(req.query.skip) || 0; // convert string to number
+    const skip = parseInt(req.query.skip) || 0;
     const limit = parseInt(req.query.limit) || 10;
     const status = req.query.status;
     const id = req.params.id;
-
-    console.log(skip, "skip");
-    console.log(limit, "limit");
-    console.log(status, "status");
 
     let filter = { "butler.id": id };
     if (status && status !== "all") {
       filter.status = status.toLowerCase();
     }
 
-    // Apply filter in both find() and countDocuments()
     const allBooking = await Booking.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -81,24 +72,17 @@ export const getBookingButler = async (req, res) => {
 };
 
 export const getBookingCustomer = async (req, res) => {
-  console.log("aso khelbo");
-
   try {
-    const skip = parseInt(req.query.skip) || 0; // convert string to number
+    const skip = parseInt(req.query.skip) || 0;
     const limit = parseInt(req.query.limit) || 10;
     const status = req.query.status;
     const email = req.params.email;
-
-    console.log(skip, "skip");
-    console.log(limit, "limit");
-    console.log(status, "status");
 
     let filter = { email: email };
     if (status && status !== "all") {
       filter.status = status.toLowerCase();
     }
 
-    // Apply filter in both find() and countDocuments()
     const allBooking = await Booking.find(filter)
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -120,61 +104,21 @@ export const getBookingCustomer = async (req, res) => {
   }
 };
 
-// export const getSingleBooking = async (req, res) => {
-//   try {
-//     const id = req.params.id;
-
-//     const data = await Booking.findOne({ _id: id });
-//     res.status(200).json({
-//       message: "Success",
-//       data,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       message: "Something went wrong!",
-//       error: error.message,
-//     });
-//   }
-// };
-
 export const createBooking = async (req, res) => {
-  console.log("Hit");
   try {
     const data = req.body;
     const newData = new Booking(data);
     const savedData = await newData.save();
-    const { email, serviceName } = req.body;
+    const { email, phone, serviceName } = req.body;
 
     // Update user's serviceTaken
     await User.updateOne({ email: email }, { $inc: { serviceTaken: 1 } });
 
-    const notificationData = {
-      receiver: adminGmail,
-      message: `New ${serviceName} Service Order Received`,
-    };
-
     await storeNotification(adminGmail, `New ${serviceName}`, "", "/dashboard");
-
-    // Response after user email sent
-    res.status(200).json({
-      message: "Booking created and emails sent successfully",
-      data: savedData,
-    });
-
-    // Nodemailer transporter
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: "bannah76769@gmail.com",
-        pass: "noqq kzxv olzf clzz",
-      },
-    });
 
     // User email HTML template
     const userEmailHtml = `
-      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center;">
+      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
         <h1 style="color: #ff1673;">Thank You for Your Booking!</h1>
         <p style="font-size:16px; margin:20px 0;">
           Your booking for <strong>${serviceName}</strong> has been received.
@@ -185,41 +129,41 @@ export const createBooking = async (req, res) => {
       </div>
     `;
 
-    // Send email to user
-    await transporter.sendMail({
-      from: '"Hunky Butler Service"',
-      to: email,
-      subject: "Booking Confirmation",
-      html: userEmailHtml,
-    });
-
-    // Send email to admin
+    // Admin email HTML template
     const adminEmail = "rakib.fbinternational@gmail.com";
     const adminEmailHtml = `
-  <div style="
-    font-family: Arial, sans-serif;
-    background: #fff;
-    color: #3D3D3D;
-    padding: 30px;
-    text-align: center;
-    border: 2px solid #ff1673;
-    border-radius: 12px;
-  ">
-    <h2 style="color: #ff1673; margin-bottom: 20px;">New Booking Alert</h2>
-    <p style="font-size:16px;">
-      A new booking has been made. Kindly check the dashboard.
-    </p>
-  </div>
-`;
+      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
+        <h2 style="color: #ff1673; margin-bottom: 20px;">New Booking Alert</h2>
+        <p style="font-size:16px;">
+          A new booking for <strong>${serviceName}</strong> has been made by <strong>${email}</strong>. Kindly check the dashboard.
+        </p>
+      </div>
+    `;
 
-    await transporter.sendMail({
-      from: '"Hunky Butler Service"',
-      to: adminEmail,
+    // Send notification to user (Email + SMS)
+    await sendNotification({
+      email,
+      phone,
+      subject: "Booking Confirmation",
+      message: `Thank you for your booking! Your booking for ${serviceName} has been received and is being processed.`,
+      html: userEmailHtml,
+      smsMessage: `Hunky Butler: Thank you for your booking for ${serviceName}! We'll notify you once it's accepted.`
+    });
+
+    // Send notification to admin (Email only)
+    await sendNotification({
+      email: adminEmail,
       subject: "New Booking Alert",
-      html: adminEmailHtml,
+      message: `New booking received for ${serviceName} from ${email}.`,
+      html: adminEmailHtml
+    });
+
+    res.status(200).json({
+      message: "Booking created and notifications sent successfully",
+      data: savedData,
     });
   } catch (error) {
-    console.log(error, "confusion unga bunga");
+    console.error("Error in createBooking:", error);
     res.status(500).json({
       message: "Something went wrong!",
       error: error.message,
@@ -230,13 +174,12 @@ export const createBooking = async (req, res) => {
 export const deleteBooking = async (req, res) => {
   try {
     const id = req.params.id;
-    const deleteBooking = await Booking.deleteOne({ _id: id });
+    const result = await Booking.deleteOne({ _id: id });
     res.status(200).json({
       message: "Success",
-      data: deleteBooking,
+      data: result,
     });
   } catch (error) {
-    console.log(error, "This is your error ok?");
     res.status(500).json({
       message: error.message,
     });
@@ -247,14 +190,10 @@ export const updateStatus = async (req, res) => {
   try {
     const { id, status, butlerid } = req.body;
 
-    const updateData = { status: status };
-
-    // If completed, mark as paid
-
-    // Update booking status and paid status
-    const updatedBooking = await Booking.updateOne(
+    // Update booking status
+    const updatedBookingResult = await Booking.updateOne(
       { _id: id },
-      { $set: updateData },
+      { $set: { status: status } },
     );
 
     // If butlerid is provided, update the accepted status in butler array
@@ -262,59 +201,36 @@ export const updateStatus = async (req, res) => {
       await Booking.updateOne(
         {
           _id: id,
-          "butler.id": butlerid, // Find the specific butler in the array
+          "butler.id": butlerid,
         },
         {
           $set: {
-            "butler.$.accepted": true, // Update only the matched butler's accepted status
+            "butler.$.accepted": true,
           },
         },
       );
-
       console.log(`Butler ${butlerid} accepted the booking ${id}`);
     }
 
-    res.status(200).json({
-      message: "Booking status updated successfully",
-      data: {
-        bookingId: id,
-        status: status,
-        butlerAccepted: butlerid ? true : false,
-      },
-    });
-
-    // Fetch booking info for email
+    // Fetch booking info for notification
     const booking = await Booking.findById(id);
-    const { email, firstName, serviceName } = booking;
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
 
-    // Find butler info (if assigned)
+    const { email, phone, firstName, serviceName } = booking;
 
-    // Nodemailer transporter
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: "bannah76769@gmail.com",
-        pass: "noqq kzxv olzf clzz",
-      },
-    });
+    // Construct review link
+    const reviewLink = `https://hunky-butler.vercel.app/review/${email}/?id=${butlerid || ''}`;
 
-    // Construct review link (customer email + butler id)
-    const reviewLink = `https://hunky-butler.vercel.app/review/${email}/?id=${butlerId}`;
-
-    // Email template
     let subject = "";
     let emailHtml = "";
+    let smsMessage = "";
 
     if (status === "accepted") {
-      await storeNotification(
-        email,
-        `Your ${serviceName} Booking Accept`,
-        "",
-        "/dashboard",
-      );
+      await storeNotification(email, `Your ${serviceName} Booking Accept`, "", "/dashboard");
       subject = "Booking Accepted";
+      smsMessage = `Hunky Butler: Good news! Your booking for ${serviceName} has been accepted.`;
       emailHtml = `
         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border:2px solid #ff1673; border-radius:12px;">
           <h2 style="color: #ff1673;">Booking Accepted</h2>
@@ -323,13 +239,9 @@ export const updateStatus = async (req, res) => {
         </div>
       `;
     } else if (status === "completed") {
-      await storeNotification(
-        email,
-        `Your ${serviceName} Booking Completed. Make a Review?`,
-        "",
-        `https://hunky-butler.vercel.app/review/${email}/?id=${butlerId}`,
-      );
+      await storeNotification(email, `Your ${serviceName} Booking Completed. Make a Review?`, "", reviewLink);
       subject = "Service Completed";
+      smsMessage = `Hunky Butler: Your ${serviceName} service is complete! We'd love your feedback: ${reviewLink}`;
       emailHtml = `
         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border:2px solid #ff1673; border-radius:12px;">
           <h2 style="color: #ff1673;">Service Completed</h2>
@@ -344,26 +256,24 @@ export const updateStatus = async (req, res) => {
       `;
     }
 
-    res.status(200).json({
-      message: "Status updated and email sent successfully",
-      data: updated,
-    });
-
-    res.status(200).json({
-      message: "Status updated and email sent successfully",
-      data: updated,
-    });
-    // Send email if status is accepted or completed
+    // Send notification
     if (emailHtml) {
-      await transporter.sendMail({
-        from: '"Hunky Butler Service"',
-        to: email,
-        subject: subject,
+      await sendNotification({
+        email,
+        phone,
+        subject,
+        message: smsMessage,
         html: emailHtml,
+        smsMessage
       });
     }
+
+    res.status(200).json({
+      message: "Booking status updated and notifications sent",
+      data: updatedBookingResult,
+    });
   } catch (error) {
-    console.log(error);
+    console.error("Error in updateStatus:", error);
     res.status(500).json({
       message: "Something went wrong!",
       error: error.message,
@@ -372,50 +282,28 @@ export const updateStatus = async (req, res) => {
 };
 
 export const assginToButler = async (req, res) => {
-  console.log("Hit");
   try {
     const { butlerId, bookingId } = req.body;
 
-    console.log(butlerId, bookingId, "salar bacca madari");
-
-    // Find booking info
     const booking = await Booking.findById(bookingId);
-    const { firstName, lastName, email, serviceName, dateOfEvent } = booking;
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    const { firstName, lastName, serviceName, dateOfEvent } = booking;
 
-    // Format butlers array
     const formattedButlers = butlerId.map((id) => ({
       id: new mongoose.Types.ObjectId(id),
       accepted: false,
     }));
 
-    console.log(formattedButlers, "ha ha kore haste icca korsa");
-
-    // Push multiple butlers safely
-    const updatedBooking = await Booking.updateOne(
+    await Booking.updateOne(
       { _id: bookingId },
       { $push: { butler: { $each: formattedButlers } } },
     );
 
-    // Find all butlers info for email and notification
-    const butlers = await User.find({
-      _id: { $in: butlerId },
-    });
+    const butlers = await User.find({ _id: { $in: butlerId } });
 
-    console.log(butlers, "Found butlers");
-
-    // Nodemailer transporter
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: "bannah76769@gmail.com",
-        pass: "noqq kzxv olzf clzz",
-      },
-    });
-
-    // Send email to each butler individually
-    const emailPromises = butlers.map(async (butler) => {
+    const notificationPromises = butlers.map(async (butler) => {
       const butlerEmailHtml = `
         <div style="font-family: Arial, sans-serif; padding: 20px; background:#fff; text-align:center; border:2px solid #ff1673; border-radius:12px;">
           <h2 style="color:#ff1673;">New Booking Assigned</h2>
@@ -428,110 +316,68 @@ export const assginToButler = async (req, res) => {
         </div>
       `;
 
-      // Send email
-      await transporter.sendMail({
-        from: '"Hunky Butler Service"',
-        to: butler.email,
+      const smsMsg = `Hunky Butler: New booking assigned! ${serviceName} for ${firstName} on ${new Date(dateOfEvent).toLocaleDateString()}. Please check your dashboard to accept.`;
+
+      // Send Email + SMS to butler
+      await sendNotification({
+        email: butler.email,
+        phone: butler.phone,
         subject: "New Booking Assigned",
+        message: smsMsg,
         html: butlerEmailHtml,
+        smsMessage: smsMsg
       });
 
-      // Store notification for each butler
-      await storeNotification(
-        butler.email,
-        `A New ${serviceName} Service assign to you`,
-        "",
-        `/dashboard`,
-      );
-
-      console.log(`Email and notification sent to ${butler.email}`);
+      await storeNotification(butler.email, `A New ${serviceName} Service assign to you`, "", `/dashboard`);
     });
 
-    // Wait for all emails and notifications to be sent
-    await Promise.all(emailPromises);
+    await Promise.all(notificationPromises);
 
-    // Set up 15 min timeout for each butler individually
-    butlers.forEach(async (butler) => {
-      setTimeout(
-        async () => {
-          try {
-            const checkBooking = await Booking.findById(bookingId);
+    // Timeout logic
+    butlers.forEach((butler) => {
+      setTimeout(async () => {
+        try {
+          const checkBooking = await Booking.findById(bookingId);
+          if (checkBooking) {
+            const butlerAssignment = checkBooking.butler.find(
+              (b) => b.id.toString() === butler._id.toString() && b.accepted === false
+            );
 
-            if (checkBooking) {
-              // Find the specific butler in the booking
-              const butlerAssignment = checkBooking.butler.find(
-                (b) =>
-                  b.id.toString() === butler._id.toString() &&
-                  b.accepted === false,
+            if (butlerAssignment) {
+              await Booking.updateOne(
+                { _id: bookingId },
+                { $pull: { butler: { id: butler._id, accepted: false } } }
               );
 
-              // If this specific butler hasn't accepted, remove them
-              if (butlerAssignment) {
-                await Booking.updateOne(
-                  { _id: bookingId },
-                  { $pull: { butler: { id: butler._id, accepted: false } } },
-                );
-
-                // Update payment history if this was the only butler
-                const remainingButlers = checkBooking.butler.filter(
-                  (b) =>
-                    b.id.toString() !== butler._id.toString() ||
-                    b.accepted === true,
-                );
-
-                if (remainingButlers.length === 0) {
-                  await PaymentHistory.updateOne(
-                    { bookingId: bookingId },
-                    { $set: { butlerId: null } },
-                  );
-                }
-
-                // Store notification for admin
-                await storeNotification(
-                  adminGmail,
-                  `Booking Needs Reassignment - The booking for ${firstName} ${lastName} (${serviceName} on ${new Date(
-                    dateOfEvent,
-                  ).toLocaleDateString()}) was not accepted by butler ${butler.firstName} ${butler.lastName}.`,
-                  "",
-                  "/dashboard",
-                );
-
-                // Store notification for the butler
-                await storeNotification(
-                  butler.email,
-                  "Booking Not Accepted In Time and has been removed from your assignments",
-                  "",
-                  "",
-                );
-
-                console.log(
-                  `❌ Butler ${butler.firstName} removed from booking ${bookingId} due to no acceptance`,
-                );
+              const updatedBooking = await Booking.findById(bookingId);
+              if (updatedBooking.butler.length === 0) {
+                await PaymentHistory.updateOne({ bookingId: bookingId }, { $set: { butlerId: null } });
               }
+
+              await storeNotification(adminGmail, `Booking Needs Reassignment - ${firstName} ${lastName}`, "", "/dashboard");
+              
+              const timeoutMsg = "Hunky Butler: Booking not accepted in time and has been removed from your assignments.";
+              await sendNotification({
+                email: butler.email,
+                phone: butler.phone,
+                subject: "Booking Assignment Expired",
+                message: timeoutMsg,
+                smsMessage: timeoutMsg
+              });
             }
-          } catch (err) {
-            console.error(
-              "Error inside timeout for butler:",
-              butler._id,
-              err.message,
-            );
           }
-        },
-        15 * 60 * 1000,
-      ); // 15 minutes
+        } catch (err) {
+          console.error("Error in butler timeout:", err);
+        }
+      }, 15 * 60 * 1000);
     });
 
     res.status(200).json({
-      message: "Butlers assigned and emails sent successfully",
-      data: updatedBooking,
-      butlersAssigned: butlers.map((b) => ({
-        id: b._id,
-        name: `${b.firstName} ${b.lastName}`,
-        email: b.email,
-      })),
+      message: "Butlers assigned and notifications sent successfully",
+      data: butlerId,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in assginToButler:", error);
     res.status(500).json({
       message: "Something went wrong!",
       error: error.message,
@@ -542,14 +388,13 @@ export const assginToButler = async (req, res) => {
 export const getBookingOverviewCustomer = async (req, res) => {
   try {
     const email = req.params.email;
-
     const result = await Booking.aggregate([
       { $match: { email: email } },
       {
         $group: {
           _id: null,
-          totalSpent: { $sum: "$price" }, // সব price যোগ
-          totalServiceTaken: { $sum: 1 }, // মোট booking সংখ্যা
+          totalSpent: { $sum: "$price" },
+          totalServiceTaken: { $sum: 1 },
         },
       },
     ]);
@@ -562,50 +407,28 @@ export const getBookingOverviewCustomer = async (req, res) => {
       totalServiceTaken = result[0].totalServiceTaken;
     }
 
-    return res.status(200).json({
-      email,
-      totalSpent,
-      totalServiceTaken,
-    });
+    return res.status(200).json({ email, totalSpent, totalServiceTaken });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: "Something went wrong!",
-    });
+    return res.status(500).json({ message: "Something went wrong!" });
   }
 };
 
 export const getBookingOverviewButler = async (req, res) => {
   try {
     const id = req.params.id;
-
-    // Get all bookings for this butler
     const bookings = await Booking.find({ "butler.id": id });
-
-    // Calculate totalSpent and totalServiceProvided
-    const totalSpent = bookings.reduce(
-      (sum, booking) => sum + (booking.price || 0),
-      0,
-    );
+    const totalSpent = bookings.reduce((sum, booking) => sum + (booking.price || 0), 0);
     const totalServiceProvided = bookings.length;
 
-    return res.status(200).json({
-      totalSpent,
-      totalServiceProvided,
-    });
+    return res.status(200).json({ totalSpent, totalServiceProvided });
   } catch (error) {
-    console.error("Booking Overview Error:", error);
-    return res.status(500).json({
-      message: "Something went wrong!",
-      error: error.message,
-    });
+    return res.status(500).json({ message: "Something went wrong!", error: error.message });
   }
 };
 
 export const getButlerOverview = async (req, res) => {
   try {
     const id = req.params.id;
-
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -631,39 +454,19 @@ export const getButlerOverview = async (req, res) => {
       },
     ]);
 
-    res.status(200).json({
-      totalBookingCompleted,
-      totalEarningThisMonth,
-    });
+    res.status(200).json({ totalBookingCompleted, totalEarningThisMonth });
   } catch (error) {
-    res.status(500).json({
-      message: "Something went wrong!",
-      error,
-    });
+    res.status(500).json({ message: "Something went wrong!", error });
   }
 };
 
 export const sendEmail = async (req, res) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: "bannah76769@gmail.com",
-      pass: "noqq kzxv olzf clzz",
-    },
-  });
-
   try {
-    // Get all pending payments
     const allEmail = await Booking.find({ paid: "pending" });
-
-    // Limit to 5 emails per day
     const emailsToSend = allEmail.slice(0, 5);
 
-    // Send email to each recipient
     for (const booking of emailsToSend) {
-      const userEmail = booking.email; // assuming email field exists in Booking
+      const { email, phone } = booking;
 
       const htmlTemplate = `
         <!DOCTYPE html>
@@ -672,140 +475,52 @@ export const sendEmail = async (req, res) => {
             <meta charset="UTF-8">
             <title>Payment Reminder</title>
             <style>
-                body {
-                    font-family: 'Arial', sans-serif;
-                    line-height: 1.6;
-                    color: #333333;
-                    max-width: 600px;
-                    margin: 0 auto;
-                    padding: 20px;
-                }
-                .header {
-                    background-color: #e60459;
-                    color: white;
-                    padding: 20px;
-                    text-align: center;
-                    border-radius: 5px 5px 0 0;
-                }
-                .content {
-                    padding: 20px;
-                    background-color: #f9f9f9;
-                    border-radius: 0 0 5px 5px;
-                    border: 1px solid #e0e0e0;
-                    border-top: none;
-                }
-                .footer {
-                    margin-top: 20px;
-                    text-align: center;
-                    font-size: 12px;
-                    color: #777777;
-                }
-                .button {
-                    display: inline-block;
-                    padding: 12px 25px;
-                    background-color: #e60459;
-                    color: white !important;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    margin: 20px 0;
-                    font-weight: bold;
-                    font-size: 16px;
-                }
-                .logo {
-                    max-width: 150px;
-                    margin-bottom: 15px;
-                }
-                .payment-reminder {
-                  background: #fff3f7;
-                  padding: 15px;
-                  border-radius: 5px;
-                  border-left: 4px solid #e60459;
-                  margin: 15px 0;
-                }
-                .urgent {
-                  color: #e60459;
-                  font-weight: bold;
-                }
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background-color: #e60459; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+                .content { padding: 20px; background-color: #f9f9f9; border-radius: 0 0 5px 5px; border: 1px solid #e0e0e0; border-top: none; }
+                .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #777; }
+                .button { display: inline-block; padding: 12px 25px; background-color: #e60459; color: white !important; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
             </style>
         </head>
         <body>
-            <div class="header">
-                <h1>Payment Reminder</h1>
-            </div>
+            <div class="header"><h1>Payment Reminder</h1></div>
             <div class="content">
                 <p>Dear Customer,</p>
-                
-                <div class="payment-reminder">
-                    <p class="urgent">Your payment is still <strong>pending</strong>!</p>
-                    <p>We noticed that you haven't completed the payment for your booking yet.</p>
-                </div>
-                
-                <p>You want to payment but it's still not paid. Please complete your payment to confirm your booking.</p>
-                
-                <p style="text-align: center;">
-                    <a href="https://hunky-butler.vercel.app/dashboard" class="button">
-                        Complete Your Payment Now
-                    </a>
-                </p>
-                
-                <p>This link will take you directly to your dashboard where you can complete the payment process.</p>
-                
-                <p>If you have already made the payment, please ignore this email.</p>
-                
-                <p>Best regards,<br>Our Team</p>
+                <p style="color: #e60459; font-weight: bold;">Your payment is still pending!</p>
+                <p>We noticed that you haven't completed the payment for your booking yet. Please complete it to confirm your booking.</p>
+                <p style="text-align: center;"><a href="https://hunky-butler.vercel.app/dashboard" class="button">Complete Payment Now</a></p>
+                <p>Best regards,<br>Hunky Butler Team</p>
             </div>
-            <div class="footer">
-                <p>© ${new Date().getFullYear()} Our Company. All rights reserved.</p>
-                <p>
-                    <a href="#" style="color: #e60459;">Privacy Policy</a> | 
-                    <a href="#" style="color: #e60459;">Terms of Service</a>
-                </p>
-            </div>
+            <div class="footer"><p>© ${new Date().getFullYear()} Hunky Butler. All rights reserved.</p></div>
         </body>
         </html>
       `;
 
-      // Email configuration
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: userEmail,
+      const smsMsg = "Hunky Butler: Your payment is still pending. Please complete your payment at our dashboard to confirm your booking.";
+
+      await sendNotification({
+        email,
+        phone,
         subject: "Payment Reminder - Your Payment is Still Pending",
+        message: smsMsg,
         html: htmlTemplate,
-      };
+        smsMessage: smsMsg
+      });
 
-      // Send email
-      await transporter.sendMail(mailOptions);
-      console.log(`Payment reminder sent to: ${userEmail}`);
-
-      // Optional: Add delay between emails to avoid rate limiting
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
-    console.log(
-      `Successfully sent ${emailsToSend.length} payment reminder emails`,
-    );
-
-    // Send response only if res exists (called from HTTP route)
     if (res) {
-      res.status(200).json({
-        success: true,
-        message: `Payment reminders sent to ${emailsToSend.length} users`,
-        data: emailsToSend.length,
-      });
+      res.status(200).json({ success: true, message: `Payment reminders sent to ${emailsToSend.length} users` });
     }
   } catch (error) {
-    console.log("Error sending emails:", error);
+    console.error("Error sending payment reminders:", error);
     if (res) {
-      res.status(500).json({
-        success: false,
-        message: "Failed to send payment reminder emails",
-        error: error.message,
-      });
+      res.status(500).json({ success: false, message: "Failed to send payment reminder emails", error: error.message });
     }
   }
 };
 
-// Run every day at 5 AM
 cron.schedule("0 5 * * *", () => {
   sendEmail();
 });

@@ -1,10 +1,6 @@
-// import User from "../models/user.model.js"
-
 import User from "../models/user.model.js";
-import nodemailer from 'nodemailer'
 import { storeNotification } from "../utils/utils.js";
-
-// import User from "../models/user.model";
+import { sendNotification } from "../utils/notification.js";
 
 export const getAllUsers = async (req, res) => {
   try {
@@ -128,7 +124,6 @@ export const myProfile = async(req, res)=>{
 export const updateProfile = async(req, res)=>{
   try {
     const {bio, dob, email, firstName, lastName, gender, location, phone, postcode, profileImage, image, isButler}  = req.body;
-    console.log(email, 'amo to emol amdarho')
 
 
     if(!email){
@@ -161,27 +156,9 @@ const updated = await User.updateOne(
   }
 );
 
- res.status(200).json({
-      message:'Success',
-      data: updated
-    })
-
-    console.log(updated)
-
-    if(isButler){
-          const transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-          port: 587,
-          secure: false,
-          auth: {
-            user: "bannah76769@gmail.com",
-            pass: "noqq kzxv olzf clzz",
-          },
-        });
-
-
+    if(isButler === 'pending' && user.isButler !== 'pending'){
      const userEmailHtml = `
-     <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border-radius: 12px;">
+     <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
   <h1 style="color: #ff1673; font-size:28px; margin-bottom:20px;">Application Received!</h1>
   <p style="font-size:16px; margin: 15px 0;">
     Thank you for submitting your application to <strong>Hunkey Butler Service</strong>! 🙌
@@ -189,35 +166,31 @@ const updated = await User.updateOne(
   <p style="font-size:16px; margin: 15px 0;">
     Your application has been received and is currently <strong>under review</strong>.
   </p>
-  <p style="font-size:16px; margin: 15px 0;">
-    Our team will review your details and get back to you as soon as possible.
-  </p>
-
-  <p style="font-size:14px; color:#888; margin-top:20px;">
-    We appreciate your interest in joining our team and look forward to connecting with you soon.
-  </p>
 </div>
+     `;
 
-     `
+     const smsMsg = "Hunky Butler: Your application has been received and is currently under review. We'll notify you soon!";
 
-  await transporter.sendMail({
-          from: '"Hunky Butler Service"',
-          to: email,
-          subject: "Applicaiton accepted",
-          html: userEmailHtml,
-        });
-
-
+     await sendNotification({
+       email,
+       phone: phone || user.phone,
+       subject: "Butler Application Received",
+       message: smsMsg,
+       html: userEmailHtml,
+       smsMessage: smsMsg
+     });
     }
+
+ res.status(200).json({
+      message:'Success',
+      data: updated
+    });
     
-    
-   
   } catch (error) {
-    console.log(error)
+    console.error("Error in updateProfile:", error);
     res.status(500).json({
       message:"Something went wrong!",
-      error
-    
+      error: error.message
     })
   }
 }
@@ -226,163 +199,111 @@ const updated = await User.updateOne(
 export const rejectButler = async(req, res)=>{
   try {
     const email = req.params.email;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
     const updated = await User.updateOne({email: email}, {$set:{
       isButler:'reject'
     }});
 
-        res.status(200).json({
-      message:'Success',
-      data:updated
-    })
-
-
-    storeNotification(email, 'Reject you application. Please submit valid infromation', '', '')
-       const transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-          port: 587,
-          secure: false,
-          auth: {
-            user: "bannah76769@gmail.com",
-            pass: "noqq kzxv olzf clzz",
-          },
-        });
+    await storeNotification(email, 'Reject you application. Please submit valid information', '', '')
     
-        // User email HTML template
         const userEmailHtml = `
-      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border-radius: 12px;">
+      <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
   <h1 style="color: #ff1673; font-size:28px; margin-bottom:20px;">Application Update</h1>
   <p style="font-size:16px; margin: 15px 0;">
     We regret to inform you that your application has been <strong>reviewed</strong> and cannot be accepted at this time. 😔
   </p>
   <p style="font-size:16px; margin: 15px 0;">
-    Something else came up during the review process, and unfortunately we are unable to move forward with your application.
-  </p>
-  <p style="font-size:16px; margin: 15px 0;">
-    If you have any questions or would like more information, please feel free to <strong>contact our team</strong>.
-  </p>
-
-  <div style="margin-top:25px;">
-    <a href="mailto:support@hunkeybutler.com" style="display:inline-block; padding:12px 25px; background:#ff1673; color:#fff; text-decoration:none; border-radius:8px; font-weight:bold;">
-      Contact Us
-    </a>
-  </div>
-
-  <p style="font-size:14px; color:#888; margin-top:20px;">
-    Thank you for your interest in the Hunkey Butler Service. We wish you the best in your future endeavors.
+    If you have any questions, please feel free to <strong>contact our team</strong>.
   </p>
 </div>
-
-
         `;
+
+        const smsMsg = "Hunky Butler: We regret to inform you that your butler application was not accepted at this time.";
     
-        // Send email to user
-        await transporter.sendMail({
-          from: '"Hunky Butler Service"',
-          to: email,
-          subject: "Reject Applicaiton",
+        await sendNotification({
+          email,
+          phone: user.phone,
+          subject: "Application Update",
+          message: smsMsg,
           html: userEmailHtml,
+          smsMessage: smsMsg
         });
 
-
+        res.status(200).json({
+          message:'Success',
+          data:updated
+        })
     
   } catch (error) {
-
-
     res.status(500).json({
       message:'Something went wrong!',
-      error
+      error: error.message
     })
-    
   }
 }
 export const suspendButler = async(req, res)=>{
   try {
     const email = req.params.email;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
     const updated = await User.updateOne({email: email}, {$set:{
       isButler:'suspend'
     }});
 
-       const transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-          port: 587,
-          secure: false,
-          auth: {
-            user: "bannah76769@gmail.com",
-            pass: "noqq kzxv olzf clzz",
-          },
-        });
-    
-           res.status(200).json({
-      message:'Success',
-      data:updated
-    })
-    storeNotification(email, `Your Butler Account is suspend. Please contact support`, '', '')
-        // User email HTML template
+    await storeNotification(email, `Your Butler Account is suspended. Please contact support`, '', '')
+        
         const userEmailHtml = `
-         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border-radius: 12px;">
-  <h1 style="color: #ff1673; font-size:28px; margin-bottom:20px;">Congratulations!</h1>
+         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
+  <h1 style="color: #ff1673; font-size:28px; margin-bottom:20px;">Account Suspended</h1>
   <p style="font-size:16px; margin: 15px 0;">
-    Your application has been <strong>accepted</strong>! 🎉
+    Your Butler account has been <strong>suspended</strong>. ⚠️
   </p>
   <p style="font-size:16px; margin: 15px 0;">
-    Welcome to the <strong>Hunkey Butler Service</strong> family. We’re excited to have you on board!
-  </p>
-  <p style="font-size:16px; margin: 15px 0;">
-    You can now access your Butler dashboard and start managing your bookings.
-  </p>
-
-  <p style="font-size:14px; color:#888; margin-top:20px;">
-    Thank you for joining us and helping make every event unforgettable.
+    Please contact our support team for more information regarding this action.
   </p>
 </div>
-
         `;
+
+        const smsMsg = "Hunky Butler: Your butler account has been suspended. Please contact support for assistance.";
     
-        // Send email to user
-        await transporter.sendMail({
-          from: '"Hunky Butler Service"',
-          to: email,
-          subject: "Suspend!",
+        await sendNotification({
+          email,
+          phone: user.phone,
+          subject: "Account Suspended",
+          message: smsMsg,
           html: userEmailHtml,
+          smsMessage: smsMsg
         });
 
+        res.status(200).json({
+          message:'Success',
+          data:updated
+        })
  
   } catch (error) {
-
-
     res.status(500).json({
       message:'Something went wrong!',
-      error
+      error: error.message
     })
-    
   }
 }
 export const activeButler = async(req, res)=>{
   try {
     const email = req.params.email;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
     const updated = await User.updateOne({email: email}, {$set:{
       isButler:'active'
     }});
 
-       res.status(200).json({
-      message:'Success',
-      data:updated
-    })
-    storeNotification(email, 'Your Butler Application accepted', '', '')
+    await storeNotification(email, 'Your Butler Application accepted', '', '')
 
-       const transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-          port: 587,
-          secure: false,
-          auth: {
-            user: "bannah76769@gmail.com",
-            pass: "noqq kzxv olzf clzz",
-          },
-        });
-    
-        // User email HTML template
         const userEmailHtml = `
-         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border-radius: 12px;">
+         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
   <h1 style="color: #ff1673; font-size:28px; margin-bottom:20px;">Congratulations!</h1>
   <p style="font-size:16px; margin: 15px 0;">
     Your application has been <strong>accepted</strong>! 🎉
@@ -393,48 +314,44 @@ export const activeButler = async(req, res)=>{
   <p style="font-size:16px; margin: 15px 0;">
     You can now access your Butler dashboard and start managing your bookings.
   </p>
-
-  <p style="font-size:14px; color:#888; margin-top:20px;">
-    Thank you for joining us and helping make every event unforgettable.
-  </p>
 </div>
-
         `;
+
+        const smsMsg = "Hunky Butler: Congratulations! Your application has been accepted. You can now access your Butler dashboard.";
     
-        // Send email to user
-        await transporter.sendMail({
-          from: '"Hunky Butler Service"',
-          to: email,
+        await sendNotification({
+          email,
+          phone: user.phone,
           subject: "Application Accepted",
+          message: smsMsg,
           html: userEmailHtml,
+          smsMessage: smsMsg
         });
 
+        res.status(200).json({
+          message:'Success',
+          data:updated
+        })
  
   } catch (error) {
-
-
     res.status(500).json({
       message:'Something went wrong!',
-      error
+      error: error.message
     })
-    
   }
 }
 
 export const getPendingButler = async(req, res)=>{
   try {
-
-
     const pendingButler = await User.find({isButler: 'pending'});
     res.status(200).json({
       message:"Success",
       data: pendingButler
     })
-    
   } catch (error) {
-    res.status({
+    res.status(500).json({
       message:"Something went wrong!",
-      error
+      error: error.message
     })
   }
 }
