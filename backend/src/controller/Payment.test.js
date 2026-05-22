@@ -8,7 +8,7 @@ async function main() {
         idempotencyKey: "{UNIQUE_KEY}",
         amountMoney: {
             amount: BigInt("2000"),
-            currency: "USD",
+            currency: "GBP",
         },
         sourceId: "{PAYMENT_TOKEN_REPRESENTING_A_PAYMENT_SOURCE}",
     });

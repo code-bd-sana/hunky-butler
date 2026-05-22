@@ -43,7 +43,7 @@ const paymentSchema = mongoose.Schema({
     },
     currency: {
         type: String,
-        default: 'usd',
+        default: 'gbp',
         uppercase: true
     },
   butler: [

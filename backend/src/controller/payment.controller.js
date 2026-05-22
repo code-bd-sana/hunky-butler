@@ -15,10 +15,12 @@ dotenv.config();
 // Square client initialization
 const squareClient = new Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
-  environment: process.env.SQUARE_ACCESS_TOKEN?.startsWith('EAAA') ? Environment.Sandbox : Environment.Production
+  environment: process.env.SQUARE_ENVIRONMENT === 'sandbox' || process.env.SQUARE_APPLICATION_ID?.startsWith('sandbox-') 
+    ? Environment.Sandbox 
+    : Environment.Production
 });
 
-console.log('✅ Square client initialized in', process.env.SQUARE_ACCESS_TOKEN?.startsWith('EAAA') ? 'Sandbox' : 'Production', 'mode');
+console.log('✅ Square client initialized in', (process.env.SQUARE_ENVIRONMENT === 'sandbox' || process.env.SQUARE_APPLICATION_ID?.startsWith('sandbox-')) ? 'Sandbox' : 'Production', 'mode');
 
 // API instances
 const { paymentsApi, ordersApi, checkoutApi } = squareClient;
@@ -65,7 +67,7 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
         quantity: '1',
         basePriceMoney: {
           amount: Math.round(price * 100),
-          currency: 'USD',
+          currency: process.env.SQUARE_CURRENCY || 'GBP',
         },
         note: savedBooking._id.toString()
       }
@@ -164,7 +166,7 @@ export const createCheckoutSession = async (req, res) => {
         quantity: '1',
         basePriceMoney: {
           amount: Math.round(amountToCharge * 100),
-          currency: 'USD',
+          currency: process.env.SQUARE_CURRENCY || 'GBP',
         },
         note: savedBooking._id.toString()
       }
@@ -380,7 +382,7 @@ const handleSuccessfulPayment = async (payment) => {
       depositAmount: isDeposit ? 20 : 0,
       amountDue: isDeposit ? booking.price - 20 : 0,
       amountPaid: amountPaid,
-      currency: 'USD',
+      currency: process.env.SQUARE_CURRENCY || 'GBP',
       paymentMethodType: "card",
       paymentMethod: "credit_card",
       paymentStatus: paymentStatus,
