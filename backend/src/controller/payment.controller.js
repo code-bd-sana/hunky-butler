@@ -15,10 +15,10 @@ dotenv.config();
 // Square client initialization
 const squareClient = new Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
-  environment: Environment.Sandbox
+  environment: process.env.SQUARE_ACCESS_TOKEN?.startsWith('EAAA') ? Environment.Sandbox : Environment.Production
 });
 
-console.log('✅ Square client initialized successfully');
+console.log('✅ Square client initialized in', process.env.SQUARE_ACCESS_TOKEN?.startsWith('EAAA') ? 'Sandbox' : 'Production', 'mode');
 
 // API instances
 const { paymentsApi, ordersApi, checkoutApi } = squareClient;
@@ -27,6 +27,8 @@ const { paymentsApi, ordersApi, checkoutApi } = squareClient;
 export const createCheckoutSessionExistngBooking = async (req, res) => {
   try {
     const { id, successUrl } = req.body;
+
+    console.log('🔄 Creating payment link for existing booking:', id);
 
     if (!id || !successUrl) {
       return res.status(400).json({
@@ -43,70 +45,38 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
       });
     }
 
-    console.log('🔄 Processing existing booking:', savedBooking._id.toString());
-
-    const price = savedBooking?.paymentStatus === 'deposit_paid' 
-      ? savedBooking.price - 20 
-      : savedBooking?.price;
-
     const validLocationId = process.env.SQUARE_LOCATION_ID;
+    if (!validLocationId) {
+      return res.status(500).json({
+        success: false,
+        message: 'Square location ID not configured'
+      });
+    }
 
-    // Simple line items
-    const simpleLineItems = [
+    const price = savedBooking?.paymentStatus === 'deposit_paid'
+      ? savedBooking.price - 20
+      : savedBooking.price;
+
+    console.log('💰 Amount to charge:', price);
+
+    const lineItems = [
       {
         name: `${savedBooking.serviceName} Service - Balance Payment`,
-        
         quantity: '1',
         basePriceMoney: {
           amount: Math.round(price * 100),
           currency: 'USD',
         },
-        note: `${savedBooking._id}`,
+        note: savedBooking._id.toString()
       }
     ];
-
-    // SIMPLE metadata - ONLY bookingId
-    const metadata = {
-      bid: savedBooking._id.toString(),
-    };
-
-    console.log('📋 Metadata to send:', metadata);
-
-    // Create Square Order with verification
-    const orderResponse = await ordersApi.createOrder({
-      order: {
-        locationId: validLocationId,
-        lineItems: simpleLineItems,
-        metadata: metadata,
-      },
-      idempotencyKey: crypto.randomUUID(),
-    });
-
-    console.log('✅ Square order created:', orderResponse.result.order.id);
-
-    // Verify metadata was saved
-    const verifyOrder = await ordersApi.retrieveOrder(orderResponse.result.order.id);
-    const savedMetadata = verifyOrder.result.order.metadata;
-    console.log('📋 Metadata received from Square:', savedMetadata);
-
-    // Store mapping as fallback
-    await OrderMapping.findOneAndUpdate(
-      { squareOrderId: orderResponse.result.order.id },
-      {
-        squareOrderId: orderResponse.result.order.id,
-        bookingId: savedBooking._id,
-        customerEmail: savedBooking.email
-      },
-      { upsert: true, new: true }
-    );
-    console.log('✅ Order mapping stored as fallback');
 
     // Create Payment Link
     const paymentLinkResponse = await checkoutApi.createPaymentLink({
       idempotencyKey: crypto.randomUUID(),
       order: {
         locationId: validLocationId,
-        lineItems: simpleLineItems,
+        lineItems: lineItems,
       },
       checkoutOptions: {
         redirectUrl: successUrl,
@@ -118,14 +88,12 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
       },
     });
 
-    console.log('✅ Payment link created');
+    console.log('✅ Payment link created successfully');
 
     res.status(200).json({
       success: true,
       paymentLinkId: paymentLinkResponse.result.paymentLink.id,
       checkoutUrl: paymentLinkResponse.result.paymentLink.url,
-      orderId: orderResponse.result.order.id,
-      bookingId: savedBooking._id,
       message: 'Payment link created successfully',
     });
 
@@ -148,6 +116,7 @@ export const createCheckoutSession = async (req, res) => {
     console.log('💰 Payment type:', paymentType);
 
     if (!bookingData || !successUrl) {
+      console.log('❌ Missing required fields');
       return res.status(400).json({
         success: false,
         message: 'Missing required fields: bookingData, successUrl',
@@ -156,16 +125,19 @@ export const createCheckoutSession = async (req, res) => {
 
     const validLocationId = process.env.SQUARE_LOCATION_ID;
     if (!validLocationId) {
+      console.log('❌ Square location ID not configured');
       return res.status(500).json({
         success: false,
         message: 'Square location ID not configured'
       });
     }
 
-    const totalAmount = bookingData.price;
+    const totalAmount = Number(bookingData.price);
     const depositAmount = 20;
     const isDeposit = paymentType === 'deposit';
     const amountToCharge = isDeposit ? depositAmount : totalAmount;
+
+    console.log(`📊 Price: ${totalAmount}, Charging: ${amountToCharge}`);
 
     // Create booking first
     const newBooking = new Booking({
@@ -173,53 +145,42 @@ export const createCheckoutSession = async (req, res) => {
       paymentType: paymentType,
       depositAmount: isDeposit ? depositAmount : 0,
       amountDue: isDeposit ? totalAmount - depositAmount : 0,
-      amountPaid: isDeposit ? depositAmount : 0,
-      paymentStatus: isDeposit ? 'deposit_paid' : 'pending',
+      amountPaid: 0, // Will be updated on successful payment
+      paymentStatus: 'pending',
       totalAmount: totalAmount,
+      status: 'ongoing',
+      paid: 'unpaid'
     });
 
     const savedBooking = await newBooking.save();
     console.log('✅ Booking created with ID:', savedBooking._id.toString());
 
     // Simple line items
-const simpleLineItems = [
-  {
-    name: isDeposit 
-      ? `${bookingData.serviceName} Service - Deposit` 
-      : `${bookingData.serviceName} Service Booking`,
-    quantity: '1',
-    basePriceMoney: {
-      amount: Math.round(amountToCharge * 100),
-      currency: 'USD',
-    },
-    note: `${savedBooking._id}`,
-     reference_id: savedBooking._id.toString()
-  }
-];
-
-    // SIMPLE metadata - ONLY bookingId
-    const metadata = {
-      bid: savedBooking._id.toString(),
-    };
-
-    console.log('📋 Metadata to send:', metadata);
+    const simpleLineItems = [
+      {
+        name: isDeposit 
+          ? `${bookingData.serviceName} Service - Deposit` 
+          : `${bookingData.serviceName} Service Booking`,
+        quantity: '1',
+        basePriceMoney: {
+          amount: Math.round(amountToCharge * 100),
+          currency: 'USD',
+        },
+        note: savedBooking._id.toString()
+      }
+    ];
 
     // Create Square Order
     const orderResponse = await ordersApi.createOrder({
       order: {
         locationId: validLocationId,
         lineItems: simpleLineItems,
-        metadata: metadata,
+        referenceId: savedBooking._id.toString()
       },
       idempotencyKey: crypto.randomUUID(),
     });
 
     console.log('✅ Square order created:', orderResponse.result.order.id);
-
-    // Verify metadata was saved
-    const verifyOrder = await ordersApi.retrieveOrder(orderResponse.result.order.id);
-    const savedMetadata = verifyOrder.result.order.metadata;
-    console.log('📋 Metadata received from Square:', savedMetadata);
 
     // Store mapping as fallback
     await OrderMapping.findOneAndUpdate(
@@ -231,7 +192,7 @@ const simpleLineItems = [
       },
       { upsert: true, new: true }
     );
-    console.log('✅ Order mapping stored as fallback');
+    console.log('✅ Order mapping stored');
 
     // Create Payment Link
     const paymentLinkResponse = await checkoutApi.createPaymentLink({
@@ -239,6 +200,7 @@ const simpleLineItems = [
       order: {
         locationId: validLocationId,
         lineItems: simpleLineItems,
+        referenceId: savedBooking._id.toString()
       },
       checkoutOptions: {
         redirectUrl: successUrl,
@@ -260,12 +222,11 @@ const simpleLineItems = [
       bookingId: savedBooking._id,
       paymentType: paymentType,
       amountCharged: amountToCharge,
-      amountDue: isDeposit ? totalAmount - depositAmount : 0,
       message: 'Payment link created successfully',
     });
 
   } catch (error) {
-    console.error('❌ Error creating payment link:', error);
+    console.error('❌ ERROR IN CREATE CHECKOUT SESSION:', error);
     res.status(500).json({
       success: false,
       message: 'Error creating payment link',

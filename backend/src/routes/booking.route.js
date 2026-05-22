@@ -5,16 +5,16 @@ import { verifyAdmin, verifyUser } from "../middleware/privateRoute.js";
 const router = Router();
 
 
-router.get('/', getAllBooking);
-router.post('/', createBooking);
-router.get('/:id', getBookingButler);
-router.get('/customer/:email', getBookingCustomer)
-router.delete('/:id', deleteBooking);
-router.put('/update', updateStatus);
-router.put('/assign', assginToButler);
-router.get('/customerBooking/:email', getBookingOverviewCustomer);
-router.get('/butlerBookingOverview/:id', getBookingOverviewButler);
-router.get('/butlerOverview/:id', getButlerOverview)
+router.get('/', verifyAdmin, getAllBooking);
+router.post('/', createBooking); // Public for quote form
+router.get('/:id', verifyUser, getBookingButler);
+router.get('/customer/:email', verifyUser, getBookingCustomer)
+router.delete('/:id', verifyAdmin, deleteBooking);
+router.put('/update', verifyUser, updateStatus);
+router.put('/assign', verifyAdmin, assginToButler);
+router.get('/customerBooking/:email', verifyUser, getBookingOverviewCustomer);
+router.get('/butlerBookingOverview/:id', verifyUser, getBookingOverviewButler);
+router.get('/butlerOverview/:id', verifyUser, getButlerOverview)
 
 
 export default router;

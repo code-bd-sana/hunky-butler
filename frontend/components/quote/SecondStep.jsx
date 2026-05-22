@@ -788,11 +788,13 @@ export default function SecondStep() {
       };
 
       if (paymentMethod === 'pay_now') {
+        console.log('🔄 Initiating payment request to:', `${base_url}/payment/create-checkout-session`);
         const response = await fetch(`${base_url}/payment/create-checkout-session`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include', // Ensure cookies are sent if needed
           body: JSON.stringify({
             bookingData: finalData,
             successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -801,16 +803,27 @@ export default function SecondStep() {
           }),
         });
 
-        const { sessionId, success, error, checkoutUrl } = await response.json();
+        console.log('📊 Payment API Response Status:', response.status);
+
+        if (response.status === 401) {
+          throw new Error('Authentication failed. Please try logging in again.');
+        }
+
+        const result = await response.json();
+        const { sessionId, success, error, checkoutUrl } = result;
         
         if (!success) {
+          console.error('❌ Payment API Error:', error);
           throw new Error(error || 'Failed to create checkout session');
         }
         
+        console.log('✅ Redirecting to:', checkoutUrl || 'Stripe');
         if (checkoutUrl) {
           window.location.href = checkoutUrl;
-        } else {
+        } else if (sessionId) {
           window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
+        } else {
+          throw new Error('No checkout URL or session ID received');
         }
         
       } else {
