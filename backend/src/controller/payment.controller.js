@@ -3,41 +3,34 @@ const require = createRequire(import.meta.url);
 const { Client, Environment } = require('square');
 const crypto = require('crypto');
 
-import nodemailer from 'nodemailer';
 import Booking from '../models/booking.model.js';
 import User from '../models/user.model.js';
 import PaymentHistory from '../models/payment.model.js';
-import OrderMapping from '../models/OrderMapping.model.js'; // Create this model
+import OrderMapping from '../models/OrderMapping.model.js'; 
 import dotenv from "dotenv";
+import { sendNotification } from '../utils/notification.js';
 
 dotenv.config();
 
 // Square client initialization
 const squareClient = new Client({
   accessToken: process.env.SQUARE_ACCESS_TOKEN,
-  environment: Environment.Sandbox
+  environment: process.env.SQUARE_ENVIRONMENT === 'sandbox' || process.env.SQUARE_APPLICATION_ID?.startsWith('sandbox-') 
+    ? Environment.Sandbox 
+    : Environment.Production
 });
 
-console.log('✅ Square client initialized successfully');
+console.log('✅ Square client initialized in', (process.env.SQUARE_ENVIRONMENT === 'sandbox' || process.env.SQUARE_APPLICATION_ID?.startsWith('sandbox-')) ? 'Sandbox' : 'Production', 'mode');
 
 // API instances
 const { paymentsApi, ordersApi, checkoutApi } = squareClient;
-
-// Email transporter setup
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: "bannah76769@gmail.com",
-    pass: "noqq kzxv olzf clzz",
-  },
-});
 
 // ==================== CREATE PAYMENT LINK FOR EXISTING BOOKING ====================
 export const createCheckoutSessionExistngBooking = async (req, res) => {
   try {
     const { id, successUrl } = req.body;
+
+    console.log('🔄 Creating payment link for existing booking:', id);
 
     if (!id || !successUrl) {
       return res.status(400).json({
@@ -54,70 +47,38 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
       });
     }
 
-    console.log('🔄 Processing existing booking:', savedBooking._id.toString());
-
-    const price = savedBooking?.paymentStatus === 'deposit_paid' 
-      ? savedBooking.price - 20 
-      : savedBooking?.price;
-
     const validLocationId = process.env.SQUARE_LOCATION_ID;
+    if (!validLocationId) {
+      return res.status(500).json({
+        success: false,
+        message: 'Square location ID not configured'
+      });
+    }
 
-    // Simple line items
-    const simpleLineItems = [
+    const price = savedBooking?.paymentStatus === 'deposit_paid'
+      ? savedBooking.price - 20
+      : savedBooking.price;
+
+    console.log('💰 Amount to charge:', price);
+
+    const lineItems = [
       {
         name: `${savedBooking.serviceName} Service - Balance Payment`,
-        
         quantity: '1',
         basePriceMoney: {
           amount: Math.round(price * 100),
-          currency: 'USD',
+          currency: process.env.SQUARE_CURRENCY || 'GBP',
         },
-        note: `${savedBooking._id}`,
+        note: savedBooking._id.toString()
       }
     ];
-
-    // SIMPLE metadata - ONLY bookingId
-    const metadata = {
-      bid: savedBooking._id.toString(),
-    };
-
-    console.log('📋 Metadata to send:', metadata);
-
-    // Create Square Order with verification
-    const orderResponse = await ordersApi.createOrder({
-      order: {
-        locationId: validLocationId,
-        lineItems: simpleLineItems,
-        metadata: metadata,
-      },
-      idempotencyKey: crypto.randomUUID(),
-    });
-
-    console.log('✅ Square order created:', orderResponse.result.order.id);
-
-    // Verify metadata was saved
-    const verifyOrder = await ordersApi.retrieveOrder(orderResponse.result.order.id);
-    const savedMetadata = verifyOrder.result.order.metadata;
-    console.log('📋 Metadata received from Square:', savedMetadata);
-
-    // Store mapping as fallback
-    await OrderMapping.findOneAndUpdate(
-      { squareOrderId: orderResponse.result.order.id },
-      {
-        squareOrderId: orderResponse.result.order.id,
-        bookingId: savedBooking._id,
-        customerEmail: savedBooking.email
-      },
-      { upsert: true, new: true }
-    );
-    console.log('✅ Order mapping stored as fallback');
 
     // Create Payment Link
     const paymentLinkResponse = await checkoutApi.createPaymentLink({
       idempotencyKey: crypto.randomUUID(),
       order: {
         locationId: validLocationId,
-        lineItems: simpleLineItems,
+        lineItems: lineItems,
       },
       checkoutOptions: {
         redirectUrl: successUrl,
@@ -129,14 +90,12 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
       },
     });
 
-    console.log('✅ Payment link created');
+    console.log('✅ Payment link created successfully');
 
     res.status(200).json({
       success: true,
       paymentLinkId: paymentLinkResponse.result.paymentLink.id,
       checkoutUrl: paymentLinkResponse.result.paymentLink.url,
-      orderId: orderResponse.result.order.id,
-      bookingId: savedBooking._id,
       message: 'Payment link created successfully',
     });
 
@@ -159,6 +118,7 @@ export const createCheckoutSession = async (req, res) => {
     console.log('💰 Payment type:', paymentType);
 
     if (!bookingData || !successUrl) {
+      console.log('❌ Missing required fields');
       return res.status(400).json({
         success: false,
         message: 'Missing required fields: bookingData, successUrl',
@@ -167,16 +127,19 @@ export const createCheckoutSession = async (req, res) => {
 
     const validLocationId = process.env.SQUARE_LOCATION_ID;
     if (!validLocationId) {
+      console.log('❌ Square location ID not configured');
       return res.status(500).json({
         success: false,
         message: 'Square location ID not configured'
       });
     }
 
-    const totalAmount = bookingData.price;
+    const totalAmount = Number(bookingData.price);
     const depositAmount = 20;
     const isDeposit = paymentType === 'deposit';
     const amountToCharge = isDeposit ? depositAmount : totalAmount;
+
+    console.log(`📊 Price: ${totalAmount}, Charging: ${amountToCharge}`);
 
     // Create booking first
     const newBooking = new Booking({
@@ -184,54 +147,42 @@ export const createCheckoutSession = async (req, res) => {
       paymentType: paymentType,
       depositAmount: isDeposit ? depositAmount : 0,
       amountDue: isDeposit ? totalAmount - depositAmount : 0,
-      amountPaid: isDeposit ? depositAmount : 0,
-      paymentStatus: isDeposit ? 'deposit_paid' : 'pending',
+      amountPaid: 0, // Will be updated on successful payment
+      paymentStatus: 'pending',
       totalAmount: totalAmount,
+      status: 'ongoing',
+      paid: 'unpaid'
     });
 
     const savedBooking = await newBooking.save();
     console.log('✅ Booking created with ID:', savedBooking._id.toString());
 
     // Simple line items
- // In the line items section:
-const simpleLineItems = [
-  {
-    name: isDeposit 
-      ? `${bookingData.serviceName} Service - Deposit` 
-      : `${bookingData.serviceName} Service Booking`,
-    quantity: '1',
-    basePriceMoney: {
-      amount: Math.round(amountToCharge * 100),
-      currency: 'USD',
-    },
-    note: `${savedBooking._id}`,
-     reference_id: savedBooking._id.toString()
-  }
-];
-
-    // SIMPLE metadata - ONLY bookingId
-    const metadata = {
-      bid: savedBooking._id.toString(),
-    };
-
-    console.log('📋 Metadata to send:', metadata);
+    const simpleLineItems = [
+      {
+        name: isDeposit 
+          ? `${bookingData.serviceName} Service - Deposit` 
+          : `${bookingData.serviceName} Service Booking`,
+        quantity: '1',
+        basePriceMoney: {
+          amount: Math.round(amountToCharge * 100),
+          currency: process.env.SQUARE_CURRENCY || 'GBP',
+        },
+        note: savedBooking._id.toString()
+      }
+    ];
 
     // Create Square Order
     const orderResponse = await ordersApi.createOrder({
       order: {
         locationId: validLocationId,
         lineItems: simpleLineItems,
-        metadata: metadata,
+        referenceId: savedBooking._id.toString()
       },
       idempotencyKey: crypto.randomUUID(),
     });
 
     console.log('✅ Square order created:', orderResponse.result.order.id);
-
-    // Verify metadata was saved
-    const verifyOrder = await ordersApi.retrieveOrder(orderResponse.result.order.id);
-    const savedMetadata = verifyOrder.result.order.metadata;
-    console.log('📋 Metadata received from Square:', savedMetadata);
 
     // Store mapping as fallback
     await OrderMapping.findOneAndUpdate(
@@ -243,7 +194,7 @@ const simpleLineItems = [
       },
       { upsert: true, new: true }
     );
-    console.log('✅ Order mapping stored as fallback');
+    console.log('✅ Order mapping stored');
 
     // Create Payment Link
     const paymentLinkResponse = await checkoutApi.createPaymentLink({
@@ -251,6 +202,7 @@ const simpleLineItems = [
       order: {
         locationId: validLocationId,
         lineItems: simpleLineItems,
+        referenceId: savedBooking._id.toString()
       },
       checkoutOptions: {
         redirectUrl: successUrl,
@@ -272,12 +224,11 @@ const simpleLineItems = [
       bookingId: savedBooking._id,
       paymentType: paymentType,
       amountCharged: amountToCharge,
-      amountDue: isDeposit ? totalAmount - depositAmount : 0,
       message: 'Payment link created successfully',
     });
 
   } catch (error) {
-    console.error('❌ Error creating payment link:', error);
+    console.error('❌ ERROR IN CREATE CHECKOUT SESSION:', error);
     res.status(500).json({
       success: false,
       message: 'Error creating payment link',
@@ -385,16 +336,9 @@ const handleSuccessfulPayment = async (payment) => {
       bookingId = order.lineItems[0].note;
       console.log('✅ Found bookingId in metadata:', bookingId);
     } 
-    // METHOD 2: Emergency fallback - check database mapping
-   
 
     if (!bookingId) {
       console.error('❌ CRITICAL: COULD NOT FIND BOOKING ID AFTER ALL ATTEMPTS');
-      console.error('📋 Available data:', {
-        orderId: orderId,
-        paymentId: payment.id,
-        amount: payment.amountMoney?.amount / 100
-      });
       throw new Error('Cannot process payment - booking ID not found');
     }
 
@@ -406,13 +350,6 @@ const handleSuccessfulPayment = async (payment) => {
       throw new Error(`Booking not found: ${bookingId}`);
     }
 
-    console.log('✅ Found booking:', {
-      id: booking._id.toString(),
-      paymentStatus: booking.paymentStatus,
-      paymentType: booking.paymentType,
-      price: booking.price
-    });
-
     // Determine payment type and update logic
     const isBalancePayment = booking.paymentStatus === 'pending';
     const isDeposit = booking.paymentStatus === 'deposit_paid' && booking.paid === 'pending';
@@ -422,29 +359,18 @@ const handleSuccessfulPayment = async (payment) => {
     let paymentType = '';
 
     if (isBalancePayment) {
-      // Balance payment - pay remaining amount
-      amountPaid = booking.price; // Full amount for balance payment
+      amountPaid = booking.price; 
       paymentStatus = 'paid';
       paymentType = 'full';
     } else if (isDeposit) {
-      // Deposit payment
       amountPaid = 20;
       paymentStatus = 'deposit_paid';
       paymentType = 'deposit';
     } else {
-      // Full payment
       amountPaid = booking.price;
       paymentStatus = 'paid';
       paymentType = 'full';
     }
-
-    console.log('💰 Payment processing:', {
-      isBalancePayment,
-      isDeposit,
-      amountPaid,
-      paymentStatus,
-      paymentType
-    });
 
     // Create payment history
     const paymentHistory = new PaymentHistory({
@@ -456,7 +382,7 @@ const handleSuccessfulPayment = async (payment) => {
       depositAmount: isDeposit ? 20 : 0,
       amountDue: isDeposit ? booking.price - 20 : 0,
       amountPaid: amountPaid,
-      currency: 'USD',
+      currency: process.env.SQUARE_CURRENCY || 'GBP',
       paymentMethodType: "card",
       paymentMethod: "credit_card",
       paymentStatus: paymentStatus,
@@ -480,8 +406,7 @@ const handleSuccessfulPayment = async (payment) => {
       adminVerified: false,
     });
 
-    const paymentHistorys = await paymentHistory.save();
-    console.log( paymentHistorys, '✅ Payment history created');
+    await paymentHistory.save();
 
     // Update booking
     const updateData = {
@@ -493,22 +418,10 @@ const handleSuccessfulPayment = async (payment) => {
       amountPaid: amountPaid,
       amountDue: isDeposit ? booking.price - 20 : 0,
       depositAmount: isDeposit ? 20 : 0,
-        paid: paymentStatus,
-   
-    
+      paid: paymentStatus,
     };
 
-    const updatedBooking = await Booking.findByIdAndUpdate(
-      bookingId,
-      updateData,
-      { new: true }
-    );
-
-    if (!updatedBooking) {
-      throw new Error(`Booking update failed for ID: ${bookingId}`);
-    }
-
-    console.log(updatedBooking, '✅✅✅ BOOKING UPDATED SUCCESSFULLY');
+    await Booking.findByIdAndUpdate(bookingId, updateData, { new: true });
 
     // Update user service count for full payments
     if (paymentStatus === 'paid') {
@@ -519,16 +432,13 @@ const handleSuccessfulPayment = async (payment) => {
           $set: { lastServiceDate: new Date() },
         }
       );
-      console.log('👤 User service count updated');
     }
 
-    // Send confirmation email
-    await sendPaymentConfirmationEmail(paymentHistory, {
+    // Send confirmation notification (Email + SMS)
+    await sendPaymentConfirmationNotification(paymentHistory, {
       isBalancePayment,
       isDeposit
     });
-
-    console.log(`🎉🎉🎉 SUCCESSFULLY PROCESSED PAYMENT FOR BOOKING: ${bookingId}`);
 
     return {
       success: true,
@@ -537,106 +447,80 @@ const handleSuccessfulPayment = async (payment) => {
     };
 
   } catch (error) {
-    console.error('❌❌❌ ERROR IN PAYMENT PROCESSING:', error.message);
+    console.error('❌ ERROR IN PAYMENT PROCESSING:', error.message);
     throw error;
   }
 };
 
-// ==================== SEND PAYMENT CONFIRMATION EMAIL ====================
-const sendPaymentConfirmationEmail = async (paymentHistory, options) => {
+// ==================== SEND PAYMENT CONFIRMATION NOTIFICATION ====================
+const sendPaymentConfirmationNotification = async (paymentHistory, options) => {
   try {
     const { isBalancePayment, isDeposit } = options;
 
-    let subject, html;
+    let subject, html, smsMsg;
 
     if (isBalancePayment) {
       subject = `Balance Paid - ${paymentHistory.serviceName} Booking Complete!`;
+      smsMsg = `Hunky Butler: Balance payment successful! Your booking for ${paymentHistory.serviceName} is now fully confirmed.`;
       html = `
         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
           <h1 style="color: #4CAF50;">Balance Payment Successful! 🎉</h1>
           <p style="font-size:16px; margin:20px 0;">
             Thank you for completing your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> is now fully confirmed.
           </p>
-          
           <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
-            <h3 style="color: #333; margin-bottom: 15px;">Payment Details</h3>
             <p><strong>Amount Paid:</strong> $${paymentHistory.amountPaid} ${paymentHistory.currency}</p>
-            <p><strong>Total Service Cost:</strong> $${paymentHistory.totalAmount}</p>
-            <p><strong>Payment Status:</strong> Fully Paid ✅</p>
-            ${paymentHistory.receiptUrl ? `
-              <p><strong>Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">View Your Receipt</a></p>
-            ` : ''}
-          </div>
-
-          <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 20px 0;">
-            <p style="margin: 0; color: #2e7d32; font-weight: bold;">
-              ✅ Your booking is now fully confirmed and ready!
-            </p>
+            <p><strong>Total Cost:</strong> $${paymentHistory.totalAmount}</p>
+            <p><strong>Status:</strong> Fully Paid ✅</p>
           </div>
         </div>
       `;
     } else if (isDeposit) {
       subject = `Deposit Received - ${paymentHistory.serviceName} Booking`;
+      smsMsg = `Hunky Butler: Deposit received! Your booking for ${paymentHistory.serviceName} is temporarily confirmed. Please pay the balance of $${paymentHistory.amountDue} before the event.`;
       html = `
         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #FF9800; border-radius: 12px;">
           <h1 style="color: #FF9800;">Deposit Received! 🎉</h1>
           <p style="font-size:16px; margin:20px 0;">
             Thank you for your deposit! Your booking for <strong>${paymentHistory.serviceName}</strong> is temporarily confirmed.
           </p>
-          
           <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
-            <h3 style="color: #856404; margin-bottom: 15px;">Payment Details</h3>
             <p><strong>Deposit Paid:</strong> $${paymentHistory.depositAmount}</p>
-            <p><strong>Total Service Cost:</strong> $${paymentHistory.totalAmount}</p>
             <p><strong>Balance Due:</strong> $${paymentHistory.amountDue}</p>
-            <p><strong>Payment Status:</strong> Deposit Paid ⚠️</p>
-            <p style="color: #856404; font-weight: bold;">
-              Please pay the remaining balance before your event date.
-            </p>
-            ${paymentHistory.receiptUrl ? `
-              <p><strong>Deposit Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #FF9800; text-decoration: none; font-weight: bold;">View Deposit Receipt</a></p>
-            ` : ''}
-          </div>
-
-          <div style="background: #e6f7ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
-            <p style="margin: 0; color: #0066cc; font-weight: bold;">
-              ℹ️ Your booking will be fully confirmed once the balance is paid.
-            </p>
+            <p><strong>Status:</strong> Deposit Paid ⚠️</p>
           </div>
         </div>
       `;
     } else {
       subject = `Payment Successful - ${paymentHistory.serviceName} Booking Confirmed!`;
+      smsMsg = `Hunky Butler: Payment successful! Your booking for ${paymentHistory.serviceName} has been confirmed.`;
       html = `
         <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
           <h1 style="color: #4CAF50;">Payment Successful - Booking Confirmed! 🎉</h1>
           <p style="font-size:16px; margin:20px 0;">
             Thank you for your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> has been confirmed.
           </p>
-          
           <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
-            <h3 style="color: #333; margin-bottom: 15px;">Payment Details</h3>
             <p><strong>Amount Paid:</strong> $${paymentHistory.amountPaid} ${paymentHistory.currency}</p>
-            <p><strong>Payment Status:</strong> Fully Paid ✅</p>
-            ${paymentHistory.receiptUrl ? `
-              <p><strong>Receipt:</strong> <a href="${paymentHistory.receiptUrl}" target="_blank" style="color: #4CAF50; text-decoration: none; font-weight: bold;">View Your Receipt</a></p>
-            ` : ''}
+            <p><strong>Status:</strong> Fully Paid ✅</p>
           </div>
         </div>
       `;
     }
 
-    await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
-      to: paymentHistory.customerEmail,
+    await sendNotification({
+      email: paymentHistory.customerEmail,
+      phone: paymentHistory.customerPhone,
       subject: subject,
+      message: smsMsg,
       html: html,
+      smsMessage: smsMsg
     });
 
-    console.log(`📧 ${isBalancePayment ? 'Balance' : isDeposit ? 'Deposit' : 'Payment'} confirmation email sent to: ${paymentHistory.customerEmail}`);
+    console.log(`✅ ${isBalancePayment ? 'Balance' : isDeposit ? 'Deposit' : 'Payment'} confirmation notification sent to: ${paymentHistory.customerEmail}`);
 
   } catch (error) {
-    console.error('❌ Error sending confirmation email:', error);
+    console.error('❌ Error sending confirmation notification:', error);
   }
 };
 
@@ -650,18 +534,13 @@ const handleFailedPayment = async (payment) => {
     if (orderId) {
       try {
         const orderResponse = await ordersApi.retrieveOrder(orderId);
-        const metadata = orderResponse.result.order.metadata || {};
         let bookingId = orderResponse.result.order.lineItems[0].note;
 
-        // If no metadata, try database mapping
-      
         if (bookingId) {
-          console.log(`❌ Processing failed payment for booking: ${bookingId}`);
           await Booking.findByIdAndUpdate(bookingId, {
             paymentStatus: 'failed',
             updatedAt: new Date(),
           });
-          console.log(`✅ Booking marked as failed: ${bookingId}`);
         }
       } catch (orderError) {
         console.error('❌ Error retrieving order for failed payment:', orderError.message);
@@ -703,8 +582,8 @@ export const verifyPayment = async (req, res) => {
     }
 
     const orderResponse = await ordersApi.retrieveOrder(payment.orderId);
-    const metadata = orderResponse.result.order || {};
-    const booking = await Booking.findById(metadata.lineItems.note);
+    const order = orderResponse.result.order || {};
+    const booking = await Booking.findById(order.lineItems?.[0]?.note);
 
     res.status(200).json({
       success: true,
@@ -738,8 +617,8 @@ export const verifyPayment = async (req, res) => {
 // ==================== PAYMENT HISTORY FUNCTIONS ====================
 export const allPaymentHistory = async (req, res) => {
   try {
-    const skip = req.query.skip;
-    const limit = req.query.limit;
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 10;
     const payments = await PaymentHistory.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('butler');
     const paymentsCount = await PaymentHistory.countDocuments();
     res.status(200).json({
@@ -748,10 +627,9 @@ export const allPaymentHistory = async (req, res) => {
       count: paymentsCount,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: 'Something went wrong!',
-      error,
+      error: error.message,
     });
   }
 };
@@ -759,8 +637,8 @@ export const allPaymentHistory = async (req, res) => {
 export const paymentHistoryForCustomer = async (req, res) => {
   try {
     const email = req.params.email;
-    const skip = req.query.skip;
-    const limit = req.query.limit;
+    const skip = parseInt(req.query.skip) || 0;
+    const limit = parseInt(req.query.limit) || 10;
     const history = await PaymentHistory.find({ customerEmail: email })
       .sort({ createdAt: -1 })
       .skip(skip)

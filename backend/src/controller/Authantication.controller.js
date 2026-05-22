@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 export const userRegister = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password, role, phone } = req.body;
     const hashPassword = await bcrypt.hash(password, 10);
 
     const isExist = await User.findOne({ email: email });
@@ -19,6 +19,7 @@ export const userRegister = async (req, res) => {
       email,
       password: hashPassword,
       role,
+      phone, // Added phone
     });
 
     const saved = await newUser.save();

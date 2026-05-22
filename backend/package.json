@@ -29,6 +29,7 @@
     "serverless-http": "^3.0.1",
     "socket.io": "^4.8.1",
     "square": "^38.0.0",
-    "stripe": "^19.1.0"
+    "stripe": "^19.1.0",
+    "twilio": "^6.0.2"
   }
 }

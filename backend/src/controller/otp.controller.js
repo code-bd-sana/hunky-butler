@@ -1,27 +1,17 @@
 import OTP from "../models/otp.model.js";
 import User from "../models/user.model.js";
-import { sendEmail } from "../utils/utils.js";
-import nodemailer from 'nodemailer'
+import { sendNotification } from "../utils/notification.js";
 
 export const sendOtp = async (req, res) => {
   try {
-
-     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false, 
-      auth: {
-        user: "bannah76769@gmail.com",
-        pass: "noqq kzxv olzf clzz",
-      },})
-    
     const email = req.params.email;
-
     const otp = await otpGenaretor();
 
-    // Delete previous OTPs
+    // Find user to get phone number
+    const user = await User.findOne({ email });
+    const phone = user ? user.phone : null;
 
-      const htmlTemplate = `
+    const htmlTemplate = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -56,19 +46,6 @@ export const sendOtp = async (req, res) => {
                   font-size: 12px;
                   color: #777777;
               }
-              .button {
-                  display: inline-block;
-                  padding: 10px 20px;
-                  background-color: #e60459;
-                  color: white !important;
-                  text-decoration: none;
-                  border-radius: 3px;
-                  margin: 15px 0;
-              }
-              .logo {
-                  max-width: 150px;
-                  margin-bottom: 15px;
-              }
               .otp-box {
                   display: inline-block;
                   background: #ffe4ec;
@@ -86,62 +63,42 @@ export const sendOtp = async (req, res) => {
               <h1>Your Verification Code - Secure Access</h1>
           </div>
           <div class="content">
-      
-
               ${
                 otp 
                 ? `<p>Your OTP is: <span class="otp-box">${otp}</span></p>` 
                 : ""
               }
-
-           
               <p>If you have any questions, please don't hesitate to contact us.</p>
-              
               <p>Best regards,<br>Your Team</p>
           </div>
           <div class="footer">
               <p>© ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
-              <p>
-                  <a href="#" style="color: #e60459;">Privacy Policy</a> | 
-                  <a href="#" style="color: #e60459;">Terms of Service</a>
-              </p>
           </div>
       </body>
       </html>
     `;
-  await transporter.sendMail({
-      from: "Hunkey Butler",
-      to: email,
-      subject: 'Your Verification Code - Secure Access',
-      text: ' Dear Valued Customer,',
-      html: htmlTemplate
-    });
 
-    const deleted = await OTP.deleteMany({ email });
+    // Delete previous OTPs
+    await OTP.deleteMany({ email });
 
     // Save new OTP
-    const newOtp = await new OTP({ email, otp });
-    const saved = await newOtp.save();
+    const newOtp = new OTP({ email, otp });
+    await newOtp.save();
 
-    // Encode email for URL
-    // const encodedEmail = encodeURIComponent(email);
-
-    // Send email
-    const datasEamil = await sendEmail(
+    // Send notification (Email + SMS)
+    await sendNotification({
       email,
-      "Your Verification Code - Secure Access",
-      `
-            Dear Valued Customer,
-            <br><br>
-        
-            `,
-      otp
-    );
+      phone,
+      subject: 'Your Verification Code - Secure Access',
+      message: `Dear Valued Customer, Your verification code is: ${otp}`,
+      html: htmlTemplate,
+      smsMessage: `Your Hunky Butler verification code is: ${otp}`
+    });
 
     res.status(200).json({ message: "Otp Sent Successfully" });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: "Something went Wrong!", error });
+    console.error("Error in sendOtp:", error);
+    res.status(500).json({ message: "Something went Wrong!", error: error.message });
   }
 };
 

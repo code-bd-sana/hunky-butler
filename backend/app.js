@@ -14,32 +14,31 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  'https://hunkybutlerservice.co.uk',
-  'https://www.hunkybutlerservice.co.uk',
-  'https://hunkybutlerservice.co.uk/',
-  'https://www.hunkybutlerservice.co.uk/',
-  'http://localhost:3000',
-  'http://localhost:3000/'
+  "https://hunkybutlerservice.co.uk",
+  "https://www.hunkybutlerservice.co.uk",
+  "https://hunkybutlerservice.co.uk/",
+  "https://www.hunkybutlerservice.co.uk/",
+  "http://localhost:3000",
+  "http://localhost:3000/",
 ];
 
-// CORS কনফিগারেশন
+// CORS
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps, curl, etc)
     if (!origin) return callback(null, true);
-    
-    // ট্রেইলিং স্ল্যাশ ছাড়া চেক করা
-    const normalizedOrigin = origin.replace(/\/$/, '');
-    
-    if (allowedOrigins.some(o => o.replace(/\/$/, '') === normalizedOrigin)) {
+
+    const normalizedOrigin = origin.replace(/\/$/, "");
+
+    if (allowedOrigins.some((o) => o.replace(/\/$/, "") === normalizedOrigin)) {
       callback(null, true);
     } else {
-      console.log('Blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
+      console.log("Blocked origin:", origin);
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
 };
 
 // CORS middleware সবার আগে প্রয়োগ করা হলো
@@ -49,7 +48,7 @@ app.use(cors(corsOptions));
 app.post(
   "/api/webhook",
   express.raw({ type: "application/json" }),
-  handleSquareWebhook
+  handleSquareWebhook,
 );
 
 // রেগুলার মিডলওয়্যার
@@ -66,7 +65,7 @@ const io = new Server(server, {
   },
   transports: ["websocket", "polling"],
   pingTimeout: 60000,
-  pingInterval: 25000
+  pingInterval: 25000,
 });
 
 app.set("io", io);
@@ -181,34 +180,32 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  res.status(200).json({ 
-    status: "OK", 
+  res.status(200).json({
+    status: "OK",
     message: "API is running",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
-// এরর হ্যান্ডলিং মিডলওয়্যার
 app.use((err, req, res, next) => {
   console.error("Server error:", err);
-  
+
   // CORS errors specifically
-  if (err.message === 'Not allowed by CORS') {
-    return res.status(403).json({ 
-      error: 'CORS error', 
-      message: 'Origin not allowed' 
+  if (err.message === "Not allowed by CORS") {
+    return res.status(403).json({
+      error: "CORS error",
+      message: "Origin not allowed",
     });
   }
-  
-  res.status(500).json({ 
-    error: 'Internal Server Error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Something broke!'
+
+  res.status(500).json({
+    error: "Internal Server Error",
+    message:
+      process.env.NODE_ENV === "development" ? err.message : "Something broke!",
   });
 });
 
-// ডাটাবেস কানেক্ট
 await connectDB();
 
-// এক্সপোর্ট
 export { app, io };
 export default server;
