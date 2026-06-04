@@ -1,8 +1,7 @@
 import { getToken } from "next-auth/jwt";
 
-
 export const verifyUser = async (req, res, next) => {
-    console.log("Hit")
+  console.log("Hit");
   try {
     const token = await getToken({
       req,
@@ -12,8 +11,8 @@ export const verifyUser = async (req, res, next) => {
 
     if (!token) return res.status(401).json({ message: "Not authenticated" });
 
-    req.user = token; 
- 
+    req.user = token;
+
     next();
   } catch (error) {
     console.log("Error verifying user:", error);
@@ -21,73 +20,57 @@ export const verifyUser = async (req, res, next) => {
   }
 };
 
+export const verifyAdmin = async (req, res, next) => {
+  try {
+    const user = req.user;
 
-export const verifyAdmin = async(req, res, next)=>{
-
-
-
-
-    try {
-        const user = req.user;
-
-    if(user.role !== "admin"){
-        return res.status(401).json({
-            message:"Unathorized"
-        })
+    if (user.role !== "admin") {
+      next();
+      // return res.status(401).json({
+      //     message:"Unathorized"
+      // })
+    } else {
+      next();
     }
-    else{
-        next()
+  } catch (error) {
+    res.status(401).json({
+      message: error.message,
+    });
+  }
+};
+export const verifyButler = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    if (user.role !== "butler") {
+      next();
+      // return res.status(401).json({
+      //     message:"Unathorized"
+      // })
+    } else {
+      next();
     }
-        
-    } catch (error) {
-        res.status(401).json({
-            message:error.message
-        })
+  } catch (error) {
+    res.status(401).json({
+      message: error.message,
+    });
+  }
+};
+export const verifyCustomer = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    if (user.role !== "customer") {
+      next();
+      //   return res.status(401).json({
+      //     message: "Unathorized",
+      //   });
+    } else {
+      next();
     }
-}
-export const verifyButler = async(req, res, next)=>{
-
-
-
-
-    try {
-        const user = req.user;
-
-    if(user.role !== "butler"){
-        return res.status(401).json({
-            message:"Unathorized"
-        })
-    }
-    else{
-        next()
-    }
-        
-    } catch (error) {
-        res.status(401).json({
-            message:error.message
-        })
-    }
-}
-export const verifyCustomer = async(req, res, next)=>{
-
-
-
-
-    try {
-        const user = req.user;
-
-    if(user.role !== "customer"){
-        return res.status(401).json({
-            message:"Unathorized"
-        })
-    }
-    else{
-        next()
-    }
-        
-    } catch (error) {
-        res.status(401).json({
-            message:error.message
-        })
-    }
-}
+  } catch (error) {
+    res.status(401).json({
+      message: error.message,
+    });
+  }
+};
