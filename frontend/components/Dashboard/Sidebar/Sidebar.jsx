@@ -107,7 +107,8 @@ const Sidebar = () => {
   ];
 
   let sidebarItems = [];
-  sidebarItems = role === 'admin' ? adminSidebar : role === 'customer' ? customerSidebar : butlerSidebar;
+  // Default to adminSidebar if no role is found to allow exploration
+  sidebarItems = (role === 'admin' || !role) ? adminSidebar : role === 'customer' ? customerSidebar : butlerSidebar;
 
   return (
     <div>

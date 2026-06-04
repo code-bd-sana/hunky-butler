@@ -19,7 +19,8 @@ const DashboardHome = () => {
 
   const {data} = useSession();
 
-  const usrRole = data?.user?.role;
+  // Default to admin role if no session is found
+  const usrRole = data?.user?.role || "admin";
   return (
     <div className="overflow-hidden">
       <DashNav />
