@@ -25,17 +25,8 @@ const allowedOrigins = [
 // CORS
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, etc)
-    if (!origin) return callback(null, true);
-
-    const normalizedOrigin = origin.replace(/\/$/, "");
-
-    if (allowedOrigins.some((o) => o.replace(/\/$/, "") === normalizedOrigin)) {
-      callback(null, true);
-    } else {
-      console.log("Blocked origin:", origin);
-      callback(new Error("Not allowed by CORS"));
-    }
+    // Allow all origins for now as requested
+    callback(null, true);
   },
   credentials: true,
   optionsSuccessStatus: 200,
