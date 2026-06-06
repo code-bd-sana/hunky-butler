@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { MdKeyboardArrowDown } from "react-icons/md";
-import { LuEye } from "react-icons/lu";
+import { LuEye } from "react-icons/fi";
 import { useGetButlerPaymentHistoryQuery } from "@/features/booking";
 import { useSession } from "next-auth/react";
 
@@ -21,7 +21,7 @@ export default function ButlerUpcomingBooking() {
   const [open, setOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(5);
-  
+
   const { data } = useSession();
   const skip = (currentPage - 1) * limit;
 
@@ -34,13 +34,6 @@ export default function ButlerUpcomingBooking() {
   const payments = paymentData?.data || [];
   const totalCount = paymentData?.count || 0;
   const totalPages = Math.ceil(totalCount / limit);
-
-  // Calculate earnings (20% of totalAmount)
-  const calculateEarnings = (totalAmount) => {
-    const amount = parseFloat(totalAmount) || 0;
-    const earnings = amount * 0.20; // 20% commission
-    return totalAmount;
-  };
 
   // Format date
   const formatDate = (dateString) => {
@@ -73,13 +66,12 @@ export default function ButlerUpcomingBooking() {
 
   // Handle view details
   const handleViewDetails = (payment) => {
-  
+
     // You can implement a modal here
     alert(`Payment Details:\n
 Booking ID: ${payment.bookingId}
 Service: ${payment.serviceName}
-Total Amount: $${payment.totalAmount}
-Your Earnings (20%): $${calculateEarnings(payment.totalAmount)}
+Total Amount: £${payment.totalAmount}
 Status: ${getStatusInfo(payment).text}
 Client: ${payment.customerName || payment.customerEmail}
 Date: ${formatDate(payment.paidAt)}
@@ -184,7 +176,7 @@ Date: ${formatDate(payment.paidAt)}
               <th className="px-5 md:px-6 py-3 font-medium text-left">Location</th>
               <th className="px-5 md:px-6 py-3 font-medium text-left">Status</th>
               <th className="px-5 md:px-6 py-3 font-medium text-left">Earnings</th>
-           
+
             </tr>
           </thead>
 
@@ -198,8 +190,7 @@ Date: ${formatDate(payment.paidAt)}
             ) : (
               payments.map((payment, i) => {
                 const statusInfo = getStatusInfo(payment);
-                const earnings = calculateEarnings(payment.totalAmount);
-                
+
                 return (
                   <tr key={payment._id || i} className="hover:bg-[#FAFAFB]">
                     <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">
@@ -242,9 +233,9 @@ Date: ${formatDate(payment.paidAt)}
                       </span>
                     </td>
 
-                    {/* Earnings (20% of total amount) */}
+                    {/* Earnings */}
                     <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929] font-medium">
-                      ${payment.totalAmount} {payment.currency}
+                      £{payment.totalAmount} {payment.currency}
                     </td>
 
                   </tr>
@@ -261,7 +252,7 @@ Date: ${formatDate(payment.paidAt)}
           <div className="text-sm text-gray-600 sm:hidden">
             Page {currentPage} of {totalPages}
           </div>
-          
+
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrevPage}
@@ -274,7 +265,7 @@ Date: ${formatDate(payment.paidAt)}
             >
               Previous
             </button>
-            
+
             <div className="flex items-center gap-1">
               {[...Array(totalPages)].map((_, index) => {
                 const pageNumber = index + 1;
@@ -310,7 +301,7 @@ Date: ${formatDate(payment.paidAt)}
                 return null;
               })}
             </div>
-            
+
             <button
               onClick={handleNextPage}
               disabled={currentPage === totalPages}

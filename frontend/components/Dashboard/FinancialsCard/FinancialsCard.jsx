@@ -2,7 +2,7 @@ import React from "react";
 
 const FinancialsCard = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
       <div className="bg-[#6A24A0] text-white p-6 pt-8 rounded-xl shadow-md space-y-4">
         <h2 className="text-base md:text-lg lg:text-xl font-medium">
           Gross Revenue (Sep 2025)
@@ -10,17 +10,6 @@ const FinancialsCard = () => {
 
         <p className="text-2xl md:text-4xl lg:text-5xl font-bold">£94,250</p>
         <span className="text-sm md:text-base lg:text-lg opacity-90">
-          Updated 1 min ago
-        </span>
-      </div>
-
-      <div className="bg-[#6A24A0] text-white p-6  pt-8  rounded-xl shadow-md space-y-4">
-        <h2 className="text-base md:text-lg lg:text-xl font-medium">
-          Platform Fees (Sep 2025)
-        </h2>
-
-        <p className="text-2xl md:text-4xl lg:text-5xl font-bold">£28,250</p>
-        <span className="text-sm md:text-base lg:text-lg  opacity-90">
           Updated 1 min ago
         </span>
       </div>

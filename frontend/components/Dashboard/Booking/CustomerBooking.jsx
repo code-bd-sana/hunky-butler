@@ -123,7 +123,7 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium text-gray-600">Total Price</label>
-                <p className="text-gray-900 font-semibold">${booking?.price}</p>
+                <p className="text-gray-900 font-semibold">£{booking?.price}</p>
               </div>
              
             </div>
@@ -1004,9 +1004,10 @@ const PaymentProcessingModal = ({ isOpen }) => {
      
               <th className="p-3 font-medium">Location</th>
               <th className="p-3 font-medium">Status</th>
+              <th className="p-3 font-medium">Type</th>
               <th className="p-3 font-medium">Deposit</th>
-              <th className="p-3 font-medium">Payment Due</th>
-              <th className="p-3 font-medium">Payment</th>
+              <th className="p-3 font-medium">Balance Due</th>
+              <th className="p-3 font-medium">Payment Status</th>
               <th className="p-3 font-medium">Total</th>
          
               <th className="p-3 font-medium">Action</th>
@@ -1057,30 +1058,32 @@ const PaymentProcessingModal = ({ isOpen }) => {
                     {b.status?.charAt(0).toUpperCase() + b.status?.slice(1)}
                   </span>
                 </td>
+                <td className="p-3 capitalize">{b?.paymentType || "Full"}</td>
                 <td className="p-3">
                   <span
                     className={`px-3 py-2 rounded-full text-sm font-medium `}
                   >
-                  {  b?.paymentStatus === "deposit_paid" && "$20" || '--'} 
+                  £{b.depositAmount || (b.paymentStatus === 'deposit_paid' ? 20 : 0)}
                     </span>
                 </td>
                 <td className="p-3">
                   <span
-                    className={`px-3 py-2 rounded-full text-sm font-medium `}
+                    className={`px-3 py-2 rounded-full text-sm font-medium text-red-500`}
                   >
-                  {   b?.amountDue} 
+                  £{b?.amountDue || 0} 
                     </span>
                 </td>
                 <td className="p-3">
                   <span
                     className={`px-3 py-2 rounded-full text-sm font-medium ${
-                      statusColors[b?.paid] || "bg-gray-100 text-gray-600"
+                      b.paymentStatus === "deposit_paid" ? "bg-yellow-100 text-yellow-700" :
+                      b?.paid === "paid" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
                     }`}
                   >
-                   {b?.paid}
+                   {b.paymentStatus === "deposit_paid" ? "Deposit Paid" : (b?.paid || "Unpaid")}
                   </span>
                 </td>
-                <td className="p-3">${b.price}</td>
+                <td className="p-3 font-semibold">£{b.price}</td>
                  
              
                 <td className="p-3">

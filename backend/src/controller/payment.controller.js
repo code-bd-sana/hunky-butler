@@ -351,25 +351,26 @@ const handleSuccessfulPayment = async (payment) => {
     }
 
     // Determine payment type and update logic
-    const isBalancePayment = booking.paymentStatus === 'pending';
-    const isDeposit = booking.paymentStatus === 'deposit_paid' && booking.paid === 'pending';
+    const isInitialPending = booking.paymentStatus === 'pending';
+    const isDepositAlreadyPaid = booking.paymentStatus === 'deposit_paid';
     
-    let amountPaid = 0;
-    let paymentStatus = '';
-    let paymentType = '';
+    const amountPaidInCents = payment.amount_money?.amount || payment.amountMoney?.amount || 0;
+    const amountPaid = amountPaidInCents / 100;
+    
+    let newPaymentStatus = '';
+    let finalPaymentType = booking.paymentType;
 
-    if (isBalancePayment) {
-      amountPaid = booking.price; 
-      paymentStatus = 'paid';
-      paymentType = 'full';
-    } else if (isDeposit) {
-      amountPaid = 20;
-      paymentStatus = 'deposit_paid';
-      paymentType = 'deposit';
+    if (isInitialPending) {
+      if (booking.paymentType === 'deposit') {
+        newPaymentStatus = 'deposit_paid';
+      } else {
+        newPaymentStatus = 'paid';
+      }
+    } else if (isDepositAlreadyPaid) {
+      newPaymentStatus = 'paid';
+      finalPaymentType = 'full'; // Now it's fully paid
     } else {
-      amountPaid = booking.price;
-      paymentStatus = 'paid';
-      paymentType = 'full';
+      newPaymentStatus = 'paid';
     }
 
     // Create payment history
@@ -378,17 +379,17 @@ const handleSuccessfulPayment = async (payment) => {
       customerEmail: booking.email,
       serviceName: booking.serviceName,
       totalAmount: booking.price,
-      paymentType: paymentType,
-      depositAmount: isDeposit ? 20 : 0,
-      amountDue: isDeposit ? booking.price - 20 : 0,
+      paymentType: finalPaymentType,
+      depositAmount: newPaymentStatus === 'deposit_paid' ? amountPaid : (booking.depositAmount || 0),
+      amountDue: newPaymentStatus === 'deposit_paid' ? booking.price - amountPaid : 0,
       amountPaid: amountPaid,
       currency: process.env.SQUARE_CURRENCY || 'GBP',
       paymentMethodType: "card",
       paymentMethod: "credit_card",
-      paymentStatus: paymentStatus,
+      paymentStatus: newPaymentStatus,
       squarePaymentId: payment.id,
       squareOrderId: orderId,
-      receiptUrl: payment.receipt_url || null,
+      receiptUrl: payment.receipt_url || payment.receiptUrl || null,
       paidAt: new Date(),
       paymentConfirmedAt: new Date(),
       customerName: `${booking.firstName || ''} ${booking.lastName || ''}`.trim(),
@@ -397,9 +398,9 @@ const handleSuccessfulPayment = async (payment) => {
       serviceDuration: booking.durationHours,
       serviceLocation: booking.location,
       numberOfStaff: booking.numberOfStaff,
-      notes: isBalancePayment 
+      notes: isDepositAlreadyPaid 
         ? 'Balance payment completed' 
-        : isDeposit 
+        : newPaymentStatus === 'deposit_paid'
           ? 'Deposit payment received' 
           : 'Full payment completed',
       isActive: true,
@@ -410,21 +411,21 @@ const handleSuccessfulPayment = async (payment) => {
 
     // Update booking
     const updateData = {
-      paymentStatus: paymentStatus,
-      paymentType: paymentType,
+      paymentStatus: newPaymentStatus,
+      paymentType: finalPaymentType,
       squarePaymentId: payment.id,
       squareOrderId: orderId,
-      receiptUrl: payment.receipt_url || null,
-      amountPaid: amountPaid,
-      amountDue: isDeposit ? booking.price - 20 : 0,
-      depositAmount: isDeposit ? 20 : 0,
-      paid: paymentStatus,
+      receiptUrl: payment.receipt_url || payment.receiptUrl || null,
+      amountPaid: (booking.amountPaid || 0) + amountPaid,
+      amountDue: newPaymentStatus === 'deposit_paid' ? booking.price - amountPaid : 0,
+      depositAmount: newPaymentStatus === 'deposit_paid' ? amountPaid : booking.depositAmount,
+      paid: newPaymentStatus === 'paid' ? 'paid' : 'pending',
     };
 
     await Booking.findByIdAndUpdate(bookingId, updateData, { new: true });
 
     // Update user service count for full payments
-    if (paymentStatus === 'paid') {
+    if (newPaymentStatus === 'paid') {
       await User.updateOne(
         { email: booking.email },
         {
@@ -436,8 +437,8 @@ const handleSuccessfulPayment = async (payment) => {
 
     // Send confirmation notification (Email + SMS)
     await sendPaymentConfirmationNotification(paymentHistory, {
-      isBalancePayment,
-      isDeposit
+      isBalancePayment: isDepositAlreadyPaid,
+      isDeposit: newPaymentStatus === 'deposit_paid'
     });
 
     return {

@@ -9,6 +9,7 @@ export default function HomeBanner() {
       <video
         autoPlay
         loop
+        muted
         playsInline
         className='absolute inset-0 h-full w-full object-cover'
         title='Buff Butlers Hen Party Entertainment UK'
