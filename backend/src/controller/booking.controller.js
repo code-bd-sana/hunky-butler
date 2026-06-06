@@ -109,22 +109,34 @@ export const createBooking = async (req, res) => {
     const data = req.body;
     const newData = new Booking(data);
     const savedData = await newData.save();
-    const { email, phone, serviceName } = req.body;
+    const { email, phone, serviceName, price, paymentType } = req.body;
 
     // Update user's serviceTaken
     await User.updateOne({ email: email }, { $inc: { serviceTaken: 1 } });
 
     await storeNotification(adminGmail, `New ${serviceName}`, "", "/dashboard");
 
-    // User email HTML template
+    // User email HTML template (Booking Received - Payment Pending)
     const userEmailHtml = `
       <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
-        <h1 style="color: #ff1673;">Thank You for Your Booking!</h1>
+        <h1 style="color: #ff1673;">Booking Received! 🥂</h1>
         <p style="font-size:16px; margin:20px 0;">
-          Your booking for <strong>${serviceName}</strong> has been received.
+          Hello, we have received your booking for <strong>${serviceName}</strong>.
         </p>
-        <p style="font-size:16px;">
-          Please wait, your booking will be accepted by our team shortly.
+        <div style="background: #fdf2f8; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left; border-left: 4px solid #ff1673;">
+          <p><strong>Service:</strong> ${serviceName}</p>
+          <p><strong>Total Price:</strong> £${price}</p>
+          <p><strong>Payment Status:</strong> Pending Payment ⚠️</p>
+        </div>
+        <p style="font-size:16px; color: #e11d48; font-weight: bold;">
+          Action Required: Please complete your payment to fully confirm and secure your booking.
+        </p>
+        <p>You can complete your payment anytime via your dashboard.</p>
+        <p style="margin-top: 25px;">
+          <a href="https://hunky-butler.vercel.app/dashboard" style="background-color: #ff1673; color: white; padding: 14px 30px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">View Dashboard & Pay</a>
+        </p>
+        <p style="font-size: 12px; color: #666; margin-top: 20px;">
+          If you have already initiated payment, please ignore this email. Your confirmation will follow shortly.
         </p>
       </div>
     `;
@@ -135,8 +147,10 @@ export const createBooking = async (req, res) => {
       <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
         <h2 style="color: #ff1673; margin-bottom: 20px;">New Booking Alert</h2>
         <p style="font-size:16px;">
-          A new booking for <strong>${serviceName}</strong> has been made by <strong>${email}</strong>. Kindly check the dashboard.
+          A new booking for <strong>${serviceName}</strong> has been made by <strong>${email}</strong>. 
         </p>
+        <p><strong>Price:</strong> £${price}</p>
+        <p>Check the dashboard for details.</p>
       </div>
     `;
 
@@ -144,10 +158,10 @@ export const createBooking = async (req, res) => {
     await sendNotification({
       email,
       phone,
-      subject: "Booking Confirmation",
-      message: `Thank you for your booking! Your booking for ${serviceName} has been received and is being processed.`,
+      subject: "Booking Received - Action Required",
+      message: `Thank you for your booking! We've received your booking for ${serviceName}. Please complete your payment at: https://hunky-butler.vercel.app/dashboard to fully confirm.`,
       html: userEmailHtml,
-      smsMessage: `Hunky Butler: Thank you for your booking for ${serviceName}! We'll notify you once it's accepted.`
+      smsMessage: `Hunky Butler: Booking received for ${serviceName}! Please complete your payment in your dashboard to confirm your booking.`
     });
 
     // Send notification to admin (Email only)
@@ -462,33 +476,48 @@ export const getButlerOverview = async (req, res) => {
 
 export const sendEmail = async (req, res) => {
   try {
-    const allEmail = await Booking.find({ paid: "pending" });
-    const emailsToSend = allEmail.slice(0, 5);
+    // Find bookings that are not fully paid (either completely unpaid or only deposit paid)
+    const bookingsToRemind = await Booking.find({ 
+      paid: { $in: ["unpaid", "pending"] },
+      status: { $ne: "cancelled" }
+    });
 
-    for (const booking of emailsToSend) {
-      const { email, phone } = booking;
+    for (const booking of bookingsToRemind) {
+      const { email, phone, firstName, serviceName, price, amountDue, paymentStatus } = booking;
+      
+      const isDepositPaid = paymentStatus === 'deposit_paid';
+      const balance = isDepositPaid ? amountDue : price;
 
       const htmlTemplate = `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
-            <title>Payment Reminder</title>
+            <title>Payment Reminder - Hunky Butler</title>
             <style>
                 body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background-color: #e60459; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
-                .content { padding: 20px; background-color: #f9f9f9; border-radius: 0 0 5px 5px; border: 1px solid #e0e0e0; border-top: none; }
+                .header { background-color: #ff1673; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+                .content { padding: 30px; background-color: #f9f9f9; border-radius: 0 0 8px 8px; border: 1px solid #eee; border-top: none; }
                 .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #777; }
-                .button { display: inline-block; padding: 12px 25px; background-color: #e60459; color: white !important; text-decoration: none; border-radius: 5px; margin: 20px 0; font-weight: bold; }
+                .button { display: inline-block; padding: 14px 30px; background-color: #ff1673; color: white !important; text-decoration: none; border-radius: 9999px; margin: 25px 0; font-weight: bold; }
+                .details { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #ff1673; margin: 20px 0; }
             </style>
         </head>
         <body>
             <div class="header"><h1>Payment Reminder</h1></div>
             <div class="content">
-                <p>Dear Customer,</p>
-                <p style="color: #e60459; font-weight: bold;">Your payment is still pending!</p>
-                <p>We noticed that you haven't completed the payment for your booking yet. Please complete it to confirm your booking.</p>
-                <p style="text-align: center;"><a href="https://hunky-butler.vercel.app/dashboard" class="button">Complete Payment Now</a></p>
+                <p>Hello ${firstName},</p>
+                <p>This is a friendly reminder regarding your booking for <strong>${serviceName}</strong>.</p>
+                
+                <div class="details">
+                  <p><strong>Total Price:</strong> £${price}</p>
+                  <p><strong>Status:</strong> ${isDepositPaid ? "Deposit Paid ✅" : "Unpaid ⚠️"}</p>
+                  <p style="color: #ff1673; font-size: 18px;"><strong>Remaining Balance: £${balance}</strong></p>
+                </div>
+
+                <p>Please complete your payment to ensure your booking is fully confirmed and secured.</p>
+                <p style="text-align: center;"><a href="https://hunky-butler.vercel.app/dashboard" class="button">Pay Balance Now</a></p>
+                <p>If you have already paid, please ignore this email.</p>
                 <p>Best regards,<br>Hunky Butler Team</p>
             </div>
             <div class="footer"><p>© ${new Date().getFullYear()} Hunky Butler. All rights reserved.</p></div>
@@ -496,22 +525,23 @@ export const sendEmail = async (req, res) => {
         </html>
       `;
 
-      const smsMsg = "Hunky Butler: Your payment is still pending. Please complete your payment at our dashboard to confirm your booking.";
+      const smsMsg = `Hunky Butler: Friendly reminder for your ${serviceName} booking. Remaining balance: £${balance}. Please pay at: https://hunky-butler.vercel.app/dashboard`;
 
       await sendNotification({
         email,
         phone,
-        subject: "Payment Reminder - Your Payment is Still Pending",
+        subject: `Payment Reminder: ${serviceName} Booking`,
         message: smsMsg,
         html: htmlTemplate,
         smsMessage: smsMsg
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Throttle to avoid hitting rate limits
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     if (res) {
-      res.status(200).json({ success: true, message: `Payment reminders sent to ${emailsToSend.length} users` });
+      res.status(200).json({ success: true, message: `Payment reminders sent to ${bookingsToRemind.length} users` });
     }
   } catch (error) {
     console.error("Error sending payment reminders:", error);
@@ -521,6 +551,7 @@ export const sendEmail = async (req, res) => {
   }
 };
 
-cron.schedule("0 5 * * *", () => {
+// Run weekly at 9 AM every Monday
+cron.schedule("0 9 * * 1", () => {
   sendEmail();
 });
