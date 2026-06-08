@@ -78,8 +78,9 @@ export const sendSMS = async (to, body) => {
  */
 export const sendEmail = async ({ to, subject, text, html }) => {
   try {
+    const fromAddress = process.env.EMAIL_FROM || "bookings@hunkybutlerservice.co.uk";
     const info = await transporter.sendMail({
-      from: `"Hunky Butler" <${process.env.EMAIL_USER || "bannah76769@gmail.com"}>`,
+      from: `"Hunky Butler" <${fromAddress}>`,
       to,
       subject,
       text,

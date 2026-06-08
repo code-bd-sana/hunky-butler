@@ -1081,7 +1081,7 @@ const ButlerBooking = () => {
                     {b.status?.charAt(0).toUpperCase() + b.status?.slice(1)}
                   </span>
                 </td>
-                <td className="p-3">${b?.butlerFee}</td>
+                <td className="p-3">£{b?.butlerFee}</td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
                     {/* View Details Button */}

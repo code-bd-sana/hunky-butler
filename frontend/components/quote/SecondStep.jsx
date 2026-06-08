@@ -627,6 +627,7 @@ export default function SecondStep() {
   const [distanceInfo, setDistanceInfo] = useState(null);
   const [isCalculatingPrice, setIsCalculatingPrice] = useState(false);
   const [priceCalculation, setPriceCalculation] = useState(null);
+  const [savedBookingId, setSavedBookingId] = useState(null);
 
   
   
@@ -757,6 +758,33 @@ export default function SecondStep() {
       };
 
       setSecondStep(secondStepData);
+      
+      // TRIGGER IMMEDIATE BOOKING SAVE (to send notification)
+      const travelFee = totalPrice - basePrice;
+      const initialBookingData = {
+        ...firstStep,
+        ...secondStepData,
+        slug: params.category,
+        serviceName: params.category,
+        price: totalPrice,
+        basePrice: basePrice,
+        distanceInfo: distanceInfo,
+        durationInfo: priceCalculation?.durationInfo,
+        butlerFee: butlerFee,
+        paymentMethod: 'pay_now',
+        paid: 'unpaid',
+        paymentStatus: 'pending',
+        profit: totalPrice - (butlerFee + travelFee),
+        travelFee: travelFee,
+        coordinates: priceCalculation?.coordinates
+      };
+
+      const result = await booking(initialBookingData).unwrap();
+      if (result?.data?._id) {
+        setSavedBookingId(result.data._id);
+        console.log('✅ Initial booking saved with ID:', result.data._id);
+      }
+      
       setNextStep("thirdstep");
     } catch (error) {
       console.log(error);
@@ -768,67 +796,41 @@ export default function SecondStep() {
     try {
       setIsProcessingPayment(true);
       
-      const travelFee = totalPrice - basePrice;
-      
-      const finalData = {
-        ...firstStep,
-        ...secondStep,
-        slug: params.category,
-        serviceName: params.category,
-        price: totalPrice,
-        basePrice: basePrice,
-        distanceInfo: distanceInfo,
-        durationInfo: priceCalculation?.durationInfo,
-        butlerFee: butlerFee,
-        paymentMethod,
-        paid: paymentMethod === 'pay_now' ? 'pending' : 'unpaid',
-        profit: totalPrice - (butlerFee + travelFee),
-        travelFee: travelFee,
-        coordinates: priceCalculation?.coordinates
-      };
-
-      if (paymentMethod === 'pay_now') {
-        console.log('🔄 Initiating payment request to:', `${base_url}/payment/create-checkout-session`);
-        const response = await fetch(`${base_url}/payment/create-checkout-session`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Ensure cookies are sent if needed
-          body: JSON.stringify({
-            bookingData: finalData,
-            successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancelUrl: `${window.location.origin}/booking/cancel`,
-            paymentType: paymentType
-          }),
-        });
-
-        console.log('📊 Payment API Response Status:', response.status);
-
-        if (response.status === 401) {
-          throw new Error('Authentication failed. Please try logging in again.');
-        }
-
-        const result = await response.json();
-        const { sessionId, success, error, checkoutUrl } = result;
-        
-        if (!success) {
-          console.error('❌ Payment API Error:', error);
-          throw new Error(error || 'Failed to create checkout session');
-        }
-        
-        console.log('✅ Redirecting to:', checkoutUrl || 'Stripe');
-        if (checkoutUrl) {
-          window.location.href = checkoutUrl;
-        } else if (sessionId) {
-          window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
-        } else {
-          throw new Error('No checkout URL or session ID received');
-        }
-        
-      } else {
-        await bookNowHandler(finalData);
+      if (!savedBookingId) {
+        // Fallback if initial save failed for some reason
+        await bookNowHandler();
+        return;
       }
+
+      console.log('🔄 Initiating payment for existing booking:', savedBookingId);
+      const response = await fetch(`${base_url}/payment/create-checkout-session-exist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          id: savedBookingId,
+          successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/booking/cancel`,
+        }),
+      });
+
+      const result = await response.json();
+      const { sessionId, success, error, checkoutUrl } = result;
+      
+      if (!success) {
+        throw new Error(error || 'Failed to create checkout session');
+      }
+      
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else if (sessionId) {
+        window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
+      } else {
+        throw new Error('No checkout URL or session ID received');
+      }
+        
     } catch (error) {
       console.log(error);
       toast.error(error?.message || "Payment processing failed");
@@ -839,6 +841,13 @@ export default function SecondStep() {
 
   const bookNowHandler = async (finalData = null) => {
     try {
+      if (savedBookingId) {
+        // Booking already exists in DB from Step 2 auto-save
+        setBookingSuccess(true);
+        toast.success("Booking saved! You can pay later.");
+        return;
+      }
+
       const travelFee = totalPrice - basePrice;
       
       const dataToSend = finalData || {
@@ -1218,10 +1227,11 @@ export default function SecondStep() {
 
                 <button
                   type="submit"
+                  disabled={isLoading || isCalculatingPrice}
                   style={{ color: "rgba(255,0,106,1)" }}
-                  className="px-[16px] py-[8px] w-[164px] mt-8 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap"
+                  className="px-[16px] py-[8px] w-[164px] mt-8 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap disabled:opacity-50"
                 >
-                  Next
+                  {isLoading ? 'Saving...' : 'Next'}
                 </button>
               </form>
             </div>
@@ -1357,8 +1367,8 @@ export default function SecondStep() {
                           onClick={() => setPaymentType('full')}
                           className={`px-6 py-3 rounded-lg border-2 transition-all ${
                             paymentType === 'full'
-                              ? 'border-[#FF3388] bg-[#FF3388] text-white'
-                              : 'border-gray-400 text-gray-400 hover:border-[#FF3388]'
+                              ? "border-[#FF3388] bg-[#FF3388] text-white"
+                              : "border-gray-400 text-gray-400 hover:border-[#FF3388]"
                           }`}
                         >
                           Pay Full Amount
@@ -1368,8 +1378,8 @@ export default function SecondStep() {
                           onClick={() => setPaymentType('deposit')}
                           className={`px-6 py-3 rounded-lg border-2 transition-all ${
                             paymentType === 'deposit'
-                              ? 'border-[#FF3388] bg-[#FF3388] text-white'
-                              : 'border-gray-400 text-gray-400 hover:border-[#FF3388]'
+                              ? "border-[#FF3388] bg-[#FF3388] text-white"
+                              : "border-gray-400 text-gray-400 hover:border-[#FF3388]"
                           }`}
                         >
                           Pay £20 Deposit
@@ -1463,38 +1473,40 @@ export default function SecondStep() {
                         <span className="font-medium text-sm md:text-lg">Location</span>
                         <span className="text-right max-w-[200px] break-words">{firstStep.location}</span>
                       </div>
-                      {/* {distanceInfo && (
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-sm md:text-lg">Nearest Hub</span>
-                          <div className="text-right">
-                            <span className="font-bold">{distanceInfo.nearestHub}</span>
-                            <p className="text-xs text-gray-400">
-                              {distanceInfo.distanceMiles} miles away • Multiplier: ×{distanceInfo.multiplier}
-                            </p>
-                          </div>
-                        </div>
-                      )} */}
+                      
                       <div className="flex justify-between items-center">
                         <span className="font-medium text-sm md:text-lg">Service Type</span>
                         <span className="text-right capitalize">{params?.category}</span>
                       </div>
                     </div>
 
-                    <button
-                      onClick={handlePayment}
-                      style={{ color: "rgba(255,0,106,1)" }}
-                      className="px-[16px] py-[8px] w-[164px] mt-8 md:mt-12 h-[44px] bg-white rounded-full font-semibold transition-transform duration-200 hover:scale-105 whitespace-nowrap disabled:opacity-50"
-                      disabled={isProcessingPayment || isLoading || isCalculatingPrice}
-                    >
-                      {isProcessingPayment 
-                        ? "Processing..." 
-                        : isCalculatingPrice
-                        ? "Calculating..."
-                        : paymentType === 'deposit' 
-                          ? `Pay £${depositAmount} Deposit` 
-                          : `Pay £${totalPrice}`
-                      }
-                    </button>
+                    <div className="flex flex-col items-center gap-4 mt-8 md:mt-12">
+                      <button
+                        onClick={handlePayment}
+                        style={{ color: "rgba(255,0,106,1)" }}
+                        className="px-[16px] py-[8px] w-full md:w-[250px] h-[54px] bg-white rounded-full font-bold text-lg transition-transform duration-200 hover:scale-105 whitespace-nowrap disabled:opacity-50"
+                        disabled={isProcessingPayment || isLoading || isCalculatingPrice}
+                      >
+                        {isProcessingPayment 
+                          ? "Processing..." 
+                          : paymentType === 'deposit' 
+                            ? `Pay £${depositAmount} Deposit Now` 
+                            : `Pay £${totalPrice} Full Amount`
+                        }
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          setPaymentMethod('pay_later');
+                          setBookingSuccess(true);
+                          toast.success("Booking saved! You can pay later.");
+                        }}
+                        className="text-white hover:text-[#FF3388] transition-colors font-medium underline underline-offset-4"
+                        disabled={isProcessingPayment || isLoading}
+                      >
+                        I'll Pay Later
+                      </button>
+                    </div>
                   </>
                 )}
               </section>

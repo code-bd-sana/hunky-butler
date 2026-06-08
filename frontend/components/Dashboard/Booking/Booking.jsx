@@ -257,11 +257,19 @@ const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium text-gray-600">Total Price</label>
-                <p className="text-gray-900 font-semibold">${booking?.price}</p>
+                <p className="text-gray-900 font-semibold">£{booking?.price}</p>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-600">Platform Fee (20%)</label>
-                <p className="text-gray-900">${(booking?.price * 0.2).toFixed(2)}</p>
+                <label className="text-sm font-medium text-gray-600">Payment Type</label>
+                <p className="text-gray-900 capitalize">{booking?.paymentType || "N/A"}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Deposit Paid</label>
+                <p className="text-gray-900">£{booking?.depositAmount || (booking?.paymentStatus === 'deposit_paid' ? 20 : 0)}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Remaining Balance</label>
+                <p className="text-gray-900">£{booking?.amountDue || 0}</p>
               </div>
             </div>
           </div>
@@ -969,7 +977,7 @@ const Booking = () => {
           <table className="w-full max-h-[370px] overflow-y-scroll text-left border-collapse">
             <thead>
               <tr className="text-[#333333] border-b text-base">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((header) => (
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((header) => (
                   <th key={header} className="p-3">
                     <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
                   </th>
@@ -980,7 +988,7 @@ const Booking = () => {
             <tbody>
               {[1, 2, 3, 4, 5, 6, 7, 8].map((row) => (
                 <tr key={row} className="border-b border-gray-100">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((cell) => (
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((cell) => (
                     <td key={cell} className="p-3 py-4">
                       <div className="flex items-center gap-2">
                         {cell === 4 && (
@@ -997,6 +1005,8 @@ const Booking = () => {
                           cell === 8 ? "w-16" : 
                           cell === 9 ? "w-20" : 
                           cell === 10 ? "w-16" :
+                          cell === 11 ? "w-16" :
+                          cell === 12 ? "w-16" :
                           "w-16"
                         }`}></div>
                       </div>
@@ -1108,8 +1118,10 @@ const Booking = () => {
               <th className="p-3 font-medium">Butler</th>
               <th className="p-3 font-medium">Location</th>
               <th className="p-3 font-medium">Status</th>
+              <th className="p-3 font-medium">Type</th>
+              <th className="p-3 font-medium">Deposit</th>
+              <th className="p-3 font-medium">Remaining</th>
               <th className="p-3 font-medium">Total</th>
-              {/* <th className="p-3 font-medium">Fee (Platform)</th> */}
               <th className="p-3 font-medium">Payment Status</th>
               <th className="p-3 font-medium">Action</th>
             </tr>
@@ -1178,9 +1190,20 @@ const Booking = () => {
                     {b.status?.charAt(0).toUpperCase() + b.status?.slice(1)}
                   </span>
                 </td>
-                <td className="p-3">£{b.price}</td>
-                {/* <td className="p-3">${(b.price * 0.2).toFixed(2)}</td> */}
-                <td className="p-3">{b.paid}</td>
+                <td className="p-3 capitalize">{b.paymentType || "Full"}</td>
+                <td className="p-3">£{b.depositAmount || (b.paymentStatus === 'deposit_paid' ? 20 : 0)}</td>
+                <td className="p-3 text-red-500 font-medium">£{b.amountDue || 0}</td>
+                <td className="p-3 font-semibold">£{b.price}</td>
+                <td className="p-3">
+                   <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      b.paymentStatus === 'deposit_paid' ? 'bg-yellow-100 text-yellow-700' : 
+                      b.paid === 'paid' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {b.paymentStatus === 'deposit_paid' ? 'Deposit Paid' : (b.paid || 'Unpaid')}
+                  </span>
+                </td>
                 <td className="p-3">
                   <div className="flex items-center gap-2">
                     {/* View Details Button */}

@@ -146,8 +146,8 @@ export const createCheckoutSession = async (req, res) => {
       ...bookingData,
       paymentType: paymentType,
       depositAmount: isDeposit ? depositAmount : 0,
-      amountDue: isDeposit ? totalAmount - depositAmount : 0,
-      amountPaid: 0, // Will be updated on successful payment
+      amountDue: isDeposit ? totalAmount - depositAmount : totalAmount,
+      amountPaid: 0, 
       paymentStatus: 'pending',
       totalAmount: totalAmount,
       status: 'ongoing',
@@ -156,6 +156,41 @@ export const createCheckoutSession = async (req, res) => {
 
     const savedBooking = await newBooking.save();
     console.log('✅ Booking created with ID:', savedBooking._id.toString());
+
+    // SEND IMMEDIATE NOTIFICATION (Booking Received - Action Required)
+    try {
+      const immediateHtml = `
+        <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
+          <h1 style="color: #ff1673;">Booking Received! 🥂</h1>
+          <p style="font-size:16px; margin:20px 0;">
+            Hello ${bookingData.firstName}, we have received your booking for <strong>${bookingData.serviceName}</strong>.
+          </p>
+          <div style="background: #fdf2f8; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left; border-left: 4px solid #ff1673;">
+            <p><strong>Service:</strong> ${bookingData.serviceName}</p>
+            <p><strong>Total Price:</strong> £${totalAmount}</p>
+            <p><strong>Payment Chosen:</strong> ${paymentType === 'deposit' ? 'Deposit (£20)' : 'Full Payment (£' + totalAmount + ')'}</p>
+          </div>
+          <p style="font-size:16px; color: #e11d48; font-weight: bold;">
+            Action Required: Please complete your payment to secure your booking.
+          </p>
+          <p>If you haven't finished the checkout process, you can do so now using the button below:</p>
+          <p style="margin-top: 25px;">
+            <a href="https://hunky-butler.vercel.app/dashboard" style="background-color: #ff1673; color: white; padding: 14px 30px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Complete Your Payment</a>
+          </p>
+        </div>
+      `;
+
+      await sendNotification({
+        email: bookingData.email,
+        phone: bookingData.phone,
+        subject: "Booking Received - Complete Your Payment",
+        message: `Hello ${bookingData.firstName}, we received your booking for ${bookingData.serviceName}. Please complete your payment at: https://hunky-butler.vercel.app/dashboard`,
+        html: immediateHtml
+      });
+      console.log('✅ Immediate "Booking Received" notification sent');
+    } catch (notifError) {
+      console.error('⚠️ Failed to send immediate notification:', notifError.message);
+    }
 
     // Simple line items
     const simpleLineItems = [
@@ -351,25 +386,26 @@ const handleSuccessfulPayment = async (payment) => {
     }
 
     // Determine payment type and update logic
-    const isBalancePayment = booking.paymentStatus === 'pending';
-    const isDeposit = booking.paymentStatus === 'deposit_paid' && booking.paid === 'pending';
+    const isInitialPending = booking.paymentStatus === 'pending';
+    const isDepositAlreadyPaid = booking.paymentStatus === 'deposit_paid';
     
-    let amountPaid = 0;
-    let paymentStatus = '';
-    let paymentType = '';
+    const amountPaidInCents = payment.amount_money?.amount || payment.amountMoney?.amount || 0;
+    const amountPaid = amountPaidInCents / 100;
+    
+    let newPaymentStatus = '';
+    let finalPaymentType = booking.paymentType;
 
-    if (isBalancePayment) {
-      amountPaid = booking.price; 
-      paymentStatus = 'paid';
-      paymentType = 'full';
-    } else if (isDeposit) {
-      amountPaid = 20;
-      paymentStatus = 'deposit_paid';
-      paymentType = 'deposit';
+    if (isInitialPending) {
+      if (booking.paymentType === 'deposit') {
+        newPaymentStatus = 'deposit_paid';
+      } else {
+        newPaymentStatus = 'paid';
+      }
+    } else if (isDepositAlreadyPaid) {
+      newPaymentStatus = 'paid';
+      finalPaymentType = 'full'; // Now it's fully paid
     } else {
-      amountPaid = booking.price;
-      paymentStatus = 'paid';
-      paymentType = 'full';
+      newPaymentStatus = 'paid';
     }
 
     // Create payment history
@@ -378,17 +414,17 @@ const handleSuccessfulPayment = async (payment) => {
       customerEmail: booking.email,
       serviceName: booking.serviceName,
       totalAmount: booking.price,
-      paymentType: paymentType,
-      depositAmount: isDeposit ? 20 : 0,
-      amountDue: isDeposit ? booking.price - 20 : 0,
+      paymentType: finalPaymentType,
+      depositAmount: newPaymentStatus === 'deposit_paid' ? amountPaid : (booking.depositAmount || 0),
+      amountDue: newPaymentStatus === 'deposit_paid' ? booking.price - amountPaid : 0,
       amountPaid: amountPaid,
       currency: process.env.SQUARE_CURRENCY || 'GBP',
       paymentMethodType: "card",
       paymentMethod: "credit_card",
-      paymentStatus: paymentStatus,
+      paymentStatus: newPaymentStatus,
       squarePaymentId: payment.id,
       squareOrderId: orderId,
-      receiptUrl: payment.receipt_url || null,
+      receiptUrl: payment.receipt_url || payment.receiptUrl || null,
       paidAt: new Date(),
       paymentConfirmedAt: new Date(),
       customerName: `${booking.firstName || ''} ${booking.lastName || ''}`.trim(),
@@ -397,9 +433,9 @@ const handleSuccessfulPayment = async (payment) => {
       serviceDuration: booking.durationHours,
       serviceLocation: booking.location,
       numberOfStaff: booking.numberOfStaff,
-      notes: isBalancePayment 
+      notes: isDepositAlreadyPaid 
         ? 'Balance payment completed' 
-        : isDeposit 
+        : newPaymentStatus === 'deposit_paid'
           ? 'Deposit payment received' 
           : 'Full payment completed',
       isActive: true,
@@ -410,21 +446,21 @@ const handleSuccessfulPayment = async (payment) => {
 
     // Update booking
     const updateData = {
-      paymentStatus: paymentStatus,
-      paymentType: paymentType,
+      paymentStatus: newPaymentStatus,
+      paymentType: finalPaymentType,
       squarePaymentId: payment.id,
       squareOrderId: orderId,
-      receiptUrl: payment.receipt_url || null,
-      amountPaid: amountPaid,
-      amountDue: isDeposit ? booking.price - 20 : 0,
-      depositAmount: isDeposit ? 20 : 0,
-      paid: paymentStatus,
+      receiptUrl: payment.receipt_url || payment.receiptUrl || null,
+      amountPaid: (booking.amountPaid || 0) + amountPaid,
+      amountDue: newPaymentStatus === 'deposit_paid' ? booking.price - amountPaid : 0,
+      depositAmount: newPaymentStatus === 'deposit_paid' ? amountPaid : booking.depositAmount,
+      paid: newPaymentStatus === 'paid' ? 'paid' : 'pending',
     };
 
     await Booking.findByIdAndUpdate(bookingId, updateData, { new: true });
 
     // Update user service count for full payments
-    if (paymentStatus === 'paid') {
+    if (newPaymentStatus === 'paid') {
       await User.updateOne(
         { email: booking.email },
         {
@@ -436,8 +472,8 @@ const handleSuccessfulPayment = async (payment) => {
 
     // Send confirmation notification (Email + SMS)
     await sendPaymentConfirmationNotification(paymentHistory, {
-      isBalancePayment,
-      isDeposit
+      isBalancePayment: isDepositAlreadyPaid,
+      isDeposit: newPaymentStatus === 'deposit_paid'
     });
 
     return {
@@ -460,50 +496,56 @@ const sendPaymentConfirmationNotification = async (paymentHistory, options) => {
     let subject, html, smsMsg;
 
     if (isBalancePayment) {
-      subject = `Balance Paid - ${paymentHistory.serviceName} Booking Complete!`;
-      smsMsg = `Hunky Butler: Balance payment successful! Your booking for ${paymentHistory.serviceName} is now fully confirmed.`;
+      subject = `Balance Paid - ${paymentHistory.serviceName} Booking Fully Confirmed!`;
+      smsMsg = `Hunky Butler: Balance payment successful! Your booking for ${paymentHistory.serviceName} is now fully confirmed. Thank you!`;
       html = `
-        <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
-          <h1 style="color: #4CAF50;">Balance Payment Successful! 🎉</h1>
+        <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
+          <h1 style="color: #ff1673;">Final Payment Received! 🎉</h1>
           <p style="font-size:16px; margin:20px 0;">
-            Thank you for completing your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> is now fully confirmed.
+            Thank you for completing your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> is now fully confirmed and secured.
           </p>
-          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
-            <p><strong>Amount Paid:</strong> $${paymentHistory.amountPaid} ${paymentHistory.currency}</p>
-            <p><strong>Total Cost:</strong> $${paymentHistory.totalAmount}</p>
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left; border-left: 4px solid #ff1673;">
+            <p><strong>Amount Paid:</strong> £${paymentHistory.amountPaid} ${paymentHistory.currency}</p>
+            <p><strong>Total Price:</strong> £${paymentHistory.totalAmount}</p>
             <p><strong>Status:</strong> Fully Paid ✅</p>
           </div>
+          <p>We look forward to making your event unforgettable!</p>
         </div>
       `;
     } else if (isDeposit) {
       subject = `Deposit Received - ${paymentHistory.serviceName} Booking`;
-      smsMsg = `Hunky Butler: Deposit received! Your booking for ${paymentHistory.serviceName} is temporarily confirmed. Please pay the balance of $${paymentHistory.amountDue} before the event.`;
+      smsMsg = `Hunky Butler: Deposit received! Your booking for ${paymentHistory.serviceName} is secured. Please pay the remaining balance of £${paymentHistory.amountDue} before the event.`;
       html = `
-        <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #FF9800; border-radius: 12px;">
-          <h1 style="color: #FF9800;">Deposit Received! 🎉</h1>
+        <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
+          <h1 style="color: #ff1673;">Deposit Received! 🎉</h1>
           <p style="font-size:16px; margin:20px 0;">
-            Thank you for your deposit! Your booking for <strong>${paymentHistory.serviceName}</strong> is temporarily confirmed.
+            Thank you for your deposit! Your booking for <strong>${paymentHistory.serviceName}</strong> is temporarily confirmed and your date is secured.
           </p>
-          <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
-            <p><strong>Deposit Paid:</strong> $${paymentHistory.depositAmount}</p>
-            <p><strong>Balance Due:</strong> $${paymentHistory.amountDue}</p>
+          <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left; border-left: 4px solid #ff1673;">
+            <p><strong>Deposit Paid:</strong> £${paymentHistory.depositAmount}</p>
+            <p style="color: #ff1673; font-size: 18px;"><strong>Remaining Balance: £${paymentHistory.amountDue}</strong></p>
             <p><strong>Status:</strong> Deposit Paid ⚠️</p>
           </div>
+          <p>Please ensure the remaining balance is paid before the event to fully confirm your booking.</p>
+          <p style="margin-top: 20px;">
+            <a href="https://hunky-butler.vercel.app/dashboard" style="background-color: #ff1673; color: white; padding: 12px 25px; text-decoration: none; border-radius: 9999px; font-weight: bold;">View Your Dashboard</a>
+          </p>
         </div>
       `;
     } else {
       subject = `Payment Successful - ${paymentHistory.serviceName} Booking Confirmed!`;
-      smsMsg = `Hunky Butler: Payment successful! Your booking for ${paymentHistory.serviceName} has been confirmed.`;
+      smsMsg = `Hunky Butler: Full payment successful! Your booking for ${paymentHistory.serviceName} has been fully confirmed.`;
       html = `
-        <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #4CAF50; border-radius: 12px;">
-          <h1 style="color: #4CAF50;">Payment Successful - Booking Confirmed! 🎉</h1>
+        <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
+          <h1 style="color: #ff1673;">Payment Successful - Booking Confirmed! 🎉</h1>
           <p style="font-size:16px; margin:20px 0;">
-            Thank you for your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> has been confirmed.
+            Thank you for your payment! Your booking for <strong>${paymentHistory.serviceName}</strong> has been fully confirmed.
           </p>
-          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left;">
-            <p><strong>Amount Paid:</strong> $${paymentHistory.amountPaid} ${paymentHistory.currency}</p>
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: left; border-left: 4px solid #ff1673;">
+            <p><strong>Amount Paid:</strong> £${paymentHistory.amountPaid} ${paymentHistory.currency}</p>
             <p><strong>Status:</strong> Fully Paid ✅</p>
           </div>
+          <p>We look forward to seeing you at the event!</p>
         </div>
       `;
     }

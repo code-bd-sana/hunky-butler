@@ -31,7 +31,7 @@ const CustomerPaymentCard = () => {
       <div className="bg-[#A06224] text-white p-6  pt-8  rounded-[24px] shadow-md space-y-4">
         <h2 className="text-xl font-medium">Total Outgoings</h2>
 
-        <p className="text-5xl font-bold">{overview?.totalOutgoing || '...'}</p>
+        <p className="text-5xl font-bold">£{overview?.totalOutgoing || '...'}</p>
         <span className="text-lg opacity-90">Updated 1 min ago</span>
       </div>
     </div>

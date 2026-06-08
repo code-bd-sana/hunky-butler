@@ -76,25 +76,23 @@ const Footer = () => {
               36a Renshaw Street <br /> Liverpool <br /> L1 4EF <br />
               United Kingdom
             </p>
-            
+
             {/* ক্লিকযোগ্য ইমেইল */}
             <p className='text-base text-gray-800 flex items-center gap-2 mb-4'>
               <IoMdMail className='text-[#FF006A]' />
-              <a 
-                href="mailto:info@hunkybutlerservice.co.uk" 
-                className='font-bold hover:text-[#FF006A] transition-colors'
-              >
+              <a
+                href='mailto:info@hunkybutlerservice.co.uk'
+                className='font-bold hover:text-[#FF006A] transition-colors'>
                 info@hunkybutlerservice.co.uk
               </a>
             </p>
-            
+
             {/* ক্লিকযোগ্য ফোন নম্বর */}
             <p className='text-base text-gray-800 flex items-center gap-2'>
               <IoCallSharp className='text-[#FF006A]' />
-              <a 
-                href="tel:+447745865352" 
-                className='font-bold hover:text-[#FF006A] transition-colors'
-              >
+              <a
+                href='tel:+447745865352'
+                className='font-bold hover:text-[#FF006A] transition-colors'>
                 +44 7745 865352
               </a>
             </p>
@@ -106,22 +104,42 @@ const Footer = () => {
             <ul className='space-y-2 text-sm text-gray-600'>
               {data?.status === "authenticated" && (
                 <li>
-                  <Link href={"/dashboard"} className="hover:text-[#FF006A] transition-colors">Dashboard</Link>
+                  <Link
+                    href={"/dashboard"}
+                    className='hover:text-[#FF006A] transition-colors'>
+                    Dashboard
+                  </Link>
                 </li>
               )}
               {data?.status !== "authenticated" && (
                 <li>
-                  <Link href={"/login"} className="hover:text-[#FF006A] transition-colors">Login</Link>
+                  <Link
+                    href={"/login"}
+                    className='hover:text-[#FF006A] transition-colors'>
+                    Login
+                  </Link>
                 </li>
               )}
               <li>
-                <Link href={"/about"} className="hover:text-[#FF006A] transition-colors">About Us</Link>
+                <Link
+                  href={"/about"}
+                  className='hover:text-[#FF006A] transition-colors'>
+                  About Us
+                </Link>
               </li>
               <li>
-                <Link href={"/contact"} className="hover:text-[#FF006A] transition-colors">Contact</Link>
+                <Link
+                  href={"/contact"}
+                  className='hover:text-[#FF006A] transition-colors'>
+                  Contact
+                </Link>
               </li>
               <li>
-                <Link href={"/contact"} className="hover:text-[#FF006A] transition-colors">Services</Link>
+                <Link
+                  href={"/party-entertainment-services"}
+                  className='hover:text-[#FF006A] transition-colors'>
+                  Services
+                </Link>
               </li>
             </ul>
           </div>
@@ -131,17 +149,29 @@ const Footer = () => {
             <h4 className='font-semibold mb-3'>Legal</h4>
             <ul className='space-y-2 text-sm text-gray-600'>
               <li>
-                <a href='/privacy-policy' target='_blank' rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+                <a
+                  href='/privacy-policy'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='hover:text-[#FF006A] transition-colors'>
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href='/terms-and-conditon' target='_blank' rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+                <a
+                  href='/terms-and-conditon'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='hover:text-[#FF006A] transition-colors'>
                   Terms Of Conditions
                 </a>
               </li>
               <li>
-                <a href='/refund-policy' target='_blank' rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+                <a
+                  href='/refund-policy'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='hover:text-[#FF006A] transition-colors'>
                   Refund Policy
                 </a>
               </li>
@@ -170,7 +200,10 @@ const Footer = () => {
               By Subscribing You Agree To Our
               <span className='text-[#FF006A] cursor-pointer hover:underline'>
                 {" "}
-             <a href="/privacy-policy" target="_blank"> Privacy Policy</a>
+                <a href='/privacy-policy' target='_blank'>
+                  {" "}
+                  Privacy Policy
+                </a>
               </span>
             </p>
           </div>
@@ -182,19 +215,39 @@ const Footer = () => {
               Stay In The Know
             </h1>
             <div className='flex items-center gap-4'>
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+              <a
+                href='https://facebook.com'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='hover:text-[#FF006A] transition-colors'>
                 <FaFacebookF />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+              <a
+                href='https://twitter.com'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='hover:text-[#FF006A] transition-colors'>
                 <FaTwitter />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+              <a
+                href='https://instagram.com'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='hover:text-[#FF006A] transition-colors'>
                 <FaInstagram />
               </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+              <a
+                href='https://youtube.com'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='hover:text-[#FF006A] transition-colors'>
                 <FaYoutube />
               </a>
-              <a href="https://tumblr.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF006A] transition-colors">
+              <a
+                href='https://tumblr.com'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='hover:text-[#FF006A] transition-colors'>
                 <FaTumblr />
               </a>
             </div>
