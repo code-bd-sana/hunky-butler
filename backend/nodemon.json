@@ -1,0 +1,5 @@
+{
+  "watch": ["src", "app.js", "server.js"],
+  "ext": "js,mjs,cjs,json",
+  "ignore": ["node_modules", ".git", ".vercel", "test", "*.test.js"]
+}
