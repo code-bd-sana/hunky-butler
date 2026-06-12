@@ -16,8 +16,8 @@ const transporter = nodemailer.createTransport({
   port: process.env.EMAIL_PORT || 587,
   secure: process.env.EMAIL_SECURE === 'true',
   auth: {
-    user: process.env.EMAIL_USER || "bannah76769@gmail.com",
-    pass: process.env.EMAIL_PASS || "noqq kzxv olzf clzz",
+    user: process.env.EMAIL_USER || "hunkybutlerservice.co.uk",
+    pass: process.env.EMAIL_PASS || "Bl00dh0und!",
   },
 });
 
