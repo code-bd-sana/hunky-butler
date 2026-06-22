@@ -816,10 +816,11 @@ export default function SecondStep() {
   const defaultDuration = getDefaultDuration(params.category);
 
   useEffect(() => {
-    if (params.category && !secondStep.durationHours) {
+    if (params.category) {
       setSecondStep((prev) => ({
         ...prev,
-        durationHours: defaultDuration,
+        durationHours: prev.durationHours || defaultDuration,
+        numberOfStaff: prev.numberOfStaff || 1,
       }));
     }
   }, [params.category, defaultDuration]);
@@ -946,24 +947,45 @@ export default function SecondStep() {
 
       setSecondStep(secondStepData);
 
+      // Calculate the final price explicitly using form values to prevent using 0 or outdated pricing in initial booking save
+      setIsCalculatingPrice(true);
+      const calcResult = await calculatePrice(
+        params.category,
+        durationHours,
+        Number(numberOfStaff),
+        firstStep.postCode,
+      );
+
+      setPriceCalculation(calcResult);
+      setDistanceInfo(calcResult.distanceInfo);
+      setIsCalculatingPrice(false);
+
+      const computedTotalPrice = calcResult.totalPrice;
+      const computedBasePrice = calcResult.basePrice;
+      const computedButlerFee = calculateButlerFee(
+        params.category,
+        durationHours,
+        Number(numberOfStaff),
+      );
+      const travelFee = computedTotalPrice - computedBasePrice;
+
       // TRIGGER IMMEDIATE BOOKING SAVE (to send notification)
-      const travelFee = totalPrice - basePrice;
       const initialBookingData = {
         ...firstStep,
         ...secondStepData,
         slug: params.category,
         serviceName: params.category,
-        price: totalPrice,
-        basePrice: basePrice,
-        distanceInfo: distanceInfo,
-        durationInfo: priceCalculation?.durationInfo,
-        butlerFee: butlerFee,
+        price: computedTotalPrice,
+        basePrice: computedBasePrice,
+        distanceInfo: calcResult.distanceInfo,
+        durationInfo: calcResult.durationInfo,
+        butlerFee: computedButlerFee,
         paymentMethod: "pay_now",
         paid: "unpaid",
         paymentStatus: "pending",
-        profit: totalPrice - (butlerFee + travelFee),
+        profit: computedTotalPrice - (computedButlerFee + travelFee),
         travelFee: travelFee,
-        coordinates: priceCalculation?.coordinates,
+        coordinates: calcResult.coordinates,
       };
 
       const result = await booking(initialBookingData).unwrap();
@@ -976,6 +998,8 @@ export default function SecondStep() {
     } catch (error) {
       console.log(error);
       toast.error("Failed to save event information");
+    } finally {
+      setIsCalculatingPrice(false);
     }
   };
 
@@ -1325,6 +1349,8 @@ export default function SecondStep() {
                         type='date'
                         id='dateOfEvent'
                         name='dateOfEvent'
+                        value={secondStep.dateOfEvent || ""}
+                        onChange={(e) => setSecondStep(prev => ({ ...prev, dateOfEvent: e.target.value }))}
                         min={new Date().toISOString().split("T")[0]}
                         className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669] appearance-none cursor-pointer'
                       />
@@ -1353,6 +1379,8 @@ export default function SecondStep() {
                     <select
                       required
                       name='numberOfStaff'
+                      value={secondStep.numberOfStaff || 1}
+                      onChange={(e) => setSecondStep(prev => ({ ...prev, numberOfStaff: Number(e.target.value) }))}
                       className='bg-[#00000066] text-white mt-1 outline-0 w-full border py-3.5 px-4 rounded-lg border-[#6D6669] cursor-pointer'>
                       {durationOptions.length === 1
                         ? [1].map((num) => (
@@ -1382,6 +1410,8 @@ export default function SecondStep() {
                         type='time'
                         id='startTime'
                         name='startTime'
+                        value={secondStep.startTime || ""}
+                        onChange={(e) => setSecondStep(prev => ({ ...prev, startTime: e.target.value }))}
                         className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border py-3.5 px-4 rounded-lg border-[#6D6669] appearance-none cursor-pointer'
                       />
                       <div className='absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none'>
@@ -1419,8 +1449,9 @@ export default function SecondStep() {
                       <select
                         required
                         name='durationHours'
-                        className='bg-[#00000066] text-white mt-1 outline-0 w-full border py-3.5 px-4 rounded-lg border-[#6D6669] cursor-pointer'
-                        defaultValue={defaultDuration}>
+                        value={secondStep.durationHours || defaultDuration}
+                        onChange={(e) => setSecondStep(prev => ({ ...prev, durationHours: parseFloat(e.target.value) }))}
+                        className='bg-[#00000066] text-white mt-1 outline-0 w-full border py-3.5 px-4 rounded-lg border-[#6D6669] cursor-pointer'>
                         {durationOptions.map((duration) => (
                           <option key={duration} value={duration}>
                             {formatDuration(duration)}
