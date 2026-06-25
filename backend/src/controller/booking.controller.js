@@ -107,6 +107,15 @@ export const getBookingCustomer = async (req, res) => {
 export const createBooking = async (req, res) => {
   try {
     const data = req.body;
+    
+    // Default financial values on creation before payment
+    if (data.price !== undefined) {
+      data.totalAmount = data.price;
+      data.amountPaid = 0;
+      data.amountDue = data.price;
+      data.remainingBalance = data.price;
+    }
+    
     const newData = new Booking(data);
     const savedData = await newData.save();
     const { email, phone, serviceName, price, paymentType } = req.body;

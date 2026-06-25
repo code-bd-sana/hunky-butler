@@ -572,6 +572,89 @@ const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPe
   );
 };
 
+const PaymentSelectionModal = ({ booking, isOpen, onClose, onSelectPaymentType }) => {
+  if (!isOpen || !booking) return null;
+
+  return (
+    <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose}></div>
+      
+      {/* Modal box */}
+      <div className="relative bg-white rounded-2xl shadow-xl max-w-md w-full p-6 z-10 border border-gray-100 transform transition-all animate-in fade-in zoom-in-95 duration-200">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+          <h3 className="text-xl font-semibold text-gray-800">Select Payment Method</h3>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 text-2xl font-bold transition-colors leading-none"
+          >
+            &times;
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="py-5 space-y-4">
+          <div className="bg-pink-50/50 rounded-xl p-4 border border-pink-100/50">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">Service:</span>
+              <span className="font-medium text-gray-800">{booking.serviceName}</span>
+            </div>
+            <div className="flex justify-between items-center mt-2 pt-2 border-t border-pink-100/30">
+              <span className="text-sm text-gray-600">Total Price:</span>
+              <span className="font-bold text-[#FF006A]">£{booking.price}</span>
+            </div>
+          </div>
+
+          <p className="text-gray-600 text-sm leading-relaxed text-center px-2">
+            Would you like to pay the £20 deposit to secure your booking date, or pay the full booking amount now?
+          </p>
+
+          <div className="flex flex-col gap-3 pt-2">
+            {/* Pay Deposit Option */}
+            <button
+              onClick={() => onSelectPaymentType("deposit")}
+              className="w-full flex items-center justify-between p-4 border-2 border-gray-200 hover:border-[#FF006A] rounded-xl text-left transition-all hover:bg-pink-50/20 group"
+            >
+              <div>
+                <p className="font-semibold text-gray-800 group-hover:text-[#FF006A] transition-colors">Pay Deposit</p>
+                <p className="text-xs text-gray-500 mt-0.5">Secure the booking with a deposit</p>
+              </div>
+              <span className="text-base font-bold text-[#FF006A] bg-pink-50 border border-pink-100 px-3 py-1 rounded-full group-hover:bg-[#FF006A] group-hover:text-white group-hover:border-transparent transition-colors">
+                £20
+              </span>
+            </button>
+
+            {/* Pay Full Option */}
+            <button
+              onClick={() => onSelectPaymentType("full")}
+              className="w-full flex items-center justify-between p-4 border-2 border-gray-200 hover:border-[#FF006A] rounded-xl text-left transition-all hover:bg-pink-50/20 group"
+            >
+              <div>
+                <p className="font-semibold text-gray-800 group-hover:text-[#FF006A] transition-colors">Pay Full Amount</p>
+                <p className="text-xs text-gray-500 mt-0.5">Pay the total price of your booking now</p>
+              </div>
+              <span className="text-base font-bold text-gray-800 bg-gray-100 border border-gray-200 px-3 py-1 rounded-full group-hover:bg-[#FF006A] group-hover:text-white group-hover:border-transparent transition-colors">
+                £{booking.price}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+          <button
+            onClick={onClose}
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-full font-medium hover:bg-gray-50 transition-colors text-sm"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const CustomerBooking = () => {
   const [activeButton, setActiveButton] = useState("all");
   const [open, setOpen] = useState(false);
@@ -581,7 +664,9 @@ const CustomerBooking = () => {
   const [butlerModalOpen, setButlerModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [paymentLoading, setPaymentLoadng] = useState(false)
+  const [paymentLoading, setPaymentLoadng] = useState(false);
+  const [paymentSelectionModalOpen, setPaymentSelectionModalOpen] = useState(false);
+  const [selectedBookingForPayment, setSelectedBookingForPayment] = useState(null);
     const {data:user, status} = useSession();
  
   
@@ -861,59 +946,50 @@ const PaymentProcessingModal = ({ isOpen }) => {
     );
   }
 
-  const  PaymentsHandaler  = async (id, bookingItem) => {
-    setPaymentLoadng(true)
+  const executePayment = async (id, selectedPaymentType) => {
+    setPaymentLoadng(true);
     try {
-      let selectedPaymentType = bookingItem?.paymentType || "full";
-      
-      const isDepositPaid = ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(bookingItem?.paymentStatus);
-      const isUnpaid = !isDepositPaid && bookingItem?.paid !== "paid";
-      
-      if (isUnpaid) {
-        // Allow user to choose between deposit and full payment
-        const choice = window.confirm("Would you like to pay the full booking amount?\n\nClick 'OK' for Full Payment.\nClick 'Cancel' to pay the £20 Deposit.");
-        selectedPaymentType = choice ? "full" : "deposit";
-      }
-
       const response = await fetch(`${base_url}/payment/create-checkout-session-exist`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: id,
-            paymentType: selectedPaymentType,
-            successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancelUrl: `${window.location.origin}/booking/cancel`,
-          }),
-        });
-  
-        const { sessionId, success, error, checkoutUrl } = await response.json();
-        
-        if (!success) {
-          throw new Error(error || 'Failed to create checkout session');
-          setPaymentLoadng(false)
-        }
-        
-        // Method 2: Use the checkout URL directly from backend
-        if (checkoutUrl) {
-          window.location.href = checkoutUrl;
-          setPaymentLoadng(false)
-        } else {
-          // Method 3: Construct the URL manually
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: id,
+          paymentType: selectedPaymentType,
+          successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${window.location.origin}/booking/cancel`,
+        }),
+      });
 
-          window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
-          setPaymentLoadng(false)
-        }
-        
-    
+      const { sessionId, success, error, checkoutUrl } = await response.json();
+      
+      if (!success) {
+        throw new Error(error || 'Failed to create checkout session');
+      }
+      
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        window.location.href = `https://checkout.stripe.com/c/pay/${sessionId}`;
+      }
     } catch (error) {
       console.log(error);
       toast.error(error?.message || "Payment processing failed");
-      setPaymentLoadng(false)
     } finally {
-      setIsProcessingPayment(false);
-      setPaymentLoadng(false)
+      setPaymentLoadng(false);
+    }
+  };
+
+  const PaymentsHandaler = (id, bookingItem) => {
+    const isDepositPaid = ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(bookingItem?.paymentStatus);
+    const isUnpaid = !isDepositPaid && bookingItem?.paid !== "paid";
+    
+    if (isUnpaid) {
+      setSelectedBookingForPayment(bookingItem);
+      setPaymentSelectionModalOpen(true);
+    } else {
+      executePayment(id, "full");
     }
   };
 
@@ -1179,9 +1255,16 @@ const PaymentProcessingModal = ({ isOpen }) => {
         butlers={butlerData?.data}
         onAssignButler={handleButlerAssignment}
         refetch ={refetch}
-      
+      />
 
- 
+      <PaymentSelectionModal
+        booking={selectedBookingForPayment}
+        isOpen={paymentSelectionModalOpen}
+        onClose={() => setPaymentSelectionModalOpen(false)}
+        onSelectPaymentType={(paymentType) => {
+          setPaymentSelectionModalOpen(false);
+          executePayment(selectedBookingForPayment?._id, paymentType);
+        }}
       />
     </div>
   );

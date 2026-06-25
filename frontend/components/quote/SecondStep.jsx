@@ -1490,7 +1490,7 @@ export default function SecondStep() {
                 </section>
 
                 {/* Distance Information Display */}
-                {distanceInfo && (
+                {/* {distanceInfo && (
                   <div className='mt-6 p-4 bg-black/30 rounded-lg border border-white/20'>
                     <h4 className='text-white font-semibold mb-2'>
                       Location & Distance Information
@@ -1534,7 +1534,7 @@ export default function SecondStep() {
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 <button
                   type='submit'

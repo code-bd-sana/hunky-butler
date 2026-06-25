@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "pay:test": "node scripts/toggle-payment.js test",
+    "pay:live": "node scripts/toggle-payment.js live"
   },
   "author": "",
   "license": "ISC",

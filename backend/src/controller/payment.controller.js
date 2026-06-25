@@ -48,14 +48,6 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
       });
     }
 
-    const validLocationId = process.env.SQUARE_LOCATION_ID;
-    if (!validLocationId) {
-      return res.status(500).json({
-        success: false,
-        message: 'Square location ID not configured'
-      });
-    }
-
     let price = savedBooking.price;
     const isDepositAlreadyPaid = ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(savedBooking.paymentStatus);
 
@@ -80,6 +72,34 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
       }
       await savedBooking.save();
       console.log('✅ Updated booking payment options in DB:', savedBooking._id.toString());
+    }
+
+    // Check if Square keys are placeholders (e.g. test mode on without keys)
+    const isPlaceholder = !process.env.SQUARE_ACCESS_TOKEN ||
+                          process.env.SQUARE_ACCESS_TOKEN.includes('your_sandbox_access_token') ||
+                          process.env.SQUARE_LOCATION_ID?.includes('your_location_id');
+
+    if (isPlaceholder) {
+      console.log('⚠️ Using mock checkout link because Square Sandbox credentials are placeholders');
+      const protocol = req.secure ? 'https' : 'http';
+      const host = req.get('host');
+      const backendUrl = `${protocol}://${host}`;
+      const mockCheckoutUrl = `${backendUrl}/api/payment/mock-pay-success?bookingId=${savedBooking._id}&amount=${price}&paymentType=${savedBooking.paymentType}`;
+      
+      return res.status(200).json({
+        success: true,
+        paymentLinkId: 'mock_link_id_' + Date.now(),
+        checkoutUrl: mockCheckoutUrl,
+        message: 'Mock payment link created (using placeholders)',
+      });
+    }
+
+    const validLocationId = process.env.SQUARE_LOCATION_ID;
+    if (!validLocationId) {
+      return res.status(500).json({
+        success: false,
+        message: 'Square location ID not configured'
+      });
     }
 
     console.log('💰 Amount to charge:', price);
@@ -172,7 +192,8 @@ export const createCheckoutSession = async (req, res) => {
       ...bookingData,
       paymentType: paymentType,
       depositAmount: isDeposit ? depositAmount : 0,
-      amountDue: isDeposit ? totalAmount - depositAmount : totalAmount,
+      amountDue: totalAmount,
+      remainingBalance: totalAmount,
       amountPaid: 0, 
       paymentStatus: 'pending',
       totalAmount: totalAmount,
@@ -216,6 +237,30 @@ export const createCheckoutSession = async (req, res) => {
       console.log('✅ Immediate "Booking Received" notification sent');
     } catch (notifError) {
       console.error('⚠️ Failed to send immediate notification:', notifError.message);
+    }
+
+    // Check if Square keys are placeholders (e.g. test mode on without keys)
+    const isPlaceholder = !process.env.SQUARE_ACCESS_TOKEN ||
+                          process.env.SQUARE_ACCESS_TOKEN.includes('your_sandbox_access_token') ||
+                          process.env.SQUARE_LOCATION_ID?.includes('your_location_id');
+
+    if (isPlaceholder) {
+      console.log('⚠️ Using mock checkout link because Square Sandbox credentials are placeholders');
+      const protocol = req.secure ? 'https' : 'http';
+      const host = req.get('host');
+      const backendUrl = `${protocol}://${host}`;
+      const mockCheckoutUrl = `${backendUrl}/api/payment/mock-pay-success?bookingId=${savedBooking._id}&amount=${amountToCharge}&paymentType=${savedBooking.paymentType}`;
+      
+      return res.status(200).json({
+        success: true,
+        paymentLinkId: 'mock_link_id_' + Date.now(),
+        checkoutUrl: mockCheckoutUrl,
+        orderId: 'mock_order_' + Date.now(),
+        bookingId: savedBooking._id,
+        paymentType: paymentType,
+        amountCharged: amountToCharge,
+        message: 'Mock payment link created (using placeholders)',
+      });
     }
 
     // Simple line items
@@ -370,7 +415,7 @@ export const handleSquareWebhook = async (req, res) => {
 };
 
 // ==================== HANDLE SUCCESSFUL PAYMENT ====================
-const handleSuccessfulPayment = async (payment) => {
+const handleSuccessfulPayment = async (payment, passedBookingId = null) => {
   try {
     const orderId = payment.orderId || payment.order_id;
     console.log('🔍 Order ID:', orderId);
@@ -379,14 +424,26 @@ const handleSuccessfulPayment = async (payment) => {
       throw new Error('No order ID found in payment');
     }
 
-    // Retrieve order from Square
-    console.log('🔍 Retrieving order from Square...');
-    const orderResponse = await ordersApi.retrieveOrder(orderId);
-    const order = orderResponse.result.order;
+    let order = {};
+    let bookingId = passedBookingId || payment.mockBookingId;
+
+    if (orderId.startsWith('mock_order_')) {
+      order = {
+        referenceId: bookingId,
+        lineItems: [{ note: bookingId }]
+      };
+    } else {
+      // Retrieve order from Square
+      console.log('🔍 Retrieving order from Square...');
+      const orderResponse = await ordersApi.retrieveOrder(orderId);
+      order = orderResponse.result.order;
+    }
 
     console.log('📋 Order lineItems received:', order.lineItems?.[0]);
 
-    let bookingId = order.referenceId || (order.lineItems && order.lineItems[0]?.note);
+    if (!bookingId) {
+      bookingId = order.referenceId || (order.lineItems && order.lineItems[0]?.note);
+    }
 
     if (!bookingId) {
       console.error('❌ CRITICAL: COULD NOT FIND BOOKING ID AFTER ALL ATTEMPTS');
@@ -774,5 +831,53 @@ export const paymentHistoryForButler = async(req, res) => {
       message: "Something went wrong!",
       error: error.message
     });
+  }
+};
+
+// ==================== MOCK PAYMENT SUCCESS FOR SANDBOX PLACEHOLDERS ====================
+export const mockPaySuccess = async (req, res) => {
+  try {
+    const { bookingId, amount, paymentType } = req.query;
+
+    console.log('🔔 SIMULATING SUCCESSFUL CHECKOUT FOR:', bookingId);
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).send('Booking not found');
+    }
+
+    const mockPaymentId = 'mock_pay_' + crypto.randomUUID().substring(0, 8);
+    const mockOrderId = 'mock_order_' + crypto.randomUUID().substring(0, 8);
+
+    const mockPaymentPayload = {
+      id: mockPaymentId,
+      orderId: mockOrderId,
+      amountMoney: {
+        amount: Math.round(Number(amount) * 100),
+        currency: 'GBP'
+      }
+    };
+
+    await handleSuccessfulPayment(mockPaymentPayload, bookingId);
+
+    // Get the frontend origin URL dynamically
+    const referer = req.headers.referer || req.headers.origin || process.env.FRONTEND_URL || 'http://localhost:3000';
+    let frontendOrigin = 'http://localhost:3000';
+    try {
+      if (referer) {
+        const parsedUrl = new URL(referer);
+        frontendOrigin = parsedUrl.origin;
+      }
+    } catch (e) {
+      console.log('Using default frontend URL due to parser error');
+    }
+
+    const redirectUrl = `${frontendOrigin}/booking/success?session_id=${mockPaymentId}`;
+    console.log('🔄 Redirecting user to frontend success page:', redirectUrl);
+    res.redirect(redirectUrl);
+
+  } catch (error) {
+    console.error('❌ Error in mock payment simulation:', error);
+    res.status(500).send('Simulation failed: ' + error.message);
   }
 };
