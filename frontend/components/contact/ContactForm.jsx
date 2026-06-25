@@ -105,7 +105,7 @@ const ContactForm = () => {
                 <input
                   id="phone"
                   type="tel"
-                  placeholder="+55 0"
+                  placeholder="+44 0"
                   className="w-full p-3 border rounded-4xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
                 />
               </div>
