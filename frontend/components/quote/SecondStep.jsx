@@ -1478,7 +1478,7 @@ export default function SecondStep() {
                     )}
                     <p className='text-xs text-gray-400 mt-1'>
                       {durationOptions.length === 1
-                        ? `Fixed duration for ${params.category} service`
+                        ? `Fixed duration for ${params.category?.replace(/-/g, ' ')} service`
                         : "Select duration for your event"}
                       {priceCalculation?.durationInfo?.minimumApplied && (
                         <span className='text-yellow-400 block'>
@@ -1586,7 +1586,7 @@ export default function SecondStep() {
                     <div className='space-y-4 text-left'>
                       <div className='flex justify-between'>
                         <span className='font-medium'>Service:</span>
-                        <span className='capitalize'>{params?.category}</span>
+                        <span className='capitalize'>{params?.category?.replace(/-/g, ' ')}</span>
                       </div>
                       <div className='flex justify-between'>
                         <span className='font-medium'>Location:</span>
@@ -1848,7 +1848,7 @@ export default function SecondStep() {
                           Service Type
                         </span>
                         <span className='text-right capitalize'>
-                          {params?.category}
+                          {params?.category?.replace(/-/g, ' ')}
                         </span>
                       </div>
                     </div>
