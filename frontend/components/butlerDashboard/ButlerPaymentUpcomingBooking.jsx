@@ -71,7 +71,7 @@ export default function ButlerPaymentUpcomingBooking() {
             <tr className="text-[16px] md:text-[16px] leading-5 text-[#292929]">
               <th className="px-5 md:px-6 py-3 font-medium text-left">Ref</th>
               <th className="px-5 md:px-6 py-3 font-medium text-left">Amount</th>
-              <th className="px-5 md:px-6 py-3 font-medium text-left">Fee (Platform)</th>
+              {/* <th className="px-5 md:px-6 py-3 font-medium text-left">Fee (Platform)</th> */}
               <th className="px-5 md:px-6 py-3 font-medium text-left">Net Earnings</th>
               <th className="px-5 md:px-6 py-3 font-medium text-left">Status</th>
             </tr>
@@ -82,7 +82,7 @@ export default function ButlerPaymentUpcomingBooking() {
               <tr key={i} className="hover:bg-[#FAFAFB]">
                 <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">{r.ref}</td>
                 <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">{r.amount}</td>
-                <td className="px-5 md:px-6 py-6 text-[16px] text-[#E34343]">{r.fee}</td>
+                {/* <td className="px-5 md:px-6 py-6 text-[16px] text-[#E34343]">{r.fee}</td> */}
                 <td className="px-5 md:px-6 py-6 text-[16px] text-[#292929]">{r.net}</td>
                 <td className="px-5 md:px-6 py-6">
                   <span
