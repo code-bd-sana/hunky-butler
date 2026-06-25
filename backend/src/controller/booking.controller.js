@@ -202,12 +202,22 @@ export const deleteBooking = async (req, res) => {
 
 export const updateStatus = async (req, res) => {
   try {
-    const { id, status, butlerid } = req.body;
+    const { id, status, butlerid, paymentType, paymentMethod, depositAmount, amountDue, remainingBalance, paid, paymentStatus } = req.body;
 
-    // Update booking status
+    const updateFields = {};
+    if (status !== undefined) updateFields.status = status;
+    if (paymentType !== undefined) updateFields.paymentType = paymentType;
+    if (paymentMethod !== undefined) updateFields.paymentMethod = paymentMethod;
+    if (depositAmount !== undefined) updateFields.depositAmount = depositAmount;
+    if (amountDue !== undefined) updateFields.amountDue = amountDue;
+    if (remainingBalance !== undefined) updateFields.remainingBalance = remainingBalance;
+    if (paid !== undefined) updateFields.paid = paid;
+    if (paymentStatus !== undefined) updateFields.paymentStatus = paymentStatus;
+
+    // Update booking details
     const updatedBookingResult = await Booking.updateOne(
       { _id: id },
-      { $set: { status: status } },
+      { $set: updateFields },
     );
 
     // If butlerid is provided, update the accepted status in butler array
@@ -226,11 +236,17 @@ export const updateStatus = async (req, res) => {
       console.log(`Butler ${butlerid} accepted the booking ${id}`);
     }
 
-    // Fetch booking info for notification
+    // Sync butler details to PaymentHistory
     const booking = await Booking.findById(id);
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
+
+    // Sync butler details to PaymentHistory
+    await PaymentHistory.updateMany(
+      { bookingId: id },
+      { $set: { butler: booking.butler || [] } }
+    );
 
     const { email, phone, firstName, serviceName } = booking;
 
@@ -315,6 +331,14 @@ export const assginToButler = async (req, res) => {
       { $push: { butler: { $each: formattedButlers } } },
     );
 
+    const updatedBooking = await Booking.findById(bookingId);
+    if (updatedBooking) {
+      await PaymentHistory.updateMany(
+        { bookingId: bookingId },
+        { $set: { butler: updatedBooking.butler || [] } }
+      );
+    }
+
     const butlers = await User.find({ _id: { $in: butlerId } });
 
     const notificationPromises = butlers.map(async (butler) => {
@@ -364,9 +388,10 @@ export const assginToButler = async (req, res) => {
               );
 
               const updatedBooking = await Booking.findById(bookingId);
-              if (updatedBooking.butler.length === 0) {
-                await PaymentHistory.updateOne({ bookingId: bookingId }, { $set: { butlerId: null } });
-              }
+              await PaymentHistory.updateMany(
+                { bookingId: bookingId },
+                { $set: { butler: updatedBooking ? (updatedBooking.butler || []) : [] } }
+              );
 
               await storeNotification(adminGmail, `Booking Needs Reassignment - ${firstName} ${lastName}`, "", "/dashboard");
               

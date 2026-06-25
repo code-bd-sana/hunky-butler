@@ -12,6 +12,16 @@ const statusColors = {
   Processing: "bg-blue-100 text-blue-600",
   Cancelled: "bg-gray-100 text-gray-600",
   Pending: "bg-[#f9e2fc] text-[#C90CE6]",
+  
+  // Mappings for paymentStatus values
+  paid: "bg-[#E0F3E6] text-[#00992B]",
+  PAID: "bg-[#E0F3E6] text-[#00992B]",
+  FULLY_PAID: "bg-[#E0F3E6] text-[#00992B]",
+  deposit_paid: "bg-yellow-100 text-yellow-700",
+  DEPOSIT_PAID: "bg-yellow-100 text-yellow-700",
+  PARTIALLY_PAID: "bg-yellow-100 text-yellow-700",
+  failed: "bg-red-100 text-red-700",
+  FAILED: "bg-red-100 text-red-700",
 };
 
 const Payouts = () => {
@@ -201,11 +211,10 @@ const getPerformerName = (payment) => {
                   £{payment.totalAmount}
                 </td>
                 <td className="px-2 align-middle  text-zinc-600 whitespace-nowrap">
-                  £{  
-payment?.paymentStatus === 'deposit_paid' ?  payment?.depositAmount : 0}
+                  £{['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(payment?.paymentStatus) ? payment?.depositAmount : 0}
                 </td>
                 <td className="px-2 align-middle text-zinc-600 whitespace-nowrap">
-                  £{payment?.amountDue || 0}
+                  £{payment?.remainingBalance !== undefined ? payment.remainingBalance : (payment?.amountDue || 0)}
                 </td>
                 <td className="px-2 align-middle whitespace-nowrap">
                   {payment.bookingId}
@@ -216,7 +225,7 @@ payment?.paymentStatus === 'deposit_paid' ?  payment?.depositAmount : 0}
                 <td className="p-3">
                   <span
                     className={`px-3 py-2 rounded-full text-sm font-medium ${
-                      statusColors[payment.status] || "bg-gray-100 text-gray-600"
+                      statusColors[payment.paymentStatus] || "bg-gray-100 text-gray-600"
                     }`}
                   >
                     {payment.paymentStatus || "Unknown"}

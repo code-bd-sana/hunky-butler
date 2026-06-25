@@ -265,11 +265,11 @@ const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-600">Deposit Paid</label>
-                <p className="text-gray-900">£{booking?.depositAmount || (booking?.paymentStatus === 'deposit_paid' ? 20 : 0)}</p>
+                <p className="text-gray-900">£{(['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID', 'fully_paid', 'FULLY_PAID', 'paid', 'PAID'].includes(booking?.paymentStatus) || booking?.paid === 'paid') ? (booking?.depositAmount || 20) : 0}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-600">Remaining Balance</label>
-                <p className="text-gray-900">£{booking?.amountDue || 0}</p>
+                <p className="text-gray-900">£{booking?.remainingBalance !== undefined ? booking?.remainingBalance : (booking?.amountDue || 0)}</p>
               </div>
             </div>
           </div>
@@ -1191,17 +1191,21 @@ const Booking = () => {
                   </span>
                 </td>
                 <td className="p-3 capitalize">{b.paymentType || "Full"}</td>
-                <td className="p-3">£{b.depositAmount || (b.paymentStatus === 'deposit_paid' ? 20 : 0)}</td>
-                <td className="p-3 text-red-500 font-medium">£{b.amountDue || 0}</td>
+                <td className="p-3">£{(['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID', 'fully_paid', 'FULLY_PAID', 'paid', 'PAID'].includes(b.paymentStatus) || b.paid === 'paid') ? (b.depositAmount || 20) : 0}</td>
+                <td className="p-3 text-red-500 font-medium">£{b.remainingBalance !== undefined ? b.remainingBalance : (b.amountDue || 0)}</td>
                 <td className="p-3 font-semibold">£{b.price}</td>
                 <td className="p-3">
                    <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      b.paymentStatus === 'deposit_paid' ? 'bg-yellow-100 text-yellow-700' : 
-                      b.paid === 'paid' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                      (b.paid === 'paid' || ['paid', 'FULLY_PAID', 'PAID'].includes(b.paymentStatus)) ? 'bg-green-100 text-green-700' : 
+                      ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(b.paymentStatus) ? 'bg-yellow-100 text-yellow-700' : 
+                      ['deposit', 'DEPOSIT'].includes(b.paymentType) ? 'bg-orange-100 text-orange-700' :
+                      'bg-gray-100 text-gray-600'
                     }`}
                   >
-                    {b.paymentStatus === 'deposit_paid' ? 'Deposit Paid' : (b.paid || 'Unpaid')}
+                    {(b.paid === 'paid' || ['paid', 'FULLY_PAID', 'PAID'].includes(b.paymentStatus)) ? 'Paid' : 
+                     ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(b.paymentStatus) ? 'Deposit Paid' : 
+                     ['deposit', 'DEPOSIT'].includes(b.paymentType) ? 'Deposit Unpaid' : (b.paid || 'Unpaid')}
                   </span>
                 </td>
                 <td className="p-3">

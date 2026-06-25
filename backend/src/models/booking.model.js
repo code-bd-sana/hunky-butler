@@ -82,20 +82,21 @@ butler: [
       type: String,
       default: "unpaid",
     },
-    amountPaid:Number,
+    amountPaid: Number,
 
-    paymentStatus:String,
-     stripePaymentIntentId: String,
-     stripePaymentIntentId: String,
-     butlerFee: Number,
-     loadFactor:Number,
-     travelFee:Number,
-     amountDue:Number,
-     depositAmount:Number,
-     profit:{
-      type:Number,
-      required:true
-     },
+    paymentStatus: String,
+    stripePaymentIntentId: String,
+    butlerFee: Number,
+    loadFactor: Number,
+    travelFee: Number,
+    amountDue: Number,
+    depositAmount: Number,
+    totalAmount: Number,
+    remainingBalance: Number,
+    profit: {
+      type: Number,
+      required: true
+    },
     //  paidAt:Date
      
 

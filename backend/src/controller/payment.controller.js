@@ -28,9 +28,10 @@ const { paymentsApi, ordersApi, checkoutApi } = squareClient;
 // ==================== CREATE PAYMENT LINK FOR EXISTING BOOKING ====================
 export const createCheckoutSessionExistngBooking = async (req, res) => {
   try {
-    const { id, successUrl } = req.body;
+    const { id, successUrl, paymentType } = req.body;
 
     console.log('🔄 Creating payment link for existing booking:', id);
+    console.log('💰 Requested payment type:', paymentType);
 
     if (!id || !successUrl) {
       return res.status(400).json({
@@ -55,15 +56,39 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
       });
     }
 
-    const price = savedBooking?.paymentStatus === 'deposit_paid'
-      ? savedBooking.price - 20
-      : savedBooking.price;
+    let price = savedBooking.price;
+    const isDepositAlreadyPaid = ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(savedBooking.paymentStatus);
+
+    if (isDepositAlreadyPaid) {
+      price = savedBooking.amountDue !== undefined ? savedBooking.amountDue : (savedBooking.price - 20);
+    } else {
+      const requestedType = paymentType || savedBooking.paymentType || 'full';
+      if (requestedType === 'deposit' || requestedType === 'DEPOSIT') {
+        price = 20;
+        savedBooking.paymentType = 'DEPOSIT';
+        savedBooking.depositAmount = 20;
+        savedBooking.amountDue = savedBooking.price;
+        savedBooking.remainingBalance = savedBooking.price;
+        savedBooking.totalAmount = savedBooking.price;
+      } else {
+        price = savedBooking.price;
+        savedBooking.paymentType = 'FULL_PAYMENT';
+        savedBooking.depositAmount = 0;
+        savedBooking.amountDue = savedBooking.price;
+        savedBooking.remainingBalance = savedBooking.price;
+        savedBooking.totalAmount = savedBooking.price;
+      }
+      await savedBooking.save();
+      console.log('✅ Updated booking payment options in DB:', savedBooking._id.toString());
+    }
 
     console.log('💰 Amount to charge:', price);
 
     const lineItems = [
       {
-        name: `${savedBooking.serviceName} Service - Balance Payment`,
+        name: isDepositAlreadyPaid 
+          ? `${savedBooking.serviceName} Service - Balance Payment`
+          : (savedBooking.paymentType === 'DEPOSIT' ? `${savedBooking.serviceName} Service - Deposit` : `${savedBooking.serviceName} Service Booking`),
         quantity: '1',
         basePriceMoney: {
           amount: Math.round(price * 100),
@@ -79,6 +104,7 @@ export const createCheckoutSessionExistngBooking = async (req, res) => {
       order: {
         locationId: validLocationId,
         lineItems: lineItems,
+        referenceId: savedBooking._id.toString()
       },
       checkoutOptions: {
         redirectUrl: successUrl,
@@ -346,8 +372,6 @@ export const handleSquareWebhook = async (req, res) => {
 // ==================== HANDLE SUCCESSFUL PAYMENT ====================
 const handleSuccessfulPayment = async (payment) => {
   try {
-
-    
     const orderId = payment.orderId || payment.order_id;
     console.log('🔍 Order ID:', orderId);
     
@@ -360,17 +384,9 @@ const handleSuccessfulPayment = async (payment) => {
     const orderResponse = await ordersApi.retrieveOrder(orderId);
     const order = orderResponse.result.order;
 
+    console.log('📋 Order lineItems received:', order.lineItems?.[0]);
 
-
-    console.log('📋 Order lineItems received:', order.lineItems[0]);
-
-    let bookingId;
-
-    // METHOD 1: Try to getfrom metadata
-    if (order.lineItems) {
-      bookingId = order.lineItems[0].note;
-      console.log('✅ Found bookingId in metadata:', bookingId);
-    } 
+    let bookingId = order.referenceId || (order.lineItems && order.lineItems[0]?.note);
 
     if (!bookingId) {
       console.error('❌ CRITICAL: COULD NOT FIND BOOKING ID AFTER ALL ATTEMPTS');
@@ -385,28 +401,45 @@ const handleSuccessfulPayment = async (payment) => {
       throw new Error(`Booking not found: ${bookingId}`);
     }
 
+    // Idempotency check: prevent duplicate processing on webhook retries
+    const existingPayment = await PaymentHistory.findOne({ squarePaymentId: payment.id });
+    if (existingPayment) {
+      console.log(`⚠️ Webhook duplicate: Payment ${payment.id} already processed. Skipping.`);
+      return {
+        success: true,
+        bookingId: bookingId,
+        paymentHistoryId: existingPayment._id.toString(),
+      };
+    }
+
     // Determine payment type and update logic
-    const isInitialPending = booking.paymentStatus === 'pending';
-    const isDepositAlreadyPaid = booking.paymentStatus === 'deposit_paid';
+    const isInitialPending = !booking.paymentStatus || ['pending', 'unpaid'].includes(booking.paymentStatus);
+    const isDepositAlreadyPaid = ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(booking.paymentStatus);
     
-    const amountPaidInCents = payment.amount_money?.amount || payment.amountMoney?.amount || 0;
+    const amountPaidInCents = Number(payment.amount_money?.amount || payment.amountMoney?.amount || 0);
     const amountPaid = amountPaidInCents / 100;
     
     let newPaymentStatus = '';
     let finalPaymentType = booking.paymentType;
 
     if (isInitialPending) {
-      if (booking.paymentType === 'deposit') {
-        newPaymentStatus = 'deposit_paid';
+      if (booking.paymentType === 'deposit' || booking.paymentType === 'DEPOSIT') {
+        newPaymentStatus = 'DEPOSIT_PAID';
+        finalPaymentType = 'DEPOSIT';
       } else {
-        newPaymentStatus = 'paid';
+        newPaymentStatus = 'FULLY_PAID';
+        finalPaymentType = 'FULL_PAYMENT';
       }
     } else if (isDepositAlreadyPaid) {
-      newPaymentStatus = 'paid';
-      finalPaymentType = 'full'; // Now it's fully paid
+      newPaymentStatus = 'FULLY_PAID';
+      finalPaymentType = 'FULL_PAYMENT'; // Now it's fully paid
     } else {
-      newPaymentStatus = 'paid';
+      newPaymentStatus = 'FULLY_PAID';
+      finalPaymentType = 'FULL_PAYMENT';
     }
+
+    const calculatedDepositAmount = finalPaymentType === 'DEPOSIT' ? amountPaid : (booking.depositAmount || 0);
+    const calculatedAmountDue = finalPaymentType === 'DEPOSIT' ? (booking.price - amountPaid) : 0;
 
     // Create payment history
     const paymentHistory = new PaymentHistory({
@@ -415,8 +448,9 @@ const handleSuccessfulPayment = async (payment) => {
       serviceName: booking.serviceName,
       totalAmount: booking.price,
       paymentType: finalPaymentType,
-      depositAmount: newPaymentStatus === 'deposit_paid' ? amountPaid : (booking.depositAmount || 0),
-      amountDue: newPaymentStatus === 'deposit_paid' ? booking.price - amountPaid : 0,
+      depositAmount: calculatedDepositAmount,
+      amountDue: calculatedAmountDue,
+      remainingBalance: calculatedAmountDue,
       amountPaid: amountPaid,
       currency: process.env.SQUARE_CURRENCY || 'GBP',
       paymentMethodType: "card",
@@ -435,11 +469,12 @@ const handleSuccessfulPayment = async (payment) => {
       numberOfStaff: booking.numberOfStaff,
       notes: isDepositAlreadyPaid 
         ? 'Balance payment completed' 
-        : newPaymentStatus === 'deposit_paid'
+        : newPaymentStatus === 'DEPOSIT_PAID'
           ? 'Deposit payment received' 
           : 'Full payment completed',
       isActive: true,
       adminVerified: false,
+      butler: booking.butler || [],
     });
 
     await paymentHistory.save();
@@ -452,15 +487,17 @@ const handleSuccessfulPayment = async (payment) => {
       squareOrderId: orderId,
       receiptUrl: payment.receipt_url || payment.receiptUrl || null,
       amountPaid: (booking.amountPaid || 0) + amountPaid,
-      amountDue: newPaymentStatus === 'deposit_paid' ? booking.price - amountPaid : 0,
-      depositAmount: newPaymentStatus === 'deposit_paid' ? amountPaid : booking.depositAmount,
-      paid: newPaymentStatus === 'paid' ? 'paid' : 'pending',
+      amountDue: calculatedAmountDue,
+      remainingBalance: calculatedAmountDue,
+      depositAmount: calculatedDepositAmount,
+      totalAmount: booking.price,
+      paid: newPaymentStatus === 'FULLY_PAID' ? 'paid' : 'pending',
     };
 
     await Booking.findByIdAndUpdate(bookingId, updateData, { new: true });
 
     // Update user service count for full payments
-    if (newPaymentStatus === 'paid') {
+    if (newPaymentStatus === 'FULLY_PAID') {
       await User.updateOne(
         { email: booking.email },
         {
@@ -473,7 +510,7 @@ const handleSuccessfulPayment = async (payment) => {
     // Send confirmation notification (Email + SMS)
     await sendPaymentConfirmationNotification(paymentHistory, {
       isBalancePayment: isDepositAlreadyPaid,
-      isDeposit: newPaymentStatus === 'deposit_paid'
+      isDeposit: newPaymentStatus === 'DEPOSIT_PAID'
     });
 
     return {
@@ -661,7 +698,7 @@ export const allPaymentHistory = async (req, res) => {
   try {
     const skip = parseInt(req.query.skip) || 0;
     const limit = parseInt(req.query.limit) || 10;
-    const payments = await PaymentHistory.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('butler');
+    const payments = await PaymentHistory.find().sort({createdAt: -1}).skip(skip).limit(limit).populate('butler.id');
     const paymentsCount = await PaymentHistory.countDocuments();
     res.status(200).json({
       message: "Success",

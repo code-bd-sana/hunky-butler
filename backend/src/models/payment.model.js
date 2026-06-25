@@ -25,7 +25,7 @@ const paymentSchema = mongoose.Schema({
     // ✅ UPDATED: Payment type (full/deposit)
     paymentType: {
         type: String,
-        enum: ['full', 'deposit'],
+        enum: ['full', 'deposit', 'DEPOSIT', 'FULL_PAYMENT'],
         default: 'full'
     },
     // ✅ UPDATED: Deposit specific fields
@@ -34,6 +34,10 @@ const paymentSchema = mongoose.Schema({
         default: 0
     },
     amountDue: {
+        type: Number,
+        default: 0
+    },
+    remainingBalance: {
         type: Number,
         default: 0
     },
@@ -70,7 +74,7 @@ const paymentSchema = mongoose.Schema({
     },
     paymentStatus: {
         type: String,
-        enum: ['pending', 'paid', 'failed', 'refunded', 'partially_refunded', 'cancelled', 'deposit_paid'],
+        enum: ['pending', 'paid', 'failed', 'refunded', 'partially_refunded', 'cancelled', 'deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID', 'PAID', 'FULLY_PAID'],
         default: 'pending'
     },
     stripeSessionId: {

@@ -125,7 +125,18 @@ const BookingDetailsModal = ({ booking, isOpen, onClose }) => {
                 <label className="text-sm font-medium text-gray-600">Total Price</label>
                 <p className="text-gray-900 font-semibold">£{booking?.price}</p>
               </div>
-             
+              <div>
+                <label className="text-sm font-medium text-gray-600">Payment Type</label>
+                <p className="text-gray-900 capitalize">{booking?.paymentType || "N/A"}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Deposit Paid</label>
+                <p className="text-gray-900">£{(['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID', 'fully_paid', 'FULLY_PAID', 'paid', 'PAID'].includes(booking?.paymentStatus) || booking?.paid === 'paid') ? (booking?.depositAmount || 20) : 0}</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-600">Remaining Balance</label>
+                <p className="text-gray-900">£{booking?.remainingBalance !== undefined ? booking?.remainingBalance : (booking?.amountDue || 0)}</p>
+              </div>
             </div>
           </div>
 
@@ -850,15 +861,20 @@ const PaymentProcessingModal = ({ isOpen }) => {
     );
   }
 
-
-
-  const  PaymentsHandaler  = async (id) => {
+  const  PaymentsHandaler  = async (id, bookingItem) => {
     setPaymentLoadng(true)
     try {
-
-
-
+      let selectedPaymentType = bookingItem?.paymentType || "full";
       
+      const isDepositPaid = ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(bookingItem?.paymentStatus);
+      const isUnpaid = !isDepositPaid && bookingItem?.paid !== "paid";
+      
+      if (isUnpaid) {
+        // Allow user to choose between deposit and full payment
+        const choice = window.confirm("Would you like to pay the full booking amount?\n\nClick 'OK' for Full Payment.\nClick 'Cancel' to pay the £20 Deposit.");
+        selectedPaymentType = choice ? "full" : "deposit";
+      }
+
       const response = await fetch(`${base_url}/payment/create-checkout-session-exist`, {
           method: 'POST',
           headers: {
@@ -866,6 +882,7 @@ const PaymentProcessingModal = ({ isOpen }) => {
           },
           body: JSON.stringify({
             id: id,
+            paymentType: selectedPaymentType,
             successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
             cancelUrl: `${window.location.origin}/booking/cancel`,
           }),
@@ -1063,24 +1080,28 @@ const PaymentProcessingModal = ({ isOpen }) => {
                   <span
                     className={`px-3 py-2 rounded-full text-sm font-medium `}
                   >
-                  £{b.depositAmount || (b.paymentStatus === 'deposit_paid' ? 20 : 0)}
+                  £{(['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID', 'fully_paid', 'FULLY_PAID', 'paid', 'PAID'].includes(b.paymentStatus) || b.paid === 'paid') ? (b.depositAmount || 20) : 0}
                     </span>
                 </td>
                 <td className="p-3">
                   <span
                     className={`px-3 py-2 rounded-full text-sm font-medium text-red-500`}
                   >
-                  £{b?.amountDue || 0} 
+                  £{b?.remainingBalance !== undefined ? b.remainingBalance : (b?.amountDue || 0)} 
                     </span>
                 </td>
                 <td className="p-3">
                   <span
                     className={`px-3 py-2 rounded-full text-sm font-medium ${
-                      b.paymentStatus === "deposit_paid" ? "bg-yellow-100 text-yellow-700" :
-                      b?.paid === "paid" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
+                      (b?.paid === "paid" || ['paid', 'FULLY_PAID', 'PAID'].includes(b.paymentStatus)) ? "bg-green-100 text-green-700" :
+                      ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(b.paymentStatus) ? "bg-yellow-100 text-yellow-700" :
+                      ['deposit', 'DEPOSIT'].includes(b.paymentType) ? "bg-orange-100 text-orange-700" :
+                      "bg-gray-100 text-gray-600"
                     }`}
                   >
-                   {b.paymentStatus === "deposit_paid" ? "Deposit Paid" : (b?.paid || "Unpaid")}
+                   {(b?.paid === "paid" || ['paid', 'FULLY_PAID', 'PAID'].includes(b.paymentStatus)) ? "Paid" : 
+                    ['deposit_paid', 'DEPOSIT_PAID', 'PARTIALLY_PAID'].includes(b.paymentStatus) ? "Deposit Paid" :
+                    ['deposit', 'DEPOSIT'].includes(b.paymentType) ? "Deposit Unpaid" : "Unpaid"}
                   </span>
                 </td>
                 <td className="p-3 font-semibold">£{b.price}</td>
@@ -1098,10 +1119,10 @@ const PaymentProcessingModal = ({ isOpen }) => {
                     </button>
                 
                 {
-                  b?.paid !== "paid" &&     <button
-                      onClick={() => PaymentsHandaler(b?._id)}
+                  (!['paid', 'FULLY_PAID', 'PAID'].includes(b.paymentStatus) && b?.paid !== "paid") &&     <button
+                      onClick={() => PaymentsHandaler(b?._id, b)}
                       className="p-2 text-gray-600 hover:text-[#FF006A] transition-colors"
-                      title="View Details"
+                      title="Pay Remaining Balance"
                     >
                      <MdPayments className="text-lg cursor-pointer"/>
                     </button>

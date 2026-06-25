@@ -1,5 +1,5 @@
 "use client";
-import { useBookingMutation } from "@/features/booking";
+import { useBookingMutation, useUpdaterStatusMutation } from "@/features/booking";
 import { useGetServiceQuery } from "@/features/services/servicesApi";
 import image from "@/public/quote/bg.png";
 import { base_url } from "@/utils/utils";
@@ -799,6 +799,7 @@ export default function SecondStep() {
   const [bookingData, setBookingData] = useState({});
   const [nextStep, setNextStep] = useState("firststep");
   const [booking, { isLoading, error }] = useBookingMutation();
+  const [updateBookingStatus] = useUpdaterStatusMutation();
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("pay_now");
   const [paymentType, setPaymentType] = useState("full");
@@ -983,6 +984,11 @@ export default function SecondStep() {
         paymentMethod: "pay_now",
         paid: "unpaid",
         paymentStatus: "pending",
+        amountPaid: 0,
+        depositAmount: 0,
+        amountDue: computedTotalPrice,
+        remainingBalance: computedTotalPrice,
+        totalAmount: computedTotalPrice,
         profit: computedTotalPrice - (computedButlerFee + travelFee),
         travelFee: travelFee,
         coordinates: calcResult.coordinates,
@@ -1027,6 +1033,7 @@ export default function SecondStep() {
           credentials: "include",
           body: JSON.stringify({
             id: savedBookingId,
+            paymentType: paymentType,
             successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
             cancelUrl: `${window.location.origin}/booking/cancel`,
           }),
@@ -1059,6 +1066,16 @@ export default function SecondStep() {
     try {
       if (savedBookingId) {
         // Booking already exists in DB from Step 2 auto-save
+        await updateBookingStatus({
+          id: savedBookingId,
+          paymentMethod: "pay_later",
+          paid: "unpaid",
+          paymentType: paymentType,
+          depositAmount: paymentType === "deposit" ? 20 : 0,
+          amountDue: totalPrice,
+          remainingBalance: totalPrice,
+          totalAmount: totalPrice,
+        }).unwrap();
         setBookingSuccess(true);
         toast.success("Booking saved! You can pay later.");
         return;
