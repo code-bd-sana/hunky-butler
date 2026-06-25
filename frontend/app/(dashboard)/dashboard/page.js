@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import ButlerCard from "@/components/butlerDashboard/ButlerCard";
 import AdminCard from "@/components/Dashboard/AdminCard/AdminCard";
 import Booking from "@/components/Dashboard/Booking/Booking";
@@ -12,26 +14,42 @@ import { useSession } from "next-auth/react";
 
 
 const DashboardHome = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const { data: user, isLoading, error } = useGetAllUserQuery();
 
-  const {data:user, isLoading, error} = useGetAllUserQuery();
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
 
+  if (status === "loading" || isLoading) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="text-gray-500 font-medium animate-pulse">Loading dashboard...</div>
+      </div>
+    );
+  }
 
+  if (status === "unauthenticated") {
+    return null;
+  }
 
-  const {data} = useSession();
-
-  // Default to admin role if no session is found
-  const usrRole = data?.user?.role || "admin";
+  // Default to customer role if no session/role is found
+  const usrRole = session?.user?.role || "customer";
+  
   return (
     <div className="overflow-hidden">
       <DashNav />
 
       {
-  usrRole  === "admin" ?       <AdminCard /> : usrRole === 'butler' ? <ButlerCard /> : <CustomerCard/>
-}
+        usrRole === "admin" ? <AdminCard /> : usrRole === 'butler' ? <ButlerCard /> : <CustomerCard />
+      }
      
-{
-  usrRole  === "admin" ?       <Booking /> : usrRole === 'butler' ? <ButlerBooking/> : <CustomerBooking/>
-}
+      {
+        usrRole === "admin" ? <Booking /> : usrRole === 'butler' ? <ButlerBooking /> : <CustomerBooking />
+      }
     </div>
   );
 };
