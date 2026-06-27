@@ -1,6 +1,6 @@
 import Notificaton from '../models/notification.model.js';
 
-export const adminGmail = process.env.ADMIN_EMAIL || "rakib.fbinternational@gmail.com";
+export const adminGmail = process.env.ADMIN_EMAIL || "booking@hunkybutlerservice.co.uk";
 
 export const storeNotification = async (receiver, message, link, type) => {
   try {

@@ -8,6 +8,7 @@ import connectDB from "./src/config/db.js";
 import { handleSquareWebhook } from "./src/controller/payment.controller.js";
 import Message from "./src/models/Message.js";
 import routes from "./src/routes/index.js";
+import debugRoutes from "./src/routes/debug.route.js";
 
 dotenv.config();
 
@@ -124,6 +125,7 @@ io.on("connection", (socket) => {
 
 // রাউটস
 app.use("/api", routes);
+app.use("/api/debug", debugRoutes);
 
 // হেলথ চেক এবং রুট
 app.get("/", (req, res) => {

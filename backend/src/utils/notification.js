@@ -12,12 +12,12 @@ const twilioClient = accountSid && authToken ? twilio(accountSid, authToken) : n
 
 // Email Transporter Setup
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || "smtp.gmail.com",
-  port: process.env.EMAIL_PORT || 587,
-  secure: process.env.EMAIL_SECURE === 'true',
+  host: process.env.SMTP_HOST || "smtp.hostinger.com",
+  port: Number(process.env.SMTP_PORT) || 587,
+  secure: process.env.SMTP_SECURE === 'true',
   auth: {
-    user: process.env.EMAIL_USER || "hunkybutlerservice.co.uk",
-    pass: process.env.EMAIL_PASS || "Bl00dh0und!",
+    user: process.env.SMTP_USER || "booking@hunkybutlerservice.co.uk",
+    pass: process.env.SMTP_PASS || "g~lbRZf3X$",
   },
 });
 
@@ -74,23 +74,28 @@ export const sendSMS = async (to, body) => {
 
 /**
  * Send Email using Nodemailer
- * @param {object} options - Email options (to, subject, text, html)
+ * @param {object} options - Email options (to, subject, text, html, replyTo, attachments)
  */
-export const sendEmail = async ({ to, subject, text, html }) => {
+export const sendEmail = async ({ to, subject, text, html, replyTo, attachments }) => {
   try {
-    const fromAddress = process.env.EMAIL_FROM || "bookings@hunkybutlerservice.co.uk";
-    const info = await transporter.sendMail({
-      from: `"Hunky Butler" <${fromAddress}>`,
+    const fromEmail = process.env.SMTP_USER || "booking@hunkybutlerservice.co.uk";
+    const mailOptions = {
+      from: fromEmail,
       to,
       subject,
       text,
       html,
-    });
+    };
+
+    if (replyTo) mailOptions.replyTo = replyTo;
+    if (attachments) mailOptions.attachments = attachments;
+
+    const info = await transporter.sendMail(mailOptions);
     console.log(`✅ Email sent successfully to ${to}. ID: ${info.messageId}`);
     return info;
   } catch (error) {
     console.error(`❌ Error sending email to ${to}:`, error.message);
-    return null;
+    return null; // Don't throw to avoid crashing server on failure
   }
 };
 

@@ -151,7 +151,7 @@ export const createBooking = async (req, res) => {
     `;
 
     // Admin email HTML template
-    const adminEmail = process.env.ADMIN_EMAIL || "rakib.fbinternational@gmail.com";
+    const adminEmail = process.env.ADMIN_EMAIL || "booking@hunkybutlerservice.co.uk";
     const adminEmailHtml = `
       <div style="font-family: Arial, sans-serif; background: #fff; color: #3D3D3D; padding: 30px; text-align: center; border: 2px solid #ff1673; border-radius: 12px;">
         <h2 style="color: #ff1673; margin-bottom: 20px;">New Booking Alert</h2>

@@ -1,7 +1,7 @@
 import stripePackage from 'stripe';
 
 
-import nodemailer from 'nodemailer';
+import { sendEmail } from '../utils/notification.js';
 import Booking from '../models/booking.model.js';
 import User from '../models/user.model.js';
 import { storeNotification } from '../utils/utils.js';
@@ -12,19 +12,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const stripe = stripePackage(process.env.STRIPE_SECRET_KEY);
-
-
-// Email transporter setup
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: "bannah76769@gmail.com",
-    pass: "noqq kzxv olzf clzz",
-  },
-});
-
 // Create Stripe Checkout Session
 // controllers/paymentController.js - এটা update করুন
 
@@ -269,9 +256,9 @@ export const handleStripeWebhook = async (req, res) => {
     console.error('❌ Error handling webhook event:', error);
     
     // Send error email
-    await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
-      to: "rakib.fbinternational@gmail.com",
+    await sendEmail({
+      from: '"Hunky Butler Service" <booking@hunkybutlerservice.co.uk>',
+      to: "booking@hunkybutlerservice.co.uk",
       subject: "❌ Webhook Processing Error",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff; border: 2px solid #f44336; border-radius: 8px;">
@@ -532,9 +519,9 @@ const handleSuccessfulPayment = async (session) => {
     console.error('❌ Error handling successful payment:', error);
     
     // Send detailed error email
-    await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
-      to: "rakib.fbinternational@gmail.com",
+    await sendEmail({
+      from: '"Hunky Butler Service" <booking@hunkybutlerservice.co.uk>',
+      to: "booking@hunkybutlerservice.co.uk",
       subject: "❌ Payment Processing Error",
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; background: #fff; border: 2px solid #f44336; border-radius: 8px;">
@@ -637,8 +624,8 @@ const sendPaymentConfirmationEmail = async (session, paymentHistory) => {
     `;
   }
 
-  await transporter.sendMail({
-    from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+  await sendEmail({
+    from: '"Hunky Butler Service" <booking@hunkybutlerservice.co.uk>',
     to: paymentHistory.customerEmail,
     subject: subject,
     html: html,
@@ -687,8 +674,8 @@ const handleExpiredSession = async (session) => {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+    await sendEmail({
+      from: '"Hunky Butler Service" <booking@hunkybutlerservice.co.uk>',
       to: session.metadata.customerEmail,
       subject: "Payment Session Expired",
       html: customerEmailHtml,
@@ -738,8 +725,8 @@ const handleFailedPayment = async (session) => {
       </div>
     `;
 
-    await transporter.sendMail({
-      from: '"Hunky Butler Service" <bannah76769@gmail.com>',
+    await sendEmail({
+      from: '"Hunky Butler Service" <booking@hunkybutlerservice.co.uk>',
       to: session.metadata.customerEmail,
       subject: "Payment Failed",
       html: customerEmailHtml,
