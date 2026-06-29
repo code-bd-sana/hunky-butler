@@ -63,6 +63,7 @@ const WhyContactUsSection = () => {
           <div className="flex flex-wrap w-full  gap-1 md:gap-3">
             <div className="flex-[2.5] sm:flex-[3] md:flex-[2.5] lg:flex-[4] ">
               <img
+
                 src="/contact/why-contact-us3.jpeg"
                 alt="pic5"
                 className="w-full h-28 md:h-40 lg:h-[200px] object-cover rounded-lg md:rounded-xl"
@@ -70,6 +71,7 @@ const WhyContactUsSection = () => {
             </div>
             <div className="flex-[4] sm:flex-[4] md:flex-[4] lg:flex-[12] ">
               <img
+
                 src="/contact/contact-banner.jpeg"
                 alt="pic6"
                 className="w-full h-28 md:h-40 lg:h-[200px] object-cover rounded-lg md:rounded-xl"

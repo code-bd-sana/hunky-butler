@@ -22,7 +22,7 @@ const contact = () => {
             }
           />
         </div>
-      </div>    
+      </div>
       {/* <Card /> */}
       <ContactForm />
             <WhyContactUsSection></WhyContactUsSection>
@@ -32,7 +32,7 @@ const contact = () => {
        <Footer />
  </div>
     </div>
-  ); 
+  );
 };
 
 export default contact;
