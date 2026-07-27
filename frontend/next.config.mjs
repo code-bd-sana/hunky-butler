@@ -151,6 +151,20 @@ const nextConfig = {
         destination: "/cocktail",
         permanent: true,
       },
+      // Duplicate location pages.
+      // Liverpool previously existed on two systems: the API-driven
+      // /locations/[slug] pages and the clean-URL /buff-butlers-[city] pages.
+      // Both were indexable and competing for the same search terms. The
+      // clean-URL version is the canonical one (unique metadata, LocalBusiness
+      // + BreadcrumbList + FAQPage schema, city-specific content), so the
+      // /locations/ version is redirected onto it to consolidate ranking
+      // signals. Other cities are deliberately left alone for now: their
+      // /locations/ pages still hold the only substantial content they have.
+      {
+        source: "/locations/liverpool",
+        destination: "/buff-butlers-liverpool",
+        permanent: true,
+      },
       // Standalone pages -> nearest new-site equivalent
       {
         source: "/index.php/work-for-us",
