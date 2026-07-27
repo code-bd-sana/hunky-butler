@@ -16,6 +16,40 @@ export async function generateStaticParams() {
   }));
 }
 
+const SITE_URL = "https://www.hunkybutlerservice.co.uk";
+
+export async function generateMetadata({ params }) {
+  const location = locations.find((loc) => loc.slug === params.slug);
+
+  if (!location) {
+    return {
+      title: "Page Not Found | Hunky Butler Service",
+    };
+  }
+
+  const title = "Buff Butlers in " + location.city + " | Hunky Butler Service";
+  const description = location.tagline + ". Book buff butlers, cocktail masterclasses, life drawing classes and male strippers for hen parties in " + location.city + ". Transparent pricing, verified staff and 5-star reviews.";
+  const url = SITE_URL + "/" + location.slug;
+
+  return {
+    title: title,
+    description: description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: title,
+      description: description,
+      url: url,
+      siteName: "Hunky Butler Service",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: title,
+      description: description,
+    },
+  };
+}
+
 export default function LocationPage({ params }) {
   const location = locations.find((loc) => loc.slug === params.slug);
 
