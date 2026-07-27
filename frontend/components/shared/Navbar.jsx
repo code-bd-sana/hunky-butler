@@ -59,9 +59,12 @@ const Navbar = () => {
                 width={35}
                 height={40}
               />
-              <h1 className="text-xl hidden 2xl:block font-semibold tracking-wide whitespace-nowrap">
+              {/* Brand name is a logo, not a page heading. Using a span keeps
+                  exactly one H1 per page (the page's own title) so search
+                  engines get a single clear signal about the page topic. */}
+              <span className="text-xl hidden 2xl:block font-semibold tracking-wide whitespace-nowrap">
                 Hunky Butler Service
-              </h1>
+              </span>
             </div>
           </Link>
           {/* Desktop Navigation */}
@@ -116,6 +119,7 @@ const Navbar = () => {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Hunky Butler Service on Facebook"
               >
                 <Image
                   src="/socialIcon/fb.png"
@@ -128,6 +132,7 @@ const Navbar = () => {
                 href="https://whatsapp.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Contact Hunky Butler Service on WhatsApp"
               >
                 <Image
                   src="/socialIcon/wp.png"
@@ -136,7 +141,12 @@ const Navbar = () => {
                   height={24}
                 />
               </a>
-              <a href="https://t.com" target="_blank" rel="noopener noreferrer">
+              <a
+                href="https://t.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Hunky Butler Service on Tumblr"
+              >
                 <Image
                   src="/socialIcon/t.png"
                   alt="Tumblr"
@@ -148,6 +158,7 @@ const Navbar = () => {
                 href="https://telegram.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Hunky Butler Service on Telegram"
               >
                 <Image
                   src="/socialIcon/telegram.png"
@@ -160,6 +171,7 @@ const Navbar = () => {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Hunky Butler Service on Instagram"
               >
                 <Image
                   src="/socialIcon/insta.png"
@@ -180,7 +192,11 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="xl:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
+            >
               {isMenuOpen ? (
                 <HiX className="w-8 h-8 text-white" />
               ) : (
@@ -224,6 +240,7 @@ const Navbar = () => {
                   href="https://facebook.com"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Hunky Butler Service on Facebook"
                 >
                   <FaFacebook size={32} />
                 </a>
@@ -231,6 +248,7 @@ const Navbar = () => {
                   href="https://whatsapp.com"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Contact Hunky Butler Service on WhatsApp"
                 >
                   <FaWhatsapp size={32} />
                 </a>
@@ -238,6 +256,7 @@ const Navbar = () => {
                   href="https://t.com"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Hunky Butler Service on Tumblr"
                 >
                   <FaTumblr size={32} />
                 </a>
@@ -245,6 +264,7 @@ const Navbar = () => {
                   href="https://telegram.com"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Hunky Butler Service on Telegram"
                 >
                   <FaTelegram size={32} />
                 </a>
@@ -252,6 +272,7 @@ const Navbar = () => {
                   href="https://instagram.com"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label="Hunky Butler Service on Instagram"
                 >
                   <FaInstagram size={32} />
                 </a>

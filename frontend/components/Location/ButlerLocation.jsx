@@ -22,9 +22,12 @@ const ButlerLocation = () => {
               href={`/${loc.slug}`}
               className="flex items-center gap-2 text-[#333] hover:text-[#FF006A] transition-colors duration-200"
             >
+              {/* Decorative arrow: empty alt so screen readers and search
+                  engines skip it rather than reading "Arrow icon" 35 times. */}
               <Image
                 src={icon}
-                alt="Arrow icon"
+                alt=""
+                aria-hidden="true"
                 width={24}
                 height={24}
                 className="flex-shrink-0 mt-0.5"

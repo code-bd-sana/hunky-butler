@@ -69,8 +69,75 @@ export default async function LocationPage({ params }) {
     return <GlobalNotFound />;
   }
 
+  const pageUrl = `${SITE_URL}/${location.slug}`;
+
+  // Location pages live at app/[slug], outside the (home) route group, so they
+  // do NOT inherit the site-wide EntertainmentBusiness schema defined in
+  // app/(home)/layout.js. Local landing pages are exactly where this schema
+  // matters most, so it is declared here with the city as areaServed.
+  const localBusinessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "EntertainmentBusiness",
+    name: "Hunky Butler Service",
+    url: pageUrl,
+    logo: `${SITE_URL}/logo.png`,
+    image: `${SITE_URL}/logo.png`,
+    telephone: "+447745865352",
+    email: "info@hunkybutlerservice.co.uk",
+    description: location.metaDescription || location.description,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "36a Renshaw Street",
+      addressLocality: "Liverpool",
+      postalCode: "L1 4EF",
+      addressCountry: "GB",
+    },
+    areaServed: {
+      "@type": "City",
+      name: location.city,
+    },
+  };
+
+  // Breadcrumb trail helps Google render the hierarchy in search results
+  // instead of showing a bare URL.
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Buff Butlers",
+        item: `${SITE_URL}/buff-butlers`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: location.name,
+        item: pageUrl,
+      },
+    ],
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(localBusinessJsonLd),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+
       <ReduxProvider>
         <Navbar></Navbar>
       </ReduxProvider>
