@@ -35,6 +35,22 @@ export const metadata = {
   },
 };
 
+const serviceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Life Drawing Class",
+  "name": "Life Drawing Classes for Hen Parties",
+  "url": SITE_URL + "/life-drawing",
+  "description":
+    "Guided life drawing classes led by a professional model, perfect for hen parties, birthdays and creative celebrations across the UK.",
+  "provider": {
+    "@type": "EntertainmentBusiness",
+    "name": "Hunky Butler Service",
+    "url": SITE_URL,
+  },
+  "areaServed": "GB",
+};
+
 export default function page() {
 
 
@@ -46,6 +62,10 @@ export default function page() {
   ]
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
 
 <ServiceBanner
 heading={"Life Drawing Classes with a Fun Twist"}
