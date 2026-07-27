@@ -115,9 +115,107 @@
     "slug": "buff-butlers-liverpool",
     "name": "Buff Butlers Liverpool",
     "city": "Liverpool",
-    "tagline": "Liverpool’s Favourite Buff Butler Experience",
-    "description": "Looking to add fun, cheeky entertainment to your Liverpool hen party, birthday, or girls’ night? Buff Butlers Liverpool are the perfect choice for fun, flirtatious topless hosting that gets the whole room laughing. Based in the UK and top-rated for party entertainment, Hunky Butler Service offers professional, friendly, and seriously fit butlers for every occasion — from stylish apartments to house parties across Liverpool. Whether you’re planning a classy cocktail night or a full-on party, our butlers bring energy, charm, and unforgettable memories.",
-    "image": "/images/liverpool.jpg"
+    "tagline": "Liverpool’s Own Buff Butler Team — Based in the City Centre",
+    "description": "Hunky Butler Service is based in Liverpool city centre, just off Bold Street and a few minutes from Liverpool Central. When you book buff butlers here you’re booking a team that actually lives and works in the city — which means no travel charges anywhere in Liverpool, and a much better chance of us saying yes to a short-notice booking.",
+    "image": "/images/liverpool.jpg",
+    "uniqueContent": true,
+    "metaTitle": "Buff Butlers Liverpool | Hen Party Butlers & Topless Waiters",
+    "metaDescription": "Book buff butlers in Liverpool for hen parties, birthdays and girls’ nights. Liverpool-based team with no travel charges across the city. Get an instant quote.",
+    "localSection": {
+      "heading": "Planning a Liverpool Hen Party?",
+      "paragraphs": [
+        "Liverpool is one of the UK’s busiest hen party destinations, and the format that works best here is booking your butlers for the getting-ready window rather than the night out itself. Get everyone into the apartment early afternoon, have your butlers arrive for a two-hour slot while hair and makeup are happening, run the drinks service, games and photos then, and head into town afterwards.",
+        "That timing matters in Liverpool specifically, because the Ropewalks bars fill up fast on a Saturday — Concert Square, Seel Street and Duke Street are usually queuing by nine. Getting the butler part done beforehand means you’re not rushing it or losing half the group.",
+        "We’d recommend booking around two weeks ahead to get your first choice of butlers, particularly for summer Saturdays. That said, we’re based in the city with a good-sized local team, so short-notice bookings are often possible — it’s always worth asking rather than assuming we’re full."
+      ]
+    },
+    "partnerVenues": {
+      "heading": "Our Liverpool Partner Venues",
+      "intro": "We’re the in-house butler partner for three of Liverpool’s best-known group accommodation providers, so if you’re staying at any of these you can add butlers straight onto your booking:",
+      "venues": [
+        {
+          "name": "Posh Pads",
+          "url": "https://posh-pads.co.uk/",
+          "description": "Luxury apart-hotel in the heart of the city, with Liverpool ONE and the Royal Albert Dock on the doorstep. One and two-bedroom apartments plus penthouse suites, two on-site restaurants, and dedicated hen party packages."
+        },
+        {
+          "name": "UStay Aparthotels",
+          "url": "https://www.ustayaparthotels.co.uk/",
+          "description": "Self-service apartments across the city centre including the Cavern Quarter, Stanley Street and Temple Court. Sleeping anywhere from 2 to 24 guests, so you can keep the whole group under one roof."
+        },
+        {
+          "name": "Liver Apartments",
+          "url": "https://www.liverapartments.co.uk/",
+          "description": "Party apartments two minutes from Lime Street Station, sleeping up to 25. Fully fitted kitchens, terraces with city views, and DJ booths in some apartments."
+        }
+      ],
+      "outro": "All three are central enough that we can be with you quickly, and they’re used to hosting groups — which makes running a hen do far easier than trying to do it from a standard hotel room."
+    },
+    "areasServed": {
+      "heading": "Areas We Cover Around Liverpool",
+      "intro": "Liverpool city centre, Ropewalks, Albert Dock and the waterfront, Baltic Triangle, Cavern Quarter, Aigburth, Allerton, Woolton, Crosby and Formby.",
+      "nearbyIntro": "We also cover the wider Merseyside and Cheshire area:",
+      "nearby": [
+        {
+          "name": "Birkenhead",
+          "slug": "buff-butlers-birkenhead"
+        },
+        {
+          "name": "St Helens",
+          "slug": "buff-butlers-st-helens"
+        },
+        {
+          "name": "Widnes",
+          "slug": "buff-butlers-widnes"
+        },
+        {
+          "name": "Warrington",
+          "slug": "buff-butlers-warrington"
+        },
+        {
+          "name": "Kirkby",
+          "slug": "buff-butlers-kirkby"
+        },
+        {
+          "name": "Chester",
+          "slug": "buff-butlers-chester"
+        }
+      ]
+    },
+    "whatsIncluded": [
+      "Handsome, professional butler(s) in the signature apron and cuffs",
+      "Two-hour bookings as standard, extendable if you want them longer",
+      "Hosting, drinks service, party games and photos",
+      "No travel charges anywhere across Liverpool",
+      "Optional add-ons: cocktail masterclass, life drawing, strippers",
+      "Available at apartments, aparthotels, hotels and venues across the city"
+    ],
+    "faqs": [
+      {
+        "question": "Do you charge extra for travel within Liverpool?",
+        "answer": "No. Liverpool is our home city and we have plenty of butlers based here, so there are no travel charges anywhere across Liverpool — the price you’re quoted is the price you pay."
+      },
+      {
+        "question": "How far in advance should I book?",
+        "answer": "Two weeks ahead is ideal, especially for summer Saturdays when we’re busiest. We can often accommodate shorter notice though, so it’s worth getting in touch even if your date is close."
+      },
+      {
+        "question": "Can you come to a serviced apartment or Airbnb?",
+        "answer": "Yes — most of our Liverpool bookings are in private apartments and aparthotels rather than venues. We’re also the in-house butler partner for Posh Pads, UStay Aparthotels and Liver Apartments, so if you’re staying with any of them you can add butlers straight onto your booking."
+      },
+      {
+        "question": "How long do you stay?",
+        "answer": "Two hours is the standard booking and it’s what most Liverpool groups go for — enough time for drinks service, games and photos while everyone’s getting ready. You can extend if you’d like them to stay longer."
+      },
+      {
+        "question": "Do you cover the Wirral and wider Merseyside?",
+        "answer": "Yes. We regularly cover Birkenhead, St Helens, Widnes, Warrington and out towards Chester. Enter your postcode for an instant quote to confirm availability."
+      },
+      {
+        "question": "What do the butlers actually do?",
+        "answer": "They host. Greeting your guests, serving drinks, running party games, posing for photos and keeping the energy up — all in the signature apron and cuffs. You can add a cocktail masterclass, life drawing session or stripper performance to the same booking."
+      }
+    ]
   },
   {
     "slug": "buff-butlers-chester",
