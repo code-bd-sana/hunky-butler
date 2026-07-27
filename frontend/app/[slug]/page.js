@@ -36,6 +36,13 @@ export async function generateMetadata({ params }) {
     title: title,
     description: description,
     alternates: { canonical: url },
+    // Location pages currently share templated content across cities.
+    // Keep them noindexed until each page has unique, city-specific copy
+    // to avoid Google flagging them as thin/duplicate content.
+    robots: {
+      index: false,
+      follow: true,
+    },
     openGraph: {
       title: title,
       description: description,
