@@ -1,5 +1,4 @@
 import locations from "./locations/locations.json";
-import locations from "./locations/locations.json";
 
 const BASE_URL = "https://www.hunkybutlerservice.co.uk";
 
