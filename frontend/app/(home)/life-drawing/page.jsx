@@ -10,6 +10,31 @@ import image from '@/public/images/services/lifeDrawing.png'
 // import bannerImg from '@/public/images/services/banner3.png'
 import React from 'react'
 
+const SITE_URL = "https://www.hunkybutlerservice.co.uk";
+
+export const metadata = {
+  title: "Life Drawing Classes for Hen Parties | Hunky Butler Service",
+  description:
+    "Add a creative twist to your hen do with a life drawing class led by a professional model. Fun, guided sessions across the UK — keepsake drawings included.",
+  alternates: { canonical: SITE_URL + "/life-drawing" },
+  openGraph: {
+    title: "Life Drawing Classes for Hen Parties | Hunky Butler Service",
+    description:
+      "Add a creative twist to your hen do with a life drawing class led by a professional model across the UK.",
+    url: SITE_URL + "/life-drawing",
+    siteName: "Hunky Butler Service",
+    type: "website",
+    images: [{ url: SITE_URL + "/logo.png" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Life Drawing Classes for Hen Parties | Hunky Butler Service",
+    description:
+      "Add a creative twist to your hen do with a life drawing class led by a professional model across the UK.",
+    images: [SITE_URL + "/logo.png"],
+  },
+};
+
 export default function page() {
 
 
@@ -22,13 +47,13 @@ export default function page() {
   return (
     <div>
 
-<ServiceBanner 
+<ServiceBanner
 heading={"Life Drawing Classes with a Fun Twist"}
 subTitle={"Unleash your creativity with a professional model and guided session."}
 image={bannerImg}
 
 />
-<BookNowSection 
+<BookNowSection
 
 text={"Life Drawing is the perfect mix of cheeky entertainment and artistic fun. Guided by a friendly instructor with a live model, your group will laugh, sketch, and bond over an experience unlike any other. Ideal for hen parties, birthdays, and creative celebrations."}
 

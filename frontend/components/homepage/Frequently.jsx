@@ -18,39 +18,39 @@ const Frequently = () => {
     {
       question: "Can I customize my service?",
       answer:
-        'Click on "Forgot Password" on the login page and follow the instructions sent to your email.',
+        "Yes — every booking can be tailored to your group, from the number of butlers and add-ons like cocktail masterclasses or life drawing, to specific games and photo requests. Just let us know your preferences when you book.",
     },
     {
       question: "Are your performers verified?",
       answer:
-        'Go to "My Account" settings and select "Edit Profile" to make changes.',
+        "Yes, all of our butlers and entertainers are verified, insured and experienced professionals — we check references and experience before anyone joins the team.",
     },
     {
       question: "Are there any upfront charges needed?",
       answer:
-        'Go to "My Account" settings and select "Edit Profile" to make changes.',
+        "No hidden fees. You'll get a fully transparent, instant quote covering time, staff, location and travel before you pay anything, with secure online booking.",
     },
   ];
   const faqs2 = [
     {
       question: "How long can I book a hunky butler for?",
       answer:
-        "Typically 2 hours, but you can extend.Typically 2 hours but you can extend Typically 2 hours but you can extend.",
+        "Typically 2 hours, but bookings can be extended to suit your event — just let us know when you enquire.",
     },
     {
       question: "Do I need to provide costumes or props?",
       answer:
-        'Click on "Forgot Password" on the login page and follow the instructions sent to your email.',
+        "No — our butlers arrive fully equipped with their signature uniform and any props needed for games or add-ons like cocktail masterclasses and life drawing sessions.",
     },
     {
       question: "Can I book multiple butlers for one event?",
       answer:
-        'Go to "My Account" settings and select "Edit Profile" to make changes.',
+        "Absolutely. Many hen parties and larger events book two or more butlers — just let us know your group size when requesting a quote.",
     },
     {
       question: "What areas do you cover?",
       answer:
-        'Go to "My Account" settings and select "Edit Profile" to make changes.',
+        "We cover major cities and towns across the UK, including Liverpool, Manchester, Birmingham, Leeds and London — get an instant quote for your postcode to check availability.",
     },
   ];
 
@@ -81,7 +81,7 @@ const Frequently = () => {
                 <span className="text-xl md:text-3xl">{faq.question}</span>
                 <span className="text-xl md:text-3xl">
                   {openIndex === index ? (
-     
+
                            <GiHeartMinus className="text-[#FF006A]" />
                   ) : (
                              <GiHeartPlus className="text-[#FF006A]" />
@@ -117,7 +117,7 @@ const Frequently = () => {
                   {openIndex === index ? (
                  <GiHeartMinus className="text-[#FF006A]" />
                   ) : (
-      
+
                       <GiHeartPlus className="text-[#FF006A]" />
                   )}
                 </span>

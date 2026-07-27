@@ -9,6 +9,31 @@ import MainTitle from "@/components/shared/typography/MainTitle";
 import ServAndAboutBanner from "@/components/shared/typography/ServAndAboutBanner";
 import img from "@/public/About/aboutBannerImg.jpeg";
 
+const SITE_URL = "https://www.hunkybutlerservice.co.uk";
+
+export const metadata = {
+  title: "About Us | Hunky Butler Service – UK Hen Party Entertainment Since 2013",
+  description:
+    "Meet the team behind Hunky Butler Service, the UK's trusted name in buff butlers, cocktail masterclasses, life drawing and hen party entertainment since 2013. 12,000+ bookings, verified staff, 5-star reviews.",
+  alternates: { canonical: SITE_URL + "/about" },
+  openGraph: {
+    title: "About Us | Hunky Butler Service",
+    description:
+      "The UK's trusted name in buff butlers, cocktail masterclasses, life drawing and hen party entertainment since 2013.",
+    url: SITE_URL + "/about",
+    siteName: "Hunky Butler Service",
+    type: "website",
+    images: [{ url: SITE_URL + "/logo.png" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Us | Hunky Butler Service",
+    description:
+      "The UK's trusted name in buff butlers, cocktail masterclasses, life drawing and hen party entertainment since 2013.",
+    images: [SITE_URL + "/logo.png"],
+  },
+};
+
 export default function About() {
   return (
     <div className="min-h-screen bg-white">

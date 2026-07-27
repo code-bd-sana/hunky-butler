@@ -12,7 +12,6 @@ const staticRoutes = [
   "strippers",
   "life-drawing",
   "quote",
-  "review",
   "blog",
   "joinTheTeam",
   "privacy-policy",
@@ -41,6 +40,11 @@ export default function sitemap() {
   // }));
   //
   // return staticEntries.concat(locationEntries);
+
+  // Note: "review" was removed from staticRoutes above. There is no static
+  // /review page in the app (only the dynamic /review/[email] route used for
+  // emailed review links), so submitting /review to Google would point at a
+  // dead URL.
 
   return staticEntries;
 }

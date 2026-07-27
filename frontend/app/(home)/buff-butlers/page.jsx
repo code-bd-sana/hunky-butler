@@ -13,6 +13,31 @@ import Frequently from '@/components/homepage/Frequently'
 import ImageGallery from '@/components/about/ImageGallery'
 import Footer from '@/components/homepage/Footer'
 
+const SITE_URL = "https://www.hunkybutlerservice.co.uk";
+
+export const metadata = {
+  title: "Buff Butlers for Hire UK | Hen Party & Event Hosts – Hunky Butler Service",
+  description:
+    "Hire professional, cheeky buff butlers for hen parties, birthdays and events across the UK. Drinks service, party games and unforgettable photo moments. Get instant pricing.",
+  alternates: { canonical: SITE_URL + "/buff-butlers" },
+  openGraph: {
+    title: "Buff Butlers for Hire UK | Hunky Butler Service",
+    description:
+      "Hire professional, cheeky buff butlers for hen parties, birthdays and events across the UK. Get instant pricing.",
+    url: SITE_URL + "/buff-butlers",
+    siteName: "Hunky Butler Service",
+    type: "website",
+    images: [{ url: SITE_URL + "/logo.png" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Buff Butlers for Hire UK | Hunky Butler Service",
+    description:
+      "Hire professional, cheeky buff butlers for hen parties, birthdays and events across the UK. Get instant pricing.",
+    images: [SITE_URL + "/logo.png"],
+  },
+};
+
 
 export default function page() {
 
@@ -39,11 +64,11 @@ export default function page() {
         image={image}
         bulletPoints={bulletPoints}
       />
-      <HowItWorkSection 
-      text={"Enter postcode, date, and duration, Get instant pricing."} 
+      <HowItWorkSection
+      text={"Enter postcode, date, and duration, Get instant pricing."}
       text1={"Choose your preferred butler & confirm."}
       text3={"Enjoy a fun, stress-free night with your Buff Butler."}
-      
+
       />
       <WhyBookSection />
       <ReviewSection />
