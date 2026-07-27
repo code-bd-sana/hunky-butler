@@ -19,7 +19,8 @@ export async function generateStaticParams() {
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
 
 export async function generateMetadata({ params }) {
-  const location = locations.find((loc) => loc.slug === params.slug);
+  const { slug } = await params;
+  const location = locations.find((loc) => loc.slug === slug);
 
   if (!location) {
     return {
@@ -50,8 +51,9 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function LocationPage({ params }) {
-  const location = locations.find((loc) => loc.slug === params.slug);
+export default async function LocationPage({ params }) {
+  const { slug } = await params;
+  const location = locations.find((loc) => loc.slug === slug);
 
   if (!location) {
     return <GlobalNotFound />;
