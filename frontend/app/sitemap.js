@@ -27,24 +27,24 @@ export default function sitemap() {
     priority: route === "" ? 1 : 0.7,
   }));
 
-  // Location pages are left out of the sitemap for now: they currently share
-  // templated content across cities (only the city name changes), so they're
-  // noindexed in [slug]/page.js too. Once each location has unique content,
-  // add the entries back in here so Google can discover and index them.
-  //
-  // const locationEntries = locations.map((loc) => ({
-  //   url: BASE_URL + "/" + loc.slug,
-  //   lastModified: new Date(),
-  //   changeFrequency: "monthly",
-  //   priority: 0.8,
-  // }));
-  //
-  // return staticEntries.concat(locationEntries);
+  // Only location pages with genuinely unique content are submitted to Google.
+  // The rest still share templated copy across cities, so they stay noindexed
+  // (see [slug]/page.js) and out of the sitemap until their content is rewritten.
+  // To add a city here: give it unique copy and set "uniqueContent": true in
+  // locations.json - it will then appear automatically.
+  const locationEntries = locations
+    .filter((loc) => loc.uniqueContent)
+    .map((loc) => ({
+      url: BASE_URL + "/" + loc.slug,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }));
 
   // Note: "review" was removed from staticRoutes above. There is no static
   // /review page in the app (only the dynamic /review/[email] route used for
   // emailed review links), so submitting /review to Google would point at a
   // dead URL.
 
-  return staticEntries;
+  return staticEntries.concat(locationEntries);
 }
