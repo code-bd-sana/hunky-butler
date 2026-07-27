@@ -18,7 +18,6 @@ const poppins = Poppins({
 // };
 
 export const metadata = {
-  alternates: { canonical: '/' },
   title: 'Buff Butlers & Hen Party Entertainment | UK’s Hunky Butler Service',
   description:
     'Book buff butlers, topless waiters, life drawing classes, cocktail masterclasses & male strippers for hen parties across the UK. Transparent pricing, verified staff & 5-star reviews.',
@@ -29,14 +28,14 @@ export const metadata = {
     url: '/',
     siteName: 'Hunky Butler Service',
     type: 'website',
-    images: [{ url: '#' }],
+        images: [{ url: 'https://www.hunkybutlerservice.co.uk/logo.png' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Buff Butlers & Hen Party Entertainment | UK',
     description:
       'Fun, cheeky and professional hen party entertainment — buff butlers, cocktail classes, life drawing and strippers.',
-    images: ['#'],
+        images: ['https://www.hunkybutlerservice.co.uk/logo.png'],
   },
 
   keywords: [
