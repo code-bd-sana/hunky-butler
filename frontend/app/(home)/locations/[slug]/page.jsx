@@ -22,12 +22,9 @@ function LocationDetailsContent() {
   const { slug } = useParams();
   const searchParams = useSearchParams();
   const serviceSlug = searchParams.get("serviceSlug");
-  const serviceName = serviceSlug.replace(/-/g, " ")
-
-  console.log("Service Slug:", serviceSlug);
+  const serviceName = serviceSlug ? serviceSlug.replace(/-/g, " ") : "buff butlers";
 
   const { data, isLoading } = useGetLocationBySlugQuery(slug);
-  console.log(data);
 
   if (isLoading) {
     return (
@@ -37,19 +34,34 @@ function LocationDetailsContent() {
     );
   }
 
+  // The city name comes from the API. Previously this description had "Dublin"
+  // hard-coded in two places, so every city page read "our buff butlers in
+  // Dublin" regardless of which city the visitor was actually looking at.
+  const city = data?.city || "the UK";
+
+  const description = `Planning a party that stands out? Our ${serviceName} in ${city} bring charm, laughter, and sophistication to any occasion. Perfect for hen parties, birthdays, or private gatherings, ${serviceName} know how to keep the energy high and every guest entertained. They'll welcome guests, serve drinks, lead fun games, and ensure everyone feels relaxed and included. Each member of our ${serviceName} team is professional, friendly, and focused on creating a memorable experience from start to finish. Their confident presence and sense of humour make every celebration unforgettable. Whether you want a night filled with elegance or just light-hearted fun, our ${serviceName} guarantee a perfect balance of both. Book our ${serviceName} in ${city} today and enjoy an event full of smiles, laughter, and lasting memories that your friends will be talking about long after the party ends.`;
+
   return (
     <div>
       <Banner
         banner={data?.banner}
         image={data?.image}
         service={"Location"}
-        title={`${serviceName} in ${data?.city}`}
-        description={`Planning a party that stands out? Our ${serviceName} in Dublin bring charm, laughter, and sophistication to any occasion. Perfect for hen parties, birthdays, or private gatherings, ${serviceName} know how to keep the energy high and every guest entertained. They’ll welcome guests, serve drinks, lead fun games, and ensure everyone feels relaxed and included. Each member of our ${serviceName}  team is professional, friendly, and focused on creating a memorable experience from start to finish. Their confident presence and sense of humor make every celebration unforgettable. Whether you want a night filled with elegance or just light-hearted fun, our ${serviceName}  guarantee a perfect balance of both. Book our ${serviceName}  in Dublin today and enjoy an event full of smiles, laughter, and lasting memories that your friends will be talking about long after the party ends.`}
+        title={`${serviceName} in ${city}`}
+        description={description}
       />
-      <PerfectForAll city={data?.city} slug={serviceSlug} serviceName={serviceName}/>
+      <PerfectForAll
+        city={data?.city}
+        slug={serviceSlug}
+        serviceName={serviceName}
+      />
       <FaqLocation location={data?.city} />
-      <ReviewSection city={data?.city}/>
-      <Map latitude={data?.latitude} longitude={data?.longitude} city={data?.city}/>
+      <ReviewSection city={data?.city} />
+      <Map
+        latitude={data?.latitude}
+        longitude={data?.longitude}
+        city={data?.city}
+      />
       <div className="pt-40 md:pt-0 mt-[300px]">
         <Footer />
       </div>
