@@ -38,6 +38,21 @@ export const metadata = {
   },
 };
 
+const serviceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Buff Butler Hire",
+  "name": "Buff Butlers for Hire",
+  "url": SITE_URL + "/buff-butlers",
+  "description":
+    "Professional, cheeky buff butlers for hen parties, birthdays and events across the UK, including drinks service, party games and photo moments.",
+  "provider": {
+    "@type": "EntertainmentBusiness",
+    "name": "Hunky Butler Service",
+    "url": SITE_URL,
+  },
+  "areaServed": "GB",
+};
 
 export default function page() {
 
@@ -50,6 +65,10 @@ export default function page() {
   ]
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
 
       <ServiceBanner
         heading={"Buff Butlers for Hire – UK’s Top Hen Party & Event Hosts"}

@@ -54,8 +54,25 @@ const Frequently = () => {
     },
   ];
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [...faqs, ...faqs2].map((faq) => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer,
+      },
+    })),
+  };
+
   return (
     <div className="w-full max-w-[1240px] mx-auto mt-20 mb-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <div className="text-center mb-8 md:mb-20 space-y-2 md:space-y-6">
         <h1 className="text-2xl md:text-5xl font-semibold">
           Frequently Asked

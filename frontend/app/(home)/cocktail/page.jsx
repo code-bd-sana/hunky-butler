@@ -35,6 +35,22 @@ export const metadata = {
   },
 };
 
+const serviceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Cocktail Masterclass",
+  "name": "Cocktail Masterclasses for Hen Parties & Events",
+  "url": SITE_URL + "/cocktail",
+  "description":
+    "Hands-on cocktail masterclasses led by a professional mixologist, ideal for hen parties, birthdays and team nights out across the UK.",
+  "provider": {
+    "@type": "EntertainmentBusiness",
+    "name": "Hunky Butler Service",
+    "url": SITE_URL,
+  },
+  "areaServed": "GB",
+};
+
 export default function page() {
 
 
@@ -46,6 +62,10 @@ export default function page() {
   ]
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
 
 <ServiceBanner
 heading={"Cocktail Masterclasses for Parties & Events"}

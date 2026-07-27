@@ -50,11 +50,35 @@ export const metadata = {
   ],
 };
 
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "EntertainmentBusiness",
+  "name": "Hunky Butler Service",
+  "url": "https://www.hunkybutlerservice.co.uk",
+  "logo": "https://www.hunkybutlerservice.co.uk/logo.png",
+  "image": "https://www.hunkybutlerservice.co.uk/logo.png",
+  "telephone": "+447745865352",
+  "email": "info@hunkybutlerservice.co.uk",
+  "description":
+    "Hunky Butler Service is the UK's buff butler and hen party entertainment company, offering buff butlers, cocktail masterclasses, life drawing classes and male strippers nationwide.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "36a Renshaw Street",
+    "addressLocality": "Liverpool",
+    "postalCode": "L1 4EF",
+    "addressCountry": "GB"
+  },
+  "areaServed": "GB"
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={poppins.variable}>
       <body className="font-sans">
-    
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
      <ReduxProvider>
 
           <Navbar />
