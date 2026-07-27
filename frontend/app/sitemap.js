@@ -28,12 +28,19 @@ export default function sitemap() {
     priority: route === "" ? 1 : 0.7,
   }));
 
-const locationEntries = locations.map((loc) => ({
-  url: BASE_URL + "/" + loc.slug,
-  lastModified: new Date(),
-  changeFrequency: "monthly",
-  priority: 0.8,
-}));
+  // Location pages are left out of the sitemap for now: they currently share
+  // templated content across cities (only the city name changes), so they're
+  // noindexed in [slug]/page.js too. Once each location has unique content,
+  // add the entries back in here so Google can discover and index them.
+  //
+  // const locationEntries = locations.map((loc) => ({
+  //   url: BASE_URL + "/" + loc.slug,
+  //   lastModified: new Date(),
+  //   changeFrequency: "monthly",
+  //   priority: 0.8,
+  // }));
+  //
+  // return staticEntries.concat(locationEntries);
 
-return staticEntries.concat(locationEntries);
+  return staticEntries;
 }

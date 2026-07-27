@@ -50,7 +50,7 @@ export default function GlobalNotFound() {
 
                     <div className='text-center'>
                         <h2 className='text-3xl font-bold text-[#0F0F0F] mb-2'>There&apos;s Something Wrong </h2>
-                        <p className='text-[#6B6B6B] text-lg'>The page you are looking for doesn`&apos;`t exist or has been removed</p>
+                        <p className='text-[#6B6B6B] text-lg'>The page you are looking for doesn&apos;t exist or has been removed</p>
                     </div>
 
                     <Link href={'/'}>
@@ -77,17 +77,17 @@ export default function GlobalNotFound() {
                                         Hunky Butler Service
                                     </h3>
                                     <p className="text-lg text-[#808080] mb-4">
-                                        Our Platform Simplifies Event Staffing By Connecting Hosts With
-                                        Verified Professionals and Seamless Tools For Unforgettable
-                                        Experiences.
+                                        The UK&apos;s leading buff butler and hen party entertainment
+                                        company. Book buff butlers, cocktail masterclasses, life
+                                        drawing and male strippers nationwide.
                                     </p>
                                     <p className="text-base text-gray-800 flex items-center gap-2 mb-4">
                                         <IoMdMail className=" text-[#FF006A]" />
-                                        <span className="font-bold">info@hunkybutlerserv.com</span>
+                                        <span className="font-bold">info@hunkybutlerservice.co.uk</span>
                                     </p>
                                     <p className="text-base text-gray-800 flex items-center gap-2">
                                         <IoCallSharp className="text-[#FF006A]" />{" "}
-                                        <span className="font-bold">+ (907) 555-0101</span>
+                                        <span className="font-bold">+44 7745 865352</span>
                                     </p>
                                 </div>
 
