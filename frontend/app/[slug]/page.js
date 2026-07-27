@@ -16,8 +16,51 @@ export async function generateStaticParams() {
   }));
 }
 
-export default function LocationPage({ params }) {
-  const location = locations.find((loc) => loc.slug === params.slug);
+const SITE_URL = "https://www.hunkybutlerservice.co.uk";
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const location = locations.find((loc) => loc.slug === slug);
+
+  if (!location) {
+    return {
+      title: "Page Not Found | Hunky Butler Service",
+    };
+  }
+
+  const title = "Buff Butlers in " + location.city + " | Hunky Butler Service";
+  const description = location.tagline + ". Book buff butlers, cocktail masterclasses, life drawing classes and male strippers for hen parties in " + location.city + ". Transparent pricing, verified staff and 5-star reviews.";
+  const url = SITE_URL + "/" + location.slug;
+
+  return {
+    title: title,
+    description: description,
+    alternates: { canonical: url },
+    // Location pages currently share templated content across cities.
+    // Keep them noindexed until each page has unique, city-specific copy
+    // to avoid Google flagging them as thin/duplicate content.
+    robots: {
+      index: false,
+      follow: true,
+    },
+    openGraph: {
+      title: title,
+      description: description,
+      url: url,
+      siteName: "Hunky Butler Service",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: title,
+      description: description,
+    },
+  };
+}
+
+export default async function LocationPage({ params }) {
+  const { slug } = await params;
+  const location = locations.find((loc) => loc.slug === slug);
 
   if (!location) {
     return <GlobalNotFound />;
