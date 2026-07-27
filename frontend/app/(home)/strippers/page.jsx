@@ -35,6 +35,22 @@ export const metadata = {
   },
 };
 
+const serviceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Male Stripper Hire",
+  "name": "Male Strippers for Hire",
+  "url": SITE_URL + "/strippers",
+  "description":
+    "Professional, experienced male strippers for hen parties, birthdays and private events across the UK, with customisable performances and fully insured entertainers.",
+  "provider": {
+    "@type": "EntertainmentBusiness",
+    "name": "Hunky Butler Service",
+    "url": SITE_URL,
+  },
+  "areaServed": "GB",
+};
+
 export default function page() {
 
 
@@ -46,6 +62,10 @@ export default function page() {
   ]
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
 
 <ServiceBanner
 heading={"Hire Professional Strippers for Your Event"}
