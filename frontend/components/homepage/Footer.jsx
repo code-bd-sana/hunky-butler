@@ -24,14 +24,18 @@ const Footer = () => {
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
         }}>
+        {/* Decorative background shapes - empty alt so they are skipped by
+            screen readers and carry no misleading SEO signal. */}
         <img
           src='/Footer/loon.png'
-          alt='Logo'
+          alt=''
+          aria-hidden='true'
           className='w-[620px] absolute top-36 -left-78 -rotate-[25deg]'
         />
         <img
           src='/Footer/loon.png'
-          alt='Logo'
+          alt=''
+          aria-hidden='true'
           className='w-[680px] absolute -top-[40px] -right-[440px]  blur'
         />
 
@@ -62,10 +66,10 @@ const Footer = () => {
           {/* Brand */}
           <div className='md:w-1/4'>
             <h3 className='font-bold text-[22px] flex items-center gap-2 mb-3'>
-              <span role='img' aria-label='logo'>
+              <span>
                 <Image
                   src='/Footer/logo.png'
-                  alt='Logo'
+                  alt='Hunky Butler Service logo'
                   width={35}
                   height={40}
                 />
@@ -77,7 +81,7 @@ const Footer = () => {
               United Kingdom
             </p>
 
-            {/* ক্লিকযোগ্য ইমেইল */}
+            {/* Clickable email */}
             <p className='text-base text-gray-800 flex items-center gap-2 mb-4'>
               <IoMdMail className='text-[#FF006A]' />
               <a
@@ -87,7 +91,7 @@ const Footer = () => {
               </a>
             </p>
 
-            {/* ক্লিকযোগ্য ফোন নম্বর */}
+            {/* Clickable phone number */}
             <p className='text-base text-gray-800 flex items-center gap-2'>
               <IoCallSharp className='text-[#FF006A]' />
               <a
@@ -187,7 +191,11 @@ const Footer = () => {
               Join Our Newsletter To Stay Up-to-Date On Features And Releases.
             </p>
             <div className='flex flex-col items-start gap-2 space-y-3 w-full'>
+              <label htmlFor='footer-newsletter-email' className='sr-only'>
+                Email address
+              </label>
               <input
+                id='footer-newsletter-email'
                 type='email'
                 placeholder='Enter Your Email'
                 className='w-11/12 px-4 py-2 rounded-full focus:outline-none text-sm bg-white'
@@ -211,14 +219,15 @@ const Footer = () => {
 
         <div className='mt-8 text-gray-500 text-sm flex flex-col md:flex-row items-center justify-between'>
           <div className='flex flex-col md:flex-row items-center gap-4 mt-4 text-gray-600 text-lg'>
-            <h1 className='font-medium text-black text-base'>
-              Stay In The Know
-            </h1>
+            {/* Was an H1. Changed to a paragraph so each page keeps exactly one
+                H1 (its own page title). */}
+            <p className='font-medium text-black text-base'>Stay In The Know</p>
             <div className='flex items-center gap-4'>
               <a
                 href='https://facebook.com'
                 target='_blank'
                 rel='noopener noreferrer'
+                aria-label='Hunky Butler Service on Facebook'
                 className='hover:text-[#FF006A] transition-colors'>
                 <FaFacebookF />
               </a>
@@ -226,6 +235,7 @@ const Footer = () => {
                 href='https://twitter.com'
                 target='_blank'
                 rel='noopener noreferrer'
+                aria-label='Hunky Butler Service on Twitter'
                 className='hover:text-[#FF006A] transition-colors'>
                 <FaTwitter />
               </a>
@@ -233,6 +243,7 @@ const Footer = () => {
                 href='https://instagram.com'
                 target='_blank'
                 rel='noopener noreferrer'
+                aria-label='Hunky Butler Service on Instagram'
                 className='hover:text-[#FF006A] transition-colors'>
                 <FaInstagram />
               </a>
@@ -240,6 +251,7 @@ const Footer = () => {
                 href='https://youtube.com'
                 target='_blank'
                 rel='noopener noreferrer'
+                aria-label='Hunky Butler Service on YouTube'
                 className='hover:text-[#FF006A] transition-colors'>
                 <FaYoutube />
               </a>
@@ -247,12 +259,18 @@ const Footer = () => {
                 href='https://tumblr.com'
                 target='_blank'
                 rel='noopener noreferrer'
+                aria-label='Hunky Butler Service on Tumblr'
                 className='hover:text-[#FF006A] transition-colors'>
                 <FaTumblr />
               </a>
             </div>
           </div>
-          <h1>© 2025 Hunky butler serv. All Rights Reserved.</h1>
+          {/* Was an H1 with a truncated brand name. Now a paragraph with the
+              full company name. */}
+          <p>
+            &copy; {new Date().getFullYear()} Hunky Butler Service. All Rights
+            Reserved.
+          </p>
         </div>
       </footer>
     </div>
