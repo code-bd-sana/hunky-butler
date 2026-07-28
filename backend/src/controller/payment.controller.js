@@ -222,7 +222,7 @@ export const createCheckoutSession = async (req, res) => {
           </p>
           <p>If you haven't finished the checkout process, you can do so now using the button below:</p>
           <p style="margin-top: 25px;">
-            <a href="https://hunky-butler.vercel.app/dashboard" style="background-color: #ff1673; color: white; padding: 14px 30px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Complete Your Payment</a>
+            <a href="https://www.hunkybutlerservice.co.uk/dashboard" style="background-color: #ff1673; color: white; padding: 14px 30px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Complete Your Payment</a>
           </p>
         </div>
       `;
@@ -231,7 +231,7 @@ export const createCheckoutSession = async (req, res) => {
         email: bookingData.email,
         phone: bookingData.phone,
         subject: "Booking Received - Complete Your Payment",
-        message: `Hello ${bookingData.firstName}, we received your booking for ${bookingData.serviceName}. Please complete your payment at: https://hunky-butler.vercel.app/dashboard`,
+        message: `Hello ${bookingData.firstName}, we received your booking for ${bookingData.serviceName}. Please complete your payment at: https://www.hunkybutlerservice.co.uk/dashboard`,
         html: immediateHtml
       });
       console.log('✅ Immediate "Booking Received" notification sent');
@@ -650,7 +650,7 @@ const sendPaymentConfirmationNotification = async (paymentHistory, options) => {
           </div>
           <p>Please ensure the remaining balance is paid before the event to fully confirm your booking.</p>
           <p style="margin-top: 20px;">
-            <a href="https://hunky-butler.vercel.app/dashboard" style="background-color: #ff1673; color: white; padding: 12px 25px; text-decoration: none; border-radius: 9999px; font-weight: bold;">View Your Dashboard</a>
+            <a href="https://www.hunkybutlerservice.co.uk/dashboard" style="background-color: #ff1673; color: white; padding: 12px 25px; text-decoration: none; border-radius: 9999px; font-weight: bold;">View Your Dashboard</a>
           </p>
         </div>
       `;
