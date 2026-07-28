@@ -347,23 +347,51 @@ export const createCheckoutSession = async (req, res) => {
 export const handleSquareWebhook = async (req, res) => {
   console.log('🔔🔔🔔 WEBHOOK RECEIVED!');
   
-  const signature = req.headers['x-square-hmac-sha256'];
+  // Square sends the signature in this header. The previous value here was
+  // 'x-square-hmac-sha256', which is not a header Square sends, so 'signature'
+  // was always undefined and the verification below never ran - meaning the
+  // endpoint accepted unsigned requests from anyone on the internet.
+  const signature = req.headers['x-square-hmacsha256-signature'];
   const webhookSignatureKey = process.env.SQUARE_WEBHOOK_SIGNATURE_KEY;
 
-  try {
-    // Verify webhook signature
-    if (webhookSignatureKey && signature) {
-      const hmac = crypto.createHmac('sha256', webhookSignatureKey);
-      const payload = req.body.toString();
-      hmac.update(payload);
-      const hash = hmac.digest('base64');
+  // Square builds the HMAC from the notification URL concatenated with the raw
+  // request body, not from the body on its own. This must match the URL
+  // registered in the Square Developer Console exactly.
+  const notificationUrl =
+    process.env.SQUARE_WEBHOOK_NOTIFICATION_URL ||
+    'https://api.hunkybutlerservice.co.uk/api/webhook';
 
-      if (hash !== signature) {
-        console.log('❌ Webhook signature verification FAILED');
-        return res.status(401).send('Unauthorized');
-      }
-      console.log('✅ Webhook signature verified');
+  try {
+    if (!webhookSignatureKey) {
+      console.error('SQUARE_WEBHOOK_SIGNATURE_KEY is not set - refusing webhook');
+      return res.status(500).send('Webhook signature key not configured');
     }
+
+    if (!signature) {
+      console.log('Webhook rejected: no signature header present');
+      return res.status(401).send('Unauthorized');
+    }
+
+    const expectedSignature = crypto
+      .createHmac('sha256', webhookSignatureKey)
+      .update(notificationUrl + req.body.toString())
+      .digest('base64');
+
+    const expectedBuffer = Buffer.from(expectedSignature);
+    const receivedBuffer = Buffer.from(signature);
+
+    // Constant-time comparison. timingSafeEqual throws when the buffers differ
+    // in length, so that is checked first.
+    const signatureValid =
+      expectedBuffer.length === receivedBuffer.length &&
+      crypto.timingSafeEqual(expectedBuffer, receivedBuffer);
+
+    if (!signatureValid) {
+      console.log('Webhook signature verification FAILED');
+      return res.status(401).send('Unauthorized');
+    }
+
+    console.log('Webhook signature verified');
 
     // Parse JSON body
     let event;
