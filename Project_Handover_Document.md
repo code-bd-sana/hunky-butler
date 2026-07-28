@@ -248,39 +248,53 @@ The file `backend/src/controller/payment.controller.js` contains all logic for p
 
 ## 5. Required Environment Variables
 
-Below is the complete list of environment variables used across the backend and frontend codebases.
+Below is the complete list of environment variables separated by layer (**Backend** and **Frontend**).
 
-### Environment Variables Table
+---
 
-| Variable Name | Purpose | Required? | Layer | Example / Placeholder Value |
-| :--- | :--- | :--- | :--- | :--- |
-| `MONGODB_URI` / `MONGO_URI` | MongoDB connection string | **Yes** | Backend | `mongodb+srv://user:pass@cluster.mongodb.net/hunkybutler` |
-| `PORT` | Node server listener port | No (Default: 5000) | Backend | `5000` |
-| `NODE_ENV` | Mode (`development` / `production`) | No (Default: development) | Backend | `production` |
-| `SQUARE_ACCESS_TOKEN` | Square OAuth / Secret Access Token | **Yes** | Backend | `EAAAEO...` (Production) / `EAAl...` (Sandbox) |
-| `SQUARE_APPLICATION_ID` | Square App ID | **Yes** | Backend | `sq0idp-...` (Production) / `sandbox-sq0idp-...` |
-| `SQUARE_LOCATION_ID` | Square Location ID | **Yes** | Backend | `L...` (Location ID from Square Dashboard) |
-| `SQUARE_ENVIRONMENT` | Gateway mode (`sandbox` / `production`) | **Yes** | Backend | `production` or `sandbox` |
-| `SQUARE_CURRENCY` | Transaction currency ISO code | No (Default: GBP) | Backend | `GBP` |
-| `SQUARE_WEBHOOK_SIGNATURE_KEY` | HMAC SHA256 Webhook Verification Key | **Yes** | Backend | `sig_key_...` (From Square Webhook Settings) |
-| `FRONTEND_URL` | Frontend origin URL for CORS & redirects | **Yes** | Backend | `https://www.hunkybutlerservice.co.uk` |
-| `ADMIN_EMAIL` | Target email for admin booking alerts | No (Default fallback set) | Backend | `booking@hunkybutlerservice.co.uk` |
-| `SMTP_HOST` | Hostinger Mail / SMTP server host | **Yes** | Backend | `smtp.hostinger.com` |
-| `SMTP_PORT` | SMTP port number | **Yes** | Backend | `587` (or `465`) |
-| `SMTP_SECURE` | Use SSL/TLS (`true` or `false`) | **Yes** | Backend | `false` (for port 587) / `true` (for 465) |
-| `SMTP_USER` | SMTP login username / Sender address | **Yes** | Backend | `booking@hunkybutlerservice.co.uk` |
-| `SMTP_PASS` | SMTP mailbox password | **Yes** | Backend | `[PLACEHOLDER_MAILBOX_PASSWORD]` |
-| `SMTP_FROM` | Sender display string | **Yes** | Backend | `"Hunky Butler Service <booking@hunkybutlerservice.co.uk>"` |
-| `TWILIO_ACCOUNT_SID` | Twilio Account SID for SMS notifications | Optional | Backend | `AC...` |
-| `TWILIO_AUTH_TOKEN` | Twilio Auth Token for SMS notifications | Optional | Backend | `auth_token_...` |
-| `TWILIO_SID` | Twilio Messaging Service SID | Optional | Backend | `MG...` |
-| `NEXTAUTH_SECRET` | Secret key for NextAuth JWT token encryption | **Yes** | Both | `super_secret_jwt_key_here` |
-| `NEXTAUTH_URL` | Canonical public URL of Next.js app | **Yes** | Frontend | `https://www.hunkybutlerservice.co.uk` |
-| `GOOGLE_CLIENT_ID` | Google OAuth App Client ID | Optional | Frontend | `12345678-xxx.apps.googleusercontent.com` |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth App Client Secret | Optional | Frontend | `GOCSPX-xxx` |
-| `GOOGLE_API_KEY` | Google Places API key for reviews | Optional | Frontend | `AIzaSy...` |
-| `NEXT_PUBLIC_BASE_URL` | Public API base URL for client fetch calls | **Yes** | Frontend | `https://api.hunkybutlerservice.co.uk/api` |
-| `NEXT_PUBLIC_SOCKET_URL` | Public Socket.IO WebSocket server URL | **Yes** | Frontend | `https://api.hunkybutlerservice.co.uk` |
+### A. Backend Environment Variables (`backend/.env`)
+
+These variables must be added to the **Backend Service** inside Coolify (or standard server `.env` file).
+
+| Variable Name | Purpose | Required? | Example / Placeholder Value |
+| :--- | :--- | :--- | :--- |
+| `MONGODB_URI` / `MONGO_URI` | Database connection string for MongoDB Atlas/Cluster | **Yes** | `mongodb+srv://user:pass@cluster.mongodb.net/hunkybutler` |
+| `PORT` | Node server listening port | No (Default: `5000`) | `5000` |
+| `NODE_ENV` | Application environment mode | No (Default: `development`) | `production` |
+| `SQUARE_ACCESS_TOKEN` | Square secret Access Token for API payment processing | **Yes** | `EAAAEO...` (Production) / `EAAl...` (Sandbox) |
+| `SQUARE_APPLICATION_ID` | Square Application ID | **Yes** | `sq0idp-...` (Production) / `sandbox-sq0idp-...` |
+| `SQUARE_LOCATION_ID` | Square Location ID for order creation | **Yes** | `L...` (Location ID from Square Developer Portal) |
+| `SQUARE_ENVIRONMENT` | Gateway mode (`sandbox` or `production`) | **Yes** | `production` or `sandbox` |
+| `SQUARE_CURRENCY` | ISO Currency Code for transaction pricing | No (Default: `GBP`) | `GBP` |
+| `SQUARE_WEBHOOK_SIGNATURE_KEY` | Signature key used for HMAC-SHA256 webhook verification | **Yes** | `sig_key_...` (From Square Webhook Settings) |
+| `FRONTEND_URL` | Frontend origin URL for CORS authorization & redirects | **Yes** | `https://www.hunkybutlerservice.co.uk` |
+| `ADMIN_EMAIL` | Target email for admin notification alerts | No (Default fallback set) | `booking@hunkybutlerservice.co.uk` |
+| `SMTP_HOST` | Hostinger Mail / SMTP host server | **Yes** | `smtp.hostinger.com` |
+| `SMTP_PORT` | SMTP connection port | **Yes** | `587` (TLS) or `465` (SSL) |
+| `SMTP_SECURE` | Enable SSL/TLS encryption (`true` or `false`) | **Yes** | `false` (for 587) / `true` (for 465) |
+| `SMTP_USER` | SMTP username / Sender mailbox email | **Yes** | `booking@hunkybutlerservice.co.uk` |
+| `SMTP_PASS` | SMTP mailbox password | **Yes** | `[PLACEHOLDER_MAILBOX_PASSWORD]` |
+| `SMTP_FROM` | Sender display name header string | **Yes** | `"Hunky Butler Service <booking@hunkybutlerservice.co.uk>"` |
+| `TWILIO_ACCOUNT_SID` | Twilio Account SID for SMS messaging | Optional | `AC...` |
+| `TWILIO_AUTH_TOKEN` | Twilio Auth Token for SMS messaging | Optional | `auth_token_...` |
+| `TWILIO_SID` | Twilio Messaging Service SID | Optional | `MG...` |
+| `NEXTAUTH_SECRET` | Secret key for verifying NextAuth session JWT tokens | **Yes** | `super_secret_jwt_key_here` |
+
+---
+
+### B. Frontend Environment Variables (`frontend/.env`)
+
+These variables must be added to **Vercel Project Settings** (or frontend `.env.local` file).
+
+| Variable Name | Purpose | Required? | Example / Placeholder Value |
+| :--- | :--- | :--- | :--- |
+| `NEXT_PUBLIC_BASE_URL` | Public REST API base URL for client fetch requests | **Yes** | `https://api.hunkybutlerservice.co.uk/api` |
+| `NEXT_PUBLIC_SOCKET_URL` | Public Socket.IO WebSocket server URL | **Yes** | `https://api.hunkybutlerservice.co.uk` |
+| `NEXTAUTH_URL` | Canonical URL of Next.js web application | **Yes** | `https://www.hunkybutlerservice.co.uk` |
+| `NEXTAUTH_SECRET` | Secret key for NextAuth JWT token encryption | **Yes** | `super_secret_jwt_key_here` |
+| `GOOGLE_CLIENT_ID` | Google OAuth Client ID for social login | Optional | `12345678-xxx.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Client Secret for social login | Optional | `GOCSPX-xxx` |
+| `GOOGLE_API_KEY` | Google Places API key for fetching reviews | Optional | `AIzaSy...` |
 
 ---
 
