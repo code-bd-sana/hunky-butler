@@ -242,7 +242,7 @@ export default function ReviewSection({ city }) {
         <div className="py-16 max-w-7xl mx-auto container md:px-8 lg:px-0">
           <div className="text-center">
             <SecondaryTitle
-              text1={`Trusted by Party Planners in UK"`}
+              text1={`Trusted by Thousands of Party Planners in UK`}
             />
           </div>
           <div className="text-center max-w-2xl mx-auto mt-4">
