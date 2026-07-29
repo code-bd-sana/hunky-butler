@@ -10,14 +10,14 @@ const defaultItems = (city) => [
   `Available at homes, hotels, apartments & venues across ${city}`,
 ];
 
-const WhatsIncluede = ({ city, items }) => {
+const WhatsIncluede = ({ city, items, serviceName = "Buff Butler" }) => {
   const listItems = items && items.length > 0 ? items : defaultItems(city);
 
   return (
     <div className="max-w-7xl text-center mx-auto py-24 ">
       {/* Heading */}
       <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#0A012A] mb-6">
-        What’s Included with Your {city} Buff Butler Booking
+        What’s Included with Your {city} {serviceName} Booking
       </h2>
 
       {/* List */}

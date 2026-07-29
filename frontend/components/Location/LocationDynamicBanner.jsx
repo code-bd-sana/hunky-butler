@@ -20,7 +20,14 @@ import defaultBanner from "@/public/ImageGalary/pic6.jpeg";
  *    if it's missing, so a city photo can be added later by dropping the file
  *    into /public/images/ with no code change
  */
-const LocationDynamicBanner = ({ image, title, tagline, description }) => {
+const LocationDynamicBanner = ({
+  image,
+  title,
+  tagline,
+  description,
+  hubPath = "/buff-butlers",
+  hubLabel = "Buff Butlers",
+}) => {
   const backgroundImage = [
     "linear-gradient(180deg, rgba(0,0,0,0.15) 10%, rgba(0,0,0,0.95) 95%)",
     image ? `url(${image})` : null,
@@ -52,10 +59,10 @@ const LocationDynamicBanner = ({ image, title, tagline, description }) => {
             height={10}
           />
           <Link
-            href="/buff-butlers"
+            href={hubPath}
             className="tracking-[-1px] hover:underline"
           >
-            Buff Butlers
+            {hubLabel}
           </Link>
         </nav>
 
