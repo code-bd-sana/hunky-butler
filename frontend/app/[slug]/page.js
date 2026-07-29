@@ -196,10 +196,16 @@ export default async function LocationPage({ params }) {
         title={location.name}
         tagline={location.tagline}
         description={location.description}
+        hubPath={hub.path}
+        hubLabel={hub.label}
       />
 
       {/* Content section */}
-      <WhatsIncluede city={location.city} items={location.whatsIncluded} />
+      <WhatsIncluede
+        city={location.city}
+        items={location.whatsIncluded}
+        serviceName={serviceName}
+      />
 
       {/* City-specific SEO content: renders only for cities that define it */}
       <LocationLocalContent
@@ -209,10 +215,18 @@ export default async function LocationPage({ params }) {
       />
 
       <ReviewSection></ReviewSection>
-      <BuffButlersEvents city={location.city} />
+      <BuffButlersEvents
+        city={location.city}
+        serviceName={serviceName}
+        occasions={location.occasions}
+      />
 
       {/* City-specific FAQs + FAQPage schema: renders only where defined */}
-      <LocationFaqs faqs={location.faqs} city={location.city} />
+      <LocationFaqs
+        faqs={location.faqs}
+        city={location.city}
+        serviceName={serviceName}
+      />
 
       {/* Internal links: other services here, plus neighbouring towns */}
       <NearbyLocations
