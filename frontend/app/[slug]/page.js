@@ -5,6 +5,7 @@ import BuffButlersEvents from "@/components/Location/BuffButtlersEvents";
 import ButlerLocation from "@/components/Location/ButlerLocation";
 import LocationDynamicBanner from "@/components/Location/LocationDynamicBanner";
 import LocationFaqs from "@/components/Location/LocationFaqs";
+import LocationHighlights from "@/components/Location/LocationHighlights";
 import Map from "@/components/Location/Map";
 import NearbyLocations from "@/components/Location/NearbyLocations";
 import LocationLocalContent from "@/components/Location/LocationLocalContent";
@@ -205,6 +206,16 @@ export default async function LocationPage({ params }) {
         city={location.city}
         items={location.whatsIncluded}
         serviceName={serviceName}
+      />
+
+      {/* Two-column highlights, matching the /locations layout. Renders only
+          where the page defines them, so legacy cities are unaffected. */}
+      <LocationHighlights
+        city={location.city}
+        serviceName={serviceName}
+        heading={location.highlights?.heading}
+        intro={location.highlights?.intro}
+        points={location.highlights?.points}
       />
 
       {/* City-specific SEO content: renders only for cities that define it */}
