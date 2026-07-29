@@ -8,7 +8,7 @@ import Link from "next/link";
  * Renders nothing if the city has no faqs array in locations.json, so template
  * cities are unaffected.
  */
-const LocationFaqs = ({ faqs, city }) => {
+const LocationFaqs = ({ faqs, city, serviceName = "Buff Butler" }) => {
   if (!faqs || faqs.length === 0) return null;
 
   const faqJsonLd = {
@@ -32,7 +32,7 @@ const LocationFaqs = ({ faqs, city }) => {
       />
 
       <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#0A012A] text-center mb-12">
-        {city} Buff Butler FAQs
+        {city} {serviceName} FAQs
       </h2>
 
       <div className="space-y-4">
