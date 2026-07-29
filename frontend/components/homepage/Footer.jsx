@@ -24,18 +24,27 @@ const Footer = () => {
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
         }}>
-        {/* Decorative background shapes - empty alt so they are skipped by
-            screen readers and carry no misleading SEO signal. */}
-        <img
+        {/* Decorative background shapes. These were raw <img> tags pointing at
+            a 3746x3955 PNG weighing 9.5MB, loaded twice, eagerly, on every page
+            of the site - about 89% of total page weight. Routing them through
+            next/image converts them to WebP, resizes them to what is actually
+            displayed and lazy-loads them. Empty alt so screen readers skip them. */}
+        <Image
           src='/Footer/loon.png'
           alt=''
           aria-hidden='true'
+          width={620}
+          height={655}
+          sizes='620px'
           className='w-[620px] absolute top-36 -left-78 -rotate-[25deg]'
         />
-        <img
+        <Image
           src='/Footer/loon.png'
           alt=''
           aria-hidden='true'
+          width={680}
+          height={718}
+          sizes='680px'
           className='w-[680px] absolute -top-[40px] -right-[440px]  blur'
         />
 
@@ -53,10 +62,13 @@ const Footer = () => {
           </button>
         </Link>
 
-        <img
+        <Image
           src='/Footer/twoBoy.png'
           alt='Book buff butlers and hen party entertainment UK'
           title='Book Buff Butlers UK'
+          width={640}
+          height={853}
+          sizes='(max-width: 768px) 280px, (max-width: 1024px) 540px, 640px'
           className='w-[280px] md:w-[540px] lg:w-[640px] absolute -top-[25px] md:-top-[150px] -right-[59px] md:-right-[100px] brightness-125'
         />
       </div>
