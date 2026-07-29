@@ -151,37 +151,6 @@
       ],
       "outro": "All three are central enough that we can be with you quickly, and they’re used to hosting groups — which makes running a hen do far easier than trying to do it from a standard hotel room."
     },
-    "areasServed": {
-      "heading": "Areas We Cover Around Liverpool",
-      "intro": "Liverpool city centre, Ropewalks, Albert Dock and the waterfront, Baltic Triangle, Cavern Quarter, Aigburth, Allerton, Woolton, Crosby and Formby.",
-      "nearbyIntro": "We also cover the wider Merseyside and Cheshire area:",
-      "nearby": [
-        {
-          "name": "Birkenhead",
-          "slug": "buff-butlers-birkenhead"
-        },
-        {
-          "name": "St Helens",
-          "slug": "buff-butlers-st-helens"
-        },
-        {
-          "name": "Widnes",
-          "slug": "buff-butlers-widnes"
-        },
-        {
-          "name": "Warrington",
-          "slug": "buff-butlers-warrington"
-        },
-        {
-          "name": "Kirkby",
-          "slug": "buff-butlers-kirkby"
-        },
-        {
-          "name": "Chester",
-          "slug": "buff-butlers-chester"
-        }
-      ]
-    },
     "whatsIncluded": [
       "Handsome, professional butler(s) in the signature apron and cuffs",
       "Two-hour bookings as standard, extendable if you want them longer",
@@ -215,6 +184,19 @@
         "question": "What do the butlers actually do?",
         "answer": "They host. Greeting your guests, serving drinks, running party games, posing for photos and keeping the energy up — all in the signature apron and cuffs. You can add a cocktail masterclass, life drawing session or stripper performance to the same booking."
       }
+    ],
+    "service": "buff-butlers",
+    "serviceName": "Buff Butlers",
+    "latitude": 53.4,
+    "longitude": -2.9833,
+    "nearbySlugs": [
+      "birkenhead",
+      "kirkby",
+      "widnes",
+      "warrington",
+      "salford",
+      "chester",
+      "manchester"
     ]
   },
   {
@@ -376,5 +358,275 @@
     "tagline": "Luton’s Favourite Buff Butler Experience",
     "description": "Looking to add fun, cheeky entertainment to your Luton hen party, birthday, or girls’ night? Buff Butlers Luton are the perfect choice for fun, flirtatious topless hosting that gets the whole room laughing. Based in the UK and top-rated for party entertainment, Hunky Butler Service offers professional, friendly, and seriously fit butlers for every occasion — from stylish apartments to house parties across Luton. Whether you’re planning a classy cocktail night or a full-on party, our butlers bring energy, charm, and unforgettable memories.",
     "image": "/images/luton.jpg"
+  },
+  {
+    "city": "Liverpool",
+    "uniqueContent": true,
+    "latitude": 53.4,
+    "longitude": -2.9833,
+    "nearbySlugs": [
+      "birkenhead",
+      "kirkby",
+      "widnes",
+      "warrington",
+      "salford",
+      "chester",
+      "manchester"
+    ],
+    "partnerVenues": {
+      "heading": "Liverpool Accommodation We Work With",
+      "intro": "We are the in-house entertainment partner for these Liverpool aparthotel operators, so if you are still choosing where to stay these are properties we know work well.",
+      "venues": [
+        {
+          "name": "Posh Pads",
+          "url": "https://posh-pads.co.uk/",
+          "note": "Large open-plan city centre apartments, popular with bigger hen groups."
+        },
+        {
+          "name": "UStay Aparthotels",
+          "url": "https://www.ustayaparthotels.co.uk/",
+          "note": "Central serviced apartments with no restrictions on entertainment bookings."
+        },
+        {
+          "name": "Liver Apartments",
+          "url": "https://www.liverapartments.co.uk/",
+          "note": "Waterfront apartments within walking distance of the Seel Street bars."
+        }
+      ]
+    },
+    "slug": "life-drawing-liverpool",
+    "name": "Life Drawing Liverpool",
+    "service": "life-drawing",
+    "serviceName": "Life Drawing",
+    "metaTitle": "Life Drawing Liverpool | Hen Party Life Drawing Classes",
+    "metaDescription": "Cheeky life drawing for hen parties in Liverpool. 90 minutes, all materials supplied, and your model stays on as your butler. Get an instant quote.",
+    "tagline": "Ninety Minutes, All Materials Supplied, And Your Model Stays On As Your Butler",
+    "description": "Life drawing is the easiest way to break the ice at a hen party, and everyone goes home with something to laugh at. Our Liverpool sessions run for ninety minutes, usually split evenly between drawing and butler service, though it is entirely your call how you divide it up. Some groups barely put the pencils down. Others draw for twenty minutes and spend the rest of the afternoon being waited on. Both are fine.",
+    "localSection": {
+      "heading": "Life Drawing Across Liverpool",
+      "paragraphs": [
+        "We are based on Renshaw Street, a few minutes from Liverpool Central, which means our models are already in the city when your booking starts. Travel is calculated from your nearest hub at checkout, so for central Liverpool addresses it is about as low as it gets anywhere we cover.",
+        "Most Liverpool life drawing sessions happen in apartments rather than bars, simply because everyone needs room to sit, see the model and rest a board. City centre apartments around the Ropewalks, the Baltic Triangle and the waterfront tend to work well. If you are not sure whether your space is suitable, send us a photo when you book and we will tell you straight.",
+        "Saturday afternoons go first, particularly between March and September and on Grand National weekend, when the whole city fills up. Two weeks notice is comfortable and shorter notice is often fine here."
+      ]
+    },
+    "whatsIncluded": [
+      "A ninety minute session, split between drawing and butler service however you prefer",
+      "A professional male model who stays on as your buff butler afterwards",
+      "All paper, pencils and drawing boards supplied, so bring nothing",
+      "Poses and guidance suitable for complete beginners",
+      "Groups of eight to twenty five as standard, smaller and larger catered for",
+      "A discreet arrival and a professional approach from start to finish"
+    ],
+    "faqs": [
+      {
+        "question": "How long is a life drawing session in Liverpool?",
+        "answer": "Ninety minutes. Most groups split it roughly evenly, around forty five minutes drawing and forty five minutes of butler service, but you can weight it however you like on the day."
+      },
+      {
+        "question": "Do we need to bring pencils and paper?",
+        "answer": "No. We bring paper, pencils and boards for every guest. You need to provide nothing except somewhere to sit."
+      },
+      {
+        "question": "Does the model stay after the drawing finishes?",
+        "answer": "Yes, and it is the part most people do not expect. Our life models are also trained buff butlers, so once the drawing is done he stays on to serve drinks, run games and look after your group. You are booking one person for two jobs rather than watching a model pack up and leave."
+      },
+      {
+        "question": "How many people can take part?",
+        "answer": "Eight to twenty five works best, but we regularly cater for smaller hen parties and for larger groups with more than one model. Tell us your numbers and we will size it properly."
+      },
+      {
+        "question": "What kind of space do we need?",
+        "answer": "Somewhere everyone can sit comfortably, see the model clearly and rest a drawing board. A city centre apartment living room is ideal. A cramped hotel bedroom is not. Send us a photo if you are unsure."
+      },
+      {
+        "question": "Is it suitable if nobody can draw?",
+        "answer": "That is most groups, and rather the point. Nobody is being marked, the poses are beginner friendly, and the worst drawings are reliably the funniest."
+      },
+      {
+        "question": "Can we book life drawing alongside another service?",
+        "answer": "Yes. Plenty of Liverpool groups run life drawing in the afternoon then add butlers or a cocktail class for the evening. Services combine in a single booking and you can book more than one of anything."
+      }
+    ]
+  },
+  {
+    "city": "Liverpool",
+    "uniqueContent": true,
+    "latitude": 53.4,
+    "longitude": -2.9833,
+    "nearbySlugs": [
+      "birkenhead",
+      "kirkby",
+      "widnes",
+      "warrington",
+      "salford",
+      "chester",
+      "manchester"
+    ],
+    "partnerVenues": {
+      "heading": "Liverpool Accommodation We Work With",
+      "intro": "We are the in-house entertainment partner for these Liverpool aparthotel operators, so if you are still choosing where to stay these are properties we know work well.",
+      "venues": [
+        {
+          "name": "Posh Pads",
+          "url": "https://posh-pads.co.uk/",
+          "note": "Large open-plan city centre apartments, popular with bigger hen groups."
+        },
+        {
+          "name": "UStay Aparthotels",
+          "url": "https://www.ustayaparthotels.co.uk/",
+          "note": "Central serviced apartments with no restrictions on entertainment bookings."
+        },
+        {
+          "name": "Liver Apartments",
+          "url": "https://www.liverapartments.co.uk/",
+          "note": "Waterfront apartments within walking distance of the Seel Street bars."
+        }
+      ]
+    },
+    "slug": "male-strippers-liverpool",
+    "name": "Male Strippers Liverpool",
+    "service": "male-strippers",
+    "serviceName": "Male Strippers",
+    "metaTitle": "Male Strippers Liverpool | Hen Party Strippers & Dancers",
+    "metaDescription": "Professional male strippers for Liverpool hen parties. A ten to fifteen minute routine performed in your own private space. Get an instant quote.",
+    "tagline": "A Ten To Fifteen Minute Routine, In Your Own Private Space, On Your Terms",
+    "description": "A male stripper is usually the moment of the night everyone remembers, and it works best slotted into an evening that is already going well. Our Liverpool performers arrive discreetly in plain clothes, do a ten to fifteen minute routine, and are professional from the knock on the door to the moment they leave. Requests are welcome, though the performer has the final say on the routine.",
+    "localSection": {
+      "heading": "Male Strippers Across Liverpool",
+      "paragraphs": [
+        "Liverpool is one of the busiest hen destinations in the country, which has a practical upside: availability at short notice is better here than in most places, because our performers are already in the city rather than travelling in.",
+        "This service needs a private space. An apartment, a house, or a function room you have booked for your group. It cannot happen in a public bar. Most Liverpool groups book it at the accommodation during the evening and head out to Seel Street or Concert Square afterwards.",
+        "For a Saturday between spring and autumn, give us two weeks where you can. Short notice bookings are frequently possible in Liverpool, but Saturdays are the first to go."
+      ]
+    },
+    "whatsIncluded": [
+      "A professional performer, discreet on arrival and in plain clothes",
+      "A ten to fifteen minute routine",
+      "Requests welcome, with the routine at the performer's discretion",
+      "One performer as standard, with more bookable for larger groups",
+      "Can be combined with butlers, life drawing or a cocktail class in one booking",
+      "A clear briefing beforehand so everyone knows what to expect"
+    ],
+    "faqs": [
+      {
+        "question": "How long does the performance last?",
+        "answer": "Roughly ten to fifteen minutes. It is a highlight of the evening rather than the whole evening, which is why many groups book butlers alongside it to cover the rest of the night."
+      },
+      {
+        "question": "Do we need a private space?",
+        "answer": "Yes, always. This can only take place somewhere private, such as your apartment, a house, or a function room booked for your group. It cannot be performed in a public bar or a shared area."
+      },
+      {
+        "question": "Can we make requests?",
+        "answer": "You are very welcome to. Tell us what your group would like when you book and we will pass it on. The performer has the final say, which keeps everyone in the room comfortable."
+      },
+      {
+        "question": "Can we book more than one performer?",
+        "answer": "Yes. One is standard, but you can book multiple for larger groups, and you can combine this with any of our other services in the same booking."
+      },
+      {
+        "question": "Will everyone know what we have booked?",
+        "answer": "No. Performers arrive in plain clothes and are discreet at the door. There is nothing about the arrival that announces what is happening."
+      },
+      {
+        "question": "How much notice do you need in Liverpool?",
+        "answer": "Two weeks is comfortable for a peak season Saturday. Liverpool is one of our busiest cities so short notice is often possible, and it is always worth asking rather than assuming."
+      },
+      {
+        "question": "Is there a travel charge?",
+        "answer": "Travel is calculated automatically at checkout based on how far you are from your nearest hub. Central Liverpool addresses sit right on top of ours, so it is minimal here compared with more rural bookings."
+      }
+    ]
+  },
+  {
+    "city": "Liverpool",
+    "uniqueContent": true,
+    "latitude": 53.4,
+    "longitude": -2.9833,
+    "nearbySlugs": [
+      "birkenhead",
+      "kirkby",
+      "widnes",
+      "warrington",
+      "salford",
+      "chester",
+      "manchester"
+    ],
+    "partnerVenues": {
+      "heading": "Liverpool Accommodation We Work With",
+      "intro": "We are the in-house entertainment partner for these Liverpool aparthotel operators, so if you are still choosing where to stay these are properties we know work well.",
+      "venues": [
+        {
+          "name": "Posh Pads",
+          "url": "https://posh-pads.co.uk/",
+          "note": "Large open-plan city centre apartments, popular with bigger hen groups."
+        },
+        {
+          "name": "UStay Aparthotels",
+          "url": "https://www.ustayaparthotels.co.uk/",
+          "note": "Central serviced apartments with no restrictions on entertainment bookings."
+        },
+        {
+          "name": "Liver Apartments",
+          "url": "https://www.liverapartments.co.uk/",
+          "note": "Waterfront apartments within walking distance of the Seel Street bars."
+        }
+      ]
+    },
+    "slug": "cocktail-classes-liverpool",
+    "name": "Cocktail Classes Liverpool",
+    "service": "cocktail-classes",
+    "serviceName": "Cocktail Classes",
+    "metaTitle": "Cocktail Classes Liverpool | Hen Party Cocktail Making",
+    "metaDescription": "Mobile hen party cocktail classes in Liverpool. Three cocktails each, we bring the spirits and all the kit, and your host can arrive as a butler.",
+    "tagline": "Three Cocktails Each, We Bring Everything, And Your Host Can Arrive As A Butler",
+    "description": "A cocktail class works best as the thing you do before you go out, in the apartment, while everyone is still getting ready. We come to you with the spirits, the shakers, the glassware and the ice, run the session, and leave you with a group who have made three cocktails each and know how to make them again. Nobody has to book a bar, queue at one, or get twelve people across town.",
+    "localSection": {
+      "heading": "Cocktail Classes In Liverpool Apartments",
+      "paragraphs": [
+        "Almost every Liverpool cocktail class we run happens in an apartment rather than a venue, and that is deliberate. You get the class during pre-drinks, when it is most useful, instead of losing an hour of the evening travelling to a bar and back.",
+        "Because our hub is on Renshaw Street in the city centre, hosts arrive with everything already loaded. For a mobile bar service that matters more than it sounds: no partial setup, no missing ingredient, no trip out to a shop halfway through.",
+        "If you are staying around Seel Street, Duke Street or the waterfront you are a short walk from the bars afterwards, which is where most groups head once the last cocktail is finished."
+      ]
+    },
+    "whatsIncluded": [
+      "Three cocktails per person, made by your group rather than handed to them",
+      "All alcohol, mixers, garnishes, ice, shakers and glassware brought to you",
+      "A professional host who runs the session and clears up afterwards",
+      "Your host as a buff butler, or smartly in shirt and tie, whichever you prefer",
+      "Groups of eight and upwards",
+      "Recipes to keep, so the drinks are repeatable at home"
+    ],
+    "faqs": [
+      {
+        "question": "How many cocktails does everyone make?",
+        "answer": "Three each. They are made by your group rather than poured for you, so everyone has a go at measuring, shaking and building the drinks."
+      },
+      {
+        "question": "Do we need to buy the alcohol?",
+        "answer": "No. We bring absolutely everything: spirits, mixers, garnishes, ice, shakers, strainers and glassware. You provide the kitchen and the group."
+      },
+      {
+        "question": "What is the minimum group size?",
+        "answer": "Eight people. There is no strict upper limit, and for larger Liverpool groups we simply bring more hosts and more kit."
+      },
+      {
+        "question": "Can our host be a buff butler as well?",
+        "answer": "Yes, and most Liverpool groups choose this. Your host can arrive as a buff butler and run the class that way, or turn up smartly in shirt and tie if you would rather keep it low key."
+      },
+      {
+        "question": "Where does the class happen?",
+        "answer": "Wherever you are staying. We are a mobile service and come to your apartment, house or venue in and around Liverpool. Most groups run it during pre-drinks so they can head straight out afterwards."
+      },
+      {
+        "question": "How far in advance should we book?",
+        "answer": "Two weeks is comfortable, especially for Saturdays between spring and autumn. Shorter notice is often possible in Liverpool because it is one of our busiest cities."
+      },
+      {
+        "question": "Can we add this to another booking?",
+        "answer": "Yes. Services can be combined and you can book more than one of anything. A common Liverpool booking is life drawing in the afternoon, cocktails during pre-drinks, and butlers running the evening."
+      }
+    ]
   }
 ]
