@@ -211,11 +211,11 @@ body {
   }
 
   .btn-primary {
-    @apply bg-[#FF006A] rounded-full cursor-pointer px-4 py-2 text-[#FFFFFF] text-[16px] cursor-pointer;
+    @apply bg-[#E0005E] rounded-full cursor-pointer px-4 py-2 text-[#FFFFFF] text-[16px] cursor-pointer;
   }
 
   .btn-secondary {
-    @apply bg-none text-[#FF006A] px-4 md:px-6 py-2 md:py-4 cursor-pointer rounded-full font-medium text-base md:text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#FF006A];
+    @apply bg-none text-[#E0005E] px-4 md:px-6 py-2 md:py-4 cursor-pointer rounded-full font-medium text-base md:text-xl hover:bg-pink-600 hover:text-white transition border-2 border-[#E0005E];
   }
 }
 
@@ -290,4 +290,43 @@ body {
   font-size: 1.125rem; /* 18px */
   line-height: 1.75rem; 
   color: #6B6B6B; /* gray-600 */
+}
+
+/* ---------------------------------------------------------------------------
+   Brand pink: accessible contrast
+
+   #FF006A measures 3.85:1 against white. WCAG AA needs 4.5:1 for normal text,
+   so every call to action on the site failed - "Get An Instant Quote", "Try a
+   30-second quote now" and the nav button were the hardest text on the page to
+   read, which is the worst possible place for it.
+
+   #E0005E measures 4.85:1 and is visually near-identical.
+
+   The colour is written as a Tailwind arbitrary value in 52 files, so rather
+   than hand-editing all of them these rules override the generated utilities in
+   one place. To change the brand colour in future, change it here.
+   --------------------------------------------------------------------------- */
+
+.text-\[\#FF006A\] {
+  color: #e0005e;
+}
+
+.bg-\[\#FF006A\] {
+  background-color: #e0005e;
+}
+
+.border-\[\#FF006A\] {
+  border-color: #e0005e;
+}
+
+.hover\:text-\[\#FF006A\]:hover {
+  color: #e0005e;
+}
+
+.hover\:bg-\[\#FF006A\]:hover {
+  background-color: #e0005e;
+}
+
+.hover\:border-\[\#FF006A\]:hover {
+  border-color: #e0005e;
 }
