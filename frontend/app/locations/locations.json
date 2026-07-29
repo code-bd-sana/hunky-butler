@@ -197,7 +197,18 @@
       "salford",
       "chester",
       "manchester"
-    ]
+    ],
+    "highlights": {
+      "heading": "What Makes Our Liverpool Buff Butlers Different",
+      "intro": "Liverpool is our home city. Our office is on Renshaw Street, our butlers live here, and we work with the aparthotels most hen groups stay in. That changes what we can offer compared with an agency sending someone up the M6.",
+      "points": [
+        "Based in Liverpool city centre, so butlers arrive on time and travel costs stay minimal.",
+        "We are the in-house entertainment partner for three city centre aparthotel operators.",
+        "Short notice bookings are often possible because we hold a larger pool of staff here.",
+        "Two hour bookings as standard, extendable on the night if the party is going well.",
+        "Combine butlers with life drawing, a cocktail class or a stripper in one booking."
+      ]
+    }
   },
   {
     "slug": "buff-butlers-chester",
@@ -462,7 +473,18 @@
         "title": "Girls Nights and Get-Togethers",
         "body": "No occasion required. Liverpool groups book life drawing for reunions, divorce parties and plain Saturday afternoons, usually in an apartment before heading out into town."
       }
-    ]
+    ],
+    "highlights": {
+      "heading": "What Makes Our Liverpool Life Drawing Different",
+      "intro": "Most life drawing companies send a model who poses and leaves. Ours is a trained buff butler who stays for the rest of your session, which is why groups tend to book us instead of booking two separate things.",
+      "points": [
+        "Your model stays on as your butler once the drawing finishes, so one booking covers the whole afternoon.",
+        "Ninety minutes, split between drawing and butler service however your group wants it on the day.",
+        "Paper, pencils and boards provided for every guest, so nobody needs to bring anything.",
+        "Poses pitched at complete beginners, because almost nobody in the room can draw.",
+        "We will tell you honestly whether your apartment has the space before you book."
+      ]
+    }
   },
   {
     "city": "Liverpool",
@@ -567,7 +589,18 @@
         "title": "Divorce and Freedom Parties",
         "body": "A Liverpool speciality. Same format, different reason to celebrate, and the performer will happily play along with whatever the theme of the night is."
       }
-    ]
+    ],
+    "highlights": {
+      "heading": "What Makes Our Liverpool Strippers Different",
+      "intro": "This is the part of the night people remember, so it matters that it is handled properly. Discretion on arrival, a clear brief beforehand, and a performer who reads the room.",
+      "points": [
+        "Performers arrive in plain clothes, so nothing about the arrival gives the surprise away.",
+        "A ten to fifteen minute routine, timed to slot into an evening that is already going well.",
+        "Requests welcome when you book, with the performer keeping final say so everyone stays comfortable.",
+        "Private space only, which we will confirm with you rather than turning up to a problem.",
+        "Book more than one performer, or combine with butlers to cover the rest of the night."
+      ]
+    }
   },
   {
     "city": "Liverpool",
@@ -672,6 +705,17 @@
         "title": "Corporate and Team Events",
         "body": "Team socials, staff celebrations and client evenings. Your host can arrive smartly in shirt and tie rather than as a butler, which keeps it appropriate for a work crowd."
       }
-    ]
+    ],
+    "highlights": {
+      "heading": "What Makes Our Liverpool Cocktail Classes Different",
+      "intro": "We come to your apartment during pre-drinks rather than making twelve people cross town to a bar. Everything arrives with the host, so the class starts when you are ready.",
+      "points": [
+        "Three cocktails per person, made by your group rather than poured for them.",
+        "Spirits, mixers, ice, shakers and glassware all brought to you and cleared away afterwards.",
+        "Runs in your apartment during pre-drinks, so you head straight out afterwards.",
+        "Your host can arrive as a buff butler or smartly in shirt and tie, at the same price.",
+        "Groups of eight upwards, with extra hosts for larger parties."
+      ]
+    }
   }
 ]
