@@ -57,7 +57,7 @@ export const login = async (req, res, next) => {
     }
 
     if (!isExist.isVerified) {
-      res.status(405).json({
+      return res.status(405).json({
         message: "Please Verify your account then try to login...",
       });
     }
@@ -100,7 +100,7 @@ export const fortgetPassword = async (req, res) => {
     }
 
     if (otp !== isExistOtp.otp) {
-      res.status(401).json({
+      return res.status(401).json({
         message: "Wrong OTP!",
       });
     }
