@@ -5,6 +5,8 @@ import BuffButlersEvents from "@/components/Location/BuffButtlersEvents";
 import ButlerLocation from "@/components/Location/ButlerLocation";
 import LocationDynamicBanner from "@/components/Location/LocationDynamicBanner";
 import LocationFaqs from "@/components/Location/LocationFaqs";
+import Map from "@/components/Location/Map";
+import NearbyLocations from "@/components/Location/NearbyLocations";
 import LocationLocalContent from "@/components/Location/LocationLocalContent";
 import WhatsIncluede from "@/components/Location/WhatsIncluede";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
@@ -13,6 +15,15 @@ import ReduxProvider from "../provider/ReduxProvider";
 import Navbar from "@/components/shared/Navbar";
 
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
+
+// Each service has an existing hub page. Breadcrumbs point at the right one
+// so a life drawing page does not claim to sit under Buff Butlers.
+const SERVICE_HUBS = {
+  "buff-butlers": { path: "/buff-butlers", label: "Buff Butlers" },
+  "life-drawing": { path: "/life-drawing", label: "Life Drawing" },
+  "male-strippers": { path: "/strippers", label: "Male Strippers" },
+  "cocktail-classes": { path: "/cocktail", label: "Cocktail Classes" },
+};
 
 export async function generateStaticParams() {
   return locations.map((loc) => ({
@@ -69,6 +80,22 @@ export default async function LocationPage({ params }) {
     return <GlobalNotFound />;
   }
 
+  const serviceName = location.serviceName || "Buff Butlers";
+  const hub = SERVICE_HUBS[location.service] || SERVICE_HUBS["buff-butlers"];
+
+  // Internal links are resolved against locations.json here, so a link is only
+  // ever rendered for a page that actually exists. A new city therefore gains
+  // inbound links from its neighbours the day it is published, and we can
+  // never ship a link to a 404 in the meantime.
+  const sameCityServices = locations
+    .filter((loc) => loc.city === location.city && loc.slug !== location.slug)
+    .map((loc) => ({ slug: loc.slug, label: loc.serviceName || "Buff Butlers" }));
+
+  const nearbyPlaces = (location.nearbySlugs || [])
+    .map((slug) => locations.find((loc) => loc.slug === slug))
+    .filter(Boolean)
+    .map((loc) => ({ slug: loc.slug, label: loc.city }));
+
   const pageUrl = `${SITE_URL}/${location.slug}`;
 
   // Location pages live at app/[slug], outside the (home) route group, so they
@@ -98,6 +125,25 @@ export default async function LocationPage({ params }) {
     },
   };
 
+  // Service schema describes what is actually being sold on this page. Without
+  // it, life drawing in Liverpool and butlers in Liverpool look like the same
+  // local business page to Google rather than two distinct offerings.
+  const serviceJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    serviceType: serviceName,
+    name: serviceName + " in " + location.city,
+    description: location.metaDescription || location.description,
+    url: pageUrl,
+    areaServed: { "@type": "City", name: location.city },
+    provider: {
+      "@type": "EntertainmentBusiness",
+      name: "Hunky Butler Service",
+      url: SITE_URL,
+      telephone: "+447745865352",
+    },
+  };
+
   // Breadcrumb trail helps Google render the hierarchy in search results
   // instead of showing a bare URL.
   const breadcrumbJsonLd = {
@@ -113,8 +159,8 @@ export default async function LocationPage({ params }) {
       {
         "@type": "ListItem",
         position: 2,
-        name: "Buff Butlers",
-        item: `${SITE_URL}/buff-butlers`,
+        name: hub.label,
+        item: SITE_URL + hub.path,
       },
       {
         "@type": "ListItem",
@@ -132,6 +178,10 @@ export default async function LocationPage({ params }) {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(localBusinessJsonLd),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />
       <script
         type="application/ld+json"
@@ -164,8 +214,24 @@ export default async function LocationPage({ params }) {
       {/* City-specific FAQs + FAQPage schema: renders only where defined */}
       <LocationFaqs faqs={location.faqs} city={location.city} />
 
+      {/* Internal links: other services here, plus neighbouring towns */}
+      <NearbyLocations
+        city={location.city}
+        sameCityServices={sameCityServices}
+        nearbyPlaces={nearbyPlaces}
+      />
+
       <ButlerLocation />
       <ImageGallery></ImageGallery>
+      {/* Map renders only where coordinates exist, so legacy pages are unaffected */}
+      {location.latitude && location.longitude ? (
+        <Map
+          latitude={location.latitude}
+          longitude={location.longitude}
+          city={location.city}
+        />
+      ) : null}
+
       <Footer></Footer>
     </div>
   );
