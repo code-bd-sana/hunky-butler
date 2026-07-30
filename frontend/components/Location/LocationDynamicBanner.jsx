@@ -16,9 +16,11 @@ import defaultBanner from "@/public/ImageGalary/pic6.jpeg";
  *  - the call button is an anchor styled as a button, rather than an anchor
  *    nested inside a button (which is invalid HTML)
  *  - a second CTA points at the quote flow, which is the actual conversion goal
+ *  - the hero photo is a real <Image> with `priority`, not a CSS background.
+ *    As a background the browser could not discover it until the CSS had
+ *    parsed, Next could not optimise it, and both the city photo and the
+ *    fallback were downloaded. Largest Contentful Paint on mobile was 5.9s.
  *  - the city image is used when one exists, falling back to the shared banner
- *    if it's missing, so a city photo can be added later by dropping the file
- *    into /public/images/ with no code change
  */
 const LocationDynamicBanner = ({
   image,
@@ -28,19 +30,24 @@ const LocationDynamicBanner = ({
   hubPath = "/buff-butlers",
   hubLabel = "Buff Butlers",
 }) => {
-  const backgroundImage = [
-    "linear-gradient(180deg, rgba(0,0,0,0.15) 10%, rgba(0,0,0,0.95) 95%)",
-    image ? `url(${image})` : null,
-    `url(${defaultBanner.src})`,
-  ]
-    .filter(Boolean)
-    .join(", ");
-
   return (
-    <div
-      style={{ backgroundImage }}
-      className="relative min-h-[620px] w-full overflow-hidden bg-cover bg-center"
-    >
+    <div className="relative min-h-[620px] w-full overflow-hidden">
+      <Image
+        src={image || defaultBanner}
+        alt=""
+        aria-hidden="true"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center"
+      />
+
+      {/* Gradient overlay for text legibility, previously part of the
+          stacked background-image. */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/55 to-black/95"
+      />
       <div className="relative z-10 flex min-h-[620px] flex-col items-center justify-end px-6 pb-12 pt-32 text-center">
         {/* Breadcrumbs */}
         <nav
