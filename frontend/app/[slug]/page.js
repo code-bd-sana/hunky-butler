@@ -244,7 +244,6 @@ export default async function LocationPage({ params }) {
         sameCityServices={sameCityServices}
         nearbyPlaces={nearbyPlaces}
       />
-      <ImageGallery></ImageGallery>
       {/* Map renders only where coordinates exist, so legacy pages are unaffected */}
       {location.latitude && location.longitude ? (
         <Map
@@ -253,6 +252,7 @@ export default async function LocationPage({ params }) {
           city={location.city}
         />
       ) : null}
+      <ImageGallery></ImageGallery>
 
       <Footer></Footer>
     </div>
