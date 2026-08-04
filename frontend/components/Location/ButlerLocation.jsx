@@ -11,7 +11,7 @@ const ButlerLocation = () => {
       <div className="max-w-7xl mx-auto">
         {/* Title */}
         <div className="text-3xl md:text-4xl font-extrabold text-[#0A014F] text-center mb-10">
-          <MainTitle text="Some of our Buff Butler Locations" />
+          <MainTitle text="Some of our Buff Butler Locations"  as="h3"/>
         </div>
 
         {/* Locations Grid */}
