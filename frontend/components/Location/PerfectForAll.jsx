@@ -10,7 +10,7 @@ import MainTitle from "../shared/typography/MainTitle";
 import SubTitle from "../shared/typography/SubTitle";
 import Link from "next/link";
 
-export default function PerfectForAll({ city, slug, serviceName }) {
+export default function PerfectForAll({ city = "your area", slug, serviceName }) {
   console.log(slug);
   const included = [
     "Keep the laughter flowing with flirty fun, playful games, and cheeky challenges that create unforgettable memories and nonstop enjoyment together.",
@@ -35,7 +35,7 @@ export default function PerfectForAll({ city, slug, serviceName }) {
             }
           /> */}
           <div className="md:text-lg text-[#333333] text-sm py-4 leading-[1.4] tracking-[-0.01em] capitalize">
-            Make every Nottingham celebration unforgettable with our Charming
+                        Make every {city} celebration unforgettable with our Charming
             Butlers, who bring elegance, warmth, and professionalism to every
             event. Whether it’s a wedding, birthday, corporate gathering, or
             private dinner, our butlers ensure that every guest feels special
@@ -44,7 +44,7 @@ export default function PerfectForAll({ city, slug, serviceName }) {
             atmosphere of sophistication and joy. From welcoming guests and
             serving drinks to handling personalized requests, our team adds a
             touch of class and seamless service to your occasion. Let our
-            Charming Butlers turn your Nottingham celebration into a truly
+                        Charming Butlers turn your {city} celebration into a truly
             memorable and delightful experience.
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function PerfectForAll({ city, slug, serviceName }) {
               Perfect for Every Celebration in {city}
             </h2>
             <p className="text-lg my-6">
-              Our Scottish Hunky Butlers are trained to adapt to any event type,
+                            Our {city} Hunky Butlers are trained to adapt to any event type,
               offering both entertainment and hosting services. Here’s where we
               shine:
             </p>
@@ -149,7 +149,7 @@ export default function PerfectForAll({ city, slug, serviceName }) {
               What Makes Our {city} Butlers Special
             </h4>
             <p className="text-lg my-6">
-              Our Scottish Hunky Butlers are trained to adapt to any event type,
+                            Our {city} Hunky Butlers are trained to adapt to any event type,
               offering both entertainment and hosting services. Here’s where we
               shine:
             </p>
