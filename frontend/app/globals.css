@@ -307,25 +307,29 @@ body {
    --------------------------------------------------------------------------- */
 
 .text-\[\#FF006A\] {
-  color: #e0005e;
+  color: #cc0057;
 }
 
 .bg-\[\#FF006A\] {
-  background-color: #e0005e;
+  background-color: #cc0057;
 }
 
 .border-\[\#FF006A\] {
-  border-color: #e0005e;
+  border-color: #cc0057;
 }
 
 .hover\:text-\[\#FF006A\]:hover {
-  color: #e0005e;
+  color: #cc0057;
 }
 
 .hover\:bg-\[\#FF006A\]:hover {
-  background-color: #e0005e;
+  background-color: #cc0057;
 }
 
 .hover\:border-\[\#FF006A\]:hover {
-  border-color: #e0005e;
+  border-color: #cc0057;
 }
+
+    .text-\[\#808080\] {
+        color: #666666;
+    }
