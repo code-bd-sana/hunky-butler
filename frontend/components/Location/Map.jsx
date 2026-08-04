@@ -20,7 +20,7 @@ const Map = ({ latitude, longitude, city }) => {
   return (
     <div className="mx-auto w-full max-w-7xl px-6 pb-24 pt-10">
       <div className="mb-6 text-center">
-        <SecondaryTitle text1={"Where We Cover in " + (city || "the UK")} />
+        <SecondaryTitle text1={"Where We Cover in " + (city || "the UK")}  as="h3"/>
       </div>
 
       <iframe
