@@ -2,7 +2,6 @@ import locations from "@/app/locations/locations.json";
 import ImageGallery from "@/components/about/ImageGallery";
 import Footer from "@/components/homepage/Footer";
 import BuffButlersEvents from "@/components/Location/BuffButtlersEvents";
-import ButlerLocation from "@/components/Location/ButlerLocation";
 import LocationDynamicBanner from "@/components/Location/LocationDynamicBanner";
 import LocationFaqs from "@/components/Location/LocationFaqs";
 import LocationHighlights from "@/components/Location/LocationHighlights";
@@ -93,7 +92,7 @@ export default async function LocationPage({ params }) {
     .map((loc) => ({ slug: loc.slug, label: loc.serviceName || "Buff Butlers" }));
 
   const nearbyPlaces = (location.nearbySlugs || [])
-    .map((slug) => locations.find((loc) => loc.slug === slug))
+          .map((slug) => locations.find((loc) => loc.slug === slug || loc.slug === `buff-butlers-${slug}`))
     .filter(Boolean)
     .map((loc) => ({ slug: loc.slug, label: loc.city }));
 
@@ -245,8 +244,6 @@ export default async function LocationPage({ params }) {
         sameCityServices={sameCityServices}
         nearbyPlaces={nearbyPlaces}
       />
-
-      <ButlerLocation />
       <ImageGallery></ImageGallery>
       {/* Map renders only where coordinates exist, so legacy pages are unaffected */}
       {location.latitude && location.longitude ? (
