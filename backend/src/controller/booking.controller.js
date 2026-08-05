@@ -45,6 +45,14 @@ export const getBookingButler = async (req, res) => {
     const status = req.query.status;
     const id = req.params.id;
 
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.id !== id && req.user._id?.toString() !== id) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own assigned bookings.",
+        });
+      }
+    }
+
     let filter = { "butler.id": id };
     if (status && status !== "all") {
       filter.status = status.toLowerCase();
@@ -78,6 +86,14 @@ export const getBookingCustomer = async (req, res) => {
     const status = req.query.status;
     const email = req.params.email;
 
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.email !== email) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own bookings.",
+        });
+      }
+    }
+
     let filter = { email: email };
     if (status && status !== "all") {
       filter.status = status.toLowerCase();
@@ -103,6 +119,7 @@ export const getBookingCustomer = async (req, res) => {
     });
   }
 };
+
 
 export const createBooking = async (req, res) => {
   try {
@@ -436,6 +453,15 @@ export const assginToButler = async (req, res) => {
 export const getBookingOverviewCustomer = async (req, res) => {
   try {
     const email = req.params.email;
+
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.email !== email) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own booking overview.",
+        });
+      }
+    }
+
     const result = await Booking.aggregate([
       { $match: { email: email } },
       {
@@ -464,6 +490,15 @@ export const getBookingOverviewCustomer = async (req, res) => {
 export const getBookingOverviewButler = async (req, res) => {
   try {
     const id = req.params.id;
+
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.id !== id && req.user._id?.toString() !== id) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own booking overview.",
+        });
+      }
+    }
+
     const bookings = await Booking.find({ "butler.id": id });
     const totalSpent = bookings.reduce((sum, booking) => sum + (booking.price || 0), 0);
     const totalServiceProvided = bookings.length;
@@ -477,6 +512,15 @@ export const getBookingOverviewButler = async (req, res) => {
 export const getButlerOverview = async (req, res) => {
   try {
     const id = req.params.id;
+
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.id !== id && req.user._id?.toString() !== id) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own butler overview.",
+        });
+      }
+    }
+
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
@@ -501,6 +545,7 @@ export const getButlerOverview = async (req, res) => {
         },
       },
     ]);
+
 
     res.status(200).json({ totalBookingCompleted, totalEarningThisMonth });
   } catch (error) {

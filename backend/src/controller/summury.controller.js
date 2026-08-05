@@ -93,7 +93,16 @@ export const GetCustomerSummury = async (req, res) => {
   try {
     const email = req.params.email;
 
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.email !== email) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own summary.",
+        });
+      }
+    }
+
     // 1) total booking
+
     const totalBooking = await Booking.countDocuments({ email });
 
     // 2) all fully paid bookings → sum of "paidAmount" (assume field name is paidAmount)

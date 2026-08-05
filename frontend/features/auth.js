@@ -1,12 +1,25 @@
-// redux/services/authApi.js or wherever you defined it
-
 import { base_url } from '@/utils/utils';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { getSession } from 'next-auth/react';
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${base_url}`, credentials: 'include' }),
-    tagTypes: ['user'],
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${base_url}`,
+    credentials: 'include',
+    prepareHeaders: async (headers) => {
+      if (typeof window !== "undefined") {
+        const session = await getSession();
+        if (session?.user?.email) {
+          headers.set("x-user-email", session.user.email);
+          headers.set("x-user-role", session.user.role || "customer");
+        }
+      }
+      return headers;
+    },
+  }),
+  tagTypes: ['user'],
+
 
   endpoints: (builder) => ({
     saveRegister: builder.mutation({

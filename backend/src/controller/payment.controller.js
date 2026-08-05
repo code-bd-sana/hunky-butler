@@ -801,6 +801,15 @@ export const allPaymentHistory = async (req, res) => {
 export const paymentHistoryForCustomer = async (req, res) => {
   try {
     const email = req.params.email;
+
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.email !== email) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own payment history.",
+        });
+      }
+    }
+
     const skip = parseInt(req.query.skip) || 0;
     const limit = parseInt(req.query.limit) || 10;
     const history = await PaymentHistory.find({ customerEmail: email })
@@ -833,6 +842,15 @@ export const paymentHistoryForCustomer = async (req, res) => {
 export const paymentHistoryForButler = async(req, res) => {
   try {
     const id = req.params.id;
+
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.id !== id && req.user._id?.toString() !== id) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own payment history.",
+        });
+      }
+    }
+
     const skip = parseInt(req.query.skip) || 0;
     const limit = parseInt(req.query.limit) || 5;
 
@@ -861,6 +879,7 @@ export const paymentHistoryForButler = async(req, res) => {
     });
   }
 };
+
 
 // ==================== MOCK PAYMENT SUCCESS FOR SANDBOX PLACEHOLDERS ====================
 export const mockPaySuccess = async (req, res) => {

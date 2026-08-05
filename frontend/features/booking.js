@@ -1,12 +1,25 @@
 import { base_url } from "@/utils/utils";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; 
-
-
+import { getSession } from "next-auth/react";
 
 export const bookingApi = createApi({
     reducerPath: "bookingApi",
-    baseQuery: fetchBaseQuery({ baseUrl: base_url, credentials:"include" }),
-    tagTypes: ["booking"], 
+    baseQuery: fetchBaseQuery({
+        baseUrl: base_url,
+        credentials: "include",
+        prepareHeaders: async (headers) => {
+            if (typeof window !== "undefined") {
+                const session = await getSession();
+                if (session?.user?.email) {
+                    headers.set("x-user-email", session.user.email);
+                    headers.set("x-user-role", session.user.role || "customer");
+                }
+            }
+            return headers;
+        },
+    }),
+    tagTypes: ["booking"],
+ 
     endpoints: (builder) => ({
         getBooking: builder.query({
             query: ({ limit = 10, skip = 0, status="all" }) => `/booking/?skip=${skip}&limit=${limit}&&status=${status}`,

@@ -102,39 +102,58 @@ export const allButler = async (req, res) => {
 
 
 
-export const myProfile = async(req, res)=>{
+export const myProfile = async (req, res) => {
   try {
     const id = req.params.id;
-    const user = await User.findOne({_id:id}).select('-password');
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (
+        req.user.id !== id &&
+        req.user._id?.toString() !== id &&
+        req.user.email !== id
+      ) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own profile.",
+        });
+      }
+    }
+    const user = await User.findOne({
+      $or: [
+        ...(id && id.length === 24 ? [{ _id: id }] : []),
+        { email: id },
+      ],
+    }).select("-password");
     res.status(200).json({
-      message:'Success',
-      data: user
-    })
-    
+      message: "Success",
+      data: user,
+    });
   } catch (error) {
     res.status(500).json({
-      message:"Something went wrong!"
-    })
+      message: "Something went wrong!",
+    });
   }
-}
+};
 
-
-
-
-export const updateProfile = async(req, res)=>{
+export const updateProfile = async (req, res) => {
   try {
-    const {bio, dob, email, firstName, lastName, gender, location, phone, postcode, profileImage, image, isButler}  = req.body;
+    const { bio, dob, email, firstName, lastName, gender, location, phone, postcode, profileImage, image, isButler } = req.body;
 
-
-    if(!email){
-      return res.status(500).json({
-        message:"Email Not Found!"
-      })
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
     }
 
-    const user = await User.findOne({email: email})
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.email !== email) {
+        return res.status(403).json({
+          message: "Forbidden: You can only update your own profile.",
+        });
+      }
+    }
 
+    const user = await User.findOne({ email: email });
 if (!user) return res.status(404).json({ message: "User not found" });
+
 
 
 const updated = await User.updateOne(

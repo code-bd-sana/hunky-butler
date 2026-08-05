@@ -21,7 +21,16 @@ export const getNotification = async (req, res) => {
   try {
     const email = req.params.email;
 
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.email !== email) {
+        return res.status(403).json({
+          message: "Forbidden: You can only view your own notifications.",
+        });
+      }
+    }
+
     // User role fetch
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -93,13 +102,20 @@ export const markSeen = async(req, res)=>{
   }
 }
 
-export const markSeenAllNotification = async(req, res)=>{
- try {
-   const email = req.params.email;
-  
-  const updated = await Notificaton.updateMany({receiver:email}, {$set:{
-    seen: true
-  }})
+export const markSeenAllNotification = async (req, res) => {
+  try {
+    const email = req.params.email;
+
+    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+      if (req.user.email !== email) {
+        return res.status(403).json({
+          message: "Forbidden: You can only modify your own notifications.",
+        });
+      }
+    }
+
+    const updated = await Notificaton.updateMany({ receiver: email }, { $set: { seen: true } });
+
   res.status(200).json({
     message:'Success',
     data:updated
