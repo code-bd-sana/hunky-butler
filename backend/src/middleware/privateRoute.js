@@ -1,7 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import User from "../models/user.model.js";
 
-const getSecret = () => process.env.NEXTAUTH_SECRET || "aidfjnvociydfnovfadf";
+const getSecret = () => process.env.NEXTAUTH_SECRET;
 
 /**
  * Extracts and verifies user payload from NextAuth token (cookie or Authorization header)
