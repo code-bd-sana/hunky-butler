@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 export const userRegister = async (req, res) => {
   try {
     const { email, password, role, phone } = req.body;
+    const allowedRole = role === "butler" ? "butler" : "customer";
     const hashPassword = await bcrypt.hash(password, 10);
 
     const isExist = await User.findOne({ email: email });
@@ -18,7 +19,7 @@ export const userRegister = async (req, res) => {
     const newUser = new User({
       email,
       password: hashPassword,
-      role,
+      role: allowedRole,
       phone, // Added phone
     });
 
@@ -72,9 +73,12 @@ export const login = async (req, res, next) => {
       });
     }
 
+    const userData = isExist.toObject();
+    delete userData.password;
+    
     res.status(201).json({
       message: "Login Success",
-      data: isExist,
+      data: userData,
     });
   } catch (error) {
     res.status(500).json({
