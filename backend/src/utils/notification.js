@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
   secure: process.env.SMTP_SECURE === 'true',
   auth: {
     user: process.env.SMTP_USER || "booking@hunkybutlerservice.co.uk",
-    pass: process.env.SMTP_PASS || "g~lbRZf3X$",
+    pass: process.env.SMTP_PASS,
   },
 });
 
