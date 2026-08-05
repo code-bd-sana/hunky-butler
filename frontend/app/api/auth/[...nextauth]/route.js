@@ -9,7 +9,7 @@ const handler = NextAuth({
     maxAge: 30 * 24 * 60 * 60,
   },
 
-    secret: process.env.NEXTAUTH_SECRET || "aidfjnvociydfnovfadf",
+  secret: process.env.NEXTAUTH_SECRET,
 
  providers: [
     GoogleProvider({
