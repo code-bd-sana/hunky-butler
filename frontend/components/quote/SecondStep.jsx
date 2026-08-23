@@ -3,6 +3,7 @@ import { useBookingMutation, useUpdaterStatusMutation } from "@/features/booking
 import { useGetServiceQuery } from "@/features/services/servicesApi";
 import image from "@/public/quote/bg.png";
 import { base_url } from "@/utils/utils";
+import { mapsJsUrl } from "@/lib/googleMaps";
 import { loadStripe } from "@stripe/stripe-js";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
@@ -563,7 +564,9 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
   useEffect(() => {
     if (!window.google) {
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA&libraries=places`;
+      const src = mapsJsUrl("places");
+      if (!src) return; // no key configured, skip autocomplete rather than 403
+      script.src = src;
       script.async = true;
       script.defer = true;
       document.head.appendChild(script);

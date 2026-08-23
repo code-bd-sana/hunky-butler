@@ -1,4 +1,5 @@
 "use client";
+import { mapEmbedUrl } from "@/lib/googleMaps";
 import React, { useState, useEffect } from "react";
 import { MdKeyboardArrowDown, MdChevronLeft, MdChevronRight, MdStar, MdLocationOn } from "react-icons/md";
 import { LuArrowUpRight } from "react-icons/lu";
@@ -18,7 +19,7 @@ const MapModal = ({ location, postCode, isOpen, onClose }) => {
   // Construct the Google Maps embed URL
   const getMapUrl = () => {
     const query = postCode || location;
-    return `https://www.google.com/maps/embed/v1/place?key=AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA&q=${encodeURIComponent(query)}`;
+    return mapEmbedUrl(query);
   };
 
   // Construct the Google Maps direct link
@@ -132,7 +133,7 @@ const BookingDetailsModal = ({ booking, isOpen, onClose, onOpenMap }) => {
                   height="100%"
                   frameBorder="0"
                   style={{ border: 0 }}
-                  src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA&q=${encodeURIComponent(booking.postCode)}`}
+                  src={mapEmbedUrl(booking.postCode)}
                   allowFullScreen
                   loading="lazy"
                 />
