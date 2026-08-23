@@ -6,11 +6,16 @@ export default function HomeBanner() {
   return (
     <section className='relative h-[100vh] w-full overflow-hidden'>
       {/* Background Video */}
+      {/* The poster paints immediately while the 7.2 MB video streams in, so
+          the Largest Contentful Paint no longer waits on video data. Without
+          it the hero was blank until enough of the file had arrived. */}
       <video
         autoPlay
         loop
         muted
         playsInline
+        preload='metadata'
+        poster='/videos/hero-poster.jpg'
         className='absolute inset-0 h-full w-full object-cover'
         title='Buff Butlers Hen Party Entertainment UK'
         aria-label='Buff butlers and hen party entertainment across the UK'>

@@ -692,6 +692,7 @@ const GooglePlacesAutocomplete = ({ onLocationSelect, value }) => {
           type='text'
           name='location'
           id='location'
+                      autoComplete='street-address'
           value={query}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
@@ -1236,6 +1237,7 @@ export default function SecondStep() {
                       type='text'
                       name='firstname'
                       id='firstname'
+                      autoComplete='given-name'
                       placeholder='First Name'
                       className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'
                     />
@@ -1251,6 +1253,7 @@ export default function SecondStep() {
                       type='text'
                       name='lastName'
                       id='lastName'
+                      autoComplete='family-name'
                       placeholder='Last Name'
                       className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'
                     />
@@ -1269,6 +1272,7 @@ export default function SecondStep() {
                       type='email'
                       name='email'
                       id='email'
+                      autoComplete='email'
                       defaultValue={session?.user?.email}
                       placeholder='Email'
                       className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'
@@ -1285,6 +1289,8 @@ export default function SecondStep() {
                       type='tel'
                       name='phone'
                       id='phone'
+                      autoComplete='tel'
+                      inputMode='tel'
                       placeholder='e.g., 07123456789'
                       pattern='[0-9+\-\s()]{10,}'
                       className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669]'
@@ -1307,6 +1313,7 @@ export default function SecondStep() {
                       type='text'
                       name='postCode'
                       id='postCode'
+                      autoComplete='postal-code'
                       placeholder='e.g., SW1A 1AA'
                       pattern='[A-Za-z]{1,2}[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}'
                       className='bg-[#00000066] text-white mt-1 outline-0 w-full placeholder:text-white border-1 py-3.5 px-4 rounded-lg border-[#6D6669] uppercase'

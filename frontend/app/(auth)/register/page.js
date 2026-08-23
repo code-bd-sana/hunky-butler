@@ -3,12 +3,22 @@
 import { useSaveRegisterMutation } from "@/features/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 
-export default function Page() {
+function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState("customer");
+  // "Register as Butler" on /joinTheTeam used to land here with the role
+  // toggle defaulting to Customer, so applicants silently created the wrong
+  // kind of account unless they noticed and switched it. The link now passes
+  // ?role=butler and the toggle honours it. Anything unrecognised falls back
+  // to customer.
+  const searchParams = useSearchParams();
+  const requestedRole = searchParams.get("role");
+  const [role, setRole] = useState(
+    requestedRole === "butler" ? "butler" : "customer"
+  );
 
   const roleImage = {
     customer: {
@@ -282,5 +292,13 @@ export default function Page() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
   );
 }

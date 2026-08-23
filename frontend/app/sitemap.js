@@ -1,4 +1,5 @@
 import locations from "./locations/locations.json";
+import { base_url } from "@/utils/utils";
 
 const BASE_URL = "https://www.hunkybutlerservice.co.uk";
 
@@ -19,7 +20,40 @@ const staticRoutes = [
   "terms-and-conditon",
   ];
 
-export default function sitemap() {
+/**
+ * Published blog posts. Previously no post appeared in the sitemap at all, and
+ * because the listing page linked to them with router.push rather than an
+ * anchor, they had no internal links either. Every article was therefore
+ * unreachable by a crawler. Only `active` posts are submitted, so the
+ * lorem-ipsum drafts still held in the API stay out.
+ */
+async function getBlogEntries() {
+  try {
+    const res = await fetch(`${base_url}/blogs`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+
+    const payload = await res.json();
+    const posts = Array.isArray(payload)
+      ? payload
+      : payload?.data || payload?.blogs || [];
+
+    return posts
+      .filter((post) => post?.status === "active" && post?.slug)
+      .map((post) => ({
+        url: `${BASE_URL}/blog/${post.slug}`,
+        lastModified: new Date(post.updatedAt || post.date || post.createdAt),
+        changeFrequency: "monthly",
+        priority: 0.6,
+      }));
+  } catch {
+    // A sitemap missing its blog section is far better than a build failure.
+    return [];
+  }
+}
+
+export default async function sitemap() {
   const staticEntries = staticRoutes.map((route) => ({
     url: route ? BASE_URL + "/" + route : BASE_URL,
     lastModified: new Date(),
@@ -46,5 +80,7 @@ export default function sitemap() {
   // emailed review links), so submitting /review to Google would point at a
   // dead URL.
 
-  return staticEntries.concat(locationEntries);
+  const blogEntries = await getBlogEntries();
+
+  return staticEntries.concat(locationEntries, blogEntries);
 }

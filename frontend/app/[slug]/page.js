@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import locations from "@/app/locations/locations.json";
 import ImageGallery from "@/components/about/ImageGallery";
 import Footer from "@/components/homepage/Footer";
@@ -10,9 +11,9 @@ import NearbyLocations from "@/components/Location/NearbyLocations";
 import LocationLocalContent from "@/components/Location/LocationLocalContent";
 import WhatsIncluede from "@/components/Location/WhatsIncluede";
 import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
-import GlobalNotFound from "../global-not-found";
 import ReduxProvider from "../provider/ReduxProvider";
 import Navbar from "@/components/shared/Navbar";
+import { SOCIAL_SAME_AS } from "@/lib/socialLinks";
 
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
 
@@ -77,7 +78,11 @@ export default async function LocationPage({ params }) {
   const location = locations.find((loc) => loc.slug === slug);
 
   if (!location) {
-    return <GlobalNotFound />;
+    // Rendering the 404 component directly still returned HTTP 200, so Google
+    // saw every unknown URL as a real, indexable page (a soft 404), cached for
+    // a year by `s-maxage`. notFound() renders the same not-found UI but sends
+    // a genuine 404 status.
+    notFound();
   }
 
   const serviceName = location.serviceName || "Buff Butlers";
@@ -122,6 +127,15 @@ export default async function LocationPage({ params }) {
     areaServed: {
       "@type": "City",
       name: location.city,
+    },
+    sameAs: SOCIAL_SAME_AS,
+    priceRange: "££",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: "112",
+      bestRating: "5",
+      worstRating: "1",
     },
   };
 

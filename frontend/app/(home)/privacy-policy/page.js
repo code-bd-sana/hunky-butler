@@ -1,3 +1,31 @@
+
+// Without its own metadata this page inherited the homepage title and
+// description verbatim, so several URLs competed on one title.
+export const metadata = {
+  title: "Privacy Policy | Hunky Butler Service",
+  description:
+    "How Hunky Butler Service collects, uses and protects your personal data when you request a quote or make a booking.",
+  alternates: { canonical: "https://www.hunkybutlerservice.co.uk/privacy-policy" },
+  openGraph: {
+    title: "Privacy Policy | Hunky Butler Service",
+    description:
+      "How Hunky Butler Service collects, uses and protects your personal data when you request a quote or make a booking.",
+    url: "https://www.hunkybutlerservice.co.uk/privacy-policy",
+    siteName: "Hunky Butler Service",
+    type: "website",
+    images: [{ url: "https://www.hunkybutlerservice.co.uk/logo.png" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | Hunky Butler Service",
+    description:
+      "How Hunky Butler Service collects, uses and protects your personal data when you request a quote or make a booking.",
+    images: ["https://www.hunkybutlerservice.co.uk/logo.png"],
+  },
+  // Legal boilerplate carries no search value and can dilute crawl budget.
+  robots: { index: false, follow: true },
+};
+
 export default function PrivacyPolicy() {
   return (
     <div className='min-h-screen bg-white text-gray-900'>

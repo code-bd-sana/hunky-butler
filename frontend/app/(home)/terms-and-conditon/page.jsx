@@ -1,6 +1,34 @@
 import Footer from "@/components/homepage/Footer";
 import Link from "next/link";
 
+// Without its own metadata this page inherited the homepage title and
+// description verbatim, so several URLs competed on one title.
+export const metadata = {
+  title: "Terms & Conditions | Hunky Butler Service",
+  description:
+    "The terms and conditions that apply to bookings made with Hunky Butler Service, including our price match promise.",
+  alternates: { canonical: "https://www.hunkybutlerservice.co.uk/terms-and-conditon" },
+  openGraph: {
+    title: "Terms & Conditions | Hunky Butler Service",
+    description:
+      "The terms and conditions that apply to bookings made with Hunky Butler Service, including our price match promise.",
+    url: "https://www.hunkybutlerservice.co.uk/terms-and-conditon",
+    siteName: "Hunky Butler Service",
+    type: "website",
+    images: [{ url: "https://www.hunkybutlerservice.co.uk/logo.png" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms & Conditions | Hunky Butler Service",
+    description:
+      "The terms and conditions that apply to bookings made with Hunky Butler Service, including our price match promise.",
+    images: ["https://www.hunkybutlerservice.co.uk/logo.png"],
+  },
+  // Legal boilerplate carries no search value and can dilute crawl budget.
+  robots: { index: false, follow: true },
+};
+
+
 export default function TermsAndConditon() {
   return (
     <div className='min-h-screen bg-white text-gray-900'>

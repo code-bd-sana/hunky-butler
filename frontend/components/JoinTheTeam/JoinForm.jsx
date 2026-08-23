@@ -166,12 +166,15 @@ const JoinForm = () => {
             {!isSessionLoading && !isAuthenticated && (
               <div className='bg-white rounded-3xl p-6 border border-[#efe7ea] space-y-4'>
                 <p className='text-[#424242] font-medium'>
-                  To fill up this form, please register, verify your account,
-                  and login first.
+                  To apply, please register an account, verify your email and
+                  log in. The application form will then appear here.
                 </p>
                 <div className='flex flex-wrap gap-3'>
                   <Link
-                    href='/register'
+                    // Passing the role means the registration toggle arrives
+                    // preset to Butler. It previously defaulted to Customer,
+                    // so applicants had to notice and switch it themselves.
+                    href='/register?role=butler'
                     className='px-6 py-3 bg-[#FF006A] text-white rounded-full font-medium hover:bg-[#e5005f] transition-colors'>
                     Register as Butler
                   </Link>
