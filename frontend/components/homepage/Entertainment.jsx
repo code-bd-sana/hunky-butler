@@ -22,9 +22,9 @@ const Entertainment = () => {
           />
         </div>
         <div className="w-full md:w-1/2 space-y-6">
-          <h1 className="text-2xl md:text-5xl leading-tight text-center md:text-start font-medium">
+          <h2 className="text-2xl md:text-5xl leading-tight text-center md:text-start font-medium">
             Entertainment Services Available Nationwide
-          </h1>
+          </h2>
           <p className="text-[#3D3D3D] text-base md:text-lg">
             We provide Buff Butlers, Cocktail Classes, Strippers, and Life
             Drawing across major UK cities including London, Manchester,

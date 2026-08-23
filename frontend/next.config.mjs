@@ -48,6 +48,19 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Private to a logged-in user. Never index, and do not crawl deeper.
+        source: "/dashboard/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        // Account routes are mid-journey utilities, not landing pages. They
+        // were neither submitted to the sitemap nor explicitly excluded.
+        // These layouts are client components and so cannot export route
+        // metadata, which is why this is done with a header.
+        source: "/:path(login|register|verification|otp)",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, follow" }],
+      },
+      {
         source: "/videos/:path*",
         headers: [
           {
@@ -197,14 +210,41 @@ const nextConfig = {
         permanent: true,
       },
       {
+        // Points at the corrected spelling directly. Sending it to the old
+        // path would create a redirect chain now that /terms-and-conditon
+        // itself redirects.
         source: "/index.php/trademark",
-        destination: "/terms-and-conditon",
+        destination: "/terms-and-conditions",
         permanent: true,
       },
       // Old downloadable asset, no longer exists -> homepage
       {
         source: "/wp-content/uploads/2015/06/Hunky-Butler-Service-Games.pdf",
         destination: "/",
+        permanent: true,
+      },
+
+      // Spelling corrections. The misspelled paths are live and may be linked
+      // externally, so they are redirected rather than removed.
+      {
+        // "conditon" is missing an i. The correct spelling is now canonical.
+        source: "/terms-and-conditon",
+        destination: "/terms-and-conditions",
+        permanent: true,
+      },
+      {
+        // "middlesborough" should be "middlesbrough". Cheap to fix now while
+        // the page is still noindexed and has no accumulated equity.
+        source: "/buff-butlers-middlesborough",
+        destination: "/buff-butlers-middlesbrough",
+        permanent: true,
+      },
+
+      // /signup was never a real route and served the not-found page.
+      // Registration lives at /register.
+      {
+        source: "/signup",
+        destination: "/register",
         permanent: true,
       },
     ];

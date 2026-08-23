@@ -5,7 +5,7 @@ import Image from "next/image";
 import author from "@/public/Dashboard/article/author.png";
 import WritingBlog from "./WritingBlog";
 import {
-  useGetBlogsQuery,
+  useGetAllBlogsForAdminQuery,
   useUpdateBlogMutation,
   useDeleteBlogMutation,
 } from "@/features/blogApi";
@@ -16,7 +16,7 @@ export default function ArticleManagement() {
   const [editArticle, setEditArticle] = useState(null); // track editing blog
 
   // Fetch blogs
-  const { data: blogs = [], isLoading, isError } = useGetBlogsQuery();
+  const { data: blogs = [], isLoading, isError } = useGetAllBlogsForAdminQuery();
 
   // Mutations
   const [updateBlog] = useUpdateBlogMutation();

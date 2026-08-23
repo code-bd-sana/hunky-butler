@@ -52,9 +52,9 @@ export default function About() {
         }
       ></ServAndAboutBanner>
       <div className="max-w-7xl mx-auto py-24 text-center">
-        <h1 className="text-xl md:text-2xl lg:text-5xl">
+        <h2 className="text-xl md:text-2xl lg:text-5xl">
           Our Story and What We Do
-        </h1>
+        </h2>
         <p className="text-center font-medium pt-6 text-xl w-11/12 mx-auto">
           At Hunky Butler Service, we believe great parties should be
           effortless, fun, and full of laughter. Originally founded by Alex Ryan
