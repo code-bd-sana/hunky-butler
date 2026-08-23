@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js",
     "pay:test": "node scripts/toggle-payment.js test",
-    "pay:live": "node scripts/toggle-payment.js live"
+    "pay:live": "node scripts/toggle-payment.js live",
+    "test:sanitize": "node src/utils/sanitizeBooking.test.js"
   },
   "author": "",
   "license": "ISC",

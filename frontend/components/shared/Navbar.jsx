@@ -6,14 +6,22 @@ import { usePathname } from "next/navigation";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 
 import {
-  FaTumblr,
   FaInstagram,
   FaFacebook,
   FaWhatsapp,
-  FaTelegram,
+  FaTiktok,
 } from "react-icons/fa";
 import logo from "@/public/logo/logo.png";
 import ServicePopup from "../servicePopup/ServicePopup";
+import { SOCIAL_LINKS, HEADER_SOCIAL_LINKS } from "@/lib/socialLinks";
+
+// Mobile menu renders react-icons rather than the PNG set used on desktop.
+const MOBILE_SOCIAL_ICONS = {
+  facebook: FaFacebook,
+  instagram: FaInstagram,
+  tiktok: FaTiktok,
+  whatsapp: FaWhatsapp,
+};
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -114,72 +122,20 @@ const Navbar = () => {
 
           {/* Desktop Social + Button */}
           <div className="hidden xl:flex items-center gap-[32px]">
+            {/* Desktop social icons, from lib/socialLinks.js. Only profiles
+                that actually exist are rendered. */}
             <div className="flex gap-4">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Hunky Butler Service on Facebook"
-              >
-                <Image
-                  src="/socialIcon/fb.png"
-                  alt="Facebook"
-                  width={24}
-                  height={24}
-                />
-              </a>
-              <a
-                href="https://whatsapp.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Contact Hunky Butler Service on WhatsApp"
-              >
-                <Image
-                  src="/socialIcon/wp.png"
-                  alt="WhatsApp"
-                  width={24}
-                  height={24}
-                />
-              </a>
-              <a
-                href="https://t.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Hunky Butler Service on Tumblr"
-              >
-                <Image
-                  src="/socialIcon/t.png"
-                  alt="Tumblr"
-                  width={14}
-                  height={24}
-                />
-              </a>
-              <a
-                href="https://telegram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Hunky Butler Service on Telegram"
-              >
-                <Image
-                  src="/socialIcon/telegram.png"
-                  alt="Telegram"
-                  width={24}
-                  height={24}
-                />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Hunky Butler Service on Instagram"
-              >
-                <Image
-                  src="/socialIcon/insta.png"
-                  alt="Instagram"
-                  width={24}
-                  height={24}
-                />
-              </a>
+              {HEADER_SOCIAL_LINKS.map(({ key, href, label, name, icon }) => (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                >
+                  <Image src={icon} alt={name} width={24} height={24} />
+                </a>
+              ))}
             </div>
 
             <Link
@@ -234,48 +190,23 @@ const Navbar = () => {
                 </Link>
               ))}
 
-              {/* Social Icons */}
+              {/* Social Icons, from lib/socialLinks.js */}
               <div className="flex justify-center gap-4 mt-4">
-                <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Hunky Butler Service on Facebook"
-                >
-                  <FaFacebook size={32} />
-                </a>
-                <a
-                  href="https://whatsapp.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Contact Hunky Butler Service on WhatsApp"
-                >
-                  <FaWhatsapp size={32} />
-                </a>
-                <a
-                  href="https://t.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Hunky Butler Service on Tumblr"
-                >
-                  <FaTumblr size={32} />
-                </a>
-                <a
-                  href="https://telegram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Hunky Butler Service on Telegram"
-                >
-                  <FaTelegram size={32} />
-                </a>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Hunky Butler Service on Instagram"
-                >
-                  <FaInstagram size={32} />
-                </a>
+                {SOCIAL_LINKS.map(({ key, href, label }) => {
+                  const Icon = MOBILE_SOCIAL_ICONS[key];
+                  if (!Icon) return null;
+                  return (
+                    <a
+                      key={key}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                    >
+                      <Icon size={32} />
+                    </a>
+                  );
+                })}
               </div>
 
               {/* Quote Button */}

@@ -1,6 +1,34 @@
 import Footer from "@/components/homepage/Footer";
 import Link from "next/link";
 
+// Without its own metadata this page inherited the homepage title and
+// description verbatim, so several URLs competed on one title.
+export const metadata = {
+  title: "Refund & Cancellation Policy | Hunky Butler Service",
+  description:
+    "Our refund and cancellation terms for buff butler, life drawing, cocktail masterclass and stripper bookings.",
+  alternates: { canonical: "https://www.hunkybutlerservice.co.uk/refund-policy" },
+  openGraph: {
+    title: "Refund & Cancellation Policy | Hunky Butler Service",
+    description:
+      "Our refund and cancellation terms for buff butler, life drawing, cocktail masterclass and stripper bookings.",
+    url: "https://www.hunkybutlerservice.co.uk/refund-policy",
+    siteName: "Hunky Butler Service",
+    type: "website",
+    images: [{ url: "https://www.hunkybutlerservice.co.uk/logo.png" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Refund & Cancellation Policy | Hunky Butler Service",
+    description:
+      "Our refund and cancellation terms for buff butler, life drawing, cocktail masterclass and stripper bookings.",
+    images: ["https://www.hunkybutlerservice.co.uk/logo.png"],
+  },
+  // Legal boilerplate carries no search value and can dilute crawl budget.
+  robots: { index: false, follow: true },
+};
+
+
 export default function RefundAndPolicy() {
   return (
     <div className='min-h-screen bg-white text-gray-900'>

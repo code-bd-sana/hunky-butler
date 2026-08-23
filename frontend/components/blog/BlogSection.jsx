@@ -2,11 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useGetBlogsQuery } from "@/features/blogApi";
 
 const BlogSection = () => {
-  const router = useRouter();
   const { data: blogs = [], isLoading, isError } = useGetBlogsQuery();
 
   if (isLoading) {
@@ -32,16 +31,21 @@ const BlogSection = () => {
     <section className="max-w-[1240px] mx-auto px-4 py-4 md:py-12 pb-[500px]">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
         {activeBlogs.map((post) => (
-          <div
+          // Was a <div> navigating with router.push on click. That produced no
+          // anchor, so the listing contained zero crawlable links to any post
+          // and every article was orphaned. A real <Link> keeps the identical
+          // click behaviour while giving crawlers (and middle-click, and
+          // "open in new tab") something to follow.
+          <Link
             key={post._id}
-            className="rounded-2xl overflow-hidden cursor-pointer"
-            onClick={() => router.push(`/blog/${post.slug}`)} 
+            href={`/blog/${post.slug}`}
+            className="rounded-2xl overflow-hidden cursor-pointer block"
           >
             {/* Thumbnail */}
             {post.thumbnailUrl && (
               <Image
                 src={post.thumbnailUrl}
-                alt="Hen party ideas and games UK"
+                alt={post.title || "Hen party ideas and games UK"}
                 width={396}
                 height={372}
                 className="w-full h-64 object-cover rounded-lg"
@@ -68,7 +72,7 @@ const BlogSection = () => {
                 ...
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

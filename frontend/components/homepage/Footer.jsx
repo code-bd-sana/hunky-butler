@@ -5,12 +5,21 @@ import Link from "next/link";
 import {
   FaFacebookF,
   FaInstagram,
-  FaTumblr,
-  FaTwitter,
-  FaYoutube,
+  FaTiktok,
+  FaWhatsapp,
 } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { IoCallSharp } from "react-icons/io5";
+import { SOCIAL_LINKS } from "@/lib/socialLinks";
+
+// Maps a social profile key to its footer icon. A key with no entry here is
+// simply not rendered, so adding a profile to lib/socialLinks.js is safe.
+const FOOTER_ICONS = {
+  facebook: FaFacebookF,
+  instagram: FaInstagram,
+  tiktok: FaTiktok,
+  whatsapp: FaWhatsapp,
+};
 
 const Footer = () => {
   const data = useSession();
@@ -234,47 +243,25 @@ const Footer = () => {
             {/* Was an H1. Changed to a paragraph so each page keeps exactly one
                 H1 (its own page title). */}
             <p className='font-medium text-black text-base'>Stay In The Know</p>
+            {/* Rendered from lib/socialLinks.js so the header and footer cannot
+                drift apart. Twitter, YouTube and Tumblr icons were removed:
+                they pointed at bare platform homepages, not company profiles. */}
             <div className='flex items-center gap-4'>
-              <a
-                href='https://facebook.com'
-                target='_blank'
-                rel='noopener noreferrer'
-                aria-label='Hunky Butler Service on Facebook'
-                className='hover:text-[#FF006A] transition-colors'>
-                <FaFacebookF />
-              </a>
-              <a
-                href='https://twitter.com'
-                target='_blank'
-                rel='noopener noreferrer'
-                aria-label='Hunky Butler Service on Twitter'
-                className='hover:text-[#FF006A] transition-colors'>
-                <FaTwitter />
-              </a>
-              <a
-                href='https://instagram.com'
-                target='_blank'
-                rel='noopener noreferrer'
-                aria-label='Hunky Butler Service on Instagram'
-                className='hover:text-[#FF006A] transition-colors'>
-                <FaInstagram />
-              </a>
-              <a
-                href='https://youtube.com'
-                target='_blank'
-                rel='noopener noreferrer'
-                aria-label='Hunky Butler Service on YouTube'
-                className='hover:text-[#FF006A] transition-colors'>
-                <FaYoutube />
-              </a>
-              <a
-                href='https://tumblr.com'
-                target='_blank'
-                rel='noopener noreferrer'
-                aria-label='Hunky Butler Service on Tumblr'
-                className='hover:text-[#FF006A] transition-colors'>
-                <FaTumblr />
-              </a>
+              {SOCIAL_LINKS.map(({ key, href, label }) => {
+                const Icon = FOOTER_ICONS[key];
+                if (!Icon) return null;
+                return (
+                  <a
+                    key={key}
+                    href={href}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    aria-label={label}
+                    className='hover:text-[#FF006A] transition-colors'>
+                    <Icon />
+                  </a>
+                );
+              })}
             </div>
           </div>
           {/* Was an H1 with a truncated brand name. Now a paragraph with the

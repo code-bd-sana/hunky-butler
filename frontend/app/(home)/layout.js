@@ -4,6 +4,7 @@ import Navbar from "@/components/shared/Navbar";
 import { SessionProvider } from "next-auth/react";
 import { Poppins } from "next/font/google";
 import ReduxProvider from "../provider/ReduxProvider";
+import { SOCIAL_SAME_AS } from "@/lib/socialLinks";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -68,7 +69,22 @@ const localBusinessJsonLd = {
     "postalCode": "L1 4EF",
     "addressCountry": "GB"
   },
-  "areaServed": "GB"
+  "areaServed": "GB",
+  // Links the site to its verified social profiles so search engines can
+  // connect them to this business entity.
+  "sameAs": SOCIAL_SAME_AS,
+  "priceRange": "££",
+  // Sourced from the public Trustpilot profile. Every page's meta description
+  // already claimed "5-star reviews" while no rating markup existed anywhere,
+  // so no star rating could ever appear in search results.
+  // Keep these figures in step with Trustpilot, or wire them to its API.
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "112",
+    "bestRating": "5",
+    "worstRating": "1"
+  }
 };
 
 export default function RootLayout({ children }) {

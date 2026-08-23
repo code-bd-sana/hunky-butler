@@ -56,8 +56,11 @@ const ContactForm = () => {
                   </label>
                   <input
                     id="firstName"
+                    name="firstName"
                     type="text"
-                    placeholder="Name"
+                    required
+                    autoComplete="given-name"
+                    placeholder="First name"
                     className="w-full p-3 border rounded-4xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
                   />
                 </div>
@@ -71,8 +74,11 @@ const ContactForm = () => {
                   </label>
                   <input
                     id="lastName"
+                    name="lastName"
                     type="text"
-                    placeholder="Name"
+                    required
+                    autoComplete="family-name"
+                    placeholder="Last name"
                     className="w-full p-3 border rounded-4xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
                   />
                 </div>
@@ -89,7 +95,10 @@ const ContactForm = () => {
                 </label>
                 <input
                   id="email"
+                  name="email"
                   type="email"
+                  required
+                  autoComplete="email"
                   placeholder="Email"
                   className="w-full p-3 border rounded-4xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
                 />
@@ -104,8 +113,12 @@ const ContactForm = () => {
                 </label>
                 <input
                   id="phone"
+                  name="phone"
                   type="tel"
-                  placeholder="+44 0"
+                  required
+                  autoComplete="tel"
+                  inputMode="tel"
+                  placeholder="e.g. 07123 456789"
                   className="w-full p-3 border rounded-4xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
                 />
               </div>
@@ -120,8 +133,10 @@ const ContactForm = () => {
                 </label>
                 <textarea
                   id="message"
+                  name="message"
                   rows="4"
-                  placeholder="Message"
+                  required
+                  placeholder="Tell us about your event"
                   className="w-full p-3 border rounded-2xl bg-white focus:ring-2 focus:ring-pink-500 outline-none placeholder-black"
                 ></textarea>
               </div>

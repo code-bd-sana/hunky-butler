@@ -5,6 +5,7 @@ import PaymentHistory from "../models/payment.model.js";
 import User from "../models/user.model.js";
 import { adminGmail, storeNotification } from "../utils/utils.js";
 import { sendNotification } from "../utils/notification.js";
+import { audienceFromRequest, sanitizeBooking, sanitizeBookings } from "../utils/sanitizeBooking.js";
 
 export const getAllBooking = async (req, res) => {
   try {
@@ -27,7 +28,7 @@ export const getAllBooking = async (req, res) => {
 
     res.status(200).json({
       message: "Success",
-      data: allBooking,
+      data: sanitizeBookings(allBooking, audienceFromRequest(req)),
       total,
     });
   } catch (error) {
@@ -68,7 +69,7 @@ export const getBookingButler = async (req, res) => {
 
     res.status(200).json({
       message: "Success",
-      data: allBooking,
+      data: sanitizeBookings(allBooking, audienceFromRequest(req)),
       total,
     });
   } catch (error) {
@@ -109,7 +110,7 @@ export const getBookingCustomer = async (req, res) => {
 
     res.status(200).json({
       message: "Success",
-      data: allBooking,
+      data: sanitizeBookings(allBooking, audienceFromRequest(req)),
       total,
     });
   } catch (error) {
@@ -200,7 +201,8 @@ export const createBooking = async (req, res) => {
 
     res.status(200).json({
       message: "Booking created and notifications sent successfully",
-      data: savedData,
+      // This endpoint is public. Never return internal cost or margin fields.
+      data: sanitizeBooking(savedData, audienceFromRequest(req)),
     });
   } catch (error) {
     console.error("Error in createBooking:", error);

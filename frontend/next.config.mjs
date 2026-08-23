@@ -39,6 +39,26 @@ const nextConfig = {
       },
     ],
   },
+  // The hero video was served with `cache-control: public, max-age=0`, so a
+  // 7.2 MB file was re-downloaded on every single visit, on mobile as well as
+  // desktop. These assets are static and change only when someone replaces the
+  // file, so they can be cached hard. stale-while-revalidate is used instead of
+  // `immutable` because the filenames are not content-hashed: a replaced video
+  // still propagates, it just serves the old copy once while refreshing.
+  async headers() {
+    return [
+      {
+        source: "/videos/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+    ];
+  },
+
   // 301 redirects from legacy WordPress URLs (found via Google Search Console's
   // "Page indexing" > Not found (404) report) to their nearest equivalent on the
   // new Next.js site. Old WordPress theme-demo/builder URLs (e.g. /layouts/*,
