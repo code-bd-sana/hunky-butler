@@ -13,10 +13,10 @@ const Planning = ({ title, highlight, description }) => {
   return (
     <section className='max-w-[1240px] mx-auto px-4 py-4 md:py-12 pb-[500px]'>
       <div className='text-center mb-6 md:mb-20 space-y-6'>
-        <h1 className='text-2xl md:text-5xl font-semibold'>
+        <h2 className='text-2xl md:text-5xl font-semibold'>
           {title}
           <span className='text-[#FF006A] italic'>{highlight}</span>
-        </h1>
+        </h2>
         <p className='text-base md:text-lg md:w-3/5 mx-auto'>{description}</p>
       </div>
 

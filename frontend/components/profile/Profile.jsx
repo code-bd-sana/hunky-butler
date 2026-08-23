@@ -804,7 +804,7 @@ export default function Profile() {
                 <label htmlFor="agreeTerms" className="text-sm text-[#424242] cursor-pointer">
                   I agree to the{" "}
                   <a 
-                    href="/terms-and-conditon" 
+                    href="/terms-and-conditions" 
                     className="text-[#FF006A] hover:underline font-medium"
                     target="_blank"
                     rel="noopener noreferrer"

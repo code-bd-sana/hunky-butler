@@ -22,10 +22,10 @@ export default function ALLServices() {
     <section className="pb-12 md:pb-24">
       <div style={{ backgroundImage: `url(${background.src})` }}>
         <div className="max-w-7xl mx-auto mt-10 pt-10">
-          <h1 className="text-center text-[#141414] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-snug  max-w-7xl mx-auto  ">
+          <h2 className="text-center text-[#141414] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium leading-snug  max-w-7xl mx-auto  ">
             What Party Entertainment Services Do We Offer?
-          </h1>
-          <h1 className="text-center font-medium pt-6 text-base md:text-lg  lg:text-xl">
+          </h2>
+          <p className="text-center font-medium pt-6 text-base md:text-lg  lg:text-xl">
             Planning a hen party, birthday, or ladies night? At Hunky Butler
             Service, we’ve got you covered with a choice of entertainment
             packages to suit every group. Whether you’re after cheeky charm,
@@ -35,7 +35,7 @@ export default function ALLServices() {
               Explore our options below and click through to learn more about
               each service.
             </span>
-          </h1>
+          </p>
         </div>
 
         <div className="max-w-7xl mx-auto pt-30 px-4 md:px-6 space-y-20">

@@ -18,10 +18,10 @@ const JoinBlog = () => {
   return (
     <section className="max-w-[1240px] mx-auto px-4 py-4 md:py-12">
       <div className="text-center mb-6 md:mb-20 space-y-4">
-        <h1 className="text-2xl md:text-5xl font-semibold leading-tight">
+        <h2 className="text-2xl md:text-5xl font-semibold leading-tight">
           Planning{" "}
           <span className="text-[#FF006A] italic">Inspiration & Tips</span>
-        </h1>
+        </h2>
         <p className="text-[#808080] text-sm md:text-base max-w-2xl mx-auto">
           Not sure where to start? Our blog is full of ideas to make your Next
           Event unique. From cocktail recipes to creative party games, we share

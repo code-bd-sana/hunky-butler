@@ -184,7 +184,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href='/terms-and-conditon'
+                  href='/terms-and-conditions'
                   target='_blank'
                   rel='noopener noreferrer'
                   className='hover:text-[#FF006A] transition-colors'>

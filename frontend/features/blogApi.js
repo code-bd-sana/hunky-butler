@@ -27,6 +27,13 @@ export const blogApi = createApi({
       providesTags: ["Blogs"],
     }),
 
+    // Admin listing, includes unpublished drafts. The public /blogs route
+    // returns published posts only, so the dashboard needs this one.
+    getAllBlogsForAdmin: builder.query({
+      query: () => "/blogs/admin/all",
+      providesTags: ["Blogs"],
+    }),
+
     // ✅ Fetch single blog by Slug
     getBlogBySlug: builder.query({
       query: (slug) => `/blogs/${slug}`,
@@ -67,6 +74,7 @@ export const blogApi = createApi({
 // Export hooks
 export const {
   useGetBlogsQuery,
+  useGetAllBlogsForAdminQuery,
   useGetBlogBySlugQuery,
   useAddBlogMutation,
   useUpdateBlogMutation,

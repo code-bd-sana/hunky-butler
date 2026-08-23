@@ -74,10 +74,10 @@ const Frequently = () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <div className="text-center mb-8 md:mb-20 space-y-2 md:space-y-6">
-        <h1 className="text-2xl md:text-5xl font-semibold">
+        <h2 className="text-2xl md:text-5xl font-semibold">
           Frequently Asked
           <span className="text-[#FF006A] italic"> Questions</span>
-        </h1>
+        </h2>
         <p className="text-lg text-[#333333] md:w-5/6 mx-auto">
           Got a question before booking? Here are answers to some of the most
           common queries about our Buff Butlers, Cocktail Classes, Life Drawing

@@ -251,26 +251,60 @@ const applyLongDistanceMinimum = (
   };
 };
 
+/**
+ * Quoting depends on two free third-party APIs: postcodes.io for geocoding and
+ * the public OSRM demo server for driving distance. Neither had a timeout, so a
+ * hanging request would block the quote indefinitely. The OSRM fallback below
+ * only ever triggered on an error, never on a hang, which is the more likely
+ * failure mode for a rate-limited public endpoint.
+ *
+ * fetchWithTimeout aborts after a fixed budget so a slow dependency degrades
+ * into the existing fallback path instead of stalling the customer.
+ */
+const FETCH_TIMEOUT_MS = 4000;
+
+const fetchWithTimeout = async (url, timeoutMs = FETCH_TIMEOUT_MS) => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
+// UK postcode coordinates never move, and a customer typically triggers several
+// recalculations while adjusting staff count and duration. Caching for the life
+// of the page removes almost all repeat calls to both APIs.
+const postcodeCache = new Map();
+const distanceCache = new Map();
+
 // Postcode to coordinates lookup
 const lookupPostcodeCoordinates = async (postcode) => {
+  const key = String(postcode || "").toUpperCase().replace(/\s+/g, "");
+  if (postcodeCache.has(key)) return postcodeCache.get(key);
+
   try {
-    const response = await fetch(
+    const response = await fetchWithTimeout(
       `https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}`,
     );
     const data = await response.json();
-    console.log(data, "KM ");
 
     if (data.status === 200) {
-      return {
+      const result = {
         lat: data.result.latitude,
         lng: data.result.longitude,
         success: true,
       };
+      postcodeCache.set(key, result);
+      return result;
     } else {
       throw new Error("Postcode not found");
     }
   } catch (error) {
-    console.error("Postcode lookup failed:", error);
+    // An aborted request lands here too, which is intentional: the caller
+    // treats any failure as "could not resolve this postcode".
+    console.error("Postcode lookup failed:", error?.name || error);
     return {
       success: false,
       error: "Unable to lookup postcode coordinates",
@@ -313,39 +347,42 @@ const calculateBasePrice = (serviceSlug, durationHours, numberOfStaff) => {
   return 150;
 };
 
+// Straight-line distance with a road factor. Used whenever the router is
+// unavailable, too slow, or returns no route.
+const estimateRoadMiles = (lat1, lon1, lat2, lon2) => {
+  const haversineKm = haversineDistance(lat1, lon1, lat2, lon2);
+  const roadFactor = 1.3; // Realistic road distance multiplier
+  return haversineKm * roadFactor * 0.621371;
+};
+
 const getRoadDistanceInMiles = async (lat1, lon1, lat2, lon2) => {
+  const key = [lat1, lon1, lat2, lon2].map((n) => Number(n).toFixed(4)).join(",");
+  if (distanceCache.has(key)) return distanceCache.get(key);
+
+  let miles;
   try {
-    // First try HTTPS OSRM if available
+    // router.project-osrm.org is the OSRM project's free public demo server. It
+    // is explicitly not intended for production use and is rate limited, so the
+    // request is time-boxed and any failure falls through to the estimate.
     const url = `https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`;
-    const res = await fetch(url);
+    const res = await fetchWithTimeout(url);
 
     if (!res.ok) throw new Error("OSRM API failed");
 
     const data = await res.json();
 
     if (data.routes && data.routes.length > 0) {
-      const meters = data.routes[0].distance;
-      const miles = meters * 0.000621371;
-      console.log("✅ OSRM distance calculated:", miles);
-      return miles;
+      miles = data.routes[0].distance * 0.000621371;
+    } else {
+      throw new Error("No route found");
     }
-    throw new Error("No route found");
   } catch (err) {
-    console.error("OSRM failed, using fallback:", err);
-
-    // Fallback: Haversine with road factor
-    const haversineKm = haversineDistance(lat1, lon1, lat2, lon2);
-    const roadFactor = 1.3; // Realistic road distance multiplier
-    const estimatedMiles = haversineKm * roadFactor * 0.621371;
-
-    console.log("📍 Fallback distance calculated:", {
-      straightLineKm: haversineKm.toFixed(2),
-      estimatedRoadMiles: estimatedMiles.toFixed(2),
-      factor: roadFactor,
-    });
-
-    return estimatedMiles;
+    console.error("Routing unavailable, using estimate:", err?.name || err);
+    miles = estimateRoadMiles(lat1, lon1, lat2, lon2);
   }
+
+  distanceCache.set(key, miles);
+  return miles;
 };
 // Main Price Calculation Function
 const calculatePrice = async (
