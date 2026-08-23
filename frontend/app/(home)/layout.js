@@ -18,7 +18,15 @@ const poppins = Poppins({
 //   description: "Buff Butlers, Life Drawing, Cocktail Masterclasses & More, We Bring the Fun to You.",
 // };
 
+const SITE_URL = "https://www.hunkybutlerservice.co.uk";
+
 export const metadata = {
+  // The apex and www hosts both return 200 with identical content, and this
+  // layout had no canonical, so the most important URL on the site had nothing
+  // telling Google which host to credit. metadataBase also resolves the
+  // relative openGraph url below to an absolute one.
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: SITE_URL },
   title: 'Buff Butlers & Hen Party Entertainment | UK’s Hunky Butler Service',
   description:
     'Book buff butlers, topless waiters, life drawing classes, cocktail masterclasses & male strippers for hen parties across the UK. Transparent pricing, verified staff & 5-star reviews.',

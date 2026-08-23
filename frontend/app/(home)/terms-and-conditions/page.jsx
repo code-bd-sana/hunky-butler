@@ -7,12 +7,12 @@ export const metadata = {
   title: "Terms & Conditions | Hunky Butler Service",
   description:
     "The terms and conditions that apply to bookings made with Hunky Butler Service, including our price match promise.",
-  alternates: { canonical: "https://www.hunkybutlerservice.co.uk/terms-and-conditon" },
+  alternates: { canonical: "https://www.hunkybutlerservice.co.uk/terms-and-conditions" },
   openGraph: {
     title: "Terms & Conditions | Hunky Butler Service",
     description:
       "The terms and conditions that apply to bookings made with Hunky Butler Service, including our price match promise.",
-    url: "https://www.hunkybutlerservice.co.uk/terms-and-conditon",
+    url: "https://www.hunkybutlerservice.co.uk/terms-and-conditions",
     siteName: "Hunky Butler Service",
     type: "website",
     images: [{ url: "https://www.hunkybutlerservice.co.uk/logo.png" }],

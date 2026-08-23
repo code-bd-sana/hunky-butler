@@ -17,7 +17,7 @@ const staticRoutes = [
   "joinTheTeam",
   "privacy-policy",
   "refund-policy",
-  "terms-and-conditon",
+  "terms-and-conditions",
   ];
 
 /**
