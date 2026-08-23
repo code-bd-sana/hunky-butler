@@ -27,9 +27,78 @@
     "slug": "buff-butlers-manchester",
     "name": "Buff Butlers Manchester",
     "city": "Manchester",
-    "tagline": "Manchester’s Favourite Buff Butler Experience",
-    "description": "Looking to add fun, cheeky entertainment to your Manchester hen party, birthday, or girls’ night? Buff Butlers Manchester are the perfect choice for fun, flirtatious topless hosting that gets the whole room laughing. Based in the UK and top-rated for party entertainment, Hunky Butler Service offers professional, friendly, and seriously fit butlers for every occasion — from stylish apartments to house parties across Manchester. Whether you’re planning a classy cocktail night or a full-on party, our butlers bring energy, charm, and unforgettable memories.",
-    "image": "https://i.ibb.co.com/hRqjqKf6/manchester.jpg"
+    "tagline": "Buff Butlers Across Manchester and Greater Manchester",
+    "description": "Buff butlers for hen parties, birthdays and girls’ nights across Manchester. We cover the city centre apartments most hen groups book, from the Northern Quarter and Ancoats through to Deansgate and Salford Quays, and out across Greater Manchester. Two hour bookings as standard, transparent pricing with no travel charge inside the city, and the option to add a cocktail masterclass, life drawing or a stripper to the same booking.",
+    "image": "https://i.ibb.co.com/hRqjqKf6/manchester.jpg",
+    "uniqueContent": true,
+    "metaTitle": "Buff Butlers Manchester | Hen Party Butlers & Topless Waiters",
+    "metaDescription": "Book buff butlers in Manchester for hen parties, birthdays and girls’ nights. Northern Quarter, Ancoats, Deansgate and across Greater Manchester. Instant quote.",
+    "localSection": {
+      "heading": "Planning a Manchester Hen Party?",
+      "paragraphs": [
+        "Most Manchester hen groups book an apartment rather than a hotel, and that shapes the best way to use your butlers. Book them for the getting ready window in the afternoon rather than the night out itself. Two hours while hair and makeup are happening covers the drinks service, the games and the photos, and it means nobody is watching the clock later.",
+        "That timing matters in Manchester because the city centre gets busy early. The Northern Quarter bars around Stevenson Square and Thomas Street, the arches at Deansgate Locks and Canal Street all fill up well before nine on a Saturday, and most of the good places stop taking large walk in groups once they do. Getting the butler part done at the apartment first means you arrive together and on time rather than splitting the group across two taxis.",
+        "Apartment blocks in the Northern Quarter and Ancoats are where we do most of our Manchester bookings, and they suit this format well: enough space for a group of ten to fifteen, a kitchen for the drinks service, and a short walk or one Metrolink stop into town afterwards.",
+        "Two weeks ahead is the sensible booking window, and more like three or four for a summer Saturday. Manchester is one of our busiest cities outside Liverpool, so popular dates go early."
+      ]
+    },
+    "highlights": {
+      "heading": "What Makes Our Manchester Buff Butlers Different",
+      "intro": "Manchester is one of our established coverage areas, not somewhere we treat as an out of town job. That affects both what you pay and how the booking runs.",
+      "points": [
+        "No travel charge anywhere inside Manchester. The quote you see is the price you pay.",
+        "We cover Greater Manchester as standard, including Salford, Stockport, Bolton, Bury, Oldham and Altrincham.",
+        "Used to city centre apartment blocks, so arrival, buzzer access and parking are not a surprise on the day.",
+        "Two hour bookings as standard, extendable on the night if the party is going well.",
+        "Combine butlers with a cocktail masterclass, life drawing or a stripper in a single booking.",
+        "Every butler is vetted, insured and experienced. You get told who is coming before the day."
+      ]
+    },
+    "whatsIncluded": [
+      "Handsome, professional butler(s) in the signature apron and cuffs",
+      "Two-hour bookings as standard, extendable if you want them longer",
+      "Hosting, drinks service, party games and photos",
+      "No travel charges anywhere across Manchester",
+      "Optional add-ons: cocktail masterclass, life drawing, strippers",
+      "Available at apartments, aparthotels, hotels and venues across Greater Manchester"
+    ],
+    "faqs": [
+      {
+        "question": "Do you charge extra for travel within Manchester?",
+        "answer": "No. Manchester is one of our covered cities, so there is no travel charge anywhere inside it. The price you are quoted is the price you pay. Bookings further out across Greater Manchester are quoted upfront too, with any travel shown before you pay rather than added later."
+      },
+      {
+        "question": "Which parts of Greater Manchester do you cover?",
+        "answer": "All of it. Alongside the city centre we regularly cover Salford and Salford Quays, Stockport, Bolton, Bury, Oldham, Rochdale, Altrincham and Trafford, and we go out as far as Warrington and Wigan. Enter your postcode in the quote form and it will tell you immediately."
+      },
+      {
+        "question": "Can you come to a city centre apartment or Airbnb?",
+        "answer": "Yes, and most of our Manchester bookings are exactly that. Northern Quarter and Ancoats apartments are the most common, along with Deansgate and Salford Quays. We only need the address, the buzzer or entry instructions, and a contact number for the day."
+      },
+      {
+        "question": "When should the butlers arrive?",
+        "answer": "For most hen parties the getting ready window works best, so mid to late afternoon. Two hours while everyone is getting ready covers the drinks, the games and the photos, and leaves you free to head into town straight afterwards. If you are planning a meal at the apartment, booking them around the food works well too."
+      },
+      {
+        "question": "How far in advance should we book?",
+        "answer": "Two weeks is comfortable for most dates. For a summer Saturday, or anything around Christmas, aim for three or four weeks because Manchester books up early. It is always worth asking even at short notice, since we hold a reasonable pool of staff across the North West."
+      },
+      {
+        "question": "What do the butlers actually do?",
+        "answer": "They host. Greeting your guests, serving the drinks, running party games, posing for photos and keeping the energy up so the organiser gets to enjoy her own party. They arrive in the uniform with everything needed for the games, so there is nothing for you to prepare."
+      }
+    ],
+    "service": "buff-butlers",
+    "serviceName": "Buff Butlers",
+    "latitude": 53.4808,
+    "longitude": -2.2426,
+    "nearbySlugs": [
+      "salford",
+      "bolton",
+      "warrington",
+      "liverpool",
+      "chester"
+    ]
   },
   {
     "slug": "buff-butlers-salford",
