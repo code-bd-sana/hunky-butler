@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import SecondaryTitle from "../shared/typography/SecondaryTitle";
+import ReviewLinks from "./ReviewLinks";
 import SubTitle from "../shared/typography/SubTitle";
 import { Marquee } from "../magicui/marquee";
 import { Star } from "lucide-react";
@@ -248,8 +249,11 @@ export default function ReviewSection({ city, initialData = null }) {
   // is referrer-restricted, and a referrer-restricted key cannot be used for
   // the server-side Places Details request. Splitting the key into a browser
   // key and a server key is the actual fix.
+  // With no inline reviews to show, fall back to the review profile links
+  // rather than rendering nothing. The proof is real (4.9 on Trustpilot, 5.0
+  // on Google) even when the Places API will not return the review text.
   if (!loading && reviews.length === 0) {
-    return null;
+    return <ReviewLinks standalone />;
   }
 
   if (loading) {
@@ -361,6 +365,11 @@ export default function ReviewSection({ city, initialData = null }) {
 
             <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-[#ECDFE4]"></div>
             <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-[#ECDFE4]"></div>
+
+            {/* Read the full set on either profile, or leave one. */}
+            <div className="relative z-40 w-full">
+              <ReviewLinks />
+            </div>
           </div>
         ) : (
           <div className="text-center py-12">

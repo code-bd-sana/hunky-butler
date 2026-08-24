@@ -4,6 +4,7 @@ import Navbar from "@/components/shared/Navbar";
 import { SessionProvider } from "next-auth/react";
 import ReduxProvider from "../provider/ReduxProvider";
 import { SOCIAL_SAME_AS } from "@/lib/socialLinks";
+import { REVIEW_SAME_AS } from "@/lib/reviewProfiles";
 
 // export const metadata = {
 //   title: "Hunky Butlers",
@@ -72,7 +73,7 @@ const localBusinessJsonLd = {
   "areaServed": "GB",
   // Links the site to its verified social profiles so search engines can
   // connect them to this business entity.
-  "sameAs": SOCIAL_SAME_AS,
+  "sameAs": [...SOCIAL_SAME_AS, ...REVIEW_SAME_AS],
   "priceRange": "££",
   // Sourced from the public Trustpilot profile. Every page's meta description
   // already claimed "5-star reviews" while no rating markup existed anywhere,
