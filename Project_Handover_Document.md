@@ -22,10 +22,10 @@
 | **State & Auth** | Redux Toolkit & NextAuth.js | Redux Toolkit `2.9.0`, NextAuth.js `4.24.11` |
 | **Backend Framework**| Node.js & Express.js | Express `5.1.0` (ES Modules mode) |
 | **Database & ODM** | MongoDB & Mongoose | Mongoose `8.18.1` |
-| **Payment Gateway** | Square SDK | Official `@square/client` SDK `38.0.0` |
+| **Payment Gateway** | Ambiguous, unresolved | Docs and backend describe **Square** (`@square/client` `38.0.0` + webhook), but the **live checkout currently loads Stripe**. Which gateway takes settlements must be confirmed before changing payment code. |
 | **Real-time WebSockets**| Socket.IO | Version `4.8.1` (Client & Server) |
 | **Notifications** | Nodemailer & Twilio | Hostinger SMTP (`6.9.11`), Twilio Node SDK (`6.0.2`) |
-| **Deployment** | Vercel & Coolify | Frontend on Vercel; Backend managed on Coolify (PaaS) |
+| **Deployment** | Hostinger VPS via Coolify | Frontend AND backend both run on one Hostinger VPS (`srv1418361.hstgr.cloud`, `187.77.178.204`) under Coolify (Docker). A stale Vercel deployment still exists but is not the source of truth. |
 
 ### Architecture Overview
 
@@ -50,8 +50,13 @@
 - Mongoose ODM enforces schema structures, relations (`ref: 'User'`, `ref: 'Booking'`), timestamps, and status enums.
 
 #### Deployment Platform
-- **Frontend**: Hosted on **Vercel** (`https://hunky-butler.vercel.app` / custom domain `https://www.hunkybutlerservice.co.uk`).
-- **Backend**: Managed inside **Coolify** (self-hosted PaaS) running on a Linux VPS, accessible via reverse proxy at `https://api.hunkybutlerservice.co.uk`.
+Corrected Aug 2026: this section previously said the frontend was on Vercel. It is not.
+- **Frontend AND backend** both run on a single **Hostinger VPS** (`srv1418361.hstgr.cloud`, `187.77.178.204`) managed by **Coolify** (Docker). Coolify auto-deploys both apps on push to `main`. Traefik terminates SSL and routes `https://www.hunkybutlerservice.co.uk` (frontend) and `https://api.hunkybutlerservice.co.uk` (backend).
+- A **stale Vercel deployment** (`hunky-butler.vercel.app`) still auto-deploys from the repo but is not the live site and will drift; it should be retired.
+
+#### Repository notes (Aug 2026)
+- `node_modules` is no longer committed (removed in #359); it is gitignored and installed on build.
+- Backend tests run via `npm test` (Node built-in `node --test`), added in #362.
 
 ---
 
@@ -284,7 +289,7 @@ These variables must be added to the **Backend Service** inside Coolify (or stan
 
 ### B. Frontend Environment Variables (`frontend/.env`)
 
-These variables must be added to **Vercel Project Settings** (or frontend `.env.local` file).
+These variables must be set on the **frontend Coolify application** as **build-time** variables (or a frontend `.env` used at build). Because `NEXT_PUBLIC_*` values are inlined into the bundle at `next build`, changing one requires a **rebuild**, not just a restart. `NEXT_PUBLIC_SOCKET_URL` currently points at a Render free-tier host (`hunky-butler-2.onrender.com`), which sleeps when idle and should be moved to an always-on host.
 
 | Variable Name | Purpose | Required? | Example / Placeholder Value |
 | :--- | :--- | :--- | :--- |
@@ -314,14 +319,12 @@ These variables must be added to **Vercel Project Settings** (or frontend `.env.
 5. **Database Connectivity**:
    - Upon container boot, `app.js` invokes `await connectDB()`, connecting to MongoDB using `process.env.MONGODB_URI`.
 
-### Frontend Deployment Architecture (Vercel)
-1. **Source Code**: Connected to Vercel via GitHub repo integration.
+### Frontend Deployment Architecture (Hostinger / Coolify)
+1. **Source Code**: The frontend Coolify application deploys from the GitHub repo on push to `main`.
 2. **Build Configuration**:
-   - Framework Preset: Next.js.
-   - Build Command: `next build --turbopack`.
-   - Output Directory: `.next`.
+   - Framework: Next.js. Build Command: `next build --turbopack`. Output: `.next`.
 3. **Environment Injection**:
-   - `NEXT_PUBLIC_BASE_URL` and `NEXT_PUBLIC_SOCKET_URL` must be defined in Vercel Project Settings for client-side bundle compilation.
+   - `NEXT_PUBLIC_BASE_URL` and `NEXT_PUBLIC_SOCKET_URL` must be set as **build-time** variables in Coolify. They are inlined into the client bundle at build, so a change needs a **rebuild**, not a restart.
 
 ---
 
@@ -361,7 +364,8 @@ Coolify Dashboard
    - Click **Save changes**.
 
 4. **When to Restart vs. When to Rebuild**:
-   - **Restart Sufficient**: Updating environment variables, credentials (SMTP, Square keys), or database URIs only requires a **Container Restart**. Click **Restart** in the top-right corner of the Coolify dashboard.
+   - **Restart Sufficient (server-only vars)**: Updating server-only variables read at runtime, such as SMTP or database credentials on the **backend**, only requires a **Container Restart**.
+   - **Rebuild Required for `NEXT_PUBLIC_*`**: Any variable prefixed `NEXT_PUBLIC_` is inlined into the frontend bundle at build time. Changing one has **no effect on a restart alone** and requires a **frontend rebuild**. This has bitten before.
    - **Rebuild Required**: Pushing new code changes to GitHub, updating `package.json` dependencies, or altering runtime configs requires a **Full Rebuild**. Click **Redeploy / Rebuild** in Coolify.
 
 ---

@@ -17,7 +17,7 @@ This document provides a detailed breakdown of the **Hunky Butler Service** code
 | **State & Auth** | Redux Toolkit & NextAuth.js | Redux Toolkit `2.9.0`, NextAuth `4.24.11` |
 | **Backend Framework** | Node.js & Express.js | Express `5.1.0` (ES Modules) |
 | **Database & ODM** | MongoDB & Mongoose | Mongoose `8.18.1` |
-| **Payment Gateway** | Square SDK | Official `@square/client` SDK `38.0.0` |
+| **Payment Gateway** | Ambiguous (unresolved) | Backend + docs describe Square (`@square/client` `38.0.0`); the live checkout loads Stripe. Confirm the active gateway before touching payment code. |
 | **Real-time WebSockets** | Socket.IO | Version `4.8.1` (Client & Server) |
 | **Transactional Messaging**| Nodemailer & Twilio | Hostinger SMTP (`6.9.11`), Twilio Node SDK |
 
