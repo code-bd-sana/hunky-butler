@@ -3,3 +3,7 @@ UsersmynameAppDataRoamingnpm-cache
 # macOS
 .DS_Store
 **/.DS_Store
+
+# Dependencies (backend/node_modules had been committed; this prevents recurrence)
+node_modules/
+**/node_modules/
