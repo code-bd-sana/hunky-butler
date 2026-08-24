@@ -52,6 +52,16 @@ const serviceJsonLd = {
   "areaServed": "GB",
 };
 
+// Breadcrumb so search results show Home > Cocktail Masterclasses instead of a bare URL.
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE_URL },
+    { "@type": "ListItem", "position": 2, "name": "Cocktail Masterclasses", "item": SITE_URL + "/cocktail" },
+  ],
+};
+
 export default async function page() {
   // Fetched here so reviews are in the server HTML rather than appearing
   // after hydration. Null on failure, which makes ReviewSection fall back.
@@ -70,6 +80,10 @@ export default async function page() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
 
 <ServiceBanner
