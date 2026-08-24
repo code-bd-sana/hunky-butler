@@ -14,6 +14,7 @@ import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import ReduxProvider from "../provider/ReduxProvider";
 import Navbar from "@/components/shared/Navbar";
 import { SOCIAL_SAME_AS } from "@/lib/socialLinks";
+import { REVIEW_SAME_AS } from "@/lib/reviewProfiles";
 import { getGoogleReviews } from "@/lib/googleReviews";
 
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
@@ -131,7 +132,7 @@ export default async function LocationPage({ params }) {
       "@type": "City",
       name: location.city,
     },
-    sameAs: SOCIAL_SAME_AS,
+    sameAs: [...SOCIAL_SAME_AS, ...REVIEW_SAME_AS],
     priceRange: "££",
     aggregateRating: {
       "@type": "AggregateRating",
