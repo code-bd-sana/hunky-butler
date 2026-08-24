@@ -4,11 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test \"src/utils/**/*.test.js\"",
     "dev": "nodemon server.js",
     "pay:test": "node scripts/toggle-payment.js test",
     "pay:live": "node scripts/toggle-payment.js live",
-    "test:sanitize": "node src/utils/sanitizeBooking.test.js"
+    "test:sanitize": "node --test src/utils/sanitizeBooking.test.js"
   },
   "author": "",
   "license": "ISC",
