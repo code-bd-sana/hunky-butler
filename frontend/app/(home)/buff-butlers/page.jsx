@@ -12,6 +12,7 @@ import React from 'react'
 import Frequently from '@/components/homepage/Frequently'
 import ImageGallery from '@/components/about/ImageGallery'
 import Footer from '@/components/homepage/Footer'
+import { getGoogleReviews } from "@/lib/googleReviews";
 
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
 
@@ -54,7 +55,11 @@ const serviceJsonLd = {
   "areaServed": "GB",
 };
 
-export default function page() {
+export default async function page() {
+  // Fetched here so reviews are in the server HTML rather than appearing
+  // after hydration. Null on failure, which makes ReviewSection fall back.
+  const reviewData = await getGoogleReviews();
+
 
 
   const bulletPoints = [
@@ -90,7 +95,7 @@ export default function page() {
 
       />
       <WhyBookSection />
-      <ReviewSection />
+      <ReviewSection initialData={reviewData} />
       <ImageGallery/>
       <Footer/>
 

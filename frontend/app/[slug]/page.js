@@ -14,6 +14,7 @@ import ReviewSection from "@/components/ServiceHeroSection/ReviewSection";
 import ReduxProvider from "../provider/ReduxProvider";
 import Navbar from "@/components/shared/Navbar";
 import { SOCIAL_SAME_AS } from "@/lib/socialLinks";
+import { getGoogleReviews } from "@/lib/googleReviews";
 
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
 
@@ -74,6 +75,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function LocationPage({ params }) {
+  const reviewData = await getGoogleReviews();
+
   const { slug } = await params;
   const location = locations.find((loc) => loc.slug === slug);
 
@@ -238,7 +241,7 @@ export default async function LocationPage({ params }) {
         areasServed={location.areasServed}
       />
 
-      <ReviewSection></ReviewSection>
+      <ReviewSection initialData={reviewData} />
       <BuffButlersEvents
         city={location.city}
         serviceName={serviceName}

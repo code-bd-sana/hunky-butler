@@ -9,6 +9,7 @@ import image from '@/public/images/services/lifeDrawing.png'
 // import bannerImg from '@/public/images/services/banner2.png'
 // import bannerImg from '@/public/images/services/banner3.png'
 import React from 'react'
+import { getGoogleReviews } from "@/lib/googleReviews";
 
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
 
@@ -51,7 +52,11 @@ const serviceJsonLd = {
   "areaServed": "GB",
 };
 
-export default function page() {
+export default async function page() {
+  // Fetched here so reviews are in the server HTML rather than appearing
+  // after hydration. Null on failure, which makes ReviewSection fall back.
+  const reviewData = await getGoogleReviews();
+
 
 
   const bulletPoints = [
@@ -87,7 +92,7 @@ text2={"Choose your preferred butler & confirm."}
 text3={"Enjoy a guided life drawing session at your venue."}
 />
 <WhyBookSection/>
-<ReviewSection/>
+<ReviewSection initialData={reviewData} />
 
     </div>
   )

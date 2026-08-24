@@ -11,20 +11,30 @@ import Image from "next/image";
 // Default fallback image
 const defaultAvatar = "/images/default-avatar.png";
 
-export default function ReviewSection({ city }) {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [averageRating, setAverageRating] = useState(0);
-  const [totalReviews, setTotalReviews] = useState(0);
-  const [placeInfo, setPlaceInfo] = useState({
-    name: "",
-    address: "",
-    totalRatings: 0,
-  });
+/**
+ * initialData is supplied by server components via lib/googleReviews.js, so
+ * the reviews are present in the first HTML rather than appearing after
+ * hydration. Pages that cannot fetch server-side (the client-rendered location
+ * routes) pass nothing and the original client fetch runs as before.
+ */
+export default function ReviewSection({ city, initialData = null }) {
+  const [reviews, setReviews] = useState(initialData?.reviews || []);
+  const [loading, setLoading] = useState(!initialData);
+  const [averageRating, setAverageRating] = useState(initialData?.averageRating || 0);
+  const [totalReviews, setTotalReviews] = useState(initialData?.totalReviews || 0);
+  const [placeInfo, setPlaceInfo] = useState(
+    initialData?.placeInfo || {
+      name: "",
+      address: "",
+      totalRatings: 0,
+    }
+  );
 
   useEffect(() => {
+    // Server already supplied the data, so no client round-trip is needed.
+    if (initialData) return;
     fetchGoogleReviews();
-  }, []);
+  }, [initialData]);
 
   const fetchGoogleReviews = async () => {
     try {
@@ -39,7 +49,6 @@ export default function ReviewSection({ city }) {
 
       const data = await response.json();
 
-      console.log("API Response:", data);
 
       if (data.status === "OK" && data.result) {
         const placeData = data.result;
@@ -63,7 +72,6 @@ export default function ReviewSection({ city }) {
 
         // Transform and set reviews
         if (placeData.reviews && placeData.reviews.length > 0) {
-          console.log("Found reviews:", placeData.reviews.length);
 
           const transformedReviews = placeData.reviews.map((review, index) => ({
             id: review.time || `review-${Date.now()}-${index}`,
@@ -90,11 +98,9 @@ export default function ReviewSection({ city }) {
           });
 
           setReviews(transformedReviews);
-          console.log("Transformed reviews:", transformedReviews);
         } else {
           // If no reviews found, show empty state
           setReviews([]);
-          console.log("No reviews found in API response");
         }
       } else {
         console.error("Google API Error:", data.status, data.error_message);
@@ -235,6 +241,16 @@ export default function ReviewSection({ city }) {
 
   const firstRow = reviews.slice(0, Math.ceil(reviews.length / 2));
   const secondRow = reviews.slice(Math.ceil(reviews.length / 2));
+
+  // With no reviews to show, render nothing rather than a heading promising
+  // testimonials above an empty carousel. This happens whenever the Places
+  // call fails, which it currently does site-wide: the single Google API key
+  // is referrer-restricted, and a referrer-restricted key cannot be used for
+  // the server-side Places Details request. Splitting the key into a browser
+  // key and a server key is the actual fix.
+  if (!loading && reviews.length === 0) {
+    return null;
+  }
 
   if (loading) {
     return (
