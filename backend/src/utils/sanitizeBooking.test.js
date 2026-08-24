@@ -1,13 +1,17 @@
 /**
- * Checks for the booking response sanitiser.
+ * Tests for the booking response sanitiser.
  *
- * Run with:  npm run test:sanitize
+ * Uses Node's built-in test runner (no dependencies). Run with:
  *
- * There is no test runner configured in this project, so this file uses Node's
- * built-in assert and exits non-zero on failure. It can be dropped into a real
- * runner later without changes to the assertions.
+ *   npm test                 # discovers every *.test.js under the backend
+ *   npm run test:sanitize    # just this file
+ *
+ * These were previously a hand-rolled check() harness that exited non-zero on
+ * failure. They now run under node:test so `npm test` is a real command and a
+ * CI step has something to call.
  */
 
+import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   sanitizeBooking,
@@ -25,20 +29,7 @@ const booking = {
   totalAmount: 250,
 };
 
-let failures = 0;
-const check = (name, fn) => {
-  try {
-    fn();
-    console.log("  pass  " + name);
-  } catch (err) {
-    failures++;
-    console.error("  FAIL  " + name + "\n        " + err.message);
-  }
-};
-
-console.log("sanitizeBooking");
-
-check("customers never receive profit or butlerFee", () => {
+test("customers never receive profit or butlerFee", () => {
   const out = sanitizeBooking(booking, "customer");
   assert.equal(out.profit, undefined);
   assert.equal(out.butlerFee, undefined);
@@ -46,60 +37,58 @@ check("customers never receive profit or butlerFee", () => {
   assert.equal(out.travelFee, 0, "travel fee is shown to the customer");
 });
 
-check("butlers see their own fee but not the margin", () => {
+test("butlers see their own fee but not the margin", () => {
   const out = sanitizeBooking(booking, "butler");
   assert.equal(out.butlerFee, 180);
   assert.equal(out.profit, undefined);
 });
 
-check("admins see everything", () => {
+test("admins see everything", () => {
   const out = sanitizeBooking(booking, "admin");
   assert.equal(out.profit, 70);
   assert.equal(out.butlerFee, 180);
 });
 
-check("unknown audience falls back to the most restrictive", () => {
+test("unknown audience falls back to the most restrictive", () => {
   const out = sanitizeBooking(booking, "something-else");
   assert.equal(out.profit, undefined);
   assert.equal(out.butlerFee, undefined);
 });
 
-check("the original document is never mutated", () => {
+test("the original document is never mutated", () => {
   sanitizeBooking(booking, "customer");
   assert.equal(booking.profit, 70);
   assert.equal(booking.butlerFee, 180);
 });
 
-check("mongoose documents are converted via toObject", () => {
+test("mongoose documents are converted via toObject", () => {
   const doc = { toObject: () => ({ ...booking }) };
   const out = sanitizeBooking(doc, "customer");
   assert.equal(out.profit, undefined);
   assert.equal(out.price, 250);
 });
 
-check("null and undefined pass through untouched", () => {
+test("null and undefined pass through untouched", () => {
   assert.equal(sanitizeBooking(null, "customer"), null);
   assert.equal(sanitizeBooking(undefined, "customer"), undefined);
 });
 
-check("array wrapper sanitises every element", () => {
+test("array wrapper sanitises every element", () => {
   const out = sanitizeBookings([booking, booking], "customer");
   assert.equal(out.length, 2);
   out.forEach((b) => assert.equal(b.profit, undefined));
 });
 
-check("array wrapper tolerates a non-array", () => {
+test("array wrapper tolerates a non-array", () => {
   assert.equal(sanitizeBookings(null, "customer"), null);
 });
 
-console.log("audienceFromRequest");
-
-check("no user means customer", () => {
+test("no user means customer", () => {
   assert.equal(audienceFromRequest({}), "customer");
   assert.equal(audienceFromRequest(undefined), "customer");
 });
 
-check("role admin and the legacy admin email both map to admin", () => {
+test("role admin and the legacy admin email both map to admin", () => {
   assert.equal(audienceFromRequest({ user: { role: "admin" } }), "admin");
   assert.equal(
     audienceFromRequest({ user: { email: "admin@gmail.com" } }),
@@ -107,16 +96,10 @@ check("role admin and the legacy admin email both map to admin", () => {
   );
 });
 
-check("role butler maps to butler", () => {
+test("role butler maps to butler", () => {
   assert.equal(audienceFromRequest({ user: { role: "butler" } }), "butler");
 });
 
-check("any other role maps to customer", () => {
+test("any other role maps to customer", () => {
   assert.equal(audienceFromRequest({ user: { role: "user" } }), "customer");
 });
-
-if (failures > 0) {
-  console.error(`\n${failures} check(s) failed`);
-  process.exit(1);
-}
-console.log("\nall checks passed");
