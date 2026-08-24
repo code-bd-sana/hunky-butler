@@ -3,24 +3,14 @@ import React, { useState } from "react";
 import "../globals.css";
 import Sidebar from "@/components/Dashboard/Sidebar/Sidebar";
 import DashNav from "@/components/Dashboard/DashNav/DashNav";
-import { Poppins } from "next/font/google";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
 import { SessionProvider } from "next-auth/react";
 import { SocketProvider } from "../provider/SocketProvider";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins",
-  display: "swap",
-});
-
 const DashboardLayout = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   return (
-    <html lang="en">
-      <body className="antialiased ">
    <SocketProvider>
         <SessionProvider>
          <Provider store={store}>
@@ -37,8 +27,6 @@ const DashboardLayout = ({ children }) => {
         </Provider>
        </SessionProvider>
    </SocketProvider>
-      </body>
-    </html>
   );
 };
 

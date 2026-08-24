@@ -1,6 +1,5 @@
 import "./globals.css";
 import { Poppins, Abhaya_Libre } from "next/font/google";
-import { SocketProvider } from "./provider/SocketProvider";
 
 const poppins = Poppins({
     subsets: ["latin"],
