@@ -18,15 +18,14 @@ const ButlerRow = ({ butler }) => {
     <tr className="h-[56px] bg-white hover:bg-zinc-50/60 border-b border-[#EFE7EA]">
       <td className="px-4 sm:px-6">
          <div className="flex items-center gap-3 min-w-0">
-                {
-                 butler?.image ?  <Image
-                   src={butler?.image || `/Dashboard/customer.png`}
-                   alt={"image"}
-                   width={32}
-                   height={32}
-                   className="rounded-[8px] object-cover"
-                 /> : <FaUser />
-                }
+                <SafeImage
+                  src={butler?.image}
+                  fallbackSrc={"/Dashboard/customer.png"}
+                  alt={"Butler avatar"}
+                  width={32}
+                  height={32}
+                  className="rounded-[8px] object-cover"
+                />
                  <span className="truncate">{butler?.firstName || '-'} {butler?.lastName || '-'}</span>
                </div>
       </td>

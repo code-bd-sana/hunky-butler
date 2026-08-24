@@ -197,8 +197,9 @@ const getPerformerName = (payment) => {
               <tr key={payment._id || i} className="h-[56px] bg-white hover:bg-zinc-50/60">
                 <td className="px-4 sm:px-6">
                   <div className="flex items-center gap-3 min-w-0">
-                    <Image
+                    <SafeImage
                       src={getPerformerImage(payment)}
+                      fallbackSrc={"/Dashboard/customer.png"}
                       alt={getPerformerName(payment)}
                       width={32}
                       height={32}
