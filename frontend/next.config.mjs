@@ -80,6 +80,17 @@ const nextConfig = {
   // them would be misleading. Everything below had real content on the old site.
   async redirects() {
     return [
+      // Apex to www. Both hosts currently return 200 with byte-identical
+      // content, which splits signals across two hostnames. Doing it here
+      // rather than in the reverse proxy keeps it in version control, and it
+      // applies wherever the app runs. If the proxy later handles it, this
+      // becomes a harmless no-op because the request never reaches Next.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "hunkybutlerservice.co.uk" }],
+        destination: "https://www.hunkybutlerservice.co.uk/:path*",
+        permanent: true,
+      },
       // Blog pagination (both old permalink styles) -> new blog listing page
       {
         source: "/index.php/blog",
