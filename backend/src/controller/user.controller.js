@@ -105,7 +105,7 @@ export const allButler = async (req, res) => {
 export const myProfile = async (req, res) => {
   try {
     const id = req.params.id;
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (
         req.user.id !== id &&
         req.user._id?.toString() !== id &&
@@ -143,7 +143,7 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.email !== email) {
         return res.status(403).json({
           message: "Forbidden: You can only update your own profile.",

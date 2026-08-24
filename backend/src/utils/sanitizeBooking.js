@@ -28,7 +28,7 @@ const STAFF_ONLY_FIELDS = ["butlerFee"];
 export const audienceFromRequest = (req) => {
   const user = req?.user;
   if (!user) return "customer";
-  if (user.role === "admin" || user.email === "admin@gmail.com") return "admin";
+  if (user.role === "admin") return "admin";
   if (user.role === "butler") return "butler";
   return "customer";
 };

@@ -21,7 +21,7 @@ export const getNotification = async (req, res) => {
   try {
     const email = req.params.email;
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.email !== email) {
         return res.status(403).json({
           message: "Forbidden: You can only view your own notifications.",
@@ -106,7 +106,7 @@ export const markSeenAllNotification = async (req, res) => {
   try {
     const email = req.params.email;
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.email !== email) {
         return res.status(403).json({
           message: "Forbidden: You can only modify your own notifications.",
