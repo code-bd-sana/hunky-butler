@@ -1,27 +1,55 @@
-// "use client";
+"use client";
 import Link from "next/link";
+import Image from "next/image";
+import { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 
 export default function HomeBanner() {
+  // The hero video is 7.2 MB and was downloading on phones too, dominating the
+  // mobile payload (5.3 MB, LCP 6.2 s). A CSS `hidden md:block` is NOT enough:
+  // browsers still fetch a display:none video's body (verified). So the <video>
+  // is only MOUNTED on desktop, after hydration, once matchMedia confirms the
+  // viewport. Phones render the poster only and never request the mp4.
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const sync = () => setIsDesktop(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
   return (
     <section className='relative h-[100vh] w-full overflow-hidden'>
-      {/* Background Video */}
-      {/* The poster paints immediately while the 7.2 MB video streams in, so
-          the Largest Contentful Paint no longer waits on video data. Without
-          it the hero was blank until enough of the file had arrived. */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload='metadata'
-        poster='/videos/hero-poster.jpg'
-        className='absolute inset-0 h-full w-full object-cover'
-        title='Buff Butlers Hen Party Entertainment UK'
-        aria-label='Buff butlers and hen party entertainment across the UK'>
-        <source src='/videos/HeroBannerVid.mp4' type='video/mp4' />
-        Your browser does not support the video tag.
-      </video>
+      {/* The optimised poster is the hero image on every device and paints
+          immediately (priority = LCP element). On desktop the video mounts on
+          top of it once hydrated. */}
+      <Image
+        src='/videos/hero-poster.jpg'
+        alt='Buff butlers and hen party entertainment across the UK'
+        fill
+        priority
+        sizes='100vw'
+        className='object-cover'
+      />
+
+      {/* Desktop only, mounted after hydration, so phones never request the
+          7.2 MB mp4. */}
+      {isDesktop && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload='metadata'
+          poster='/videos/hero-poster.jpg'
+          className='absolute inset-0 h-full w-full object-cover'
+          title='Buff Butlers Hen Party Entertainment UK'
+          aria-label='Buff butlers and hen party entertainment across the UK'>
+          <source src='/videos/HeroBannerVid.mp4' type='video/mp4' />
+          Your browser does not support the video tag.
+        </video>
+      )}
 
       {/* Dark Gradient Overlay */}
       <div className='absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80'></div>
