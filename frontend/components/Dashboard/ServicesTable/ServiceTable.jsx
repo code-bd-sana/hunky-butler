@@ -127,8 +127,9 @@ export default function ServiceTable() {
                   <td className="px-4 py-4 align-middle">
                     <div className="flex items-center gap-3">
                       <div className="h-9 w-12 overflow-hidden rounded-md ring-1 ring-black/5">
-                        <Image
+                        <SafeImage
                           src={service.banner}
+                          fallbackSrc={"/Dashboard/customer.png"}
                           alt={service.name}
                           width={48}
                           height={36}

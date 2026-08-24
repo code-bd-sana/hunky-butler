@@ -7,3 +7,6 @@ UsersmynameAppDataRoamingnpm-cache
 # Dependencies (backend/node_modules had been committed; this prevents recurrence)
 node_modules/
 **/node_modules/
+
+# Agent worktrees
+.claude/worktrees/
