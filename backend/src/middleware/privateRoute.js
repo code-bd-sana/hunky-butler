@@ -64,20 +64,15 @@ export const getAuthUser = async (req) => {
       };
     }
 
-    // Fallback: Check header x-user-email for authenticated session requests
-    const userEmailHeader = req.headers["x-user-email"];
-    if (userEmailHeader) {
-      const dbUser = await User.findOne({ email: userEmailHeader }).select("-password");
-      if (dbUser) {
-        return {
-          id: dbUser._id.toString(),
-          _id: dbUser._id.toString(),
-          email: dbUser.email,
-          role: dbUser.role || "customer",
-          name: dbUser.name || dbUser.firstName,
-        };
-      }
-    }
+    // The x-user-email header fallback has been removed. It trusted a plain,
+    // attacker-controlled header: sending `x-user-email: admin@gmail.com` was
+    // enough to be treated as the admin, with no password, token or session.
+    //
+    // Identity now comes only from the two cryptographically verified paths
+    // above: the NextAuth session cookie (same-origin), and the signed JWT sent
+    // as `Authorization: Bearer` by the site (cross-subdomain). Both are
+    // verified against NEXTAUTH_SECRET, so a forged header authenticates
+    // nothing. If neither is present the caller is unauthenticated.
   } catch (error) {
     console.error("Error verifying auth token:", error.message);
   }
