@@ -46,7 +46,7 @@ export const getBookingButler = async (req, res) => {
     const status = req.query.status;
     const id = req.params.id;
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.id !== id && req.user._id?.toString() !== id) {
         return res.status(403).json({
           message: "Forbidden: You can only view your own assigned bookings.",
@@ -87,7 +87,7 @@ export const getBookingCustomer = async (req, res) => {
     const status = req.query.status;
     const email = req.params.email;
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.email !== email) {
         return res.status(403).json({
           message: "Forbidden: You can only view your own bookings.",
@@ -456,7 +456,7 @@ export const getBookingOverviewCustomer = async (req, res) => {
   try {
     const email = req.params.email;
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.email !== email) {
         return res.status(403).json({
           message: "Forbidden: You can only view your own booking overview.",
@@ -493,7 +493,7 @@ export const getBookingOverviewButler = async (req, res) => {
   try {
     const id = req.params.id;
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.id !== id && req.user._id?.toString() !== id) {
         return res.status(403).json({
           message: "Forbidden: You can only view your own booking overview.",
@@ -515,7 +515,7 @@ export const getButlerOverview = async (req, res) => {
   try {
     const id = req.params.id;
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.id !== id && req.user._id?.toString() !== id) {
         return res.status(403).json({
           message: "Forbidden: You can only view your own butler overview.",

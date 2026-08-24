@@ -23,8 +23,6 @@ export const userRegister = async (req, res) => {
       phone, // Added phone
     });
 
-  // faka maka tak alaka saka laka boom boom !!!
-
     const saved = await newUser.save();
 
     res.status(200).json({

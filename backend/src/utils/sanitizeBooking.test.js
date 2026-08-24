@@ -88,11 +88,13 @@ test("no user means customer", () => {
   assert.equal(audienceFromRequest(undefined), "customer");
 });
 
-test("role admin and the legacy admin email both map to admin", () => {
+test("admin role maps to admin; the email alone no longer does", () => {
   assert.equal(audienceFromRequest({ user: { role: "admin" } }), "admin");
+  // The admin@gmail.com hard-coded override was removed: identity is by role
+  // only. An account with that email but a non-admin role is not admin.
   assert.equal(
     audienceFromRequest({ user: { email: "admin@gmail.com" } }),
-    "admin"
+    "customer"
   );
 });
 

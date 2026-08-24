@@ -98,7 +98,7 @@ export const verifyAdmin = async (req, res, next) => {
       message: "Unauthorized: Authentication required.",
     });
   }
-  if (user.role !== "admin" && user.email !== "admin@gmail.com") {
+  if (user.role !== "admin") {
     return res.status(403).json({
       message: "Forbidden: Admin access required.",
     });
@@ -114,7 +114,7 @@ export const verifyButler = async (req, res, next) => {
       message: "Unauthorized: Authentication required.",
     });
   }
-  if (user.role !== "butler" && user.role !== "admin" && user.email !== "admin@gmail.com") {
+  if (user.role !== "butler" && user.role !== "admin") {
     return res.status(403).json({
       message: "Forbidden: Butler access required.",
     });
@@ -130,7 +130,7 @@ export const verifyCustomer = async (req, res, next) => {
       message: "Unauthorized: Authentication required.",
     });
   }
-  if (user.role !== "customer" && user.role !== "admin" && user.email !== "admin@gmail.com") {
+  if (user.role !== "customer" && user.role !== "admin") {
     return res.status(403).json({
       message: "Forbidden: Access denied.",
     });

@@ -802,7 +802,7 @@ export const paymentHistoryForCustomer = async (req, res) => {
   try {
     const email = req.params.email;
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.email !== email) {
         return res.status(403).json({
           message: "Forbidden: You can only view your own payment history.",
@@ -843,7 +843,7 @@ export const paymentHistoryForButler = async(req, res) => {
   try {
     const id = req.params.id;
 
-    if (req.user && req.user.role !== "admin" && req.user.email !== "admin@gmail.com") {
+    if (req.user && req.user.role !== "admin") {
       if (req.user.id !== id && req.user._id?.toString() !== id) {
         return res.status(403).json({
           message: "Forbidden: You can only view your own payment history.",
