@@ -48,15 +48,24 @@ export const login = async (req, res, next) => {
       });
     }
 
-    if (isExist.email !== "admin@gmail.com") {
-      if (role !== isExist.role) {
-        return res.status(401).json({
-          message: `Role Dose Not matched!`,
-        });
-      }
-    } else {
-      role === "admin";
-      next;
+    // The Customer/Butler tab on the login form must match the account's role,
+    // so a customer cannot log in through the butler tab and vice versa. Admins
+    // are exempt because there is no admin tab: they sign in through whichever
+    // tab is showing, so their submitted role will not equal "admin".
+    //
+    // Admins are now identified by their stored role, not by the hard-coded
+    // string "admin@gmail.com". The previous version special-cased that email
+    // and, in its else branch, ran two statements that did nothing:
+    // `role === "admin"` (a comparison whose result is thrown away) and `next`
+    // (a bare reference to the function, never called). They were plainly meant
+    // to skip the checks for the admin and only failed to because of the bugs.
+    // Removing them closes that latent bypass. The password is still verified
+    // for every account, including the admin, by the bcrypt compare below.
+    const isAdmin = isExist.role === "admin";
+    if (!isAdmin && role && role !== isExist.role) {
+      return res.status(401).json({
+        message: "Selected role does not match this account.",
+      });
     }
 
     if (!isExist.isVerified) {
