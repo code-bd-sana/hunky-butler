@@ -2,16 +2,9 @@
 import "../globals.css";
 import Navbar from "@/components/shared/Navbar";
 import { SessionProvider } from "next-auth/react";
-import { Poppins } from "next/font/google";
 import ReduxProvider from "../provider/ReduxProvider";
 import { SOCIAL_SAME_AS } from "@/lib/socialLinks";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins",
-  display: "swap",
-});
+import { REVIEW_SAME_AS } from "@/lib/reviewProfiles";
 
 // export const metadata = {
 //   title: "Hunky Butlers",
@@ -80,7 +73,7 @@ const localBusinessJsonLd = {
   "areaServed": "GB",
   // Links the site to its verified social profiles so search engines can
   // connect them to this business entity.
-  "sameAs": SOCIAL_SAME_AS,
+  "sameAs": [...SOCIAL_SAME_AS, ...REVIEW_SAME_AS],
   "priceRange": "££",
   // Sourced from the public Trustpilot profile. Every page's meta description
   // already claimed "5-star reviews" while no rating markup existed anywhere,
@@ -95,21 +88,25 @@ const localBusinessJsonLd = {
   }
 };
 
-export default function RootLayout({ children }) {
+/**
+ * Route-group layout for the public marketing pages.
+ *
+ * This previously rendered its own <html> and <body>. Route groups nest inside
+ * the root layout, so doing that produced two of each on every page, which is
+ * an invalid document. The shell now lives only in app/layout.js; this keeps
+ * the providers and chrome specific to this group.
+ */
+export default function HomeLayout({ children }) {
   return (
-    <html lang="en" className={poppins.variable}>
-      <body className="font-sans">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
-        />
-     <ReduxProvider>
-
-          <Navbar />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+      />
+      <ReduxProvider>
+        <Navbar />
         {children}
-     </ReduxProvider>
-
-      </body>
-    </html>
+      </ReduxProvider>
+    </>
   );
 }

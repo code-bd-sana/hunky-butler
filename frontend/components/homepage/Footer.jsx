@@ -11,6 +11,7 @@ import {
 import { IoMdMail } from "react-icons/io";
 import { IoCallSharp } from "react-icons/io5";
 import { SOCIAL_LINKS } from "@/lib/socialLinks";
+import { REVIEW_PROFILE_LIST } from "@/lib/reviewProfiles";
 
 // Maps a social profile key to its footer icon. A key with no entry here is
 // simply not rendered, so adding a profile to lib/socialLinks.js is safe.
@@ -165,6 +166,35 @@ const Footer = () => {
                   className='hover:text-[#FF006A] transition-colors'>
                   Services
                 </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Reviews. The site showed reviews inline but never linked out,
+              so visitors could not read the full set or leave one. */}
+          <div>
+            <h4 className='font-semibold mb-3'>Reviews</h4>
+            <ul className='space-y-2 text-sm text-gray-600'>
+              {REVIEW_PROFILE_LIST.map((p) => (
+                <li key={p.key}>
+                  <a
+                    href={p.href}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    aria-label={p.label}
+                    className='hover:text-[#FF006A] transition-colors'>
+                    {p.rating} on {p.name}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a
+                  href={REVIEW_PROFILE_LIST[0].writeHref}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='hover:text-[#FF006A] transition-colors'>
+                  Leave a review
+                </a>
               </li>
             </ul>
           </div>
