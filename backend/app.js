@@ -14,20 +14,43 @@ dotenv.config();
 
 const app = express();
 
-const allowedOrigins = [
-  "https://hunkybutlerservice.co.uk",
+// Allowed CORS origins.
+//
+// Previously the CORS origin function was `callback(null, true)`, which reflected
+// ANY origin while also sending `credentials: true`. That let any website make
+// credentialed requests to this API. This replaces it with an env-driven
+// allowlist so origins can be adjusted in the environment without a deploy.
+//
+// Set ALLOWED_ORIGINS as a comma-separated list to override the defaults.
+// Origin headers never carry a trailing slash or path, so values are normalised
+// to scheme://host[:port] and trailing slashes are stripped (the previous list
+// had "…co.uk/" entries that could never match).
+const DEFAULT_ALLOWED_ORIGINS = [
   "https://www.hunkybutlerservice.co.uk",
-  "https://hunkybutlerservice.co.uk/",
-  "https://www.hunkybutlerservice.co.uk/",
+  "https://hunkybutlerservice.co.uk",
   "http://localhost:3000",
-  "http://localhost:3000/",
 ];
+
+const allowedOrigins = (
+  process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(",")
+    : DEFAULT_ALLOWED_ORIGINS
+)
+  .map((o) => o.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
 
 // CORS
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow all origins for now as requested
-    callback(null, true);
+    // Requests with no Origin header (server-to-server, curl, health checks,
+    // same-origin) are allowed.
+    if (!origin) return callback(null, true);
+
+    const normalised = origin.replace(/\/+$/, "");
+    if (allowedOrigins.includes(normalised)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`Origin ${origin} is not allowed by CORS`));
   },
   credentials: true,
   optionsSuccessStatus: 200,
