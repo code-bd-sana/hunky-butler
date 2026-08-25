@@ -58,7 +58,7 @@ const Chat2 = () => {
   // Connect socket and join user room
   useEffect(() => {
     if (!myUser?._id) {
-      console.warn("User not loaded yet — please wait");
+      console.warn("User not loaded yet, please wait");
       return;
     }
 
@@ -163,7 +163,7 @@ const Chat2 = () => {
   //   console.log("myUser:", myUser);
   //   console.log("selectedUser:", selectedUser);
   //   if (!myUser?._id || !selectedUser?._id || !inputValue.trim()) {
-  //     console.warn("Message not sent — user not ready or empty message");
+  //     console.warn("Message not sent, user not ready or empty message");
   //     return;
   //   }
   //   const newMsg = {
@@ -188,7 +188,7 @@ const Chat2 = () => {
 
   const sendMessage = () => {
     if (!myUser?._id || !selectedUser?._id || !inputValue.trim()) {
-      console.warn("Message not sent — user not ready or empty message");
+      console.warn("Message not sent, user not ready or empty message");
       return;
     }
     

@@ -17,7 +17,7 @@ import { getGoogleReviews } from "@/lib/googleReviews";
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
 
 export const metadata = {
-  title: "Buff Butlers for Hire UK | Hen Party & Event Hosts – Hunky Butler Service",
+  title: "Buff Butlers for Hire UK | Hen Party & Event Hosts | Hunky Butler Service",
   description:
     "Hire professional, cheeky buff butlers for hen parties, birthdays and events across the UK. Drinks service, party games and unforgettable photo moments. Get instant pricing.",
   alternates: { canonical: SITE_URL + "/buff-butlers" },
@@ -90,14 +90,14 @@ export default async function page() {
       />
 
       <ServiceBanner
-        heading={"Buff Butlers for Hire – UK’s Top Hen Party & Event Hosts"}
+        heading={"Buff Butlers for Hire, UK’s Top Hen Party & Event Hosts"}
         subTitle={"Fun, cheeky and professional butlers to keep your guests entertained, wherever you’re celebrating."}
         image={bannerImg}
 
       />
       <BookNowSection
 
-        text={"Our buff butlers are more than just eye-candy – they’re charming, cheeky, and the perfect hosts for hen parties, birthdays, or girls’ nights. They’ll serve drinks, host party games, and keep your guests laughing all night."}
+        text={"Our buff butlers are more than just eye-candy, they’re charming, cheeky, and the perfect hosts for hen parties, birthdays, or girls’ nights. They’ll serve drinks, host party games, and keep your guests laughing all night."}
 
         image={image}
         bulletPoints={bulletPoints}

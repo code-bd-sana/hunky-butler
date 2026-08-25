@@ -83,7 +83,7 @@ export default function OurMission() {
               <div className="text-[#333333]">
                 <SubTitle
                   text={
-                    "Get instant quotes with no hidden fees—factoring in time, staff, location, and travel."
+                    "Get instant quotes with no hidden fees, factoring in time, staff, location, and travel."
                   }
                 />
               </div>

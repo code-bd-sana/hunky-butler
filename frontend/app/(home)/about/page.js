@@ -12,7 +12,7 @@ import img from "@/public/About/aboutBannerImg.jpeg";
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
 
 export const metadata = {
-  title: "About Us | Hunky Butler Service – UK Hen Party Entertainment Since 2013",
+  title: "About Us | Hunky Butler Service, UK Hen Party Entertainment Since 2013",
   description:
     "Meet the team behind Hunky Butler Service, the UK's trusted name in buff butlers, cocktail masterclasses, life drawing and hen party entertainment since 2013. 12,000+ bookings, verified staff, 5-star reviews.",
   alternates: { canonical: SITE_URL + "/about" },
@@ -48,7 +48,7 @@ export default function About() {
           </>
         }
         description={
-          "Founded in 2013, Hunky Butler Service has grown into the UK’s most trusted name for hen party entertainment. Whether you’re looking to hire buff butlers, book a cheeky cocktail masterclass, or host a life drawing class, our mission is simple — to make your celebration unforgettable. With 12,000+ bookings, verified staff, and five-star reviews, we’re here to bring the fun."
+          "Founded in 2013, Hunky Butler Service has grown into the UK’s most trusted name for hen party entertainment. Whether you’re looking to hire buff butlers, book a cheeky cocktail masterclass, or host a life drawing class, our mission is simple: to make your celebration unforgettable. With 12,000+ bookings, verified staff, and five-star reviews, we’re here to bring the fun."
         }
       ></ServAndAboutBanner>
       <div className="max-w-7xl mx-auto py-24 text-center">

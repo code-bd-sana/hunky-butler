@@ -115,7 +115,7 @@ export default function PerfectForAll({ city = "your area", slug, serviceName })
                   <div className="flex items-center gap-4">
                     <Image alt="icon" src={icon} />
                     <p className="text-[#333333]">
-                      Holiday Celebrations: From Hogmanay To Christmas — We’ve
+                      Holiday Celebrations: From Hogmanay To Christmas, We’ve
                       Got Your Party Covered.
                     </p>
                   </div>

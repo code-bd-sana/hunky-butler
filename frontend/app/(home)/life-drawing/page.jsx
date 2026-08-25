@@ -16,7 +16,7 @@ const SITE_URL = "https://www.hunkybutlerservice.co.uk";
 export const metadata = {
   title: "Life Drawing Classes for Hen Parties | Hunky Butler Service",
   description:
-    "Add a creative twist to your hen do with a life drawing class led by a professional model. Fun, guided sessions across the UK — keepsake drawings included.",
+    "Add a creative twist to your hen do with a life drawing class led by a professional model. Fun, guided sessions across the UK, keepsake drawings included.",
   alternates: { canonical: SITE_URL + "/life-drawing" },
   openGraph: {
     title: "Life Drawing Classes for Hen Parties | Hunky Butler Service",

@@ -22,7 +22,7 @@ export default function MostPopulerParty() {
       image: image2,
       heading: "Life Drawing",
       title:
-        "Add a creative twist to your hen do or birthday celebration with a life drawing class led by one of our handsome male models. Our classes combine tasteful fun with plenty of laughs — and yes, your butler can stick around afterwards to pour drinks, play party games, and pose for photos.",
+        "Add a creative twist to your hen do or birthday celebration with a life drawing class led by one of our handsome male models. Our classes combine tasteful fun with plenty of laughs, and yes, your butler can stick around afterwards to pour drinks, play party games, and pose for photos.",
       alt: "Life drawing class with buff butler model",
       imageTitle: "Life Drawing Hen Party Class",
       link: "/party-entertainment-services/life-drawing",
@@ -31,7 +31,7 @@ export default function MostPopulerParty() {
       image: image3,
       heading: "Cocktail Masterclasses",
       title:
-        "Shake, stir, and sip your way through an interactive cocktail masterclass hosted by skilled mixologists and buff butlers. Perfect for groups that want hands-on fun, our classes are available in Manchester, Liverpool, Birmingham, and London — and come with plenty of cheeky surprises along the way.",
+        "Shake, stir, and sip your way through an interactive cocktail masterclass hosted by skilled mixologists and buff butlers. Perfect for groups that want hands-on fun, our classes are available in Manchester, Liverpool, Birmingham, and London, and come with plenty of cheeky surprises along the way.",
       alt: "Cocktail masterclass hosted by topless waiter",
       imageTitle: "Cocktail Masterclass Hen Party",
       link: "/party-entertainment-services/cocktail-masterclasses",

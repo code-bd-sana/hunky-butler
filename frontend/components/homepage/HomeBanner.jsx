@@ -68,11 +68,11 @@ export default function HomeBanner() {
               Looking for the ultimate hen party entertainment? You’ve come to
               the right place. Hunky Butler Service is the UK’s most popular
               buff butler and hen party entertainment company. But the fun
-              doesn’t stop there — we also offer topless waiters, life drawing
+              doesn’t stop there, we also offer topless waiters, life drawing
               classes, cocktail masterclasses, and much more.
             </p>
             <p className='hidden md:flex mt-3 md:mt-4 text-base md:text-xl text-[#F6F4F5] text-justify capitalize lg:w-11/12'>
-              Our cheeky butlers aren’t just for show — they’re professional,
+              Our cheeky butlers aren’t just for show, they’re professional,
               friendly, and know how to keep your party flowing with games,
               drinks, and laughter. Whether you’re celebrating in Liverpool,
               Manchester, London, Birmingham, Leeds, or beyond, our team is

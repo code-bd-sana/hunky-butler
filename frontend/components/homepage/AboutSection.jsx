@@ -63,7 +63,7 @@ export default function AboutSection() {
             industry.
           </p>
           <p className='text-lg my-3 text-[#3D3D3D]'>
-            Our work has taken us everywhere — from collaborating with household
+            Our work has taken us everywhere, from collaborating with household
             brands like Ann Summers to being featured on ITV News. Beyond
             parties, we're proud to give back: we've supported a number of
             charities, including recent events in aid of Cancer Research UK and
@@ -91,7 +91,7 @@ export default function AboutSection() {
               <div className='text-[#333333]'>
                 <SubTitle
                   text={
-                    " Get instant quotes with no hidden fees—factoring in time, staff, location, and travel."
+                    " Get instant quotes with no hidden fees, factoring in time, staff, location, and travel."
                   }
                 />
               </div>

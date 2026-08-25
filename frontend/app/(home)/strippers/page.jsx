@@ -14,7 +14,7 @@ import { getGoogleReviews } from "@/lib/googleReviews";
 const SITE_URL = "https://www.hunkybutlerservice.co.uk";
 
 export const metadata = {
-  title: "Hire Male Strippers UK | Hen Party Entertainment – Hunky Butler Service",
+  title: "Hire Male Strippers UK | Hen Party Entertainment | Hunky Butler Service",
   description:
     "Book professional, experienced male strippers for hen parties, birthdays and private events across the UK. Customisable performances, fully insured entertainers.",
   alternates: { canonical: SITE_URL + "/strippers" },

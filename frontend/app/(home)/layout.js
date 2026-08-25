@@ -36,7 +36,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Buff Butlers & Hen Party Entertainment | UK',
     description:
-      'Fun, cheeky and professional hen party entertainment — buff butlers, cocktail classes, life drawing and strippers.',
+      'Fun, cheeky and professional hen party entertainment: buff butlers, cocktail classes, life drawing and strippers.',
         images: ['https://www.hunkybutlerservice.co.uk/logo.png'],
   },
 

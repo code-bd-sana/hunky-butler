@@ -1222,7 +1222,7 @@ export default function SecondStep() {
     if (reason === "local_coverage") {
       return {
         title: "Local Coverage Area",
-        description: `Within ${PRICING_CONFIG.localCoverageRadiusMiles} miles of our ${nearestHub} hub — no travel uplift`,
+        description: `Within ${PRICING_CONFIG.localCoverageRadiusMiles} miles of our ${nearestHub} hub, no travel uplift`,
         color: "text-green-400",
       };
     }
@@ -1230,14 +1230,14 @@ export default function SecondStep() {
     if (reason === "capped") {
       return {
         title: "Maximum Travel Fee Applied",
-        description: `Long distance from ${nearestHub} (${distanceMiles} miles) — maximum multiplier applied`,
+        description: `Long distance from ${nearestHub} (${distanceMiles} miles), maximum multiplier applied`,
         color: "text-yellow-400",
       };
     }
 
     return {
       title: "Distance-Based Pricing",
-      description: `${distanceMiles} miles from ${nearestHub} hub — continuous distance multiplier applied`,
+      description: `${distanceMiles} miles from ${nearestHub} hub, continuous distance multiplier applied`,
       color: "text-blue-400",
     };
   };

@@ -55,7 +55,7 @@ export default function RefundAndPolicy() {
               Please read our Terms & Conditions carefully before booking to
               ensure a smooth and unforgettable event experience. By submitting
               a quote form and/or paying a deposit, you agree to the terms
-              outlined below — it’s the boring stuff, but important, so the only
+              outlined below, it’s the boring stuff, but important, so the only
               surprises are the good kind and everything stays fun, safe, and
               stress-free!
             </p>

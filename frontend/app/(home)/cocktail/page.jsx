@@ -94,7 +94,7 @@ image={bannerImg}
 />
 <BookNowSection
 
-text={"Bring the bar to your party with a Cocktail Masterclass led by an expert mixologist. Perfect for hen dos, birthdays, or team nights, you’ll learn how to create and taste—delicious cocktails while enjoying fun challenges with your group."}
+text={"Bring the bar to your party with a Cocktail Masterclass led by an expert mixologist. Perfect for hen dos, birthdays, or team nights, you’ll learn how to create and taste delicious cocktails while enjoying fun challenges with your group."}
 
 image={image}
 bulletPoints={bulletPoints}
