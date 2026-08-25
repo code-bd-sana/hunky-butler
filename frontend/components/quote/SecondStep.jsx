@@ -1112,7 +1112,16 @@ export default function SecondStep() {
           body: JSON.stringify({
             id: savedBookingId,
             paymentType: paymentType,
-            successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
+            // The amount actually being charged is carried on the redirect so
+            // the success page can report revenue. Without it `purchase` fires
+            // with a transaction id and no value, which means GA4 shows
+            // conversions but no money, and the leads recorded earlier have
+            // nothing to convert against. It is display only: the charge itself
+            // is set server side from the stored booking, so a tampered value
+            // here changes a report, never a payment.
+            successUrl: `${window.location.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}&amt=${
+              paymentType === "deposit" ? 20 : totalPrice
+            }&svc=${encodeURIComponent(params.category || "")}`,
             cancelUrl: `${window.location.origin}/booking/cancel`,
           }),
         },

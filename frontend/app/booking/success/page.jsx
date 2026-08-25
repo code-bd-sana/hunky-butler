@@ -27,9 +27,15 @@ function PaymentSuccessContent() {
       // Private mode or blocked storage. Reporting the sale matters more than
       // perfect de-duplication, so carry on.
     }
+    // `amt` is what was charged: the deposit if one was taken, otherwise the
+    // full price. Parsed defensively, because it arrives from a URL and a bad
+    // value should mean a purchase with no revenue rather than NaN in reports.
+    const amount = Number(searchParams?.get('amt'));
     track(EVENTS.PURCHASE, {
       currency: CURRENCY,
       transaction_id: sessionId || undefined,
+      value: Number.isFinite(amount) && amount > 0 ? amount : undefined,
+      service: searchParams?.get('svc') || undefined,
     });
   }, [searchParams]);
 
