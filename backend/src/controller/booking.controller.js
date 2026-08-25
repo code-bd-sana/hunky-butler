@@ -4,6 +4,7 @@ import Booking from "../models/booking.model.js";
 import PaymentHistory from "../models/payment.model.js";
 import User from "../models/user.model.js";
 import { adminGmail, storeNotification } from "../utils/utils.js";
+import { SITE_URL } from "../utils/siteUrl.js";
 import { sendNotification } from "../utils/notification.js";
 import { audienceFromRequest, sanitizeBooking, sanitizeBookings } from "../utils/sanitizeBooking.js";
 
@@ -160,7 +161,7 @@ export const createBooking = async (req, res) => {
         </p>
         <p>You can complete your payment anytime via your dashboard.</p>
         <p style="margin-top: 25px;">
-          <a href="https://hunky-butler.vercel.app/dashboard" style="background-color: #ff1673; color: white; padding: 14px 30px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">View Dashboard & Pay</a>
+          <a href="${SITE_URL}/dashboard" style="background-color: #ff1673; color: white; padding: 14px 30px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">View Dashboard & Pay</a>
         </p>
         <p style="font-size: 12px; color: #666; margin-top: 20px;">
           If you have already initiated payment, please ignore this email. Your confirmation will follow shortly.
@@ -186,7 +187,7 @@ export const createBooking = async (req, res) => {
       email,
       phone,
       subject: "Booking Received - Action Required",
-      message: `Thank you for your booking! We've received your booking for ${serviceName}. Please complete your payment at: https://hunky-butler.vercel.app/dashboard to fully confirm.`,
+      message: `Thank you for your booking! We've received your booking for ${serviceName}. Please complete your payment at: ${SITE_URL}/dashboard to fully confirm.`,
       html: userEmailHtml,
       smsMessage: `Hunky Butler: Booking received for ${serviceName}! Please complete your payment in your dashboard to confirm your booking.`
     });
@@ -279,7 +280,7 @@ export const updateStatus = async (req, res) => {
     const { email, phone, firstName, serviceName } = booking;
 
     // Construct review link
-    const reviewLink = `https://hunky-butler.vercel.app/review/${email}/?id=${butlerid || ''}`;
+    const reviewLink = `${SITE_URL}/review/${email}/?id=${butlerid || ''}`;
 
     let subject = "";
     let emailHtml = "";
@@ -597,7 +598,7 @@ export const sendEmail = async (req, res) => {
                 </div>
 
                 <p>Please complete your payment to ensure your booking is fully confirmed and secured.</p>
-                <p style="text-align: center;"><a href="https://hunky-butler.vercel.app/dashboard" class="button">Pay Balance Now</a></p>
+                <p style="text-align: center;"><a href="${SITE_URL}/dashboard" class="button">Pay Balance Now</a></p>
                 <p>If you have already paid, please ignore this email.</p>
                 <p>Best regards,<br>Hunky Butler Team</p>
             </div>
@@ -606,7 +607,7 @@ export const sendEmail = async (req, res) => {
         </html>
       `;
 
-      const smsMsg = `Hunky Butler: Friendly reminder for your ${serviceName} booking. Remaining balance: £${balance}. Please pay at: https://hunky-butler.vercel.app/dashboard`;
+      const smsMsg = `Hunky Butler: Friendly reminder for your ${serviceName} booking. Remaining balance: £${balance}. Please pay at: ${SITE_URL}/dashboard`;
 
       await sendNotification({
         email,
