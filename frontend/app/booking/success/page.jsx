@@ -1,14 +1,37 @@
 "use client";
-import React from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { track, EVENTS, CURRENCY } from '@/lib/analytics';
 
 import Image from "next/image";
 import image from "@/public/quote/bg.png";
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const router = useRouter();
- 
+  const searchParams = useSearchParams();
 
+  // The only point in the whole site where money is confirmed. Without this
+  // there is no revenue in the reports at all, and the leads recorded earlier in
+  // the wizard have nothing to convert against.
+  //
+  // Guarded against a refresh: this page is a redirect target, so reloading it
+  // would otherwise report the same sale twice. GA4 also de-duplicates on
+  // transaction_id, this makes it correct before it leaves the browser.
+  useEffect(() => {
+    const sessionId = searchParams?.get('session_id');
+    const key = `hbs_purchase_${sessionId || 'unknown'}`;
+    try {
+      if (sessionId && window.sessionStorage.getItem(key)) return;
+      if (sessionId) window.sessionStorage.setItem(key, '1');
+    } catch {
+      // Private mode or blocked storage. Reporting the sale matters more than
+      // perfect de-duplication, so carry on.
+    }
+    track(EVENTS.PURCHASE, {
+      currency: CURRENCY,
+      transaction_id: sessionId || undefined,
+    });
+  }, [searchParams]);
 
 
   const handleGoToDashboard = () => {
@@ -89,5 +112,20 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * useSearchParams opts the tree into client-side rendering, so Next requires a
+ * Suspense boundary around it or the static export of this route fails. The
+ * fallback is deliberately empty: this page is only ever reached by redirect
+ * from the payment provider, and a flash of placeholder would read as an error
+ * at the exact moment somebody has just paid.
+ */
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={null}>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }
