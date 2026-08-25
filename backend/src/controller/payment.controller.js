@@ -1,4 +1,9 @@
 import { createRequire } from 'module';
+import {
+  validateQuotedPrice,
+  stripForbiddenBookingFields,
+  deriveBookingFinancials,
+} from "../utils/pricing.js";
 const require = createRequire(import.meta.url);
 const { Client, Environment } = require('square');
 const crypto = require('crypto');
@@ -180,6 +185,18 @@ export const createCheckoutSession = async (req, res) => {
       });
     }
 
+    // The price arrives from the browser and used to be charged as given, on a
+    // route with no session: a 250 pound booking could be paid for with 1 pound,
+    // or nothing. It is now checked against the same rate table the wizard uses.
+    // The travel multiplier is not recomputed (it needs geocoding) but it can
+    // only ever raise a price and is capped at 2.0, so the base price is a hard
+    // floor and twice the base a hard ceiling.
+    const priceCheck = validateQuotedPrice({ ...bookingData, required: true });
+    if (!priceCheck.ok) {
+      console.warn('Rejected checkout with an out of range price:', bookingData.price);
+      return res.status(400).json({ success: false, message: priceCheck.error });
+    }
+
     const totalAmount = Number(bookingData.price);
     const depositAmount = 20;
     const isDeposit = paymentType === 'deposit';
@@ -188,8 +205,10 @@ export const createCheckoutSession = async (req, res) => {
     console.log(`📊 Price: ${totalAmount}, Charging: ${amountToCharge}`);
 
     // Create booking first
+    const derived = deriveBookingFinancials(bookingData) || {};
     const newBooking = new Booking({
-      ...bookingData,
+      ...stripForbiddenBookingFields(bookingData),
+      ...derived,
       paymentType: paymentType,
       depositAmount: isDeposit ? depositAmount : 0,
       amountDue: totalAmount,

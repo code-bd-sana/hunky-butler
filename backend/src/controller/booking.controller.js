@@ -5,6 +5,11 @@ import PaymentHistory from "../models/payment.model.js";
 import User from "../models/user.model.js";
 import { adminGmail, storeNotification } from "../utils/utils.js";
 import { SITE_URL } from "../utils/siteUrl.js";
+import {
+  validateQuotedPrice,
+  stripForbiddenBookingFields,
+  deriveBookingFinancials,
+} from "../utils/pricing.js";
 import { sendNotification } from "../utils/notification.js";
 import { audienceFromRequest, sanitizeBooking, sanitizeBookings } from "../utils/sanitizeBooking.js";
 
@@ -125,8 +130,36 @@ export const getBookingCustomer = async (req, res) => {
 
 export const createBooking = async (req, res) => {
   try {
-    const data = req.body;
-    
+    // The quote wizard prices the booking in the browser and posts the figure.
+    // This route has no session, so that figure was simply believed, and the
+    // whole body was written into the document. Both are now checked: the price
+    // must be one the rate table can actually produce, and payment and status
+    // fields cannot be set by the caller.
+    const priceCheck = validateQuotedPrice(req.body);
+    if (!priceCheck.ok) {
+      return res.status(400).json({ message: priceCheck.error });
+    }
+
+    const data = stripForbiddenBookingFields(req.body);
+
+    // Money fields are derived, not taken from the request. The wizard sends
+    // butlerFee, travelFee and profit and the dashboard reports on them, so they
+    // are recomputed here rather than dropped: the dashboard keeps its figures
+    // and the caller cannot state their own profit.
+    const financials = deriveBookingFinancials(req.body);
+    if (financials) {
+      data.basePrice = financials.basePrice;
+      data.butlerFee = financials.butlerFee;
+      data.travelFee = financials.travelFee;
+      data.profit = financials.profit;
+    }
+
+    // Safe starting state, regardless of what the caller sent.
+    data.paid = "unpaid";
+    data.paymentStatus = "pending";
+    data.amountPaid = 0;
+    data.status = "ongoing";
+
     // Default financial values on creation before payment
     if (data.price !== undefined) {
       data.totalAmount = data.price;
