@@ -44,7 +44,7 @@ export async function generateMetadata({ params }) {
 
   const title =
     location.metaTitle ||
-    `${location.name} | Hen Party Entertainment – Hunky Butler Service`;
+    `${location.name} | Hen Party Entertainment, Hunky Butler Service`;
   const description = location.metaDescription || location.description;
   const url = `${SITE_URL}/${location.slug}`;
 

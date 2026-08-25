@@ -48,7 +48,7 @@ const Nationwide = ({ name, serviceSlug }) => {
       <SecondaryTitle text1={`${name ? name : "Loading"} Locations We Cover`} />
       <SubTitle title='Life Drawing Available Nationwide' />
       <p className='max-w-3xl mx-auto text-gray-600 mb-12 leading-relaxed'>
-        Looking for buff butlers in your area? We cover the whole of the UK —
+        Looking for buff butlers in your area? We cover the whole of the UK,
         from Liverpool and Manchester to London, Birmingham, Leeds, Newcastle,
         and beyond. Wherever your event is, our butlers are ready to bring the
         fun.
