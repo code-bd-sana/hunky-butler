@@ -12,6 +12,7 @@ import { IoMdMail } from "react-icons/io";
 import { IoCallSharp } from "react-icons/io5";
 import { SOCIAL_LINKS } from "@/lib/socialLinks";
 import { REVIEW_PROFILE_LIST } from "@/lib/reviewProfiles";
+import { trackContactClick, track, EVENTS } from "@/lib/analytics";
 
 // Maps a social profile key to its footer icon. A key with no entry here is
 // simply not rendered, so adding a profile to lib/socialLinks.js is safe.
@@ -108,6 +109,7 @@ const Footer = () => {
               <IoMdMail className='text-[#FF006A]' />
               <a
                 href='mailto:info@hunkybutlerservice.co.uk'
+                onClick={() => trackContactClick("email", "footer")}
                 className='font-bold hover:text-[#FF006A] transition-colors'>
                 info@hunkybutlerservice.co.uk
               </a>
@@ -118,6 +120,7 @@ const Footer = () => {
               <IoCallSharp className='text-[#FF006A]' />
               <a
                 href='tel:+447745865352'
+                onClick={() => trackContactClick("phone", "footer")}
                 className='font-bold hover:text-[#FF006A] transition-colors'>
                 +44 7745 865352
               </a>
@@ -182,6 +185,9 @@ const Footer = () => {
                     target='_blank'
                     rel='noopener noreferrer'
                     aria-label={p.label}
+                    onClick={() =>
+                      track(EVENTS.REVIEW_PROFILE_CLICK, { profile: p.key, placement: "footer" })
+                    }
                     className='hover:text-[#FF006A] transition-colors'>
                     {p.rating} on {p.name}
                   </a>

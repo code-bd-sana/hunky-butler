@@ -1,5 +1,6 @@
 "use client";
 import { useBookingMutation, useUpdaterStatusMutation } from "@/features/booking";
+import { track, EVENTS, CURRENCY, travelBand } from "@/lib/analytics";
 import { useGetServiceQuery } from "@/features/services/servicesApi";
 import image from "@/public/quote/bg.png";
 import { base_url } from "@/utils/utils";
@@ -999,6 +1000,31 @@ export default function SecondStep() {
       setDistanceInfo(calcResult.distanceInfo);
       setIsCalculatingPrice(false);
 
+      // The price is the moment the visitor learns what this costs, so it is the
+      // reference point for every drop that follows. A zero here is the silent
+      // failure that left 44 real bookings with no price: the distance lookup
+      // fell over and the wizard defaulted. It is recorded separately so the
+      // rate of that failure is visible rather than guessed at.
+      if (Number(calcResult?.totalPrice) > 0) {
+        track(EVENTS.QUOTE_PRICED, {
+          currency: CURRENCY,
+          value: calcResult.totalPrice,
+          base_price: calcResult.basePrice,
+          service: params.category,
+          staff_count: Number(numberOfStaff),
+          duration_hours: durationHours,
+          travel_band: travelBand(calcResult?.distanceInfo?.distanceMiles),
+          travel_multiplier: calcResult?.distanceInfo?.multiplier,
+        });
+      } else {
+        track(EVENTS.QUOTE_PRICE_FAILED, {
+          service: params.category,
+          staff_count: Number(numberOfStaff),
+          duration_hours: durationHours,
+          reason: calcResult?.distanceInfo?.reason || "no_price_returned",
+        });
+      }
+
       const computedTotalPrice = calcResult.totalPrice;
       const computedBasePrice = calcResult.basePrice;
       const computedButlerFee = calculateButlerFee(
@@ -1037,6 +1063,20 @@ export default function SecondStep() {
         setSavedBookingId(result.data._id);
         console.log("✅ Initial booking saved with ID:", result.data._id);
       }
+
+      // A lead exists from here on: the enquiry is captured and unpaid. Pairing
+      // this with `purchase` is what finally puts a number on the gap between
+      // demand and money, which the booking table currently shows as 41 paid
+      // out of 241.
+      track(EVENTS.GENERATE_LEAD, {
+        currency: CURRENCY,
+        value: computedTotalPrice,
+        service: params.category,
+        staff_count: Number(numberOfStaff),
+        duration_hours: durationHours,
+        travel_band: travelBand(calcResult?.distanceInfo?.distanceMiles),
+        booking_id: result?.data?._id,
+      });
 
       setNextStep("thirdstep");
     } catch (error) {
@@ -1114,6 +1154,17 @@ export default function SecondStep() {
           remainingBalance: totalPrice,
           totalAmount: totalPrice,
         }).unwrap();
+        // "I'll pay later" takes no money at all, and this is where most of the
+        // unpaid four fifths is created. Recorded so the size of that choice is
+        // known before anyone decides whether to keep offering it.
+        track(EVENTS.PAYMENT_DEFERRED, {
+          currency: CURRENCY,
+          value: totalPrice,
+          service: params.category,
+          payment_type: paymentType,
+          booking_id: savedBookingId,
+        });
+
         setBookingSuccess(true);
         toast.success("Booking saved! You can pay later.");
         return;
@@ -1140,6 +1191,17 @@ export default function SecondStep() {
       };
 
       const data = await booking(dataToSend).unwrap();
+
+      track(
+        paymentMethod === "pay_now" ? EVENTS.BEGIN_CHECKOUT : EVENTS.PAYMENT_DEFERRED,
+        {
+          currency: CURRENCY,
+          value: totalPrice,
+          service: params.category,
+          payment_type: paymentType,
+          booking_id: data?.data?._id,
+        },
+      );
 
       setBookingData(dataToSend);
       setBookingSuccess(true);

@@ -1,4 +1,5 @@
 import React from "react";
+import TrackedContactLink from "@/components/shared/TrackedContactLink";
 import Link from "next/link";
 import Image from "next/image";
 import arrow from "@/public/icons/greaterthan.png";
@@ -94,12 +95,14 @@ const LocationDynamicBanner = ({
           >
             Get An Instant Quote
           </Link>
-          <a
+          <TrackedContactLink
             href="tel:+447745865352"
+            method="phone"
+            placement="location_banner"
             className="rounded-full border-2 border-white px-6 py-3 md:px-[24px] md:py-[16px] text-lg font-semibold bg-white text-[#292929] hover:bg-gray-100 transition-colors"
           >
             Call +44 7745 865352
-          </a>
+          </TrackedContactLink>
         </div>
       </div>
     </div>
