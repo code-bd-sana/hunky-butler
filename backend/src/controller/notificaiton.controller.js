@@ -1,6 +1,11 @@
 import Notificaton from "../models/notification.model.js";
 import User from "../models/user.model.js";
 import { adminGmail, storeNotification } from "../utils/utils.js";
+import {
+  validateBroadcast,
+  buildAudienceQuery,
+  toRecipientEmails,
+} from "../utils/broadcastAudience.js";
 
 export const createNotificaiton = async (req, res) => {
   try {
@@ -136,46 +141,90 @@ export const markSeenAllNotification = async (req, res) => {
 
 
 
+/**
+ * Admin broadcast: writes one in-app notification per recipient.
+ *
+ * This endpoint had no authentication of any kind. Every other route on this
+ * router carries verifyUser, but the POST was mounted bare, and nothing else in
+ * the app applies a global guard, so any unauthenticated caller could write an
+ * arbitrary message to every user on file. verifyAdmin is now applied on the
+ * route. The rest of the hardening here is about what a legitimate admin can do
+ * by accident:
+ *
+ *   - Empty sends. An empty title and message stored a body of one space.
+ *   - Silent no-op sends. No audience selected still returned "Success".
+ *   - Duplicate sends. "All users" plus a role, or butler plus customer, ran a
+ *     separate query per toggle and stored one row per match, so overlapping
+ *     users received the same message two or three times.
+ *   - A wrong link on every row. The call passed adminGmail into the `link`
+ *     argument (the signature is receiver, message, link, type), so every
+ *     broadcast notification linked to an email address, and `type` is not even
+ *     a field on the model, so it was silently dropped.
+ *   - A row-at-a-time write. Recipients were saved in a sequential await loop,
+ *     so a failure part-way left a partial broadcast with no way to tell how far
+ *     it got. One insertMany replaces it.
+ *
+ * The response now reports how many recipients were written so the admin UI can
+ * confirm the real number instead of a bare "Success".
+ */
 export const createNotification = async (req, res) => {
   try {
-    const data = req.body;
-    const message = (data?.title || '') + ' ' + (data?.message || '');
-    
-    // Helper function to send notifications to multiple emails
-    const sendToEmails = async (emails) => {
-      for (const email of emails) {
-        await storeNotification(email, message, adminGmail, '');
-      }
-    };
-
-    // All users
-    if (data?.recipients?.allUsers) {
-      const allUsers = await User.find({}, 'email'); // শুধু email field
-      const emails = allUsers.map(u => u.email);
-      await sendToEmails(emails);
+    const parsed = validateBroadcast(req.body);
+    if (!parsed.ok) {
+      return res.status(400).json({ message: parsed.error });
     }
 
-    // Butler users
-    if (data?.recipients?.butler) {
-      const butlers = await User.find({ role: 'butler' }, 'email');
-      const emails = butlers.map(u => u.email);
-      await sendToEmails(emails);
+    const query = buildAudienceQuery(parsed.audience);
+    if (!query) {
+      return res.status(400).json({ message: "Select at least one audience." });
     }
 
-    // Customer users
-    if (data?.recipients?.customer) {
-      const customers = await User.find({ role: 'customer' }, 'email');
-      const emails = customers.map(u => u.email);
-      await sendToEmails(emails);
+    const users = await User.find(query, "email").lean();
+    const emails = toRecipientEmails(users);
+
+    if (emails.length === 0) {
+      return res.status(200).json({
+        message: "No recipients matched that audience.",
+        recipientCount: 0,
+      });
     }
 
-    res.status(200).json({ message: "Success" });
+    await Notificaton.insertMany(
+      emails.map((email) => ({
+        sender: req.user?.email || adminGmail,
+        receiver: email,
+        message: parsed.body,
+        link: "/dashboard",
+      }))
+    );
 
+    // Every broadcast is attributable. Without this there is no way to tell who
+    // sent a message that went to the whole user base.
+    console.log(
+      `[broadcast] ${req.user?.email || "unknown"} sent to ${emails.length} recipient(s); audience=${JSON.stringify(parsed.audience)}`
+    );
+
+    res.status(200).json({ message: "Success", recipientCount: emails.length });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Something went wrong!",
-      error
-    });
+    console.error("Broadcast failed:", error);
+    res.status(500).json({ message: "Something went wrong!" });
+  }
+};
+
+/**
+ * Recipient counts for the admin UI, so the confirmation step can state exactly
+ * how many people a broadcast will reach before it is sent.
+ */
+export const getAudienceCount = async (req, res) => {
+  try {
+    const [allUsers, butler, customer] = await Promise.all([
+      User.countDocuments({}),
+      User.countDocuments({ role: "butler" }),
+      User.countDocuments({ role: "customer" }),
+    ]);
+    res.status(200).json({ allUsers, butler, customer });
+  } catch (error) {
+    console.error("Audience count failed:", error);
+    res.status(500).json({ message: "Something went wrong!" });
   }
 };

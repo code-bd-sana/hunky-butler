@@ -33,6 +33,11 @@ export const notificationApi = createApi({
       }),
       providesTags:["notification"]
     }),
+    // Recipient counts so the broadcast form can state exactly how many people
+    // a send will reach before it happens.
+    audienceCount: builder.query({
+      query: () => `/notification/audience/count`,
+    }),
     createNotification: builder.mutation({
       query:(data)=>({
         url:`/notification`,
@@ -44,4 +49,4 @@ export const notificationApi = createApi({
   }),
 });
 
-export const { useMyNotificationQuery, useMarkSeenMutation, useMarkSeenAllMutation, useCreateNotificationMutation } = notificationApi;
+export const { useMyNotificationQuery, useMarkSeenMutation, useMarkSeenAllMutation, useCreateNotificationMutation, useAudienceCountQuery } = notificationApi;
