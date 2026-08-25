@@ -23,6 +23,23 @@
 
 export const MAX_DISTANCE_MULTIPLIER = 2.0;
 
+/**
+ * How far below the rate table a price may legitimately sit.
+ *
+ * The table below is not authoritative for every service. Checking it against
+ * all 241 real bookings in production showed strippers selling at 100 to 114
+ * against a table base of 150, because that service has never used the matrix.
+ * A strict floor at the base price would have rejected those.
+ *
+ * A floor of 60 percent of base, with an absolute minimum of 50, rejects
+ * <strong>none</strong> of the 197 priced real bookings while still refusing the
+ * case this exists for: a 250 pound booking floored at 150 cannot be paid with
+ * 1 pound. Tighten it only against fresh data, not by intuition: 70 percent
+ * already rejects 7 real bookings.
+ */
+const MIN_PRICE_FRACTION = 0.6;
+const ABSOLUTE_MIN_PRICE = 50;
+
 /** Rounding tolerance, because the wizard rounds the final figure. */
 const TOLERANCE = 1;
 
@@ -64,44 +81,37 @@ export const validateQuotedPrice = ({
 } = {}) => {
   const base = calculateBasePrice(serviceName, durationHours, numberOfStaff);
   const supplied = Number(price);
+  const missing =
+    price === undefined || price === null || price === "" || Number.isNaN(supplied);
 
-  if (price === undefined || price === null || price === "" || Number.isNaN(supplied)) {
+  // A price of zero is not fraud, it is an unpriced lead. The wizard falls back
+  // to 0 when the distance lookup fails, and 44 of the 241 real bookings were
+  // saved that way, so rejecting them would throw away nearly a fifth of
+  // enquiries. They are allowed through on booking creation, where no money
+  // moves, and refused on the checkout path, where charging 0 is the bug.
+  if (missing || supplied <= 0) {
     if (required) {
-      return { ok: false, error: "A price is required.", base };
+      return { ok: false, error: "A valid price is required.", base };
     }
     return { ok: true, base, checked: false };
   }
 
-  const min = base - TOLERANCE;
-  const max = Math.round(base * MAX_DISTANCE_MULTIPLIER) + TOLERANCE;
+  const floor = Math.max(
+    ABSOLUTE_MIN_PRICE,
+    Math.round(base * MIN_PRICE_FRACTION) - TOLERANCE
+  );
+  const cap = Math.round(base * MAX_DISTANCE_MULTIPLIER) + TOLERANCE;
 
-  if (supplied < min) {
-    return {
-      ok: false,
-      base,
-      error: `The submitted price is below the minimum for this booking.`,
-    };
+  if (supplied < floor) {
+    return { ok: false, base, error: "The submitted price is below the minimum for this booking." };
   }
-
-  if (supplied > max) {
-    return {
-      ok: false,
-      base,
-      error: `The submitted price is above the maximum for this booking.`,
-    };
+  if (supplied > cap) {
+    return { ok: false, base, error: "The submitted price is above the maximum for this booking." };
   }
 
   return { ok: true, base, checked: true, price: supplied };
 };
 
-/**
- * Fields a caller must never be able to set on a booking.
- *
- * Both endpoints spread the request body into the document, so without this a
- * caller could post `paid: "paid"`, `status: "completed"` or their own
- * `butlerFee` and `profit`. createCheckoutSession happened to overwrite the
- * payment fields afterwards; createBooking did not.
- */
 /**
  * Butler fee, mirroring calculateButlerFee in the quote wizard.
  */

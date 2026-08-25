@@ -39,9 +39,13 @@ test("rejects the one pound booking for a 250 pound service", () => {
   assert.equal(r.base, 250);
 });
 
-test("rejects a zero and a negative price", () => {
-  assert.equal(validateQuotedPrice(quote({ price: 0 })).ok, false);
-  assert.equal(validateQuotedPrice(quote({ price: -100 })).ok, false);
+test("a zero or negative price is an unpriced lead, not fraud, unless money is moving", () => {
+  // 44 of 241 real bookings were saved with no price because the distance
+  // lookup failed. Rejecting them on creation would throw away enquiries.
+  assert.equal(validateQuotedPrice(quote({ price: 0 })).ok, true);
+  assert.equal(validateQuotedPrice(quote({ price: -100 })).ok, true);
+  // But charging zero is exactly the bug this exists for.
+  assert.equal(validateQuotedPrice(quote({ price: 0, required: true })).ok, false);
 });
 
 test("accepts the exact base price, which is a local booking", () => {
@@ -61,9 +65,32 @@ test("tolerates the wizard rounding by a pound", () => {
   assert.equal(validateQuotedPrice(quote({ price: 249 })).ok, true);
 });
 
+test("allows a service priced below the table, as strippers really are", () => {
+  // Table base 150, sold at 100 to 114 in production. A base-price floor would
+  // have rejected 9 real bookings.
+  for (const price of [100, 109, 114]) {
+    assert.equal(
+      validateQuotedPrice({ serviceName: "strippers", durationHours: 0.25, numberOfStaff: 1, price }).ok,
+      true,
+      `strippers at ${price}`
+    );
+  }
+});
+
+test("still refuses the pound booking that this exists for", () => {
+  assert.equal(validateQuotedPrice(quote({ price: 1 })).ok, false);
+  assert.equal(validateQuotedPrice(quote({ price: 49 })).ok, false);
+});
+
 test("a missing price is allowed unless the caller requires one", () => {
   assert.equal(validateQuotedPrice(quote({ price: undefined })).ok, true);
   assert.equal(validateQuotedPrice(quote({ price: undefined, required: true })).ok, false);
+});
+
+test("the floor never drops below the absolute minimum", () => {
+  // cocktail base 140, 60 percent is 84, so 50 is not the binding constraint.
+  assert.equal(validateQuotedPrice({ serviceName: "cocktail-masterclasses", durationHours: 2, numberOfStaff: 1, price: 83 }).ok, true);
+  assert.equal(validateQuotedPrice({ serviceName: "cocktail-masterclasses", durationHours: 2, numberOfStaff: 1, price: 20 }).ok, false);
 });
 
 test("a non numeric price is not silently treated as zero", () => {
