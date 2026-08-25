@@ -4,7 +4,7 @@ import Navbar from "@/components/shared/Navbar";
 import { SessionProvider } from "next-auth/react";
 import ReduxProvider from "../provider/ReduxProvider";
 import { SOCIAL_SAME_AS } from "@/lib/socialLinks";
-import { REVIEW_SAME_AS } from "@/lib/reviewProfiles";
+import { REVIEW_SAME_AS, AGGREGATE_RATING_SCHEMA } from "@/lib/reviewProfiles";
 
 // export const metadata = {
 //   title: "Hunky Butlers",
@@ -79,13 +79,7 @@ const localBusinessJsonLd = {
   // already claimed "5-star reviews" while no rating markup existed anywhere,
   // so no star rating could ever appear in search results.
   // Keep these figures in step with Trustpilot, or wire them to its API.
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "reviewCount": "112",
-    "bestRating": "5",
-    "worstRating": "1"
-  }
+  "aggregateRating": AGGREGATE_RATING_SCHEMA
 };
 
 /**

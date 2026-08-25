@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
+import { AGGREGATE_RATING } from "@/lib/reviewProfiles";
 
 export default function HomeBanner() {
   // The hero video is 7.2 MB and was downloading on phones too, dominating the
@@ -94,8 +95,14 @@ export default function HomeBanner() {
 
             {/* Rating (mobile & mid) */}
             <div className='mt-4 md:mt-6 flex flex-col items-center md:items-start text-center md:text-left lg:hidden'>
+              {/* Was a bare "5.00" that matched no source and contradicted the
+                  4.9 marked up in schema. Google requires an aggregateRating to
+                  reflect a rating visible on the page, so both now read from
+                  lib/reviewProfiles.js. */}
               <div className='flex items-center gap-2'>
-                <span className='text-4xl md:text-5xl font-semibold'>5.00</span>
+                <span className='text-4xl md:text-5xl font-semibold'>
+                  {AGGREGATE_RATING.ratingValue}
+                </span>
                 <div className='flex text-yellow-400'>
                   {Array(5)
                     .fill(0)
@@ -104,13 +111,19 @@ export default function HomeBanner() {
                     ))}
                 </div>
               </div>
+              <p className='mt-1 text-sm text-[#F6F4F5]'>
+                from {AGGREGATE_RATING.reviewCount} reviews on{" "}
+                {AGGREGATE_RATING.source}
+              </p>
             </div>
           </div>
 
           {/* Rating (desktop right side) */}
           <div className='hidden lg:flex flex-col items-end text-right'>
             <div className='flex items-center gap-2'>
-              <span className='text-4xl md:text-5xl font-semibold'>5.00</span>
+              <span className='text-4xl md:text-5xl font-semibold'>
+                {AGGREGATE_RATING.ratingValue}
+              </span>
               <div className='flex gap-1 text-yellow-400'>
                 {Array(5)
                   .fill(0)
@@ -119,6 +132,10 @@ export default function HomeBanner() {
                   ))}
               </div>
             </div>
+            <p className='mt-1 text-sm text-[#F6F4F5]'>
+              from {AGGREGATE_RATING.reviewCount} reviews on{" "}
+              {AGGREGATE_RATING.source}
+            </p>
           </div>
         </div>
       </div>
