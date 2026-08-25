@@ -10,9 +10,23 @@ import { useEffect, useState } from "react";
 import { base_url } from "@/utils/utils";
 import { useGetLocationsQuery } from "@/features/location";
 import Link from "next/link";
+import locations from "@/app/locations/locations.json";
+
+/**
+ * The locations API returns bare city slugs ("dudley") while the real pages are
+ * generated from locations.json, which stores them prefixed
+ * ("buff-butlers-dudley"). Resolving here means a card is only ever rendered
+ * when a page exists for it, so this grid can never link to a 404.
+ */
+const canonicalSlug = (slug) => {
+  if (!slug) return null;
+  const match = locations.find(
+    (loc) => loc.slug === slug || loc.slug === `buff-butlers-${slug}`
+  );
+  return match ? match.slug : null;
+};
 const Nationwide = ({ name, serviceSlug }) => {
   const { data: nations = [], isLoading, isError } = useGetLocationsQuery();
-  console.log(nations, "all nation is here");
   // const [nations, setNations] = useState([]);
 
   // useEffect(() => {
@@ -34,17 +48,23 @@ const Nationwide = ({ name, serviceSlug }) => {
       <SecondaryTitle text1={`${name ? name : "Loading"} Locations We Cover`} />
       <SubTitle title='Life Drawing Available Nationwide' />
       <p className='max-w-3xl mx-auto text-gray-600 mb-12 leading-relaxed'>
-        Looking for buff butlers in your area? We cover the whole of the UK —
+        Looking for buff butlers in your area? We cover the whole of the UK,
         from Liverpool and Manchester to London, Birmingham, Leeds, Newcastle,
         and beyond. Wherever your event is, our butlers are ready to bring the
         fun.
       </p>
 
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8'>
-        {nations?.map((nation, i) => (
+        {nations?.map((nation, i) => {
+          // Was /locations/{slug}, the weaker duplicate route: client-rendered,
+          // no generateMetadata, absent from the sitemap. That route is gone and
+          // its URLs now 301 here, so link straight at the canonical page.
+          const slug = canonicalSlug(nation?.slug);
+          if (!slug) return null;
+          return (
           <Link
             key={i}
-            href={`/locations/${nation?.slug}/?serviceSlug=${serviceSlug}`}>
+            href={`/${slug}`}>
             <div
               key={i}
               className='bg-white rounded-2xl shadow-md hover:shadow-xl transition p-4 border border-gray-100 hover:border-pink-500'>
@@ -67,7 +87,8 @@ const Nationwide = ({ name, serviceSlug }) => {
               </div>
             </div>
           </Link>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

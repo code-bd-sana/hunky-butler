@@ -44,7 +44,7 @@ export async function generateMetadata({ params }) {
 
   const title =
     location.metaTitle ||
-    `${location.name} | Hen Party Entertainment – Hunky Butler Service`;
+    `${location.name} | Hen Party Entertainment, Hunky Butler Service`;
   const description = location.metaDescription || location.description;
   const url = `${SITE_URL}/${location.slug}`;
 
@@ -96,13 +96,28 @@ export default async function LocationPage({ params }) {
   // ever rendered for a page that actually exists. A new city therefore gains
   // inbound links from its neighbours the day it is published, and we can
   // never ship a link to a 404 in the meantime.
+  // Only pages with unique content are linked. The rest are noindexed while they
+  // still share templated copy across cities (see the robots rule below), and
+  // pointing internal links at a noindexed page spends this page's link equity on
+  // one that cannot rank. Both lists therefore grow on their own as cities are
+  // rewritten and switched to uniqueContent: true.
+  const indexable = (loc) => Boolean(loc.uniqueContent);
+
   const sameCityServices = locations
-    .filter((loc) => loc.city === location.city && loc.slug !== location.slug)
+    .filter(
+      (loc) =>
+        loc.city === location.city && loc.slug !== location.slug && indexable(loc)
+    )
     .map((loc) => ({ slug: loc.slug, label: loc.serviceName || "Buff Butlers" }));
 
   const nearbyPlaces = (location.nearbySlugs || [])
-          .map((slug) => locations.find((loc) => loc.slug === slug || loc.slug === `buff-butlers-${slug}`))
+    .map((slug) =>
+      locations.find(
+        (loc) => loc.slug === slug || loc.slug === `buff-butlers-${slug}`
+      )
+    )
     .filter(Boolean)
+    .filter(indexable)
     .map((loc) => ({ slug: loc.slug, label: loc.city }));
 
   const pageUrl = `${SITE_URL}/${location.slug}`;

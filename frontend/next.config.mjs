@@ -1,3 +1,33 @@
+import { readFileSync } from "node:fs";
+
+// The location pages that actually exist are defined by app/locations/locations.json,
+// which also drives generateStaticParams for app/[slug]. Reading it here means the
+// /locations/* redirects below can never point at a slug that has no page.
+const locations = JSON.parse(
+  readFileSync(new URL("./app/locations/locations.json", import.meta.url), "utf8")
+);
+
+// A second, weaker copy of every location page used to live at /locations/[slug]:
+// "use client", no generateMetadata, no server-rendered content, and absent from
+// the sitemap, while the canonical /[slug] route has all of those. Two URLs served
+// the same city, which is a duplicate-content problem that would only grow as more
+// cities are switched on. The weak route is deleted and its URLs 301 here.
+//
+// Two source shapes are covered, because the locations API returns bare city slugs
+// ("dudley") while locations.json stores prefixed ones ("buff-butlers-dudley"):
+//   /locations/buff-butlers-dudley -> /buff-butlers-dudley
+//   /locations/dudley              -> /buff-butlers-dudley
+const locationRedirects = locations.flatMap((loc) => {
+  const entries = [
+    { source: `/locations/${loc.slug}`, destination: `/${loc.slug}`, permanent: true },
+  ];
+  const bare = loc.slug.replace(/^buff-butlers-/, "");
+  if (bare !== loc.slug) {
+    entries.push({ source: `/locations/${bare}`, destination: `/${loc.slug}`, permanent: true });
+  }
+  return entries;
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -80,6 +110,7 @@ const nextConfig = {
   // them would be misleading. Everything below had real content on the old site.
   async redirects() {
     return [
+      ...locationRedirects,
       // Apex to www. Both hosts currently return 200 with byte-identical
       // content, which splits signals across two hostnames. Doing it here
       // rather than in the reverse proxy keeps it in version control, and it
@@ -195,20 +226,16 @@ const nextConfig = {
         destination: "/cocktail",
         permanent: true,
       },
-      // Duplicate location pages.
-      // Liverpool previously existed on two systems: the API-driven
-      // /locations/[slug] pages and the clean-URL /buff-butlers-[city] pages.
-      // Both were indexable and competing for the same search terms. The
-      // clean-URL version is the canonical one (unique metadata, LocalBusiness
-      // + BreadcrumbList + FAQPage schema, city-specific content), so the
-      // /locations/ version is redirected onto it to consolidate ranking
-      // signals. Other cities are deliberately left alone for now: their
-      // /locations/ pages still hold the only substantial content they have.
-      {
-        source: "/locations/liverpool",
-        destination: "/buff-butlers-liverpool",
-        permanent: true,
-      },
+      // Duplicate location pages. Liverpool used to be the only city redirected
+      // here, on the reasoning that other cities had their only substantial
+      // content on the /locations/ page. That turned out not to be true:
+      // comparing the locations API against locations.json, 26 of the 28 cities
+      // have a byte-identical tagline and description in both, and the only two
+      // that differ are Liverpool and Manchester, whose static copy was
+      // deliberately rewritten. No city loses content by being redirected, so
+      // the single hand-written Liverpool rule is replaced by locationRedirects
+      // above, which covers every city from the same file that defines the real
+      // pages.
       // Standalone pages -> nearest new-site equivalent
       {
         source: "/index.php/work-for-us",
