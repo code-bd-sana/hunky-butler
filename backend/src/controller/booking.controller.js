@@ -10,6 +10,10 @@ import {
   stripForbiddenBookingFields,
   deriveBookingFinancials,
 } from "../utils/pricing.js";
+import {
+  authorizeBookingUpdate,
+  canAcceptAsButler,
+} from "../utils/bookingUpdateAuth.js";
 import { sendNotification } from "../utils/notification.js";
 import { audienceFromRequest, sanitizeBooking, sanitizeBookings } from "../utils/sanitizeBooking.js";
 
@@ -264,17 +268,37 @@ export const deleteBooking = async (req, res) => {
 
 export const updateStatus = async (req, res) => {
   try {
-    const { id, status, butlerid, paymentType, paymentMethod, depositAmount, amountDue, remainingBalance, paid, paymentStatus } = req.body;
+    const { id, butlerid } = req.body;
 
-    const updateFields = {};
-    if (status !== undefined) updateFields.status = status;
-    if (paymentType !== undefined) updateFields.paymentType = paymentType;
-    if (paymentMethod !== undefined) updateFields.paymentMethod = paymentMethod;
-    if (depositAmount !== undefined) updateFields.depositAmount = depositAmount;
-    if (amountDue !== undefined) updateFields.amountDue = amountDue;
-    if (remainingBalance !== undefined) updateFields.remainingBalance = remainingBalance;
-    if (paid !== undefined) updateFields.paid = paid;
-    if (paymentStatus !== undefined) updateFields.paymentStatus = paymentStatus;
+    if (!id) {
+      return res.status(400).json({ message: "A booking id is required." });
+    }
+
+    // This route required only a session and then trusted the id in the body, so
+    // any registered account could mark any booking paid, move it to completed
+    // (which fires the review email and SMS), or zero out what was owed. The
+    // caller must now have something to do with the booking, and only an admin
+    // can assert payment: real payments are written by the payment controller
+    // after the gateway confirms, never through here.
+    const existing = await Booking.findById(id);
+    if (!existing) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    const decision = authorizeBookingUpdate({
+      booking: existing,
+      user: req.user,
+      body: req.body,
+    });
+
+    if (!decision.ok) {
+      console.warn(
+        `Refused booking update on ${id} by ${req.user?.email || "unknown"}: ${decision.error}`
+      );
+      return res.status(decision.status).json({ message: decision.error });
+    }
+
+    const updateFields = decision.fields;
 
     // Update booking details
     const updatedBookingResult = await Booking.updateOne(
@@ -283,7 +307,7 @@ export const updateStatus = async (req, res) => {
     );
 
     // If butlerid is provided, update the accepted status in butler array
-    if (butlerid) {
+    if (butlerid && canAcceptAsButler({ booking: existing, user: req.user, butlerid })) {
       await Booking.updateOne(
         {
           _id: id,
