@@ -92,7 +92,7 @@ function RegisterForm() {
             </button>
           </Link>
 
-          {/* Role-based image — desktop perfect; mobile gets a safe min-height */}
+          {/* Role-based image, desktop perfect; mobile gets a safe min-height */}
           <Image
             key={role}
             src={img.src}

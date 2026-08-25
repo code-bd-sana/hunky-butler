@@ -142,7 +142,7 @@ const JoinForm = () => {
       <div className='max-w-[1252px] mx-auto py-28 px-4'>
         {/* Main Section */}
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-10 items-start'>
-          {/* LEFT IMAGE — stacked on top for md and below lg */}
+          {/* LEFT IMAGE, stacked on top for md and below lg */}
           <div className='w-full h-[500px] md:h-[600px] lg:h-[732px] relative order-1 lg:order-0'>
             <Image
               src='/Join/kissingBut.jpeg'

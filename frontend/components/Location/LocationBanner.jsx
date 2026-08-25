@@ -39,8 +39,8 @@ export default function LocationBanner({ service, title, description, image }) {
           <p className="text-base md:text-lg text-white leading-relaxed">
             Welcome to Hunky Butler Service, the premier provider of buff butler
             entertainment and party experiences across the UK and Europe.
-            Wherever you’re planning your event – from a bustling city centre to
-            a charming rural village – we’re here to make your celebration
+            Wherever you’re planning your event, from a bustling city centre to
+            a charming rural village, we’re here to make your celebration
             unforgettable.
           </p>
         </div>

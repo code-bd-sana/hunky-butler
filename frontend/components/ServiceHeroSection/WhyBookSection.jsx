@@ -37,7 +37,7 @@ export default function WhyBookSection() {
             Research UK and the Harrogate Baby Care Unit.
           </p>
           <p className="my-3">
-            When you hire through us, you’re not just booking eye-candy — you’re
+            When you hire through us, you’re not just booking eye-candy, you’re
             securing trusted hosts who serve drinks, run games, and keep your
             guests entertained from start to finish.
           </p>

@@ -1,4 +1,4 @@
-# Hunky Butler Service — Comprehensive Architecture, API & Security Report
+# Hunky Butler Service, Comprehensive Architecture, API & Security Report
 
 ---
 

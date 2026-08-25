@@ -36,7 +36,7 @@ export default function joinTheTeam() {
       <ServAndAboutBanner
         image={img}
         service={"Join The Team"}
-        title={<>Join the Team – Buff Butler Jobs UK</>}
+        title={<>Join the Team | Buff Butler Jobs UK</>}
         description={"Looking for flexible, fun, and well-paid work? Hunky Butler Service is always on the lookout for confident, professional, and outgoing people to join our team. From buff butlers and topless waiters to cocktail masterclass hosts and strippers, we provide some of the best party entertainment jobs in the UK."}
       />
       <JoinForm />

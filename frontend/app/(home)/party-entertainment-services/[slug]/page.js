@@ -35,7 +35,7 @@ export default function ServiceDetailspage() {
   return (
     <div>
       <ServiceBanner
-        heading={`${data?.name} for Hire – UK’s Top Hen Party & Event Hosts`}
+        heading={`${data?.name} for Hire, UK’s Top Hen Party & Event Hosts`}
         subTitle={
           "Fun, cheeky and professional butlers to keep your guests entertained, wherever you’re celebrating."
         }
@@ -48,7 +48,7 @@ export default function ServiceDetailspage() {
         <div className=" max-w-7xl mx-auto mt-4">
           <SubTitle
             text={
-              "Our buff butlers are more than just eye-candy — they’re charming, cheeky, and professional hosts who know how to make your night one to remember. Whether you’re planning a hen party in Liverpool, a birthday in Manchester, or a glamorous night out in London, our butlers will greet guests with a smile, serve drinks, host fun party games, and pose for photos. Hiring buff butlers is the perfect way to keep the party alive from start to finish."
+              "Our buff butlers are more than just eye-candy, they’re charming, cheeky, and professional hosts who know how to make your night one to remember. Whether you’re planning a hen party in Liverpool, a birthday in Manchester, or a glamorous night out in London, our butlers will greet guests with a smile, serve drinks, host fun party games, and pose for photos. Hiring buff butlers is the perfect way to keep the party alive from start to finish."
             }
           />
         </div>

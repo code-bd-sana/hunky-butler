@@ -55,7 +55,7 @@ export default function TermsAndConditon() {
               Please read our Terms & Conditions carefully before booking to
               ensure a smooth and unforgettable event experience. By submitting
               a quote form and/or paying a deposit, you agree to the terms
-              outlined below — it’s the boring stuff, but important, so the only
+              outlined below, it’s the boring stuff, but important, so the only
               surprises are the good kind and everything stays fun, safe, and
               stress-free!
             </p>
@@ -119,7 +119,7 @@ export default function TermsAndConditon() {
               balance to be paid in cash on the day of the event. This
               arrangement must be agreed in writing prior to the event. However,
               in the event of cancellation within 14 days, any outstanding
-              balance — including amounts due in cash on the day — remains fully
+              balance, including amounts due in cash on the day, remains fully
               payable and must be settled by alternative means.
             </li>
             <li>
@@ -244,7 +244,7 @@ export default function TermsAndConditon() {
             <li>
               If the client cancels within 14 days of the event, all payments
               are non-refundable. If any balance remains outstanding at the time
-              of cancellation — including where cash was due on the day — the
+              of cancellation, including where cash was due on the day, the
               full balance must still be paid by any reasonable means, as agreed
               in the original booking.
             </li>

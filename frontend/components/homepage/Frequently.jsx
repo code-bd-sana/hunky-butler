@@ -13,17 +13,17 @@ const Frequently = () => {
     {
       question: "How far in advance should I book?",
       answer:
-        "We recommend booking at least 2–4 weeks before your event, but last-minute bookings are often possible.",
+        "We recommend booking at least 2 to 4 weeks before your event, but last-minute bookings are often possible.",
     },
     {
       question: "Can I customize my service?",
       answer:
-        "Yes — every booking can be tailored to your group, from the number of butlers and add-ons like cocktail masterclasses or life drawing, to specific games and photo requests. Just let us know your preferences when you book.",
+        "Yes, every booking can be tailored to your group, from the number of butlers and add-ons like cocktail masterclasses or life drawing, to specific games and photo requests. Just let us know your preferences when you book.",
     },
     {
       question: "Are your performers verified?",
       answer:
-        "Yes, all of our butlers and entertainers are verified, insured and experienced professionals — we check references and experience before anyone joins the team.",
+        "Yes, all of our butlers and entertainers are verified, insured and experienced professionals, we check references and experience before anyone joins the team.",
     },
     {
       question: "Are there any upfront charges needed?",
@@ -35,22 +35,22 @@ const Frequently = () => {
     {
       question: "How long can I book a hunky butler for?",
       answer:
-        "Typically 2 hours, but bookings can be extended to suit your event — just let us know when you enquire.",
+        "Typically 2 hours, but bookings can be extended to suit your event, just let us know when you enquire.",
     },
     {
       question: "Do I need to provide costumes or props?",
       answer:
-        "No — our butlers arrive fully equipped with their signature uniform and any props needed for games or add-ons like cocktail masterclasses and life drawing sessions.",
+        "No, our butlers arrive fully equipped with their signature uniform and any props needed for games or add-ons like cocktail masterclasses and life drawing sessions.",
     },
     {
       question: "Can I book multiple butlers for one event?",
       answer:
-        "Absolutely. Many hen parties and larger events book two or more butlers — just let us know your group size when requesting a quote.",
+        "Absolutely. Many hen parties and larger events book two or more butlers, just let us know your group size when requesting a quote.",
     },
     {
       question: "What areas do you cover?",
       answer:
-        "We cover major cities and towns across the UK, including Liverpool, Manchester, Birmingham, Leeds and London — get an instant quote for your postcode to check availability.",
+        "We cover major cities and towns across the UK, including Liverpool, Manchester, Birmingham, Leeds and London, get an instant quote for your postcode to check availability.",
     },
   ];
 

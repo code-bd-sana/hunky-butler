@@ -44,13 +44,13 @@ export default function PrivacyPolicy() {
           {/* Right Column */}
           <div className='px-5 md:px-0 md:w-1/2'>
             <h3 className='text-3xl md:text-4xl font-extrabold leading-tight mb-4'>
-              We keep things cheeky — but your data? That stays professional.
+              We keep things cheeky, but your data? That stays professional.
             </h3>
             <p className='text-white/90 leading-relaxed text-lg'>
               Please read our Privacy Policy carefully to understand how your
               personal data is handled before submitting a quote or booking with
               us. By engaging our services, you agree to the way we collect,
-              store, and use your information — it’s the boring stuff, but
+              store, and use your information, it’s the boring stuff, but
               essential to keep everything safe, secure, and GDPR-friendly!
             </p>
           </div>

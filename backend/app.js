@@ -186,7 +186,7 @@ app.get("/", (req, res) => {
     <body>
       <div class="card">
         <img src="https://i.ibb.co.com/WNJ31W12/whybook.png" alt="Funny Butler" />
-        <h1>Hunky Butler — Server Running 🤖✨ <span class="emoji">😜🔧</span></h1>
+        <h1>Hunky Butler, Server Running 🤖✨ <span class="emoji">😜🔧</span></h1>
         <p>Serving high-tech, slightly naughty vibes with extra polish 🍸😏</p>
         <p>If you see this, your server is strutting in style! 🕺🕶️</p>
       </div>

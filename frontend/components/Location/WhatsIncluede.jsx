@@ -4,7 +4,7 @@ import React from "react";
 // array in locations.json.
 const defaultItems = (city) => [
   "Handsome, professional butler(s) in traditional cheeky uniform",
-  "1–3 hour bookings available (or more if needed!)",
+  "1 to 3 hour bookings available (or more if needed!)",
   "Hosting, serving drinks, posing for photos & party games",
   "Optional add-ons: cocktail masterclass, life drawing, strippers",
   `Available at homes, hotels, apartments & venues across ${city}`,

@@ -14,7 +14,7 @@ const WorkWithUsSection = () => {
           </h2>
           <p className="text-[#555] capitalize leading-relaxed">
             Working as a Hunky Butler means more than just looking the part. Our
-            team brings energy, fun, and professionalism to every event — from
+            team brings energy, fun, and professionalism to every event, from
             cheeky hen parties in Liverpool to cocktail classes in London.
           </p>
           <ul className="space-y-4 capitalize text-[#444]">

@@ -59,7 +59,7 @@ const Extra = () => {
           What Makes Our Life Drawing Parties Stand Out?
         </h2>
         <p className="text-gray-600 mb-6">
-          It’s more than just sketching — we add fun twists to keep everyone
+          It’s more than just sketching, we add fun twists to keep everyone
           laughing!
         </p>
         <ul className="space-y-2 text-gray-700">

@@ -54,7 +54,7 @@ const Cocktail = () => {
         <p className="text-gray-600 mb-6">
           We bring the bar to you! Our mobile cocktail making classes are
           available in apartments, houses, offices, or hired venues. Everything
-          is included — from shakers and ingredients to glassware — so you don’t
+          is included, from shakers and ingredients to glassware, so you don’t
           need to worry about a thing. Just pick the place, and we’ll set up
           your own cocktail bar experience. Perfect for staycations, rented
           apartments, and private homes.
