@@ -9,12 +9,18 @@ import bg4 from "@/public/images/home/aboutbg2.png";
 import aboutImg from "@/public/images/home/aboutImage16.png";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { REVIEW_PROFILES } from "@/lib/reviewProfiles";
 import { FaStar } from "react-icons/fa";
 import MainTitle from "../shared/typography/MainTitle";
 import SubTitle from "../shared/typography/SubTitle";
 
 export default function OurMission() {
-  const [averageRating, setAverageRating] = useState("4.9");
+  // This reads the live Google rating and falls back when the call fails. The
+  // fallback was hard-coded to "4.9", which is the Trustpilot figure, not
+  // Google's. Since the Google Places call is currently failing (the single API
+  // key is referrer restricted, A3), that wrong fallback is what actually
+  // renders. It now falls back to the Google profile's own figure.
+  const [averageRating, setAverageRating] = useState(REVIEW_PROFILES.google.rating);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

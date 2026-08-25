@@ -52,3 +52,34 @@ export const REVIEW_PROFILE_LIST = [
  * search engines connect this site to the same business entity elsewhere.
  */
 export const REVIEW_SAME_AS = REVIEW_PROFILE_LIST.map((p) => p.href);
+
+/**
+ * The one rating marked up in schema.org, and the one shown on the site.
+ *
+ * The figures used to be typed out again as string literals inside the schema
+ * in two files, so the markup could drift away from what the footer links say,
+ * and the hero displayed a bare "5.00" that matched neither. Google requires an
+ * aggregateRating to reflect a rating that is actually visible on the page, so a
+ * marked-up number nobody can see, or one that contradicts what is on screen,
+ * risks a manual action for spammy structured data.
+ *
+ * Trustpilot is used because it is the larger sample (112 against 37) and it is
+ * the profile the footer links to first. Everything that renders or marks up a
+ * rating now reads from here, so there is exactly one number to change.
+ */
+export const AGGREGATE_RATING = {
+  source: REVIEW_PROFILES.trustpilot.name,
+  ratingValue: REVIEW_PROFILES.trustpilot.rating,
+  reviewCount: REVIEW_PROFILES.trustpilot.count,
+  bestRating: "5",
+  worstRating: "1",
+};
+
+/** The same figures shaped for a schema.org AggregateRating node. */
+export const AGGREGATE_RATING_SCHEMA = {
+  "@type": "AggregateRating",
+  ratingValue: AGGREGATE_RATING.ratingValue,
+  reviewCount: AGGREGATE_RATING.reviewCount,
+  bestRating: AGGREGATE_RATING.bestRating,
+  worstRating: AGGREGATE_RATING.worstRating,
+};
