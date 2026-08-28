@@ -3,7 +3,10 @@ import { NextResponse } from 'next/server';
 const GOOGLE_PLACE_ID = "ChIJ07Q9XEUhe0gRkdnnQwGVZWQ";
 
 export async function GET() {
-  const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY || "AIzaSyA1KF6rwYd2Za6Xyh3qZC7y-hDKUxFSStA";
+  // No fallback. The key was previously hard-coded here, in a public
+  // repository. If the variable is missing this now fails loudly rather than
+  // silently using a committed key.
+  const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 
   if (!GOOGLE_API_KEY) {
     return NextResponse.json(
